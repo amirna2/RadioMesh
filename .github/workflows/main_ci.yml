@@ -1,0 +1,73 @@
+name: Main CI
+
+on:
+  push:
+    paths:
+    - 'src/**'
+    - 'examples/**'
+    - 'tools/**'
+    - 'tests/**'
+    - 'platformio.ini'
+    - '.github/workflows/**'
+
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'examples/**'
+      - 'tools/**'
+      - 'tests/**'
+      - 'platformio.ini'
+      - '.github/workflows/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        board: [ "heltec_wifi_lora_32_V3", "cubecell_board_v2"]
+
+    steps:
+    - name: Checkout RadioMesh code
+      uses: actions/checkout@v3
+
+    - name: Update runner
+      run: |
+        sudo add-apt-repository --yes ppa:nnstreamer/ppa
+        sudo apt-get update
+        sudo apt-get -y install cppcheck
+
+    - name: Run CPP Check
+      run: |
+        cppcheck --version
+        cppcheck --error-exitcode=1 --std=c++11 --force src
+
+    - name: Install PlatformIO
+      run: |
+        python3 -m pip install --upgrade pip
+        pip install -U platformio
+        platformio --version
+
+    - name: Clean PlatformIO environment
+      run: |
+        platformio run --target clean
+
+    - name: Install Arduino Cores
+      run: |
+        if [ "${{ matrix.board }}" == "heltec_wifi_lora_32_V3" ]; then
+          platformio pkg install -e heltec_wifi_lora_32_V3
+        elif [ "${{ matrix.board }}" == "cubecell_board_v2" ]; then
+          platformio pkg install -e cubecell_board_v2
+          # Apply patch for Arduino.h so CubeCell can compile for cpp projects
+          cp ./patches/arduino-cubecell/Arduino.h \
+          /home/runner/.platformio/packages/framework-arduinocubecell/cores/asr650x/Arduino.h
+          cp ./patches/arduino-cubecell/pins_arduino.h \
+          /home/runner/.platformio/packages/framework-arduinocubecell/variants/CubeCell-Board-V2/pins_arduino.h
+        else
+          echo "Unknown board: ${{ matrix.board }}"
+          exit 1
+        fi
+
+    - name: Build RadioMesh
+      run: |
+        ./tools/builder.py build -t "${{ matrix.board }}"

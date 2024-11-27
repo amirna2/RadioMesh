@@ -1,0 +1,65 @@
+{
+    "name": "RadioMesh",
+    "keywords": "mesh-network, long-range, low-power, radio, protocol, toolkit, wireless, networking, iot",
+    "description": "A framework for building long-range, low-power mesh networks with an adaptive protocol and a flexible device development kit.",
+    "authors":
+    {
+        "name":  "Amir Nathoo",
+        "email": "amir.nth@gmail.com",
+        "url": "https://github.com/amirna2/RadioMesh",
+        "maintainer": true
+    },
+    "version": "0.1.1",
+    "repository":
+    {
+        "type": "git",
+        "url": "https://github.com/amirna2/RadioMesh"
+    },
+    "frameworks": "arduino",
+    "platforms": ["espressif32","heltec-cubecell"],
+    "headers": "include/RadioMesh.h",
+    "license": "Apache-2.0",
+
+    "examples": [
+        "[Ee]xamples/*/*.ino"
+    ],
+    "build":
+    {
+        "libLDFMode": "chain+"
+    },
+    "dependencies":
+    [
+        {
+            "owner": "jgromes",
+            "name": "RadioLib",
+            "version": "7.1.0"
+        },
+        {
+            "owner": "kmackay",
+            "name": "micro-ecc",
+            "version": "1.0.0"
+        },
+        {
+            "owner": "operatorfoundation",
+            "name": "Crypto",
+            "version": "0.4.0"
+        },
+        {
+            "owner": "mathieucarbou",
+            "name": "AsyncTCP",
+            "version": "3.2.12",
+            "platforms": ["espressif32"]
+        },
+        {
+            "owner": "mathieucarbou",
+            "name": "ESP Async WebServer",
+            "version": "2.10.8",
+            "platforms": ["espressif32"]
+        },
+        {
+            "owner": "olikraus",
+            "name": "U8g2",
+            "version": "2.36.2"
+        }
+    ]
+}

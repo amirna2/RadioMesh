@@ -1,0 +1,6 @@
+.pio
+device_info.h
+.DS_Store
+*.swp
+*workspace
+.vscode/**
