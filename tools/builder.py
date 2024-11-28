@@ -44,7 +44,7 @@ def run_command(command, target, deploy = False, suite = None, clean = False):
             cmd += ['-f', suite]
 
 
-    print(f"\033[1;93m warp builder: executing {' '.join(cmd)}\033[0m")
+    print(f"\033[1;93m RadioMesh builder: executing {' '.join(cmd)}\033[0m")
     # remove .pio folder before building
     if clean:
         subprocess.run(['rm', '-rf', '.pio'])
@@ -56,7 +56,7 @@ def run_command(command, target, deploy = False, suite = None, clean = False):
         exit(1)
 
 def main():
-    parser = argparse.ArgumentParser(description='builder - A PlatformIO CLI Wrapper to build warp library and examples.')
+    parser = argparse.ArgumentParser(description='builder - A PlatformIO CLI Wrapper to build RadioMesh library and examples.')
     subparsers = parser.add_subparsers(dest='command', help=f'Available commands')
 
     # Version command
