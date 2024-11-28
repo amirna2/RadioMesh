@@ -1,20 +1,29 @@
 # Contributing to RadioMesh
-First of all, thank you very much for taking the time to contribute! We greatly appreciate all feedback, ideas, and contributions. To keep this project organized and foster an inclusive and productive environment, we kindly ask that you follow these guidelines.
+Thanks for your interest in helping! Here's what you need to know:
 
 ## Issues
-Before submitting a new issue, please take a moment to review the issue tracker, Q&A, and FAQ to ensure your concern hasn't already been addressed. This helps avoid duplicates and keeps the focus on new and unresolved topics.
+Before creating an issue, please check if your issue is already addressed in:
+[Issue tracker](https://github.com/amirna2/RadioMesh/issues)
+[Discussions Q&A](https://github.com/amirna2/RadioMesh/discussions/categories/q-a)
+[Wiki](https://github.com/amirna2/RadioMesh/wiki)
 
 When submitting new issues, please adhere to the following to ensure your concerns are addressed promptly and effectively:
 
-**Questions are welcome, Spam is not:**
-We encourage questions and discussions. However, issues lacking a descriptive body will be considered spam and will be closed and locked immediately.
+**Be Clear and Descriptive**
+- "crash" or "build issue" = ❌
+- Detailed description with steps, example scripts = ✅
 
-**Use Issue Templates:**
-This repository provides issue templates for reporting bugs and suggesting features. Please use them accordingly. If none of the templates fit your issue, only then use the default issue option.
+**Use Our Templates**
+- Bug report template
+- Feature request template
+- Default template (only if others don't fit)
 
-**Clarity is Key:** Be as clear and specific as possible when creating your issue. Titles like "not working" or "build error" are too vague and will be closed until more specific details are provided. Similarly, issues with scant information or significant formatting issues will be closed until improved.
+**Keep It Active**
+- Issues without replies for 2 weeks will be closed
+- Feel free to reopen when you have more info
 
-**Stale Issues:** If an issue remains inactive for 2 weeks after the original author has been asked for further details and does not respond, it will be closed due to inactivity. We do this to keep focus on active issues. You are welcome to reopen the issue once you have more information to share.
+**No Spam**
+Empty or vague issues will be closed immediately.
 
 ## Technical Requirements & Background
 
