@@ -1,7 +1,8 @@
 {
     "name": "RadioMesh",
     "keywords": "mesh-network, long-range, low-power, radio, protocol, toolkit, wireless, networking, iot",
-    "description": "A framework for building long-range, low-power mesh networks with an adaptive protocol and a flexible device development kit.",
+    "description": "A toolkit for building long-range, low-power radio mesh networks for IoT applications.",
+
     "authors":
     {
         "name":  "Amir Nathoo",
