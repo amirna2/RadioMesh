@@ -1,6 +1,8 @@
 .pio
 device_info.h
+wifiConfig.h
 .DS_Store
 *.swp
 *workspace
+
 .vscode/**

@@ -1,8 +1,8 @@
 #include <unity.h>
-#include <Warp.h>
-#include "WifiConnector.h"
+#include <RadioMesh.h>
+#include "wifiConfig.h"
 
-WifiParams wifiParams = {"Airheads Xtreme", "7212-Wabash!"}; // Change to your wifi SSID and password
+WifiParams wifiParams = {WIFI_SSID, WIFI_PASSWORD};
 
 // positive test cases
 
@@ -16,21 +16,25 @@ void test_WifiConnector_setParams(void)
 {
    WifiConnector *wifi = WifiConnector::getInstance();
    int rc = wifi->setParams(wifiParams);
-   TEST_ASSERT_EQUAL(WARP_ERR_NONE, rc);
+   TEST_ASSERT_EQUAL(RM_E_NONE, rc);
 }
 
 void test_WifiConnector_connect(void)
 {
    WifiConnector *wifi = WifiConnector::getInstance();
-   int rc = wifi->connect();
-   TEST_ASSERT_EQUAL(WARP_ERR_NONE, rc);
+   int rc = wifi->setParams(wifiParams);
+   TEST_ASSERT_EQUAL(RM_E_NONE, rc);
+   rc = wifi->connect();
+   TEST_ASSERT_EQUAL(RM_E_NONE, rc);
 }
 
 void test_WifiConnector_reconnect(void)
 {
    WifiConnector *wifi = WifiConnector::getInstance();
-   int rc = wifi->reconnect();
-   TEST_ASSERT_EQUAL(WARP_ERR_NONE, rc);
+   int rc = wifi->setParams(wifiParams);
+   TEST_ASSERT_EQUAL(RM_E_NONE, rc);
+   rc = wifi->reconnect();
+   TEST_ASSERT_EQUAL(RM_E_NONE, rc);
 }
 
 void test_WifiConnector_getIpAddress(void)
@@ -79,7 +83,7 @@ void test_WifiConnector_disconnect(void)
 {
    WifiConnector *wifi = WifiConnector::getInstance();
    int rc = wifi->disconnect(false);
-   TEST_ASSERT_EQUAL(WARP_ERR_NONE, rc);
+   TEST_ASSERT_EQUAL(RM_E_NONE, rc);
 }
 
 // negative test cases
@@ -89,7 +93,7 @@ void test_WifiConnector_setParams_with_invalid_ssid_length(void)
    std::string longSsid(33, 'a');
    WifiParams wifiParams = {longSsid, "firefly2424"}; // SSID is too long
    int rc = wifi->setParams(wifiParams);
-   TEST_ASSERT_EQUAL(WARP_ERR_INVALID_WIFI_PARAMS, rc);
+   TEST_ASSERT_EQUAL(RM_E_INVALID_WIFI_PARAMS, rc);
 }
 void test_WifiConnector_setParams_with_invalid_password_length(void)
 {
@@ -97,7 +101,7 @@ void test_WifiConnector_setParams_with_invalid_password_length(void)
    std::string longPassword(65, 'a');
    WifiParams wifiParams = {"my_test_wifi", longPassword}; // Password is too long
    int rc = wifi->setParams(wifiParams);
-   TEST_ASSERT_EQUAL(WARP_ERR_INVALID_WIFI_PARAMS, rc);
+   TEST_ASSERT_EQUAL(RM_E_INVALID_WIFI_PARAMS, rc);
 }
 
 void test_WifiConnector_params_with_invalid_ssid(void)
@@ -106,7 +110,7 @@ void test_WifiConnector_params_with_invalid_ssid(void)
    WifiParams wifiParams = {"", "firefly2424"}; // SSID is empty
    int rc = wifi->setParams(wifiParams);
 
-   TEST_ASSERT_EQUAL(WARP_ERR_INVALID_WIFI_PARAMS, rc);
+   TEST_ASSERT_EQUAL(RM_E_INVALID_WIFI_PARAMS, rc);
 }
 
 void test_WifiConnector_params_with_invalid_password(void)
@@ -114,7 +118,7 @@ void test_WifiConnector_params_with_invalid_password(void)
    WifiConnector *wifi = WifiConnector::getInstance();
    WifiParams wifiParams = {"WarpPortal", ""}; // Password is empty
    int rc = wifi->setParams(wifiParams);
-   TEST_ASSERT_EQUAL(WARP_ERR_INVALID_WIFI_PARAMS, rc);
+   TEST_ASSERT_EQUAL(RM_E_INVALID_WIFI_PARAMS, rc);
 }
 
 void setup()
