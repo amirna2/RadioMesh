@@ -9,7 +9,6 @@ var class_lora_radio =
     [ "getSNR", "class_lora_radio.html#a8f88cbb24d3d402703bb4cb5439f8406", null ],
     [ "isRadioSetup", "class_lora_radio.html#a4f17df77062afb88cd5914fa3d43d372", null ],
     [ "readReceivedData", "class_lora_radio.html#a8c46852596fba0b083ec1fdff19215ff", null ],
-    [ "reset", "class_lora_radio.html#a4db8766e6964d8221ab77e276d7df1fe", null ],
     [ "sendPacket", "class_lora_radio.html#aba11e8225ec4411db92c9fbda9f8a7b6", null ],
     [ "setParams", "class_lora_radio.html#a5f2376297eca5a7166ce8c7054f975be", null ],
     [ "setup", "class_lora_radio.html#ab0443d4266486be05aa915ad6c64a1b4", null ],

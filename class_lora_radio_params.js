@@ -1,8 +1,8 @@
 var class_lora_radio_params =
 [
-    [ "LoraRadioParams", "class_lora_radio_params.html#aa96560b4c25b8cd19251e42e1ee38af7", null ],
+    [ "LoraRadioParams", "class_lora_radio_params.html#a4c77a9f4cf8c38110cf1640a9ec662bb", null ],
+    [ "isInitialized", "class_lora_radio_params.html#a3a8b0c9785c033fc91cb7d42d229f3c6", null ],
     [ "operator=", "class_lora_radio_params.html#aa61c6692860814c83c4690d9191b41e9", null ],
-    [ "reset", "class_lora_radio_params.html#aa76eb079eaef1a918069f5a70547d105", null ],
     [ "setBand", "class_lora_radio_params.html#a0342ee7da671a2d644dfc19d5976e45e", null ],
     [ "setBW", "class_lora_radio_params.html#a04ef7369417d2654e89d597664b7f8cd", null ],
     [ "setGain", "class_lora_radio_params.html#ae7549d8c5ca24b6511682bd0f410833d", null ],

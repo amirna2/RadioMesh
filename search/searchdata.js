@@ -7,7 +7,8 @@ var indexSectionsWithContent =
   4: "bcdghprstu",
   5: "ms",
   6: "hsu",
-  7: "r"
+  7: "r",
+  8: "e"
 };
 
 var indexSectionNames =
@@ -19,7 +20,8 @@ var indexSectionNames =
   4: "variables",
   5: "enums",
   6: "enumvalues",
-  7: "defines"
+  7: "defines",
+  8: "groups"
 };
 
 var indexSectionLabels =
@@ -31,6 +33,7 @@ var indexSectionLabels =
   4: "Variables",
   5: "Enumerations",
   6: "Enumerator",
-  7: "Macros"
+  7: "Macros",
+  8: "Modules"
 };
 

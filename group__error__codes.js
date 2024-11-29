@@ -1,4 +1,4 @@
-var _errors_8h =
+var group__error__codes =
 [
     [ "RM_E_CRYPTO_SETUP", "group__error__codes.html#ga8a50d2e67a43654b06ba5e1b1321c8bd", null ],
     [ "RM_E_DEVICE_NOT_INCLUDED", "group__error__codes.html#ga9550a629f5f5657498b8565db0c75f0a", null ],

@@ -25,6 +25,7 @@
 var NAVTREE =
 [
   [ "RadioMesh", "index.html", [
+    [ "Modules", "modules.html", "modules" ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
@@ -50,7 +51,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_aes_crypto_8h_source.html",
-"class_mesh_c_r_c32.html#ab7b6971d90dcb1eb991e26d42e9d97a1"
+"class_pin_config.html#a8260aba2613f80783eb08d49e89d6eba"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

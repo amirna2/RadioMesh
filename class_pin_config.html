@@ -85,6 +85,7 @@ $(document).ready(function(){initNavTree('class_pin_config.html',''); initResiza
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="class_pin_config-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">PinConfig Class Reference</div>  </div>
@@ -98,9 +99,9 @@ $(document).ready(function(){initNavTree('class_pin_config.html',''); initResiza
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a5140dcab1711e0f555f6940651e4718e"><td class="memItemLeft" align="right" valign="top"><a id="a5140dcab1711e0f555f6940651e4718e"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>PinConfig</b> (int <a class="el" href="class_pin_config.html#acb4009c0fba032d8d62656af0ed029a3">ss</a>=10, int <a class="el" href="class_pin_config.html#a96f4f7e49b259f9ca81358dcedfb35fb">rst</a>=9, int <a class="el" href="class_pin_config.html#a8260aba2613f80783eb08d49e89d6eba">di0</a>=2, int <a class="el" href="class_pin_config.html#a139ae592233ba99bccd6cb6308c9139a">di1</a>=3)</td></tr>
-<tr class="separator:a5140dcab1711e0f555f6940651e4718e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a625ad2c4b2642bb946001ee747305315"><td class="memItemLeft" align="right" valign="top"><a id="a625ad2c4b2642bb946001ee747305315"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>PinConfig</b> (int <a class="el" href="class_pin_config.html#acb4009c0fba032d8d62656af0ed029a3">ss</a>=<a class="el" href="class_pin_config.html#ac6f533dc250a1d5397dae334258cad8f">PIN_DEFAULT_SS</a>, int <a class="el" href="class_pin_config.html#a96f4f7e49b259f9ca81358dcedfb35fb">rst</a>=<a class="el" href="class_pin_config.html#ae1205fb28155ae914784446b73efdac4">PIN_DEFAULT_RST</a>, int <a class="el" href="class_pin_config.html#a8260aba2613f80783eb08d49e89d6eba">di0</a>=<a class="el" href="class_pin_config.html#a717aaad59e073d2874c3392bb2c4a033">PIN_DEFAULT_DI0</a>, int <a class="el" href="class_pin_config.html#a139ae592233ba99bccd6cb6308c9139a">di1</a>=<a class="el" href="class_pin_config.html#a085548894338d17bd65eaa2e418a84a2">PIN_DEFAULT_DI1</a>)</td></tr>
+<tr class="separator:a625ad2c4b2642bb946001ee747305315"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -120,6 +121,29 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pin_config.html#a139ae592233ba99bccd6cb6308c9139a">di1</a></td></tr>
 <tr class="memdesc:a139ae592233ba99bccd6cb6308c9139a"><td class="mdescLeft">&#160;</td><td class="mdescRight">DIO1 pin. <br /></td></tr>
 <tr class="separator:a139ae592233ba99bccd6cb6308c9139a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a91df88cfddd51e7ee16411890af1e7d0"><td class="memItemLeft" align="right" valign="top"><a id="a91df88cfddd51e7ee16411890af1e7d0"></a>
+constexpr static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pin_config.html#a91df88cfddd51e7ee16411890af1e7d0">PIN_UNDEFINED</a> = 0</td></tr>
+<tr class="memdesc:a91df88cfddd51e7ee16411890af1e7d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Undefined pin value. <br /></td></tr>
+<tr class="separator:a91df88cfddd51e7ee16411890af1e7d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6f533dc250a1d5397dae334258cad8f"><td class="memItemLeft" align="right" valign="top"><a id="ac6f533dc250a1d5397dae334258cad8f"></a>
+constexpr static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pin_config.html#ac6f533dc250a1d5397dae334258cad8f">PIN_DEFAULT_SS</a> = 10</td></tr>
+<tr class="memdesc:ac6f533dc250a1d5397dae334258cad8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default slave select pin. <br /></td></tr>
+<tr class="separator:ac6f533dc250a1d5397dae334258cad8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1205fb28155ae914784446b73efdac4"><td class="memItemLeft" align="right" valign="top"><a id="ae1205fb28155ae914784446b73efdac4"></a>
+constexpr static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pin_config.html#ae1205fb28155ae914784446b73efdac4">PIN_DEFAULT_RST</a> = 9</td></tr>
+<tr class="memdesc:ae1205fb28155ae914784446b73efdac4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default reset pin. <br /></td></tr>
+<tr class="separator:ae1205fb28155ae914784446b73efdac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a717aaad59e073d2874c3392bb2c4a033"><td class="memItemLeft" align="right" valign="top"><a id="a717aaad59e073d2874c3392bb2c4a033"></a>
+constexpr static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pin_config.html#a717aaad59e073d2874c3392bb2c4a033">PIN_DEFAULT_DI0</a> = 2</td></tr>
+<tr class="memdesc:a717aaad59e073d2874c3392bb2c4a033"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default DIO0 pin. <br /></td></tr>
+<tr class="separator:a717aaad59e073d2874c3392bb2c4a033"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a085548894338d17bd65eaa2e418a84a2"><td class="memItemLeft" align="right" valign="top"><a id="a085548894338d17bd65eaa2e418a84a2"></a>
+constexpr static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pin_config.html#a085548894338d17bd65eaa2e418a84a2">PIN_DEFAULT_DI1</a> = 3</td></tr>
+<tr class="memdesc:a085548894338d17bd65eaa2e418a84a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default DIO1 pin. <br /></td></tr>
+<tr class="separator:a085548894338d17bd65eaa2e418a84a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class is used to store the pin configuration for the LoRa radio. </p>
