@@ -12,7 +12,26 @@
 class PinConfig
 {
 public:
-    PinConfig(int ss = 10, int rst = 9, int di0 = 2, int di1 = 3)
+    /// @brief Undefined pin value
+    constexpr static int PIN_UNDEFINED = 0;
+
+    /// @brief Default slave select pin
+    constexpr static int PIN_DEFAULT_SS = 10;
+
+    /// @brief Default reset pin
+    constexpr static int PIN_DEFAULT_RST = 9;
+
+    /// @brief Default DIO0 pin
+    constexpr static int PIN_DEFAULT_DI0 = 2;
+
+    /// @brief Default DIO1 pin
+    constexpr static int PIN_DEFAULT_DI1 = 3;
+
+    // Constructor with default parameters
+    PinConfig(int ss = PIN_DEFAULT_SS,
+              int rst = PIN_DEFAULT_RST,
+              int di0 = PIN_DEFAULT_DI0,
+              int di1 = PIN_DEFAULT_DI1)
         : ss(ss), rst(rst), di0(di0), di1(di1) {}
 
     /// @brief slave select pin (cs pin)
@@ -34,8 +53,22 @@ public:
 class LoraRadioParams
 {
 public:
+
+    constexpr static float DEFAULT_BAND = 915.0;
+    constexpr static int8_t DEFAULT_TX_POWER = 14;
+    constexpr static float DEFAULT_BW = 125.0;
+    constexpr static uint8_t DEFAULT_SF = 7;
+    constexpr static uint8_t DEFAULT_GAIN = 0;
+    constexpr static bool DEFAULT_PRIVATE_NETWORK = true;
+
     // Constructor with default parameters
-    LoraRadioParams(PinConfig pinConfig = PinConfig(), float band = 915.0, int8_t txPower = 14, float bw = 125.0, uint8_t sf = 7, uint8_t gain = 0, bool privateNetwork = true)
+    LoraRadioParams(PinConfig pinConfig = PinConfig(),
+                    float band = DEFAULT_BAND,
+                    int8_t txPower = DEFAULT_TX_POWER,
+                    float bw = DEFAULT_BW,
+                    uint8_t sf = DEFAULT_SF,
+                    uint8_t gain = DEFAULT_GAIN,
+                    bool privateNetwork =  DEFAULT_PRIVATE_NETWORK)
         : pinConfig(pinConfig), band(band), txPower(txPower), bw(bw), sf(sf), gain(gain), privateNetwork(privateNetwork) {}
 
     // Fluent interface for setting parameters
@@ -48,7 +81,7 @@ public:
     LoraRadioParams& setPrivateNetwork(bool privateNetwork) { this->privateNetwork = privateNetwork; return *this; }
 
     // Method to validate parameters
-    bool validate() const {
+    inline bool validate() const {
         // Add validation logic here
         if (txPower < 2 || txPower > 20) {
             return false;
@@ -71,19 +104,8 @@ public:
         return *this;
     }
 
-    // Method to reset parameters to zero
-    void reset() {
-        pinConfig = PinConfig(0, 0, 0, 0);
-        band = 0.0;
-        txPower = 0;
-        bw = 0.0;
-        sf = 0;
-        gain = 0;
-        privateNetwork = false;
-    }
-
     // Method to convert parameters to string
-    std::string toString() const {
+    inline std::string toString() const {
         // Convert to Hz. Some compiler versions do not support std::to_string with float
         uint32_t band_hz = band * 1000 * 1000;
         uint32_t bw_hz = bw * 1000 * 1000;
@@ -99,6 +121,13 @@ public:
                std::string(", gain=") + std::to_string(gain) +
                std::string(", privateNetwork=") + std::to_string(privateNetwork) +
                std::string(")");
+    }
+
+    inline bool isInitialized() const {
+        return (pinConfig.ss != PinConfig::PIN_DEFAULT_SS &&
+                pinConfig.rst != PinConfig::PIN_DEFAULT_RST &&
+                pinConfig.di0 != PinConfig::PIN_DEFAULT_DI0 &&
+                pinConfig.di1 != PinConfig::PIN_DEFAULT_DI1);
     }
 
 public:

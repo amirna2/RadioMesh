@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 #include <common/inc/Definitions.h>
 #include <common/inc/Errors.h>
@@ -35,7 +36,12 @@ public:
    }
 
    // IRadio interface
-   virtual ~LoraRadio() {}
+   virtual ~LoraRadio() {
+      if (radio != nullptr) {
+         delete radio;
+      }
+   }
+
    virtual int setup(const LoraRadioParams& params) override;
    virtual int setup() override;
    virtual int standBy() override;
@@ -106,17 +112,6 @@ public:
    int readReceivedData(std::vector<byte> *packetData);
 
    /**
-    * @brief Reset the radio parameters.
-    *
-    */
-   void reset()
-   {
-      isSetup = false;
-      radioParams.reset();
-      resetRadioState();
-   }
-
-   /**
     * @brief Check if the radio is in receive mode.
     * @return true if the radio is in receive mode, false otherwise.
     */
@@ -160,10 +155,11 @@ private:
    }
 
    LoraRadioParams radioParams;
-   SX1262 radio = nullptr;
+   SX1262 *radio=nullptr;
 
    int checkLoraParameters(LoraRadioParams params);
    int switchToReceiveMode();
+   int createModule(const LoraRadioParams& params);
 
 
 };
