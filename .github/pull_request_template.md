@@ -1,8 +1,3 @@
----
-name: Pull Request
-about: Submit changes to the project
----
-
 ### Description
 <!-- What changes does this PR introduce? -->
 
@@ -17,6 +12,8 @@ about: Submit changes to the project
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
+- [ ] Infrastructure/Build update
+- [ ] Other <!-- Please describe: -->
 
 
 ### Testing
