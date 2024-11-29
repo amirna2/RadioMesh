@@ -18,13 +18,32 @@ int LoraRadio::setParams(LoraRadioParams params)
    }
 
    radioParams = params;
-   radio = new Module(radioParams.pinConfig.ss, radioParams.pinConfig.di1, radioParams.pinConfig.rst, radioParams.pinConfig.di0 /*busy pin*/);
 
    return RM_E_NONE;
 }
 
-int LoraRadio::checkLoraParameters(LoraRadioParams params) {
-    int rc = RM_E_NONE;
+int LoraRadio::createModule(const LoraRadioParams& params)
+{
+   logdbg_ln("Creating radio module");
+   if (radio != nullptr) {
+      logdbg_ln("Deleting existing radio module");
+      delete radio;
+   }
+   if (params.pinConfig.ss == PinConfig::PIN_UNDEFINED) {
+      logerr_ln("ERROR radio parameters are not set");
+      return RM_E_INVALID_RADIO_PARAMS;
+   }
+   radio = new SX1262(new Module(params.pinConfig.ss,
+                                 params.pinConfig.di1,
+                                 params.pinConfig.rst,
+                                 params.pinConfig.di0 /*busy pin*/));
+   logdbg_ln("Radio module created");
+   radioParams = params;
+   return RM_E_NONE;
+}
+
+int LoraRadio::checkLoraParameters(LoraRadioParams params)
+{
     if (params.sf < 6 || params.sf > 12) {
         logerr_ln("ERROR  spreading factor is invalid");
         return RM_E_INVALID_PARAM;
@@ -46,20 +65,29 @@ int LoraRadio::checkLoraParameters(LoraRadioParams params) {
         return RM_E_INVALID_PARAM;
     }
 
-    return rc;
+    return RM_E_NONE;
 }
 
 int LoraRadio::setup(const LoraRadioParams& params)
 {
-   int rc = checkLoraParameters(params);
+   loginfo_ln("Setting up LoRa radio...");
+   int rc = createModule(params);
    if (rc != RM_E_NONE) {
+      logerr_ln("ERROR  creating Lora radio module");
+      return rc;
+   }
+   rc = checkLoraParameters(params);
+   if (rc != RM_E_NONE) {
+      if (radio != nullptr) {
+         delete radio;
+      }
       return rc;
    }
    if (isSetup) {
       logwarn_ln("WARNING LoRa overwriting existing lora parameters.");
    }
 
-   rc = radio.begin();
+   rc = radio->begin();
 
    if (rc != RADIOLIB_ERR_NONE) {
       logerr_ln("ERROR  initializing LoRa driver. state = %d", rc);
@@ -67,37 +95,37 @@ int LoraRadio::setup(const LoraRadioParams& params)
    }
 
    // the radio is started, we need to set all the radio parameters, before it can
-   // start receiving packets
+   // start receiving or sending packets
    loginfo_ln("Setting up LoRa radio parameters...");
-   rc = radio.setFrequency(params.band);
+   rc = radio->setFrequency(params.band);
    if (rc == RADIOLIB_ERR_INVALID_FREQUENCY) {
       logerr_ln("ERROR  frequency is invalid");
       return RM_E_RADIO_SETUP;
    }
 
-   rc = radio.setBandwidth(params.bw);
+   rc = radio->setBandwidth(params.bw);
    if (rc == RADIOLIB_ERR_INVALID_BANDWIDTH) {
       logerr_ln("ERROR  bandwidth is invalid");
       return RM_E_RADIO_SETUP;
    }
 
-   rc = radio.setSpreadingFactor(params.sf);
+   rc = radio->setSpreadingFactor(params.sf);
    if (rc == RADIOLIB_ERR_INVALID_SPREADING_FACTOR) {
       logerr_ln("ERROR  spreading factor is invalid");
       return RM_E_RADIO_SETUP;
    }
 
-   rc = radio.setOutputPower(params.txPower);
+   rc = radio->setOutputPower(params.txPower);
    if (rc == RADIOLIB_ERR_INVALID_OUTPUT_POWER) {
       logerr_ln("ERROR  output power is invalid");
       return RM_E_RADIO_SETUP;
    }
 
    if (params.privateNetwork) {
-      rc = radio.setSyncWord(0x12);
+      rc = radio->setSyncWord(0x12);
    }
    else {
-      rc = radio.setSyncWord(0x34);
+      rc = radio->setSyncWord(0x34);
    }
 
    if (rc != RADIOLIB_ERR_NONE) {
@@ -106,9 +134,9 @@ int LoraRadio::setup(const LoraRadioParams& params)
    }
 
    // set the interrupt handler to execute when packet tx or rx is done.
-   radio.setDio1Action(LoraRadio::onInterrupt);
+   radio->setDio1Action(LoraRadio::onInterrupt);
 
-   rc = radio.startReceive();
+   rc = radio->startReceive();
    if (rc != RADIOLIB_ERR_NONE) {
       logerr_ln("ERROR Failed to start receive");
       return RM_E_RADIO_SETUP;
@@ -122,6 +150,7 @@ int LoraRadio::setup(const LoraRadioParams& params)
 
 int LoraRadio::setup()
 {
+   // setup the radio with previously stored parameters
    return setup(radioParams);
 }
 
@@ -138,7 +167,7 @@ int LoraRadio::startReceive()
    }
 
    loginfo_ln("Start receiving data...");
-   int state = radio.startReceive();
+   int state = radio->startReceive();
 
    if (state != RADIOLIB_ERR_NONE) {
       logerr_ln("ERROR startReceive failed, code %d", state);
@@ -158,7 +187,7 @@ int LoraRadio::startTransmitPacket(byte *data, int length)
 
    long t1 = millis();
    // TODO: Request RadioLib to use a const byte* instead of byte*
-   tx_err = radio.startTransmit(data, length);
+   tx_err = radio->startTransmit(data, length);
    switch (tx_err) {
       case RADIOLIB_ERR_NONE:
          logdbg_ln("TX data done in : %d ms",(millis() - t1));
@@ -186,7 +215,7 @@ int LoraRadio::startTransmitPacket(byte *data, int length)
 
 int LoraRadio::standBy()
 {
-   int rc = radio.standby();
+   int rc = radio->standby();
    if (rc != RADIOLIB_ERR_NONE) {
       logerr_ln("ERROR  standby failed, code %d", rc);
       return RM_E_RADIO_FAILURE;
@@ -196,17 +225,17 @@ int LoraRadio::standBy()
 
 float LoraRadio::getSNR()
 {
-   return radio.getSNR();
+   return radio->getSNR();
 }
 
 int LoraRadio::getRSSI()
 {
-   return radio.getRSSI();
+   return radio->getRSSI();
 }
 
 int LoraRadio::sleep()
 {
-   int rc = radio.sleep();
+   int rc = radio->sleep();
    if (rc != RADIOLIB_ERR_NONE) {
       logerr_ln("ERROR  sleep failed, code %d", rc);
       return RM_E_RADIO_FAILURE;
@@ -225,7 +254,7 @@ int LoraRadio::readReceivedData(std::vector<byte>* packetBytes)
       return RM_E_RADIO_NOT_INITIALIZED;
    }
 
-   packet_length = radio.getPacketLength();
+   packet_length = radio->getPacketLength();
    if (packet_length < 0) {
       logerr_ln("ERROR  getPacketLength failed. err = %d", packet_length);
       return RM_E_RADIO_FAILURE;
@@ -233,14 +262,14 @@ int LoraRadio::readReceivedData(std::vector<byte>* packetBytes)
    logtrace_ln("readReceivedData() - packet length returns: %d", packet_length);
 
    packetBytes->resize(packet_length);
-   err = radio.readData(packetBytes->data(), packet_length);
+   err = radio->readData(packetBytes->data(), packet_length);
    if (err != RADIOLIB_ERR_NONE) {
       logerr_ln("ERROR  readReceivedData failed. err = %d", err);
       return RM_E_RADIO_FAILURE;
    }
 
    logdbg_ln("Rx packet: %s", RadioMeshUtils::convertToHex(packetBytes->data(), packetBytes->size()).c_str());
-   logdbg_ln("RX: rssi: %f snr: %f size: %d", radio.getRSSI(), radio.getSNR(), packet_length);
+   logdbg_ln("RX: rssi: %f snr: %f size: %d", radio->getRSSI(), radio->getSNR(), packet_length);
 
    resetRadioState(RX_TX_STATE);
 
@@ -256,7 +285,7 @@ void LoraRadio::onInterrupt()
 #endif
 {
    // This function will be called immediately when an interrupt occurs
-   uint16_t irqStatus = instance->radio.getIrqFlags();
+   uint16_t irqStatus = instance->radio->getIrqFlags();
 
    // check for rx/tx done first and then check for errors
    if (irqStatus & RADIOLIB_SX126X_IRQ_RX_DONE) {

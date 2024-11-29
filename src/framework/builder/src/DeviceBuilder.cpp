@@ -5,7 +5,6 @@
 DeviceBuilder &DeviceBuilder::start()
 {
    blueprint = {false, false, false, false, false, false, false};
-   radioParams.reset();
    relayEnabled = false;
    isBuilderStarted = true;
 
@@ -95,16 +94,6 @@ IDevice *DeviceBuilder::build(const std::string name, std::array<byte, RM_ID_LEN
    loginfo_ln("Building device...");
    if (!isBuilderStarted) {
       logerr_ln("ERROR: DeviceBuilder not started. Call start() first.");
-      return nullptr;
-   }
-
-   if (name.size() < 1 || name.size() > 16) {
-      logerr_ln("ERROR: Invalid device name. Must be between 1 and 16 characters.");
-      return nullptr;
-   }
-
-   if (id.size() != DEV_ID_LENGTH) {
-      logerr_ln("ERROR: Invalid device ID. Must be %d bytes.", DEV_ID_LENGTH);
       return nullptr;
    }
 

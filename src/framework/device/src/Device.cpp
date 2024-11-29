@@ -28,7 +28,7 @@ int RadioMeshDevice::initializeRadio(LoraRadioParams radioParams)
    radio = LoraRadio::getInstance();
 
    if (radio == nullptr) {
-      logerr_ln("Failed to create radio");
+      logerr_ln("Failed to get Lora radio instance");
       return RM_E_UNKNOWN;
    }
 

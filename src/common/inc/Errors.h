@@ -5,6 +5,18 @@
 
 #pragma once
 
+
+/** @defgroup error_codes Error Codes
+ *  @brief Error codes used throughout the RadioMesh project
+ *
+ *  This group contains all error code definitions used for error handling
+ *  and status reporting in RadioMesh.
+ */
+
+/** @addtogroup error_codes
+ *  @{
+ */
+
 /**
  * @brief No error occurred. All is well.
  */

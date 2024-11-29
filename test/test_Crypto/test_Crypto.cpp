@@ -1,6 +1,6 @@
 #include <unity.h>
-#include "ICrypto.h"
-#include "AesCrypto.h"
+#include <framework/interfaces/ICrypto.h>
+#include <core/protocol/inc/crypto/aes/AesCrypto.h>
 
 std::vector<byte> key = { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
                           0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,

@@ -1,8 +1,8 @@
 #pragma once
 
 #define VERSION_MAJOR 0
-#define VERSION_MINOR 10
-#define VERSION_PATCH 0
+#define VERSION_MINOR 0
+#define VERSION_PATCH 3
 #define VERSION_EXTRA 0
 
 #define RM_VERSION ((((VERSION_MAJOR) << 26) | \
