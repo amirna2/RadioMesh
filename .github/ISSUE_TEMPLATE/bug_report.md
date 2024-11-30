@@ -1,14 +1,14 @@
 ---
 name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
+about: Something is broken, isn't working as expected or could be improved.
+title: '[bug] '
+labels: bug
 assignees: ''
 
 ---
 **IMPORTANT**
 Please read the [contributing](https://github.com/amirna2/RadioMesh/blob/main/CONTRIBUTING.md) guidlines before you submit any issues.
-A non compliant report will closed immediately. 
+A non compliant report will closed immediately.
 
 Also, please make use of [markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#code) to format your issue. This will make it easier for us to understand and help you.
 
