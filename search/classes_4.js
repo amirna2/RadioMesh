@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['meshcrc32_224',['MeshCRC32',['../class_mesh_c_r_c32.html',1,'']]]
+  ['loraradio_223',['LoraRadio',['../class_lora_radio.html',1,'']]],
+  ['loraradioparams_224',['LoraRadioParams',['../class_lora_radio_params.html',1,'']]]
 ];

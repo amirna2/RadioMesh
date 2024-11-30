@@ -1,5 +1,8 @@
 var annotated_dup =
 [
+    [ "RadioMeshUtils", null, [
+      [ "CRC32", "class_radio_mesh_utils_1_1_c_r_c32.html", "class_radio_mesh_utils_1_1_c_r_c32" ]
+    ] ],
     [ "AesCrypto", "class_aes_crypto.html", "class_aes_crypto" ],
     [ "DeviceBlueprint", "struct_device_blueprint.html", "struct_device_blueprint" ],
     [ "DeviceBuilder", "class_device_builder.html", "class_device_builder" ],
@@ -12,7 +15,6 @@ var annotated_dup =
     [ "IWifiConnector", "class_i_wifi_connector.html", "class_i_wifi_connector" ],
     [ "LoraRadio", "class_lora_radio.html", "class_lora_radio" ],
     [ "LoraRadioParams", "class_lora_radio_params.html", "class_lora_radio_params" ],
-    [ "MeshCRC32", "class_mesh_c_r_c32.html", "class_mesh_c_r_c32" ],
     [ "OledDisplay", "class_oled_display.html", "class_oled_display" ],
     [ "OledDisplayParams", "class_oled_display_params.html", "class_oled_display_params" ],
     [ "PacketRouter", "class_packet_router.html", "class_packet_router" ],
