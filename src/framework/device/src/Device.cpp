@@ -160,6 +160,22 @@ int RadioMeshDevice::initializeWifiAccessPoint(WifiAccessPointParams wifiAPParam
    return rc;
 }
 
+int RadioMeshDevice::initializeStorage(StorageParams storageParams)
+{
+   eepromStorage = EEPROMStorage::getInstance();
+   if (eepromStorage == nullptr) {
+      logerr_ln("Failed to create storage");
+      return RM_E_UNKNOWN;
+   }
+
+   int rc = eepromStorage->setParams(storageParams);
+   if (rc != RM_E_NONE) {
+      logerr_ln("Failed to set storage params");
+      eepromStorage = nullptr;
+   }
+   return rc;
+}
+
 IWifiAccessPoint *RadioMeshDevice::getWifiAccessPoint()
 {
    return wifiAccessPoint;
@@ -174,6 +190,11 @@ IRadio *RadioMeshDevice::getRadio()
 IAesCrypto *RadioMeshDevice::getCrypto()
 {
    return crypto;
+}
+
+IStorage *RadioMeshDevice::getStorage()
+{
+   return eepromStorage;
 }
 
 int RadioMeshDevice::sendData(const uint8_t topic, const std::vector<byte> data, std::array<byte, RM_ID_LENGTH> target)

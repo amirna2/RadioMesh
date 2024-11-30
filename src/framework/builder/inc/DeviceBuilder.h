@@ -86,6 +86,14 @@ public:
    */
    DeviceBuilder &withWifiAccessPoint(const WifiAccessPointParams &params);
 
+
+   /**
+    * @brief Add storage to the device with the given parameters
+    * @param params The parameters for the storage
+    * @return A reference to the updated builder
+   */
+   DeviceBuilder& withStorage(const StorageParams& params);
+
    /**
     * @brief Build the device
     * @param name The name of the device
@@ -119,6 +127,7 @@ private:
    OledDisplayParams oledDisplayParams;
    WifiParams wifiParams = WifiParams();
    WifiAccessPointParams wifiAPParams = WifiAccessPointParams();
+   StorageParams storageParams;
 
    void destroyDevice(IDevice *device) {
       if (device != nullptr) {

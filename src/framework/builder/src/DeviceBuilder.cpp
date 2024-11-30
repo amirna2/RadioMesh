@@ -4,7 +4,17 @@
 
 DeviceBuilder &DeviceBuilder::start()
 {
-   blueprint = {false, false, false, false, false, false, false};
+   blueprint = {
+      .hasRadio = false,
+      .canRelay = false,
+      .hasDisplay = false,
+      .usesCrypto = false,
+      .hasRxCallback = false,
+      .hasTxCallback = false,
+      .hasWifi = false,
+      .hasWifiAccessPoint = false,
+      .hasStorage = false
+   };
    relayEnabled = false;
    isBuilderStarted = true;
 
@@ -87,6 +97,13 @@ DeviceBuilder &DeviceBuilder::withWifiAccessPoint(const WifiAccessPointParams &p
    return *this;
 }
 
+DeviceBuilder &DeviceBuilder::withStorage(const StorageParams& params)
+{
+   loginfo_ln("Setting storage params");
+   blueprint.hasStorage = true;
+   storageParams = params;
+   return *this;
+}
 
 IDevice *DeviceBuilder::build(const std::string name, std::array<byte, RM_ID_LENGTH> id, MeshDeviceType deviceType)
 {
@@ -186,6 +203,15 @@ IDevice *DeviceBuilder::build(const std::string name, std::array<byte, RM_ID_LEN
       logdbg_ln("Wifi access point initialized.");
    }
 
+   if (blueprint.hasStorage) {
+      build_error = device->initializeStorage(storageParams);
+      if (build_error != RM_E_NONE) {
+         logerr_ln("ERROR: Failed to create storage [%d]", build_error);
+         destroyDevice(device);
+         return nullptr;
+      }
+      logdbg_ln("Storage initialized.");
+   }
    loginfo_ln("Device [%s] built successfully.", device->getDeviceName().c_str());
    isBuilderStarted = false;
    return device;

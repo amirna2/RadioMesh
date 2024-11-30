@@ -213,6 +213,17 @@
 */
 #define RM_E_INVALID_CRYPTO_PARAMS                (-402)
 
+
+/**
+ * @brief The storage setup failed.
+ */
+#define RM_E_STORAGE_SETUP                       (-501)
+
+/**
+ * @brief The storage is not initialized.
+ */
+#define RM_E_STORAGE_NOT_INIT                    (-502)
+
 /**
  * @brief invalid inclusion state
  */
@@ -222,6 +233,7 @@
  * @brief inclusion failed
  */
 #define RM_E_INCLUSION_FAILED                     (-602)
+
 
 /**
  * @brief inclusion open failed
