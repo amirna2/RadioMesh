@@ -1,9 +1,12 @@
 #pragma once
 
 #include <Arduino.h>
-class MeshCRC32 {
+
+namespace RadioMeshUtils
+{
+class CRC32 {
 public:
-    MeshCRC32() { reset(); }
+    CRC32() { reset(); }
 
     inline void reset() {
         crc = ~0L;
@@ -71,3 +74,4 @@ private:
         return reflection;
     }
 };
+}  // namespace RadioMeshUtils
