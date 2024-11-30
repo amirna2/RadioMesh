@@ -234,7 +234,7 @@ int RadioMeshDevice::sendData(const uint8_t topic, const std::vector<byte> data,
 
 bool  RadioMeshDevice::isReceivedDataCrcValid(RadioMeshPacket &receivedPacket)
 {
-   MeshCRC32 crc32;
+   RadioMeshUtils::CRC32 crc32;
    crc32.update(receivedPacket.fcounter);
    crc32.update(receivedPacket.packetData.data(), receivedPacket.packetData.size());
    uint32_t computed_data_crc = crc32.finalize();

@@ -69,7 +69,7 @@ private:
    void updateLastHopId(RadioMeshPacket& packetCopy, const byte* ourDeviceId);
    void routeToNextHop(RadioMeshPacket& packetCopy);
    void encryptPacketData(RadioMeshPacket& packetCopy);
-   void calculatePacketCrc(RadioMeshPacket& packetCopy, MeshCRC32& crc32, uint32_t key);
+   void calculatePacketCrc(RadioMeshPacket& packetCopy, RadioMeshUtils::CRC32& crc32, uint32_t key);
    int sendPacket(RadioMeshPacket& packetCopy);
    void trackPacket(RadioMeshPacket& packetCopy, uint32_t key);
 

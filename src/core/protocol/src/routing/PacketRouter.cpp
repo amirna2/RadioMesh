@@ -9,7 +9,7 @@ PacketRouter* PacketRouter::instance = nullptr;
 
 int PacketRouter::routePacket(RadioMeshPacket packet, const byte* ourDeviceId)
 {
-    MeshCRC32 crc32;
+    RadioMeshUtils::CRC32 crc32;
     RadioMeshPacket packetCopy = packet;
     uint32_t key = RadioMeshUtils::toUint32(packetCopy.packetId.data());
 
@@ -80,7 +80,7 @@ void PacketRouter::encryptPacketData(RadioMeshPacket& packetCopy)
     }
 }
 
-void PacketRouter::calculatePacketCrc(RadioMeshPacket& packetCopy, MeshCRC32& crc32, uint32_t key)
+void PacketRouter::calculatePacketCrc(RadioMeshPacket& packetCopy, RadioMeshUtils::CRC32& crc32, uint32_t key)
 {
     loginfo_ln("Calculating packet crc for packet ID: 0x%X", key);
     loginfo_ln("  Frame Counter: %d", packetCopy.fcounter);
