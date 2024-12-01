@@ -225,17 +225,37 @@
 #define RM_E_STORAGE_NOT_INIT                    (-502)
 
 /**
+ * @brief The storage key is not found.
+ */
+#define RM_E_STORAGE_KEY_NOT_FOUND               (-503)
+
+/**
+ * @brief The storage read failed.
+ */
+#define RM_E_STORAGE_READ_FAILED                 (-504)
+
+/**
+ * @brief The storage write failed.
+ */
+#define RM_E_STORAGE_WRITE_FAILED                (-505)
+
+/**
+ * @brief The does not have enough space left.
+ */
+#define RM_E_STORAGE_NOT_ENOUGH_SPACE            (-506)
+
+/**
  * @brief invalid inclusion state
  */
-#define RM_E_INVALID_STATE                        (-601)
+#define RM_E_INVALID_STATE                       (-601)
 
 /**
  * @brief inclusion failed
  */
-#define RM_E_INCLUSION_FAILED                     (-602)
+#define RM_E_INCLUSION_FAILED                    (-602)
 
 
 /**
  * @brief inclusion open failed
  */
-#define RM_E_DEVICE_NOT_INCLUDED                  (-701)
+#define RM_E_DEVICE_NOT_INCLUDED                 (-603)

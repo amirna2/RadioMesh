@@ -2,6 +2,48 @@
 
 #include <framework/interfaces/IStorage.h>
 
+
+/*
+EEPROM Memory Layout
+--------------------------------------------------
+Offset  | Size    | Description
+--------------------------------------------------
+0x0000  |         | StorageHeader
+        | 4 bytes | - magic (0x524D5354)
+        | 2 bytes | - version
+        | 2 bytes | - numEntries
+--------------------------------------------------
+0x0008  |         | First Entry
+        |         | EntryHeader
+        | 2 bytes | - keyLength
+        | 2 bytes | - dataLength
+        | 1 byte  | - flags
+        | N bytes | Key data (length=keyLength)
+        | M bytes | Value data (length=dataLength)
+--------------------------------------------------
+...     |         | Next Entry
+        |         | (Same structure repeats)
+--------------------------------------------------
+*/
+
+
+/*
+EXAMPLE EEPROM CONTENTS: (1 entry) - "test" -> [1,2,3,4]
+
+Address | Content             | Description
+--------+---------------------+-------------
+0x0000  | 54 53 4D 52         | Magic "RMST"
+0x0004  | 01 00               | Version 1
+0x0006  | 01 00               | 1 entry
+--------+---------------------+-------------
+0x0008  | 04 00               | keyLength=4
+0x000A  | 04 00               | dataLength=4
+0x000C  | 01                  | flags (valid)
+0x000D  | 74 65 73 74         | "test"
+0x0011  | 01 02 03 04         | [1,2,3,4]
+--------+---------------------+-------------
+*/
+
 class EEPROMStorage : public IStorage
 {
 public:
@@ -34,6 +76,8 @@ public:
     // EEPROMStorage specific methods
     int setParams(const StorageParams& params);
 
+    int getEntryCount();
+
 private:
     static EEPROMStorage *instance;
     EEPROMStorage();
@@ -42,8 +86,9 @@ private:
     bool initialized = false;
     StorageParams storageParams;
 
-    static constexpr uint32_t STORAGE_MAGIC = 0x524D5354;  // "RMST" in hex
+    static constexpr uint32_t STORAGE_MAGIC = 0x524D5354;
     static constexpr uint16_t STORAGE_VERSION = 1;
+    static constexpr uint8_t ENTRY_VALID_FLAG = 0x01;
 
     // Storage header - starts at EEPROM address 0
     struct StorageHeader
@@ -66,4 +111,8 @@ private:
     int readStorageHeader(StorageHeader& header);
     int writeStorageHeader(const StorageHeader& header);
     bool isStorageValid();
+
+    // Helper methods for entry management
+    int findEntry(const std::string& key, size_t& offset);
+    int writeEntry(size_t offset, const std::string& key, const std::vector<byte>& data);
 };
