@@ -124,6 +124,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a422a8248222661f6ee456af88ddba8d3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_device_builder.html">DeviceBuilder</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_device_builder.html#a422a8248222661f6ee456af88ddba8d3">withWifiAccessPoint</a> (const <a class="el" href="struct_wifi_access_point_params.html">WifiAccessPointParams</a> &amp;params)</td></tr>
 <tr class="memdesc:a422a8248222661f6ee456af88ddba8d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a WiFi access point to the device with the given parameters.  <a href="class_device_builder.html#a422a8248222661f6ee456af88ddba8d3">More...</a><br /></td></tr>
 <tr class="separator:a422a8248222661f6ee456af88ddba8d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29c7cedd781b71bc644f8f02a4f81cdc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_device_builder.html">DeviceBuilder</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_device_builder.html#a29c7cedd781b71bc644f8f02a4f81cdc">withStorage</a> (const <a class="el" href="struct_byte_storage_params.html">ByteStorageParams</a> &amp;params)</td></tr>
+<tr class="memdesc:a29c7cedd781b71bc644f8f02a4f81cdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add storage to the device with the given parameters.  <a href="class_device_builder.html#a29c7cedd781b71bc644f8f02a4f81cdc">More...</a><br /></td></tr>
+<tr class="separator:a29c7cedd781b71bc644f8f02a4f81cdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a705c01d70489a8eb94b2ab9eb49d8a51"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_i_device.html">IDevice</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_device_builder.html#a705c01d70489a8eb94b2ab9eb49d8a51">build</a> (const std::string name, std::array&lt; byte, <a class="el" href="_definitions_8h.html#a6349283678d1d5eb8b4fc6442d1b2ad0">RM_ID_LENGTH</a> &gt; id, <a class="el" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7f">MeshDeviceType</a> deviceType=<a class="el" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c">MeshDeviceType::UNKNOWN</a>)</td></tr>
 <tr class="memdesc:a705c01d70489a8eb94b2ab9eb49d8a51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Build the device.  <a href="class_device_builder.html#a705c01d70489a8eb94b2ab9eb49d8a51">More...</a><br /></td></tr>
 <tr class="separator:a705c01d70489a8eb94b2ab9eb49d8a51"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -365,6 +368,33 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">callback</td><td>The callback function to call when a packet is received </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A reference to the updated builder </dd></dl>
+
+</div>
+</div>
+<a id="a29c7cedd781b71bc644f8f02a4f81cdc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29c7cedd781b71bc644f8f02a4f81cdc">&#9670;&nbsp;</a></span>withStorage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_device_builder.html">DeviceBuilder</a> &amp; DeviceBuilder::withStorage </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="struct_byte_storage_params.html">ByteStorageParams</a> &amp;&#160;</td>
+          <td class="paramname"><em>params</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Add storage to the device with the given parameters. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">params</td><td>The parameters for the storage </td></tr>
   </table>
   </dd>
 </dl>

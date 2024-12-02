@@ -114,166 +114,184 @@ $(document).ready(function(){initNavTree('_definitions_8h_source.html',''); init
 <div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="struct_device_blueprint.html#ad4893e6d65a44df346f1508776e7f32a">   46</a></span>&#160;   <span class="keywordtype">bool</span> <a class="code" href="struct_device_blueprint.html#ad4893e6d65a44df346f1508776e7f32a">hasTxCallback</a>;</div>
 <div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="struct_device_blueprint.html#a555bbcb335eb62ceffb95869155664f5">   48</a></span>&#160;   <span class="keywordtype">bool</span> <a class="code" href="struct_device_blueprint.html#a555bbcb335eb62ceffb95869155664f5">hasWifi</a>;</div>
 <div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="struct_device_blueprint.html#ae82959589474467b08bb8ab4ba0f6ffd">   50</a></span>&#160;   <span class="keywordtype">bool</span> <a class="code" href="struct_device_blueprint.html#ae82959589474467b08bb8ab4ba0f6ffd">hasWifiAccessPoint</a>;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;} <a class="code" href="struct_device_blueprint.html">DeviceBlueprint</a>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7f">   58</a></span>&#160;<span class="keyword">enum</span> <a class="code" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7f">MeshDeviceType</a></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;{</div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c">   61</a></span>&#160;   <a class="code" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c">UNKNOWN</a> = 0x01,</div>
-<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa9de934790934fe831fe946c851e8338e">   68</a></span>&#160;   <a class="code" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa9de934790934fe831fe946c851e8338e">STANDARD</a>,</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;   <a class="code" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7faa614a6f12e48334bb533fb4d92b0a68c">HUB</a></div>
-<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7faa614a6f12e48334bb533fb4d92b0a68c">   76</a></span>&#160;};</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="_definitions_8h.html#a16002a54ff94e67b3e7b1ea618d5ca19">   84</a></span>&#160;<span class="keyword">enum</span> <a class="code" href="_definitions_8h.html#a16002a54ff94e67b3e7b1ea618d5ca19">MessageTopic</a> : uint8_t</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;{</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;   UNUSED = 0x00,</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;   PING = 0x01,</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;   PONG = 0x02,</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;   ACK = 0x03,</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;   CMD = 0x04,</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;   BYE = 0x05,</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;   INCLUDE_REQUEST = 0x06,</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;   INCLUDE_RESPONSE = 0x07,</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;   INCLUDE_OPEN = 0x08,</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;   INCLUDE_CONFIRM = 0x09,</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;   MAX_RESERVED = 0x0F</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;};</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
-<div class="line"><a name="l00104"></a><span class="lineno"><a class="line" href="class_oled_display_params.html">  104</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_oled_display_params.html">OledDisplayParams</a></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;{</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;   <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;      uint8_t clockPin;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;      uint8_t dataPin;</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;      uint8_t resetPin;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;      uint8_t fontId;</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;      <a class="code" href="class_oled_display_params.html">OledDisplayParams</a>() : clockPin(0), dataPin(0), resetPin(0), fontId(<a class="code" href="_definitions_8h.html#ae5be18dba4ab1bf9b6f4b53b77556981">RM_FONT_MEDIUM</a>) {}</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00121"></a><span class="lineno"><a class="line" href="class_oled_display_params.html#a6d3dfeda893877b1b680537c92edf330">  121</a></span>&#160;      <a class="code" href="class_oled_display_params.html#a6d3dfeda893877b1b680537c92edf330">OledDisplayParams</a>(uint8_t clockPin, uint8_t dataPin, uint8_t resetPin, uint8_t font = <a class="code" href="_definitions_8h.html#ae5be18dba4ab1bf9b6f4b53b77556981">RM_FONT_MEDIUM</a>) :</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                     clockPin(clockPin), dataPin(dataPin), resetPin(resetPin), fontId(font) {}</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;     <a class="code" href="class_oled_display_params.html">OledDisplayParams</a> &amp;operator=(<span class="keyword">const</span> <a class="code" href="class_oled_display_params.html">OledDisplayParams</a> &amp;other)</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;     {</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <span class="keywordflow">if</span> (<span class="keyword">this</span> != &amp;other)</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        {</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;           clockPin = other.clockPin;</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;           dataPin = other.dataPin;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;           resetPin = other.resetPin;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;           fontId = other.fontId;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        }</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;     }</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;};</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
-<div class="line"><a name="l00141"></a><span class="lineno"><a class="line" href="struct_wifi_params.html">  141</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_wifi_params.html">WifiParams</a> {</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;   std::string ssid;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;   std::string password;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;};</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
-<div class="line"><a name="l00146"></a><span class="lineno"><a class="line" href="struct_wifi_access_point_params.html">  146</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_wifi_access_point_params.html">WifiAccessPointParams</a> {</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;   std::string ssid;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;   std::string password;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;   std::string ipAddress;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;};</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
-<div class="line"><a name="l00161"></a><span class="lineno"><a class="line" href="_definitions_8h.html#a7d69b0ee36f5ed62aab573a8028612a6">  161</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span> <a class="code" href="_definitions_8h.html#a7d69b0ee36f5ed62aab573a8028612a6">SignalIndicator</a> {</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;   NO_SIGNAL = 0,</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;   WEAK,</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;   FAIR,</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;   GOOD,</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;   EXCELLENT</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;} SignalStrength;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="keyword">namespace </span>MessageTopicUtils {</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="struct_device_blueprint.html#a68d30a18337645e99a4d0dbe05afaafd">   52</a></span>&#160;   <span class="keywordtype">bool</span> <a class="code" href="struct_device_blueprint.html#a68d30a18337645e99a4d0dbe05afaafd">hasStorage</a>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;} <a class="code" href="struct_device_blueprint.html">DeviceBlueprint</a>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7f">   60</a></span>&#160;<span class="keyword">enum</span> <a class="code" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7f">MeshDeviceType</a></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;{</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c">   63</a></span>&#160;   <a class="code" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c">UNKNOWN</a> = 0x01,</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa9de934790934fe831fe946c851e8338e">   70</a></span>&#160;   <a class="code" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa9de934790934fe831fe946c851e8338e">STANDARD</a>,</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;   <a class="code" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7faa614a6f12e48334bb533fb4d92b0a68c">HUB</a></div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7faa614a6f12e48334bb533fb4d92b0a68c">   78</a></span>&#160;};</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="_definitions_8h.html#a16002a54ff94e67b3e7b1ea618d5ca19">   86</a></span>&#160;<span class="keyword">enum</span> <a class="code" href="_definitions_8h.html#a16002a54ff94e67b3e7b1ea618d5ca19">MessageTopic</a> : uint8_t</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;{</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;   UNUSED = 0x00,</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;   PING = 0x01,</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;   PONG = 0x02,</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;   ACK = 0x03,</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;   CMD = 0x04,</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;   BYE = 0x05,</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;   INCLUDE_REQUEST = 0x06,</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;   INCLUDE_RESPONSE = 0x07,</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;   INCLUDE_OPEN = 0x08,</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;   INCLUDE_CONFIRM = 0x09,</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;   MAX_RESERVED = 0x0F</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;};</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno"><a class="line" href="class_oled_display_params.html">  106</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_oled_display_params.html">OledDisplayParams</a></div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;{</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;   <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;      uint8_t clockPin;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;      uint8_t dataPin;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;      uint8_t resetPin;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;      uint8_t fontId;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;      <a class="code" href="class_oled_display_params.html">OledDisplayParams</a>() : clockPin(0), dataPin(0), resetPin(0), fontId(<a class="code" href="_definitions_8h.html#ae5be18dba4ab1bf9b6f4b53b77556981">RM_FONT_MEDIUM</a>) {}</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00123"></a><span class="lineno"><a class="line" href="class_oled_display_params.html#a6d3dfeda893877b1b680537c92edf330">  123</a></span>&#160;      <a class="code" href="class_oled_display_params.html#a6d3dfeda893877b1b680537c92edf330">OledDisplayParams</a>(uint8_t clockPin, uint8_t dataPin, uint8_t resetPin, uint8_t font = <a class="code" href="_definitions_8h.html#ae5be18dba4ab1bf9b6f4b53b77556981">RM_FONT_MEDIUM</a>) :</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                     clockPin(clockPin), dataPin(dataPin), resetPin(resetPin), fontId(font) {}</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;     <a class="code" href="class_oled_display_params.html">OledDisplayParams</a> &amp;operator=(<span class="keyword">const</span> <a class="code" href="class_oled_display_params.html">OledDisplayParams</a> &amp;other)</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;     {</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        <span class="keywordflow">if</span> (<span class="keyword">this</span> != &amp;other)</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        {</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;           clockPin = other.clockPin;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;           dataPin = other.dataPin;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;           resetPin = other.resetPin;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;           fontId = other.fontId;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        }</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;     }</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;};</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00143"></a><span class="lineno"><a class="line" href="struct_wifi_params.html">  143</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_wifi_params.html">WifiParams</a> {</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;   std::string ssid;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;   std::string password;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;};</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
+<div class="line"><a name="l00148"></a><span class="lineno"><a class="line" href="struct_wifi_access_point_params.html">  148</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_wifi_access_point_params.html">WifiAccessPointParams</a> {</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;   std::string ssid;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;   std::string password;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;   std::string ipAddress;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;};</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno"><a class="line" href="_definitions_8h.html#a7d69b0ee36f5ed62aab573a8028612a6">  163</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span> <a class="code" href="_definitions_8h.html#a7d69b0ee36f5ed62aab573a8028612a6">SignalIndicator</a> {</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;   NO_SIGNAL = 0,</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;   WEAK,</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;   FAIR,</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;   GOOD,</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;   EXCELLENT</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;} SignalStrength;</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
-<div class="line"><a name="l00176"></a><span class="lineno"><a class="line" href="_definitions_8h.html#a620e0b4d4f3d1826919459e7906b25f9">  176</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#a620e0b4d4f3d1826919459e7906b25f9">isTopicReverved</a>(uint8_t topic) {</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;      <span class="keywordflow">return</span> topic &gt; MessageTopic::MAX_RESERVED;</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;   }</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
-<div class="line"><a name="l00185"></a><span class="lineno"><a class="line" href="_definitions_8h.html#af052470d2754ca0b0a891bd68f5c1ab2">  185</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#af052470d2754ca0b0a891bd68f5c1ab2">isPing</a>(uint8_t topic) {</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::PING;</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;   }</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160; </div>
-<div class="line"><a name="l00194"></a><span class="lineno"><a class="line" href="_definitions_8h.html#adb86227a80afac683592f187a40c4728">  194</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#adb86227a80afac683592f187a40c4728">isPong</a>(uint8_t topic) {</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::PONG;</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;   }</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160; </div>
-<div class="line"><a name="l00203"></a><span class="lineno"><a class="line" href="_definitions_8h.html#a6f6ded21bf8253d46e2a758291e232cb">  203</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#a6f6ded21bf8253d46e2a758291e232cb">isAck</a>(uint8_t topic) {</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::ACK;</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;   }</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
-<div class="line"><a name="l00212"></a><span class="lineno"><a class="line" href="_definitions_8h.html#a09947a28b56ecc76eceb00f3454f48a6">  212</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#a09947a28b56ecc76eceb00f3454f48a6">isCmd</a>(uint8_t topic) {</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::CMD;</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;   }</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160; </div>
-<div class="line"><a name="l00221"></a><span class="lineno"><a class="line" href="_definitions_8h.html#ac5f9e433a9dd7561be3bd5453ed40fb1">  221</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#ac5f9e433a9dd7561be3bd5453ed40fb1">isBye</a>(uint8_t topic) {</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::BYE;</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;   }</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
-<div class="line"><a name="l00230"></a><span class="lineno"><a class="line" href="_definitions_8h.html#a267b7674de4331ccb26ab22151438da6">  230</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#a267b7674de4331ccb26ab22151438da6">isIncludeRequest</a>(uint8_t topic) {</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::INCLUDE_REQUEST;</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;   }</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160; </div>
-<div class="line"><a name="l00239"></a><span class="lineno"><a class="line" href="_definitions_8h.html#ad5b0d693ed435b464ca0ef622a89e323">  239</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#ad5b0d693ed435b464ca0ef622a89e323">isIncludeResponse</a>(uint8_t topic) {</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::INCLUDE_RESPONSE;</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;   }</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160; </div>
-<div class="line"><a name="l00248"></a><span class="lineno"><a class="line" href="_definitions_8h.html#ac901e6826ab43b40da0129a00c50020a">  248</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#ac901e6826ab43b40da0129a00c50020a">isIncludeOpen</a>(uint8_t topic) {</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::INCLUDE_OPEN;</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;   }</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
-<div class="line"><a name="l00257"></a><span class="lineno"><a class="line" href="_definitions_8h.html#adcb6424c44262a279404015fd6f8249e">  257</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#adcb6424c44262a279404015fd6f8249e">isIncludeConfirm</a>(uint8_t topic) {</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::INCLUDE_CONFIRM;</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;   }</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160; </div>
-<div class="line"><a name="l00266"></a><span class="lineno"><a class="line" href="_definitions_8h.html#a63aae3487f373e68aa907c9d3cac0ca0">  266</a></span>&#160;   <span class="keyword">inline</span> std::string <a class="code" href="_definitions_8h.html#a63aae3487f373e68aa907c9d3cac0ca0">topicToString</a>(uint8_t topic)</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;   {</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;      <span class="keywordflow">switch</span> (topic)</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;      {</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;         <span class="keywordflow">case</span> MessageTopic::PING:</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;PING&quot;</span>;</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;         <span class="keywordflow">case</span> MessageTopic::PONG:</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;PONG&quot;</span>;</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;         <span class="keywordflow">case</span> MessageTopic::ACK:</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;ACK&quot;</span>;</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;         <span class="keywordflow">case</span> MessageTopic::CMD:</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;CMD&quot;</span>;</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;         <span class="keywordflow">case</span> MessageTopic::BYE:</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;BYE&quot;</span>;</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;         <span class="keywordflow">case</span> MessageTopic::INCLUDE_REQUEST:</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;INCLUDE_REQUEST&quot;</span>;</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;         <span class="keywordflow">case</span> MessageTopic::INCLUDE_RESPONSE:</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;INCLUDE_RESPONSE&quot;</span>;</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;         <span class="keywordflow">case</span> MessageTopic::INCLUDE_OPEN:</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;INCLUDE_OPEN&quot;</span>;</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;         <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;0x&quot;</span> + std::to_string(topic);</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;      }</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;   }</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;} <span class="comment">// namespace MessageTopicUtils</span></div>
-<div class="ttc" id="a_definitions_8h_html_a09947a28b56ecc76eceb00f3454f48a6"><div class="ttname"><a href="_definitions_8h.html#a09947a28b56ecc76eceb00f3454f48a6">MessageTopicUtils::isCmd</a></div><div class="ttdeci">bool isCmd(uint8_t topic)</div><div class="ttdoc">Check if a topic is a CMD.</div><div class="ttdef"><b>Definition:</b> Definitions.h:212</div></div>
-<div class="ttc" id="a_definitions_8h_html_a16002a54ff94e67b3e7b1ea618d5ca19"><div class="ttname"><a href="_definitions_8h.html#a16002a54ff94e67b3e7b1ea618d5ca19">MessageTopic</a></div><div class="ttdeci">MessageTopic</div><div class="ttdoc">Message Topics used internally by the protocol.</div><div class="ttdef"><b>Definition:</b> Definitions.h:85</div></div>
-<div class="ttc" id="a_definitions_8h_html_a267b7674de4331ccb26ab22151438da6"><div class="ttname"><a href="_definitions_8h.html#a267b7674de4331ccb26ab22151438da6">MessageTopicUtils::isIncludeRequest</a></div><div class="ttdeci">bool isIncludeRequest(uint8_t topic)</div><div class="ttdoc">Check if a topic is an INCLUDE_REQUEST.</div><div class="ttdef"><b>Definition:</b> Definitions.h:230</div></div>
-<div class="ttc" id="a_definitions_8h_html_a620e0b4d4f3d1826919459e7906b25f9"><div class="ttname"><a href="_definitions_8h.html#a620e0b4d4f3d1826919459e7906b25f9">MessageTopicUtils::isTopicReverved</a></div><div class="ttdeci">bool isTopicReverved(uint8_t topic)</div><div class="ttdoc">Check if a topic is reserved.</div><div class="ttdef"><b>Definition:</b> Definitions.h:176</div></div>
-<div class="ttc" id="a_definitions_8h_html_a63aae3487f373e68aa907c9d3cac0ca0"><div class="ttname"><a href="_definitions_8h.html#a63aae3487f373e68aa907c9d3cac0ca0">MessageTopicUtils::topicToString</a></div><div class="ttdeci">std::string topicToString(uint8_t topic)</div><div class="ttdoc">Convert topic value to string representation.</div><div class="ttdef"><b>Definition:</b> Definitions.h:266</div></div>
-<div class="ttc" id="a_definitions_8h_html_a6f6ded21bf8253d46e2a758291e232cb"><div class="ttname"><a href="_definitions_8h.html#a6f6ded21bf8253d46e2a758291e232cb">MessageTopicUtils::isAck</a></div><div class="ttdeci">bool isAck(uint8_t topic)</div><div class="ttdoc">Check if a topic is an ACK.</div><div class="ttdef"><b>Definition:</b> Definitions.h:203</div></div>
-<div class="ttc" id="a_definitions_8h_html_a7d69b0ee36f5ed62aab573a8028612a6"><div class="ttname"><a href="_definitions_8h.html#a7d69b0ee36f5ed62aab573a8028612a6">SignalIndicator</a></div><div class="ttdeci">SignalIndicator</div><div class="ttdoc">Enumerates the possible signal strength indicators.</div><div class="ttdef"><b>Definition:</b> Definitions.h:161</div></div>
-<div class="ttc" id="a_definitions_8h_html_ac5f9e433a9dd7561be3bd5453ed40fb1"><div class="ttname"><a href="_definitions_8h.html#ac5f9e433a9dd7561be3bd5453ed40fb1">MessageTopicUtils::isBye</a></div><div class="ttdeci">bool isBye(uint8_t topic)</div><div class="ttdoc">Check if a topic is a BYE.</div><div class="ttdef"><b>Definition:</b> Definitions.h:221</div></div>
-<div class="ttc" id="a_definitions_8h_html_ac901e6826ab43b40da0129a00c50020a"><div class="ttname"><a href="_definitions_8h.html#ac901e6826ab43b40da0129a00c50020a">MessageTopicUtils::isIncludeOpen</a></div><div class="ttdeci">bool isIncludeOpen(uint8_t topic)</div><div class="ttdoc">Check if a topic is an INCLUDE_OPEN.</div><div class="ttdef"><b>Definition:</b> Definitions.h:248</div></div>
-<div class="ttc" id="a_definitions_8h_html_ac96a3da8e6084c54e4cbeda2a1891c7f"><div class="ttname"><a href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7f">MeshDeviceType</a></div><div class="ttdeci">MeshDeviceType</div><div class="ttdoc">Enumerates the possible device types in the mesh.</div><div class="ttdef"><b>Definition:</b> Definitions.h:59</div></div>
-<div class="ttc" id="a_definitions_8h_html_ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c"><div class="ttname"><a href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c">UNKNOWN</a></div><div class="ttdeci">@ UNKNOWN</div><div class="ttdoc">The device type is unknown.</div><div class="ttdef"><b>Definition:</b> Definitions.h:61</div></div>
-<div class="ttc" id="a_definitions_8h_html_ac96a3da8e6084c54e4cbeda2a1891c7fa9de934790934fe831fe946c851e8338e"><div class="ttname"><a href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa9de934790934fe831fe946c851e8338e">STANDARD</a></div><div class="ttdeci">@ STANDARD</div><div class="ttdoc">The device is a standard node in the network.</div><div class="ttdef"><b>Definition:</b> Definitions.h:68</div></div>
-<div class="ttc" id="a_definitions_8h_html_ac96a3da8e6084c54e4cbeda2a1891c7faa614a6f12e48334bb533fb4d92b0a68c"><div class="ttname"><a href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7faa614a6f12e48334bb533fb4d92b0a68c">HUB</a></div><div class="ttdeci">@ HUB</div><div class="ttdoc">The device is a hub node in the network.</div><div class="ttdef"><b>Definition:</b> Definitions.h:75</div></div>
-<div class="ttc" id="a_definitions_8h_html_ad5b0d693ed435b464ca0ef622a89e323"><div class="ttname"><a href="_definitions_8h.html#ad5b0d693ed435b464ca0ef622a89e323">MessageTopicUtils::isIncludeResponse</a></div><div class="ttdeci">bool isIncludeResponse(uint8_t topic)</div><div class="ttdoc">Check if a topic is an INCLUDE_RESPONSE.</div><div class="ttdef"><b>Definition:</b> Definitions.h:239</div></div>
-<div class="ttc" id="a_definitions_8h_html_adb86227a80afac683592f187a40c4728"><div class="ttname"><a href="_definitions_8h.html#adb86227a80afac683592f187a40c4728">MessageTopicUtils::isPong</a></div><div class="ttdeci">bool isPong(uint8_t topic)</div><div class="ttdoc">Check if a topic is a PONG.</div><div class="ttdef"><b>Definition:</b> Definitions.h:194</div></div>
-<div class="ttc" id="a_definitions_8h_html_adcb6424c44262a279404015fd6f8249e"><div class="ttname"><a href="_definitions_8h.html#adcb6424c44262a279404015fd6f8249e">MessageTopicUtils::isIncludeConfirm</a></div><div class="ttdeci">bool isIncludeConfirm(uint8_t topic)</div><div class="ttdoc">Check if a topic is an INCLUDE_CONFIRM.</div><div class="ttdef"><b>Definition:</b> Definitions.h:257</div></div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="keyword">namespace </span>MessageTopicUtils {</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
+<div class="line"><a name="l00178"></a><span class="lineno"><a class="line" href="_definitions_8h.html#a620e0b4d4f3d1826919459e7906b25f9">  178</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#a620e0b4d4f3d1826919459e7906b25f9">isTopicReverved</a>(uint8_t topic) {</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;      <span class="keywordflow">return</span> topic &gt; MessageTopic::MAX_RESERVED;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;   }</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
+<div class="line"><a name="l00187"></a><span class="lineno"><a class="line" href="_definitions_8h.html#af052470d2754ca0b0a891bd68f5c1ab2">  187</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#af052470d2754ca0b0a891bd68f5c1ab2">isPing</a>(uint8_t topic) {</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::PING;</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;   }</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
+<div class="line"><a name="l00196"></a><span class="lineno"><a class="line" href="_definitions_8h.html#adb86227a80afac683592f187a40c4728">  196</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#adb86227a80afac683592f187a40c4728">isPong</a>(uint8_t topic) {</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::PONG;</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;   }</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160; </div>
+<div class="line"><a name="l00205"></a><span class="lineno"><a class="line" href="_definitions_8h.html#a6f6ded21bf8253d46e2a758291e232cb">  205</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#a6f6ded21bf8253d46e2a758291e232cb">isAck</a>(uint8_t topic) {</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::ACK;</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;   }</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
+<div class="line"><a name="l00214"></a><span class="lineno"><a class="line" href="_definitions_8h.html#a09947a28b56ecc76eceb00f3454f48a6">  214</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#a09947a28b56ecc76eceb00f3454f48a6">isCmd</a>(uint8_t topic) {</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::CMD;</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;   }</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160; </div>
+<div class="line"><a name="l00223"></a><span class="lineno"><a class="line" href="_definitions_8h.html#ac5f9e433a9dd7561be3bd5453ed40fb1">  223</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#ac5f9e433a9dd7561be3bd5453ed40fb1">isBye</a>(uint8_t topic) {</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::BYE;</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;   }</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160; </div>
+<div class="line"><a name="l00232"></a><span class="lineno"><a class="line" href="_definitions_8h.html#a267b7674de4331ccb26ab22151438da6">  232</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#a267b7674de4331ccb26ab22151438da6">isIncludeRequest</a>(uint8_t topic) {</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::INCLUDE_REQUEST;</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;   }</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160; </div>
+<div class="line"><a name="l00241"></a><span class="lineno"><a class="line" href="_definitions_8h.html#ad5b0d693ed435b464ca0ef622a89e323">  241</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#ad5b0d693ed435b464ca0ef622a89e323">isIncludeResponse</a>(uint8_t topic) {</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::INCLUDE_RESPONSE;</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;   }</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160; </div>
+<div class="line"><a name="l00250"></a><span class="lineno"><a class="line" href="_definitions_8h.html#ac901e6826ab43b40da0129a00c50020a">  250</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#ac901e6826ab43b40da0129a00c50020a">isIncludeOpen</a>(uint8_t topic) {</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::INCLUDE_OPEN;</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;   }</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160; </div>
+<div class="line"><a name="l00259"></a><span class="lineno"><a class="line" href="_definitions_8h.html#adcb6424c44262a279404015fd6f8249e">  259</a></span>&#160;   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="_definitions_8h.html#adcb6424c44262a279404015fd6f8249e">isIncludeConfirm</a>(uint8_t topic) {</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;      <span class="keywordflow">return</span> topic == MessageTopic::INCLUDE_CONFIRM;</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;   }</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160; </div>
+<div class="line"><a name="l00268"></a><span class="lineno"><a class="line" href="_definitions_8h.html#a63aae3487f373e68aa907c9d3cac0ca0">  268</a></span>&#160;   <span class="keyword">inline</span> std::string <a class="code" href="_definitions_8h.html#a63aae3487f373e68aa907c9d3cac0ca0">topicToString</a>(uint8_t topic)</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;   {</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;      <span class="keywordflow">switch</span> (topic)</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;      {</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;         <span class="keywordflow">case</span> MessageTopic::PING:</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;PING&quot;</span>;</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;         <span class="keywordflow">case</span> MessageTopic::PONG:</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;PONG&quot;</span>;</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;         <span class="keywordflow">case</span> MessageTopic::ACK:</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;ACK&quot;</span>;</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;         <span class="keywordflow">case</span> MessageTopic::CMD:</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;CMD&quot;</span>;</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;         <span class="keywordflow">case</span> MessageTopic::BYE:</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;BYE&quot;</span>;</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;         <span class="keywordflow">case</span> MessageTopic::INCLUDE_REQUEST:</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;INCLUDE_REQUEST&quot;</span>;</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;         <span class="keywordflow">case</span> MessageTopic::INCLUDE_RESPONSE:</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;INCLUDE_RESPONSE&quot;</span>;</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;         <span class="keywordflow">case</span> MessageTopic::INCLUDE_OPEN:</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;INCLUDE_OPEN&quot;</span>;</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;         <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;0x&quot;</span> + std::to_string(topic);</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;      }</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;   }</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;} <span class="comment">// namespace MessageTopicUtils</span></div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160; </div>
+<div class="line"><a name="l00298"></a><span class="lineno"><a class="line" href="struct_byte_storage_params.html">  298</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_byte_storage_params.html">ByteStorageParams</a> {</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    <span class="keywordtype">size_t</span> size;           <span class="comment">// Total storage size in bytes</span></div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    <span class="keywordtype">bool</span> persist;          <span class="comment">// Whether to persist across reboots</span></div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    std::string mountPoint;<span class="comment">// For filesystem implementations</span></div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160; </div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    <a class="code" href="struct_byte_storage_params.html">ByteStorageParams</a>() :</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;        size(0),</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        persist(<span class="keyword">true</span>),</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;        mountPoint(<span class="stringliteral">&quot;&quot;</span>) {}</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160; </div>
+<div class="line"><a name="l00316"></a><span class="lineno"><a class="line" href="struct_byte_storage_params.html#af566aa6116bd23f0553a289b6e0fc738">  316</a></span>&#160;    <a class="code" href="struct_byte_storage_params.html#af566aa6116bd23f0553a289b6e0fc738">ByteStorageParams</a>(<span class="keywordtype">size_t</span> size, <span class="keywordtype">bool</span> persist = <span class="keyword">true</span>, <span class="keyword">const</span> std::string&amp; mountPoint = <span class="stringliteral">&quot;&quot;</span>) :</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        size(size), persist(persist), mountPoint(mountPoint) {}</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;};</div>
+<div class="ttc" id="a_definitions_8h_html_a09947a28b56ecc76eceb00f3454f48a6"><div class="ttname"><a href="_definitions_8h.html#a09947a28b56ecc76eceb00f3454f48a6">MessageTopicUtils::isCmd</a></div><div class="ttdeci">bool isCmd(uint8_t topic)</div><div class="ttdoc">Check if a topic is a CMD.</div><div class="ttdef"><b>Definition:</b> Definitions.h:214</div></div>
+<div class="ttc" id="a_definitions_8h_html_a16002a54ff94e67b3e7b1ea618d5ca19"><div class="ttname"><a href="_definitions_8h.html#a16002a54ff94e67b3e7b1ea618d5ca19">MessageTopic</a></div><div class="ttdeci">MessageTopic</div><div class="ttdoc">Message Topics used internally by the protocol.</div><div class="ttdef"><b>Definition:</b> Definitions.h:87</div></div>
+<div class="ttc" id="a_definitions_8h_html_a267b7674de4331ccb26ab22151438da6"><div class="ttname"><a href="_definitions_8h.html#a267b7674de4331ccb26ab22151438da6">MessageTopicUtils::isIncludeRequest</a></div><div class="ttdeci">bool isIncludeRequest(uint8_t topic)</div><div class="ttdoc">Check if a topic is an INCLUDE_REQUEST.</div><div class="ttdef"><b>Definition:</b> Definitions.h:232</div></div>
+<div class="ttc" id="a_definitions_8h_html_a620e0b4d4f3d1826919459e7906b25f9"><div class="ttname"><a href="_definitions_8h.html#a620e0b4d4f3d1826919459e7906b25f9">MessageTopicUtils::isTopicReverved</a></div><div class="ttdeci">bool isTopicReverved(uint8_t topic)</div><div class="ttdoc">Check if a topic is reserved.</div><div class="ttdef"><b>Definition:</b> Definitions.h:178</div></div>
+<div class="ttc" id="a_definitions_8h_html_a63aae3487f373e68aa907c9d3cac0ca0"><div class="ttname"><a href="_definitions_8h.html#a63aae3487f373e68aa907c9d3cac0ca0">MessageTopicUtils::topicToString</a></div><div class="ttdeci">std::string topicToString(uint8_t topic)</div><div class="ttdoc">Convert topic value to string representation.</div><div class="ttdef"><b>Definition:</b> Definitions.h:268</div></div>
+<div class="ttc" id="a_definitions_8h_html_a6f6ded21bf8253d46e2a758291e232cb"><div class="ttname"><a href="_definitions_8h.html#a6f6ded21bf8253d46e2a758291e232cb">MessageTopicUtils::isAck</a></div><div class="ttdeci">bool isAck(uint8_t topic)</div><div class="ttdoc">Check if a topic is an ACK.</div><div class="ttdef"><b>Definition:</b> Definitions.h:205</div></div>
+<div class="ttc" id="a_definitions_8h_html_a7d69b0ee36f5ed62aab573a8028612a6"><div class="ttname"><a href="_definitions_8h.html#a7d69b0ee36f5ed62aab573a8028612a6">SignalIndicator</a></div><div class="ttdeci">SignalIndicator</div><div class="ttdoc">Enumerates the possible signal strength indicators.</div><div class="ttdef"><b>Definition:</b> Definitions.h:163</div></div>
+<div class="ttc" id="a_definitions_8h_html_ac5f9e433a9dd7561be3bd5453ed40fb1"><div class="ttname"><a href="_definitions_8h.html#ac5f9e433a9dd7561be3bd5453ed40fb1">MessageTopicUtils::isBye</a></div><div class="ttdeci">bool isBye(uint8_t topic)</div><div class="ttdoc">Check if a topic is a BYE.</div><div class="ttdef"><b>Definition:</b> Definitions.h:223</div></div>
+<div class="ttc" id="a_definitions_8h_html_ac901e6826ab43b40da0129a00c50020a"><div class="ttname"><a href="_definitions_8h.html#ac901e6826ab43b40da0129a00c50020a">MessageTopicUtils::isIncludeOpen</a></div><div class="ttdeci">bool isIncludeOpen(uint8_t topic)</div><div class="ttdoc">Check if a topic is an INCLUDE_OPEN.</div><div class="ttdef"><b>Definition:</b> Definitions.h:250</div></div>
+<div class="ttc" id="a_definitions_8h_html_ac96a3da8e6084c54e4cbeda2a1891c7f"><div class="ttname"><a href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7f">MeshDeviceType</a></div><div class="ttdeci">MeshDeviceType</div><div class="ttdoc">Enumerates the possible device types in the mesh.</div><div class="ttdef"><b>Definition:</b> Definitions.h:61</div></div>
+<div class="ttc" id="a_definitions_8h_html_ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c"><div class="ttname"><a href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c">UNKNOWN</a></div><div class="ttdeci">@ UNKNOWN</div><div class="ttdoc">The device type is unknown.</div><div class="ttdef"><b>Definition:</b> Definitions.h:63</div></div>
+<div class="ttc" id="a_definitions_8h_html_ac96a3da8e6084c54e4cbeda2a1891c7fa9de934790934fe831fe946c851e8338e"><div class="ttname"><a href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa9de934790934fe831fe946c851e8338e">STANDARD</a></div><div class="ttdeci">@ STANDARD</div><div class="ttdoc">The device is a standard node in the network.</div><div class="ttdef"><b>Definition:</b> Definitions.h:70</div></div>
+<div class="ttc" id="a_definitions_8h_html_ac96a3da8e6084c54e4cbeda2a1891c7faa614a6f12e48334bb533fb4d92b0a68c"><div class="ttname"><a href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7faa614a6f12e48334bb533fb4d92b0a68c">HUB</a></div><div class="ttdeci">@ HUB</div><div class="ttdoc">The device is a hub node in the network.</div><div class="ttdef"><b>Definition:</b> Definitions.h:77</div></div>
+<div class="ttc" id="a_definitions_8h_html_ad5b0d693ed435b464ca0ef622a89e323"><div class="ttname"><a href="_definitions_8h.html#ad5b0d693ed435b464ca0ef622a89e323">MessageTopicUtils::isIncludeResponse</a></div><div class="ttdeci">bool isIncludeResponse(uint8_t topic)</div><div class="ttdoc">Check if a topic is an INCLUDE_RESPONSE.</div><div class="ttdef"><b>Definition:</b> Definitions.h:241</div></div>
+<div class="ttc" id="a_definitions_8h_html_adb86227a80afac683592f187a40c4728"><div class="ttname"><a href="_definitions_8h.html#adb86227a80afac683592f187a40c4728">MessageTopicUtils::isPong</a></div><div class="ttdeci">bool isPong(uint8_t topic)</div><div class="ttdoc">Check if a topic is a PONG.</div><div class="ttdef"><b>Definition:</b> Definitions.h:196</div></div>
+<div class="ttc" id="a_definitions_8h_html_adcb6424c44262a279404015fd6f8249e"><div class="ttname"><a href="_definitions_8h.html#adcb6424c44262a279404015fd6f8249e">MessageTopicUtils::isIncludeConfirm</a></div><div class="ttdeci">bool isIncludeConfirm(uint8_t topic)</div><div class="ttdoc">Check if a topic is an INCLUDE_CONFIRM.</div><div class="ttdef"><b>Definition:</b> Definitions.h:259</div></div>
 <div class="ttc" id="a_definitions_8h_html_ae5be18dba4ab1bf9b6f4b53b77556981"><div class="ttname"><a href="_definitions_8h.html#ae5be18dba4ab1bf9b6f4b53b77556981">RM_FONT_MEDIUM</a></div><div class="ttdeci">#define RM_FONT_MEDIUM</div><div class="ttdoc">Medium font.</div><div class="ttdef"><b>Definition:</b> Definitions.h:22</div></div>
-<div class="ttc" id="a_definitions_8h_html_af052470d2754ca0b0a891bd68f5c1ab2"><div class="ttname"><a href="_definitions_8h.html#af052470d2754ca0b0a891bd68f5c1ab2">MessageTopicUtils::isPing</a></div><div class="ttdeci">bool isPing(uint8_t topic)</div><div class="ttdoc">Check if a topic is unused.</div><div class="ttdef"><b>Definition:</b> Definitions.h:185</div></div>
-<div class="ttc" id="aclass_oled_display_params_html"><div class="ttname"><a href="class_oled_display_params.html">OledDisplayParams</a></div><div class="ttdoc">This class is used to store the parameters of the OLED display.</div><div class="ttdef"><b>Definition:</b> Definitions.h:105</div></div>
-<div class="ttc" id="aclass_oled_display_params_html_a6d3dfeda893877b1b680537c92edf330"><div class="ttname"><a href="class_oled_display_params.html#a6d3dfeda893877b1b680537c92edf330">OledDisplayParams::OledDisplayParams</a></div><div class="ttdeci">OledDisplayParams(uint8_t clockPin, uint8_t dataPin, uint8_t resetPin, uint8_t font=RM_FONT_MEDIUM)</div><div class="ttdoc">Construct a new Oled Display Params object from the given parameters.</div><div class="ttdef"><b>Definition:</b> Definitions.h:121</div></div>
+<div class="ttc" id="a_definitions_8h_html_af052470d2754ca0b0a891bd68f5c1ab2"><div class="ttname"><a href="_definitions_8h.html#af052470d2754ca0b0a891bd68f5c1ab2">MessageTopicUtils::isPing</a></div><div class="ttdeci">bool isPing(uint8_t topic)</div><div class="ttdoc">Check if a topic is unused.</div><div class="ttdef"><b>Definition:</b> Definitions.h:187</div></div>
+<div class="ttc" id="aclass_oled_display_params_html"><div class="ttname"><a href="class_oled_display_params.html">OledDisplayParams</a></div><div class="ttdoc">This class is used to store the parameters of the OLED display.</div><div class="ttdef"><b>Definition:</b> Definitions.h:107</div></div>
+<div class="ttc" id="aclass_oled_display_params_html_a6d3dfeda893877b1b680537c92edf330"><div class="ttname"><a href="class_oled_display_params.html#a6d3dfeda893877b1b680537c92edf330">OledDisplayParams::OledDisplayParams</a></div><div class="ttdeci">OledDisplayParams(uint8_t clockPin, uint8_t dataPin, uint8_t resetPin, uint8_t font=RM_FONT_MEDIUM)</div><div class="ttdoc">Construct a new Oled Display Params object from the given parameters.</div><div class="ttdef"><b>Definition:</b> Definitions.h:123</div></div>
+<div class="ttc" id="astruct_byte_storage_params_html"><div class="ttname"><a href="struct_byte_storage_params.html">ByteStorageParams</a></div><div class="ttdoc">This structure holds parameters for byte storage configuration.</div><div class="ttdef"><b>Definition:</b> Definitions.h:298</div></div>
+<div class="ttc" id="astruct_byte_storage_params_html_af566aa6116bd23f0553a289b6e0fc738"><div class="ttname"><a href="struct_byte_storage_params.html#af566aa6116bd23f0553a289b6e0fc738">ByteStorageParams::ByteStorageParams</a></div><div class="ttdeci">ByteStorageParams(size_t size, bool persist=true, const std::string &amp;mountPoint=&quot;&quot;)</div><div class="ttdoc">Construct a new Storage Params object.</div><div class="ttdef"><b>Definition:</b> Definitions.h:316</div></div>
 <div class="ttc" id="astruct_device_blueprint_html"><div class="ttname"><a href="struct_device_blueprint.html">DeviceBlueprint</a></div><div class="ttdoc">A map of device capabilities.</div><div class="ttdef"><b>Definition:</b> Definitions.h:34</div></div>
 <div class="ttc" id="astruct_device_blueprint_html_a555bbcb335eb62ceffb95869155664f5"><div class="ttname"><a href="struct_device_blueprint.html#a555bbcb335eb62ceffb95869155664f5">DeviceBlueprint::hasWifi</a></div><div class="ttdeci">bool hasWifi</div><div class="ttdoc">The device is connected to WiFi.</div><div class="ttdef"><b>Definition:</b> Definitions.h:48</div></div>
+<div class="ttc" id="astruct_device_blueprint_html_a68d30a18337645e99a4d0dbe05afaafd"><div class="ttname"><a href="struct_device_blueprint.html#a68d30a18337645e99a4d0dbe05afaafd">DeviceBlueprint::hasStorage</a></div><div class="ttdeci">bool hasStorage</div><div class="ttdoc">The device has storage.</div><div class="ttdef"><b>Definition:</b> Definitions.h:52</div></div>
 <div class="ttc" id="astruct_device_blueprint_html_a6af97486d263f1ea8dda3a75c3aba1c4"><div class="ttname"><a href="struct_device_blueprint.html#a6af97486d263f1ea8dda3a75c3aba1c4">DeviceBlueprint::hasRxCallback</a></div><div class="ttdeci">bool hasRxCallback</div><div class="ttdoc">The device has a callback for handling received packets.</div><div class="ttdef"><b>Definition:</b> Definitions.h:44</div></div>
 <div class="ttc" id="astruct_device_blueprint_html_ac969802dba5cd1263fea51e35656797b"><div class="ttname"><a href="struct_device_blueprint.html#ac969802dba5cd1263fea51e35656797b">DeviceBlueprint::hasRadio</a></div><div class="ttdeci">bool hasRadio</div><div class="ttdoc">The device has a LoRa radio.</div><div class="ttdef"><b>Definition:</b> Definitions.h:36</div></div>
 <div class="ttc" id="astruct_device_blueprint_html_ad4893e6d65a44df346f1508776e7f32a"><div class="ttname"><a href="struct_device_blueprint.html#ad4893e6d65a44df346f1508776e7f32a">DeviceBlueprint::hasTxCallback</a></div><div class="ttdeci">bool hasTxCallback</div><div class="ttdoc">The device has a callback for handling transmitted packets.</div><div class="ttdef"><b>Definition:</b> Definitions.h:46</div></div>
@@ -281,8 +299,8 @@ $(document).ready(function(){initNavTree('_definitions_8h_source.html',''); init
 <div class="ttc" id="astruct_device_blueprint_html_ae48cc3c64e8d6f81ba0e9cb9be94e38d"><div class="ttname"><a href="struct_device_blueprint.html#ae48cc3c64e8d6f81ba0e9cb9be94e38d">DeviceBlueprint::usesCrypto</a></div><div class="ttdeci">bool usesCrypto</div><div class="ttdoc">The device uses crypto.</div><div class="ttdef"><b>Definition:</b> Definitions.h:42</div></div>
 <div class="ttc" id="astruct_device_blueprint_html_ae82959589474467b08bb8ab4ba0f6ffd"><div class="ttname"><a href="struct_device_blueprint.html#ae82959589474467b08bb8ab4ba0f6ffd">DeviceBlueprint::hasWifiAccessPoint</a></div><div class="ttdeci">bool hasWifiAccessPoint</div><div class="ttdoc">The device has a WiFi access point.</div><div class="ttdef"><b>Definition:</b> Definitions.h:50</div></div>
 <div class="ttc" id="astruct_device_blueprint_html_affbb2bf2b33a194d564d55ed46a20c3d"><div class="ttname"><a href="struct_device_blueprint.html#affbb2bf2b33a194d564d55ed46a20c3d">DeviceBlueprint::hasDisplay</a></div><div class="ttdeci">bool hasDisplay</div><div class="ttdoc">The device has a display.</div><div class="ttdef"><b>Definition:</b> Definitions.h:40</div></div>
-<div class="ttc" id="astruct_wifi_access_point_params_html"><div class="ttname"><a href="struct_wifi_access_point_params.html">WifiAccessPointParams</a></div><div class="ttdef"><b>Definition:</b> Definitions.h:146</div></div>
-<div class="ttc" id="astruct_wifi_params_html"><div class="ttname"><a href="struct_wifi_params.html">WifiParams</a></div><div class="ttdoc">This class is used to store the parameters of the WiFi connection.</div><div class="ttdef"><b>Definition:</b> Definitions.h:141</div></div>
+<div class="ttc" id="astruct_wifi_access_point_params_html"><div class="ttname"><a href="struct_wifi_access_point_params.html">WifiAccessPointParams</a></div><div class="ttdef"><b>Definition:</b> Definitions.h:148</div></div>
+<div class="ttc" id="astruct_wifi_params_html"><div class="ttname"><a href="struct_wifi_params.html">WifiParams</a></div><div class="ttdoc">This class is used to store the parameters of the WiFi connection.</div><div class="ttdef"><b>Definition:</b> Definitions.h:143</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -9,6 +9,7 @@ var class_device_builder =
     [ "withOledDisplay", "class_device_builder.html#a0802dfd7344dd25df0726d190adddbb0", null ],
     [ "withRelayEnabled", "class_device_builder.html#a1b17544efa3c840d7a04105cc2ebd773", null ],
     [ "withRxPacketCallback", "class_device_builder.html#ac0f97da2839dbd08c163a126a10a7efd", null ],
+    [ "withStorage", "class_device_builder.html#a29c7cedd781b71bc644f8f02a4f81cdc", null ],
     [ "withTxPacketCallback", "class_device_builder.html#a5d9ccccd560c3efc170fad6e79f431bc", null ],
     [ "withWifi", "class_device_builder.html#a05845e9e22af31a64667662c9087da35", null ],
     [ "withWifiAccessPoint", "class_device_builder.html#a422a8248222661f6ee456af88ddba8d3", null ]

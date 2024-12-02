@@ -4,9 +4,12 @@ var annotated_dup =
       [ "CRC32", "class_radio_mesh_utils_1_1_c_r_c32.html", "class_radio_mesh_utils_1_1_c_r_c32" ]
     ] ],
     [ "AesCrypto", "class_aes_crypto.html", "class_aes_crypto" ],
+    [ "ByteStorageParams", "struct_byte_storage_params.html", "struct_byte_storage_params" ],
     [ "DeviceBlueprint", "struct_device_blueprint.html", "struct_device_blueprint" ],
     [ "DeviceBuilder", "class_device_builder.html", "class_device_builder" ],
+    [ "EEPROMStorage", "class_e_e_p_r_o_m_storage.html", "class_e_e_p_r_o_m_storage" ],
     [ "IAesCrypto", "class_i_aes_crypto.html", "class_i_aes_crypto" ],
+    [ "IByteStorage", "class_i_byte_storage.html", "class_i_byte_storage" ],
     [ "ICrypto", "class_i_crypto.html", "class_i_crypto" ],
     [ "IDevice", "class_i_device.html", "class_i_device" ],
     [ "IDisplay", "class_i_display.html", "class_i_display" ],

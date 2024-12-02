@@ -4,6 +4,7 @@ var _definitions_8h =
     [ "OledDisplayParams", "class_oled_display_params.html", "class_oled_display_params" ],
     [ "WifiParams", "struct_wifi_params.html", "struct_wifi_params" ],
     [ "WifiAccessPointParams", "struct_wifi_access_point_params.html", "struct_wifi_access_point_params" ],
+    [ "ByteStorageParams", "struct_byte_storage_params.html", "struct_byte_storage_params" ],
     [ "RM_FONT_BATTERY", "_definitions_8h.html#a7bdbb985f9fa6d4a7adecb64362f204e", null ],
     [ "RM_FONT_LARGE", "_definitions_8h.html#aecce8ab90e4dc7faa440b0e6be38070c", null ],
     [ "RM_FONT_MEDIUM", "_definitions_8h.html#ae5be18dba4ab1bf9b6f4b53b77556981", null ],

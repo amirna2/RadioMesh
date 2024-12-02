@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['packetrouter_227',['PacketRouter',['../class_packet_router.html',1,'']]],
-  ['packettracker_228',['PacketTracker',['../class_packet_tracker.html',1,'']]],
-  ['pinconfig_229',['PinConfig',['../class_pin_config.html',1,'']]]
+  ['loraradio_251',['LoraRadio',['../class_lora_radio.html',1,'']]],
+  ['loraradioparams_252',['LoraRadioParams',['../class_lora_radio_params.html',1,'']]]
 ];

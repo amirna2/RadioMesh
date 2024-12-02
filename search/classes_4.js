@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['loraradio_223',['LoraRadio',['../class_lora_radio.html',1,'']]],
-  ['loraradioparams_224',['LoraRadioParams',['../class_lora_radio_params.html',1,'']]]
+  ['eepromstorage_242',['EEPROMStorage',['../class_e_e_p_r_o_m_storage.html',1,'']]]
 ];

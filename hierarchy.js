@@ -1,8 +1,12 @@
 var hierarchy =
 [
+    [ "ByteStorageParams", "struct_byte_storage_params.html", null ],
     [ "RadioMeshUtils::CRC32", "class_radio_mesh_utils_1_1_c_r_c32.html", null ],
     [ "DeviceBlueprint", "struct_device_blueprint.html", null ],
     [ "DeviceBuilder", "class_device_builder.html", null ],
+    [ "IByteStorage", "class_i_byte_storage.html", [
+      [ "EEPROMStorage", "class_e_e_p_r_o_m_storage.html", null ]
+    ] ],
     [ "ICrypto", "class_i_crypto.html", [
       [ "IAesCrypto", "class_i_aes_crypto.html", [
         [ "AesCrypto", "class_aes_crypto.html", null ]

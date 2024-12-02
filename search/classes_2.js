@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['deviceblueprint_214',['DeviceBlueprint',['../struct_device_blueprint.html',1,'']]],
-  ['devicebuilder_215',['DeviceBuilder',['../class_device_builder.html',1,'']]]
+  ['crc32_239',['CRC32',['../class_radio_mesh_utils_1_1_c_r_c32.html',1,'RadioMeshUtils']]]
 ];

@@ -3,6 +3,7 @@ var class_i_device =
     [ "~IDevice", "class_i_device.html#a172e12396100def6a01ec1c0b88ee645", null ],
     [ "enableInclusionMode", "class_i_device.html#a094d138a145dad22ca303b98026b07e2", null ],
     [ "enableRelay", "class_i_device.html#a903f187368dce7186427be924854feff", null ],
+    [ "getByteStorage", "class_i_device.html#a8c32926ced2e35e8de32e17d2a805940", null ],
     [ "getCrypto", "class_i_device.html#ab7b23a8e7b4638a82e21f342d0029a8a", null ],
     [ "getDeviceId", "class_i_device.html#af5d6c38791ebcab110f480818bd695cd", null ],
     [ "getDeviceName", "class_i_device.html#aadfb2917fab4af7604b640f69d1889ec", null ],
