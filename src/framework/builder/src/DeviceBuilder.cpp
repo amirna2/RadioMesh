@@ -97,7 +97,7 @@ DeviceBuilder &DeviceBuilder::withWifiAccessPoint(const WifiAccessPointParams &p
    return *this;
 }
 
-DeviceBuilder &DeviceBuilder::withStorage(const StorageParams& params)
+DeviceBuilder &DeviceBuilder::withStorage(const ByteStorageParams& params)
 {
    loginfo_ln("Setting storage params");
    blueprint.hasStorage = true;

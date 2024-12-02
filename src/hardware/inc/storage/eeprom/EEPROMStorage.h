@@ -1,6 +1,6 @@
 #pragma once
 
-#include <framework/interfaces/IStorage.h>
+#include <framework/interfaces/IByteStorage.h>
 
 
 /*
@@ -44,7 +44,9 @@ Address | Content             | Description
 --------+---------------------+-------------
 */
 
-class EEPROMStorage : public IStorage
+#define EEPROM_STORAGE_MAX_SIZE 1024
+
+class EEPROMStorage : public IByteStorage
 {
 public:
     /**
@@ -61,11 +63,14 @@ public:
 
     virtual ~EEPROMStorage() = default;
 
-    // IStorage interface
+    // IByteStorage interface
     int read(const std::string& key, std::vector<byte>& data) override;
     int write(const std::string& key, const std::vector<byte>& data) override;
     int remove(const std::string& key) override;
     bool exists(const std::string& key) override;
+    int writeAndCommit(const std::string& key, const std::vector<byte>& data) override;
+    int commit() override;
+
 
     int begin() override;
     int end() override;
@@ -74,9 +79,9 @@ public:
     bool isFull() override;
 
     // EEPROMStorage specific methods
-    int setParams(const StorageParams& params);
-
+    int setParams(const ByteStorageParams& params);
     int getEntryCount();
+    int defragment();
 
 private:
     static EEPROMStorage *instance;
@@ -84,7 +89,7 @@ private:
     EEPROMStorage(const EEPROMStorage &) = delete;
     void operator=(const EEPROMStorage &) = delete;
     bool initialized = false;
-    StorageParams storageParams;
+    ByteStorageParams storageParams;
 
     static constexpr uint32_t STORAGE_MAGIC = 0x524D5354;
     static constexpr uint16_t STORAGE_VERSION = 1;
@@ -107,7 +112,8 @@ private:
     };
 
     // Add helper method declarations
-    int initializeStorageHeader();
+    void initializeStorageHeader();
+    int commitStorageHeader();
     int readStorageHeader(StorageHeader& header);
     int writeStorageHeader(const StorageHeader& header);
     bool isStorageValid();

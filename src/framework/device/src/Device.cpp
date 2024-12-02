@@ -160,7 +160,7 @@ int RadioMeshDevice::initializeWifiAccessPoint(WifiAccessPointParams wifiAPParam
    return rc;
 }
 
-int RadioMeshDevice::initializeStorage(StorageParams storageParams)
+int RadioMeshDevice::initializeStorage(ByteStorageParams storageParams)
 {
    eepromStorage = EEPROMStorage::getInstance();
    if (eepromStorage == nullptr) {
@@ -192,7 +192,7 @@ IAesCrypto *RadioMeshDevice::getCrypto()
    return crypto;
 }
 
-IStorage *RadioMeshDevice::getStorage()
+IByteStorage *RadioMeshDevice::getByteStorage()
 {
    return eepromStorage;
 }

@@ -292,15 +292,15 @@ namespace MessageTopicUtils {
 } // namespace MessageTopicUtils
 
 /**
- * @struct StorageParams
- * @brief This structure holds parameters for storage configuration.
+ * @struct ByteStorageParams
+ * @brief This structure holds parameters for byte storage configuration.
 */
-struct StorageParams {
+struct ByteStorageParams {
     size_t size;           // Total storage size in bytes
     bool persist;          // Whether to persist across reboots
     std::string mountPoint;// For filesystem implementations
 
-    StorageParams() :
+    ByteStorageParams() :
         size(0),
         persist(true),
         mountPoint("") {}
@@ -311,8 +311,8 @@ struct StorageParams {
      * @param size Total storage size in bytes
      * @param persist Whether to persist across reboots
      * @param mountPoint Mount point for filesystem implementations
-     * @return A new StorageParams object
+     * @return A new ByteStorageParams object
     */
-    StorageParams(size_t size, bool persist = true, const std::string& mountPoint = "") :
+    ByteStorageParams(size_t size, bool persist = true, const std::string& mountPoint = "") :
         size(size), persist(persist), mountPoint(mountPoint) {}
 };

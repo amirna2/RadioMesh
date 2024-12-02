@@ -9,7 +9,7 @@
 #include <framework/interfaces/IDisplay.h>
 #include <framework/interfaces/IWifiConnector.h>
 #include <framework/interfaces/IWifiAccessPoint.h>
-#include <framework/interfaces/IStorage.h>
+#include <framework/interfaces/IByteStorage.h>
 
 
 /**
@@ -55,10 +55,10 @@ public:
    virtual IWifiAccessPoint *getWifiAccessPoint() = 0;
 
    /**
-    * @brief Get the storage object interface associated with the device.
-    * @return IStorage* pointer to the storage object implementing the interface.
+    * @brief Get the byte storage object interface associated with the device.
+    * @return IByteStorage* pointer to the storage object implementing the interface.
    */
-   virtual IStorage* getStorage() = 0;
+   virtual IByteStorage* getByteStorage() = 0;
 
    /**
     * @brief Send data to the mesh network.

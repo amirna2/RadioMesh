@@ -213,7 +213,6 @@
 */
 #define RM_E_INVALID_CRYPTO_PARAMS                (-402)
 
-
 /**
  * @brief The storage setup failed.
  */
@@ -243,6 +242,12 @@
  * @brief The does not have enough space left.
  */
 #define RM_E_STORAGE_NOT_ENOUGH_SPACE            (-506)
+
+/**
+ * @brief The storage size is invalid.
+ */
+#define RM_E_STORAGE_INVALID_SIZE               (-507)
+
 
 /**
  * @brief invalid inclusion state

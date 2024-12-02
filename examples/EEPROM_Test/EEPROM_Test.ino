@@ -2,14 +2,14 @@
 #include <RadioMesh.h>
 
 IDevice *device = nullptr;
-IStorage *storage = nullptr;
+IByteStorage *storage = nullptr;
 DeviceBuilder builder;
 
 #define DEVICE_ID {0x01, 0x02, 0x03, 0x04}
 
 void setup() {
 
-   StorageParams params;
+   ByteStorageParams params;
     params.size = 1024;
 
     device = builder.start()
@@ -21,7 +21,7 @@ void setup() {
         return;
     }
 
-    storage = device->getStorage();
+    storage = device->getByteStorage();
     if (storage == nullptr) {
         loginfo_ln("ERROR: storage is null");
         return;

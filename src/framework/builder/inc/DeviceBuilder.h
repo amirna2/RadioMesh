@@ -92,7 +92,7 @@ public:
     * @param params The parameters for the storage
     * @return A reference to the updated builder
    */
-   DeviceBuilder& withStorage(const StorageParams& params);
+   DeviceBuilder& withStorage(const ByteStorageParams& params);
 
    /**
     * @brief Build the device
@@ -127,7 +127,7 @@ private:
    OledDisplayParams oledDisplayParams;
    WifiParams wifiParams = WifiParams();
    WifiAccessPointParams wifiAPParams = WifiAccessPointParams();
-   StorageParams storageParams;
+   ByteStorageParams storageParams;
 
    void destroyDevice(IDevice *device) {
       if (device != nullptr) {

@@ -49,7 +49,7 @@ public:
    IDisplay *getDisplay() override;
    IWifiConnector *getWifiConnector() override;
    IWifiAccessPoint *getWifiAccessPoint() override;
-   IStorage *getStorage() override;
+   IByteStorage *getByteStorage() override;
 
    int sendData(const uint8_t topic, const std::vector<byte> data, std::array<byte, RM_ID_LENGTH> target = BROADCAST_ADDR) override;
    void enableRelay(bool enabled) override;
@@ -142,10 +142,10 @@ public:
    /**
     * @brief Initialize the storage component with the given parameters
     *
-    * @param storageParams StorageParams object containing the storage parameters
+    * @param storageParams ByteStorageParams object containing the storage parameters
     * @return int RM_E_NONE if the storage component was successfully initialized, an error code otherwise.
     */
-   int initializeStorage(StorageParams storageParams);
+   int initializeStorage(ByteStorageParams storageParams);
 
    /**
     * @brief Handle received data
