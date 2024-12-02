@@ -8,6 +8,7 @@
 #include <framework/interfaces/IDevice.h>
 #include <core/protocol/inc/routing/PacketRouter.h>
 #include <hardware/inc/radio/LoraRadio.h>
+#include <hardware/inc/storage/eeprom/EEPROMStorage.h>
 #include <core/protocol/inc/crypto/aes/AesCrypto.h>
 #include <core/protocol/inc/packet/Callbacks.h>
 #include <common/inc/Errors.h>
@@ -48,6 +49,7 @@ public:
    IDisplay *getDisplay() override;
    IWifiConnector *getWifiConnector() override;
    IWifiAccessPoint *getWifiAccessPoint() override;
+   IByteStorage *getByteStorage() override;
 
    int sendData(const uint8_t topic, const std::vector<byte> data, std::array<byte, RM_ID_LENGTH> target = BROADCAST_ADDR) override;
    void enableRelay(bool enabled) override;
@@ -98,7 +100,6 @@ public:
     */
    void registerTxCallback(PacketSentCallback callback) { this->onPacketSent = callback; }
 
-
    /**
     * @brief Initialize the radio with the given parameters
     *
@@ -139,6 +140,14 @@ public:
    int initializeWifiAccessPoint(WifiAccessPointParams wifiAPParams);
 
    /**
+    * @brief Initialize the storage component with the given parameters
+    *
+    * @param storageParams ByteStorageParams object containing the storage parameters
+    * @return int RM_E_NONE if the storage component was successfully initialized, an error code otherwise.
+    */
+   int initializeStorage(ByteStorageParams storageParams);
+
+   /**
     * @brief Handle received data
     *
     * @return int RM_E_NONE if the data was successfully handled, an error code otherwise.
@@ -155,6 +164,7 @@ private:
 
    LoraRadio* radio = nullptr;
    AesCrypto* crypto = nullptr;
+   EEPROMStorage* eepromStorage = nullptr;
 
 #ifndef RM_NO_DISPLAY
    OledDisplay* display = nullptr;

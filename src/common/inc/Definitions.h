@@ -48,6 +48,8 @@ typedef struct {
    bool hasWifi;
    /// @brief The device has a WiFi access point
    bool hasWifiAccessPoint;
+   /// @brief The device has storage
+   bool hasStorage;
 } DeviceBlueprint;
 
 
@@ -288,3 +290,29 @@ namespace MessageTopicUtils {
       }
    }
 } // namespace MessageTopicUtils
+
+/**
+ * @struct ByteStorageParams
+ * @brief This structure holds parameters for byte storage configuration.
+*/
+struct ByteStorageParams {
+    size_t size;           // Total storage size in bytes
+    bool persist;          // Whether to persist across reboots
+    std::string mountPoint;// For filesystem implementations
+
+    ByteStorageParams() :
+        size(0),
+        persist(true),
+        mountPoint("") {}
+
+    /**
+     * @brief Construct a new Storage Params object
+     *
+     * @param size Total storage size in bytes
+     * @param persist Whether to persist across reboots
+     * @param mountPoint Mount point for filesystem implementations
+     * @return A new ByteStorageParams object
+    */
+    ByteStorageParams(size_t size, bool persist = true, const std::string& mountPoint = "") :
+        size(size), persist(persist), mountPoint(mountPoint) {}
+};
