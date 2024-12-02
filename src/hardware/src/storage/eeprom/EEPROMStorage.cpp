@@ -332,7 +332,7 @@ int EEPROMStorage::writeAndCommit(const std::string& key, const std::vector<byte
 
 bool EEPROMStorage::exists(const std::string& key)
 {
-   logdbg_ln("Checking key: %s exists", key.c_str());
+   logdbg_ln("Checking if key: %s exists", key.c_str());
    if (!initialized) {
       logerr_ln("Storage not initialized");
       return false;
@@ -340,30 +340,43 @@ bool EEPROMStorage::exists(const std::string& key)
 
    if (key.empty()) {
       logerr_ln("Invalid parameter: key is empty");
-      return RM_E_INVALID_PARAM;
+      return false;
    }
 
-   size_t addr = sizeof(StorageHeader);  // Skip header
-
-   // Read entry header
-   EntryHeader entryHeader;
-   for (size_t i = 0; i < sizeof(EntryHeader); i++) {
-      reinterpret_cast<uint8_t*>(&entryHeader)[i] = EEPROM.read(addr + i);
-   }
-   addr += sizeof(EntryHeader);
-
-   logdbg_ln("Number of entries: %d", getEntryCount());
-
-   // Read key and compare
-   std::string storedKey;
-   storedKey.resize(entryHeader.keyLength);
-   for (size_t i = 0; i < entryHeader.keyLength; i++) {
-      storedKey[i] = EEPROM.read(addr + i);
+   // Read storage header for entry count
+   StorageHeader storageHeader;
+   if (readStorageHeader(storageHeader) != RM_E_NONE) {
+      return false;
    }
 
-   if ((entryHeader.flags & ENTRY_VALID_FLAG) && (storedKey == key)) {
-      logdbg_ln("Key found: %s", key.c_str());
-      return true;
+   logdbg_ln("Number of entries: %d", storageHeader.numEntries);
+
+   // Search through all entries
+   size_t addr = sizeof(StorageHeader);
+   for (uint16_t i = 0; i < storageHeader.numEntries; i++) {
+      // Read entry header
+      EntryHeader entryHeader;
+      for (size_t j = 0; j < sizeof(EntryHeader); j++) {
+         reinterpret_cast<uint8_t*>(&entryHeader)[j] = EEPROM.read(addr + j);
+      }
+
+      // Only check valid entries
+      if (entryHeader.flags & ENTRY_VALID_FLAG) {
+         // Read key and compare
+         std::string storedKey;
+         storedKey.resize(entryHeader.keyLength);
+         for (size_t j = 0; j < entryHeader.keyLength; j++) {
+            storedKey[j] = EEPROM.read(addr + sizeof(EntryHeader) + j);
+         }
+
+         if (storedKey == key) {
+            logdbg_ln("Key found: %s", key.c_str());
+            return true;
+         }
+      }
+
+      // Move to next entry
+      addr += sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
    }
 
    logdbg_ln("Key not found: %s", key.c_str());
@@ -437,37 +450,45 @@ int EEPROMStorage::remove(const std::string& key)
       return RM_E_INVALID_PARAM;
    }
 
+   StorageHeader storageHeader;
+   if (readStorageHeader(storageHeader) != RM_E_NONE) {
+      return RM_E_STORAGE_READ_FAILED;
+   }
+
    size_t addr = sizeof(StorageHeader);
+   for (uint16_t i = 0; i < storageHeader.numEntries; i++) {
+      // Read entry header
+      EntryHeader entryHeader;
+      for (size_t j = 0; j < sizeof(EntryHeader); j++) {
+         reinterpret_cast<uint8_t*>(&entryHeader)[j] = EEPROM.read(addr + j);
+      }
 
-   // Read entry header
-   EntryHeader entryHeader;
-   for (size_t i = 0; i < sizeof(EntryHeader); i++) {
-      reinterpret_cast<uint8_t*>(&entryHeader)[i] = EEPROM.read(addr + i);
+      if (entryHeader.flags & ENTRY_VALID_FLAG) {
+         // Read key and compare
+         std::string storedKey;
+         storedKey.resize(entryHeader.keyLength);
+         for (size_t j = 0; j < entryHeader.keyLength; j++) {
+            storedKey[j] = EEPROM.read(addr + sizeof(EntryHeader) + j);
+         }
+
+         if (storedKey == key) {
+            // Found it - invalidate entry
+            entryHeader.flags &= ~ENTRY_VALID_FLAG;
+            // Write back updated header
+            for (size_t j = 0; j < sizeof(EntryHeader); j++) {
+               EEPROM.write(addr + j, reinterpret_cast<uint8_t*>(&entryHeader)[j]);
+            }
+            logdbg_ln("Key removed: %s", key.c_str());
+            return RM_E_NONE;
+         }
+      }
+
+      // Move to next entry
+      addr += sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
    }
-   addr += sizeof(EntryHeader);
 
-   // Read and verify key
-   std::string storedKey;
-   storedKey.resize(entryHeader.keyLength);
-   for (size_t i = 0; i < entryHeader.keyLength; i++) {
-      storedKey[i] = EEPROM.read(addr + i);
-   }
-
-   if (storedKey != key || !(entryHeader.flags & ENTRY_VALID_FLAG)) {
-      logerr_ln("Key not found: %s", key.c_str());
-      return RM_E_STORAGE_KEY_NOT_FOUND;
-   }
-
-   // Found the key - mark entry as invalid by clearing valid flag
-   addr = sizeof(StorageHeader);  // Go back to entry header
-   entryHeader.flags &= ~ENTRY_VALID_FLAG;  // Clear valid flag
-
-   // Write updated header back
-   for (size_t i = 0; i < sizeof(EntryHeader); i++) {
-         EEPROM.write(addr + i, reinterpret_cast<uint8_t*>(&entryHeader)[i]);
-   }
-   logdbg_ln("Key removed: %s", key.c_str());
-   return RM_E_NONE;
+   logerr_ln("Key not found: %s", key.c_str());
+   return RM_E_STORAGE_KEY_NOT_FOUND;
 }
 
 int EEPROMStorage::defragment()
@@ -480,6 +501,10 @@ int EEPROMStorage::defragment()
     if (readStorageHeader(storageHeader) != RM_E_NONE) {
         return RM_E_STORAGE_READ_FAILED;
     }
+
+    // Capture initial state
+    size_t initialEntries = storageHeader.numEntries;
+    size_t initialSpace = available();
 
     size_t readAddr = sizeof(StorageHeader);
     size_t writeAddr = sizeof(StorageHeader);
@@ -518,6 +543,19 @@ int EEPROMStorage::defragment()
     storageHeader.numEntries = validEntries;
     writeStorageHeader(storageHeader);
 
+    // Log defragmentation stats
+    size_t finalSpace = available();
+    size_t reclaimedSpace = finalSpace - initialSpace;
+    size_t removedEntries = initialEntries - validEntries;
+
+    loginfo_ln("Defrag Stats:");
+    loginfo_ln("- Entries: %d -> %d (removed %d)",
+               initialEntries, validEntries, removedEntries);
+    loginfo_ln("- Available Space: %d -> %d bytes (reclaimed %d)",
+               initialSpace, finalSpace, reclaimedSpace);
+    loginfo_ln("- Fragmentation: %.1f%%",
+               (100.0f * reclaimedSpace) / storageParams.size);
+
     return RM_E_NONE;
 }
 
@@ -547,7 +585,7 @@ size_t EEPROMStorage::available() {
         return 0;
     }
 
-    // Calculate used space
+    // Calculate used space including invalid entries
     size_t usedSpace = sizeof(StorageHeader);
     size_t addr = sizeof(StorageHeader);
 
@@ -556,9 +594,8 @@ size_t EEPROMStorage::available() {
         for (size_t j = 0; j < sizeof(EntryHeader); j++) {
             reinterpret_cast<uint8_t*>(&entryHeader)[j] = EEPROM.read(addr + j);
         }
-        if (entryHeader.flags & ENTRY_VALID_FLAG) {
-            usedSpace += sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
-        }
+        // Count space regardless of valid flag
+        usedSpace += sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
         addr += sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
     }
 

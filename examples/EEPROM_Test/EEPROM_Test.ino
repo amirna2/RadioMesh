@@ -6,18 +6,19 @@ IByteStorage *storage = nullptr;
 DeviceBuilder builder;
 
 #define DEVICE_ID {0x01, 0x02, 0x03, 0x04}
+#define MIN_STORAGE_THRESHOLD 30  // bytes
 
 void setup() {
-
-   ByteStorageParams params;
-    params.size = 1024;
+    // Initialize with 128 bytes
+    ByteStorageParams params;
+    params.size = 128;
 
     device = builder.start()
                    .withStorage(params)
                    .build("test-device", DEVICE_ID, MeshDeviceType::STANDARD);
 
     if (device == nullptr) {
-        Serial.println("ERROR: device is null");
+        logerr_ln("ERROR: device is null");
         return;
     }
 
@@ -28,48 +29,68 @@ void setup() {
     }
 
     // Initialize storage
-    Serial.println("Initializing storage...");
     int rc = storage->begin();
-    loginfo("Storage init result: %d\n", rc);
     if (rc != RM_E_NONE) {
         loginfo_ln("Failed to initialize storage");
         return;
     }
-    std::vector<byte> data1 = {1, 2};
-    std::vector<byte> data2 = {3, 4};
-    std::vector<byte> readData;
 
-    loginfo_ln("Writing key1...");
-    rc = storage->write("key1", data1);
-    loginfo_ln("Write key1 result: %d\n", rc);
-
-    loginfo_ln("Writing key2...");
-    rc = storage->write("key2", data2);
-    loginfo_ln("Write key2 result: %d\n", rc);
-
-    loginfo_ln("Reading key1...");
-    rc = storage->read("key1", readData);
-    loginfo_ln("Read key1 result: %d\n", rc);
-
-    if (rc == RM_E_NONE && readData.size() > 0) {
-        loginfo_ln("key1 data size: %d\n", readData.size());
-        loginfo_ln("key1 data: %d,%d\n", readData[0], readData[1]);
+    // Check if key1 exists
+    loginfo_ln("Checking if key1 exists...");
+    if (storage->exists("key1")) {
+        std::vector<byte> readData;
+        rc = storage->read("key1", readData);
+        if (rc == RM_E_NONE && readData.size() > 0) {
+            loginfo_ln("key1 data found: ");
+            for (byte b : readData) {
+                loginfo_ln("%d ", b);
+            }
+        }
+        rc = storage->remove("key1");
+        if (rc == RM_E_NONE) {
+            loginfo_ln("key1 removed");
+        } else {
+            loginfo_ln("Failed to remove key1");
+        }
     } else {
-        loginfo_ln("Failed to read key1 or data empty");
+        loginfo_ln("key1 was not found");
     }
 
-    // Clear vector before next read
-    readData.clear();
+    // Write "hello" to key1
+    std::vector<byte> data = {'h', 'e', 'l', 'l', 'o'};
+    loginfo_ln("Writing 'hello' to key1...");
+    rc = storage->write("key1", data);
+    loginfo_ln("Write result: %d", rc);
 
-    loginfo_ln("Reading key2...");
-    rc = storage->read("key2", readData);
-    loginfo_ln("Read key2 result: %d\n", rc);
+    // Commit changes
+    loginfo_ln("Committing storage...");
+    rc = storage->commit();
+    if (rc != RM_E_NONE) {
+        loginfo_ln("Failed to commit storage");
+        return;
+    }
 
-    if (rc == RM_E_NONE && readData.size() > 0) {
-        loginfo_ln("key2 data size: %d\n", readData.size());
-        loginfo_ln("key2 data: %d,%d\n", readData[0], readData[1]);
+
+    int space = storage->available();
+    if (space < MIN_STORAGE_THRESHOLD) {
+        logwarn_ln("Storage space low (%d bytes)..deframgenting...", space);
+        rc = storage->defragment();
+        if (rc != RM_E_NONE) {
+            loginfo_ln("Failed to defragment storage");
+            return;
+        }
+        loginfo_ln("Defragmentation complete");
+        loginfo_ln("Storage space available: %d bytes", storage->available());
     } else {
-        loginfo_ln("Failed to read key2 or data empty");
+        loginfo_ln("Storage space available: %d bytes", space);
+    }
+
+    // Close storage
+    loginfo_ln("Closing storage...");
+    rc = storage->end();
+    if (rc != RM_E_NONE) {
+        loginfo_ln("Failed to close storage");
+        return;
     }
 
     loginfo_ln("Test complete");

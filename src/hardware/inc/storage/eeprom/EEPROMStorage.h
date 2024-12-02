@@ -77,11 +77,11 @@ public:
     int clear() override;
     size_t available() override;
     bool isFull() override;
-
+    int defragment() override;
     // EEPROMStorage specific methods
     int setParams(const ByteStorageParams& params);
     int getEntryCount();
-    int defragment();
+
 
 private:
     static EEPROMStorage *instance;
