@@ -1,7 +1,7 @@
 <p align="center">
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache2-0AC0E9.svg" alt="License"></a>
   <a href="https://github.com/amirna2/RadioMesh/wiki"><img src="https://img.shields.io/badge/Read-Wiki-50dda0" alt="Wiki"></a>
-  <a href="https://github.com/amirna2/RadioMesh/html/index.html"><img src="https://img.shields.io/badge/API-Doc-50dda0" alt="Wiki"></a>
+  <a href="https://amirna2.github.io/RadioMesh"><img src="https://img.shields.io/badge/API-Doc-50dda0" alt="Api Doc"></a>
   <img src="https://img.shields.io/github/v/release/RadioMesh/RadioMesh?label=Release&color=10ccff" alt="Release">
   <img src="https://github.com/amirna2/RadioMesh/actions/workflows/main_ci.yml/badge.svg" alt="Build Status">
 </p>
