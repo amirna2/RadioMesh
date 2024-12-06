@@ -8,13 +8,13 @@
 
 
 # RadioMesh
-RadioMesh is a framework library for building long-range, low-power mesh networks with an adaptive protocol and a flexible device development kit.
+RadioMesh is a toolkit library for building long-range, low-power mesh networks with an adaptive protocol and a flexible device development kit.
 It leverages [Semtech LoRa](https://www.semtech.com/lora) radios and currently supports Arduino ESP32 micro-controller boards.
 
 ## Core Components
 
 ### Wireless Mesh Protocol
-At its core, RadioMesh implements  mesh network protocol aimed at self-organizing, low-power, long-range devices. It's focused on rapid and secure deployment of small to medium-sized networks without extensive configuration or management. key features include:
+At its core, RadioMesh implements a mesh network protocol aimed at self-organizing, low-power, long-range devices. It's focused on rapid and secure deployment of small to medium-sized networks without extensive configuration or management. key features include:
 
 - Datagram-based messaging
 - Two-way communication
