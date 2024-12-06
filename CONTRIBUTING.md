@@ -34,13 +34,13 @@ While we welcome contributors from all backgrounds, contributing code to RadioMe
 - Arduino framework concepts
 - ESP32 and embedded systems development
 
-We try to provide some guidance and documentation to help you get started, but we expect contributors to have a basic understanding of these technologies as we cannot provide individual tutoring.
+__We try to provide some guidance and documentation to help you get started, but we expect contributors to have a basic understanding of these technologies as we cannot provide individual tutoring.__
 
-Having experience with wireless networks and radio protocols is beneficial but not required. What's most important is solid software development practices and willingness to learn.
+Having experience with wireless networks and radio protocols is beneficial but not required. __What's most important is good software development practices and willingness to learn__.
 
 ## Development Tools & AI Usage
 
-This project acknowledges the use of AI coding assistants in development, such as Claude, Github Copilot. However:
+This project acknowledges the use of AI coding assistants in development. However:
 
 - All contributions, whether AI-assisted or not, must meet our quality standards
 - AI tools should complement, not replace, good software development practices
