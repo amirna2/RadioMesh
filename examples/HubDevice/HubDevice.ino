@@ -34,13 +34,6 @@ bool inclusionMode = false;
 int counter = 1;
 bool txComplete = true;  // Flag to track if previous TX is done
 
-// Default wifi configuration
-WifiParams wifiParams = {WIFI_SSID,WIFI_PASSWORD};
-// Default display configuration
-OledDisplayParams displayParams = OledDisplayParams(SCL_OLED, SDA_OLED, RST_OLED, RM_FONT_SMALL);
-// Default access point configuration
-WifiAccessPointParams apParams = {WIFI_AP_SSID, WIFI_AP_PASSWORD, WIFI_AP_IP_ADDRESS};
-
 // convert a vector of bytes to a hex string
 std::string toHex(const byte *data, int size)
 {

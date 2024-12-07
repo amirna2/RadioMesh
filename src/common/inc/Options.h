@@ -11,6 +11,6 @@
 #endif
 
 // enable verbose logging
-#define RM_LOG_DEBUG
+//#define RM_LOG_DEBUG
 
 //#define RM_LOG_INFO

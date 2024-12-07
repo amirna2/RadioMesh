@@ -3,11 +3,9 @@
 #include <common/inc/Options.h>
 
 namespace radiomesh {
-namespace warp {
-
 /**
  * @enum Topic
- * @brief Protocol control topics used by the WARP protocol
+ * @brief Protocol control topics used by the RadioMesh protocol
  *
  * Topics 0x00-0x0F are reserved for protocol control
  * Application topics should start from 0x10
@@ -30,7 +28,5 @@ enum Topic : uint8_t {
 constexpr bool isProtocolTopic(uint8_t topic) {
     return topic <= Topic::MAX_RESERVED;
 }
-
-} // namespace warp
 } // namespace radiomesh
 

@@ -7,7 +7,7 @@
  * @class IWifiConnector
  * @brief This class is an interface for a WiFi connector.
  *
- * It provides the methods for the WARP device to connect, disconnect, and reconnect to a WiFi network,
+ * It provides the methods for the RadioMesh device to connect, disconnect, and reconnect to a WiFi network,
 */
 class IWifiConnector
 {

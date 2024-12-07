@@ -19,18 +19,12 @@ IDevice *device = nullptr;
 IRadio *radio = nullptr;
 IDisplay *display = nullptr;
 
-// Default display configuration
-#ifdef USE_DISPLAY
-OledDisplayParams displayParams = OledDisplayParams(SCL_OLED, SDA_OLED, RST_OLED, WARP_FONT_SMALL);
-#endif
-
 DeviceBuilder builder;
 bool setupOk = false;
 
 auto timer = timer_create_default();
 const int INTERVAL_MS = 15000;
 uint32_t counter = 1000;
-bool isIncluded = false;
 
 // convert a vector of bytes to a hex string
 std::string toHex(const byte *data, int size)
@@ -63,9 +57,6 @@ void RxCallback(const RadioMeshPacket *packet, int err)
       logerr_ln("RX Failed [%d]", err);
       return;
    }
-   if (isIncluded && MessageTopicUtils::isIncludeOpen(packet->topic)) {
-      return;
-   }
    std::string source = toHex(packet->sourceDevId.data(), packet->sourceDevId.size());
    std::string destination = toHex(packet->destDevId.data(), packet->destDevId.size());
    if (err != RM_E_NONE) {
@@ -86,10 +77,12 @@ void RxCallback(const RadioMeshPacket *packet, int err)
    loginfo_ln("  Data: %s", RadioMeshUtils::toString(packet->packetData).c_str());
    loginfo_ln("---------------------------------------------");
 
+/*
    if (MessageTopicUtils::isIncludeOpen(packet->topic) && !isIncluded) {
       isIncluded = true;
       timer.every(INTERVAL_MS, runSensor);
    }
+*/
 }
 
 bool setupDisplay()
@@ -158,21 +151,13 @@ bool sendSensorData()
 }
 
 bool runSensor(void *)
-{  if (!isIncluded) {
-      loginfo_ln("[DEVICE]  Waiting for inclusion");
-      return true;
-   }
+{
    loginfo_ln("[DEVICE]  Running sensor");
    return sendSensorData();
 }
 
 void setup()
 {
-#ifdef USE_HELTEC_WIFI_LORA_32_V3
-LoraRadioParams radioParams = LoraRadioPresets::HELTEC_WIFI_LORA_32_V3;
-#else
-LoraRadioParams radioParams = LoraRadioPresets::HELTEC_CUBECELL;
-#endif
    // Create the device first using the Device Builder
    // This device does not have wifi capabilities
    // and does not act as a router initially
@@ -193,7 +178,7 @@ LoraRadioParams radioParams = LoraRadioPresets::HELTEC_CUBECELL;
    }
 
    // Setup the device components with the built-in configuration
- #if defined(USE_DISPLAY) && !defined(WARP_NO_DISPLAY)
+ #if defined(USE_DISPLAY) && !defined(RM_NO_DISPLAY)
    setupOk = setupDisplay();
    if (!setupOk) {
       logerr_ln("ERROR  display setup failed");
@@ -208,6 +193,9 @@ LoraRadioParams radioParams = LoraRadioPresets::HELTEC_CUBECELL;
 
    setupOk = true;
    loginfo_ln("INFO  setup complete");
+
+   sendSensorData();
+   timer.every(INTERVAL_MS, runSensor);
 }
 
 void loop() {

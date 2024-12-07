@@ -199,6 +199,8 @@ IByteStorage *RadioMeshDevice::getByteStorage()
 
 int RadioMeshDevice::sendData(const uint8_t topic, const std::vector<byte> data, std::array<byte, RM_ID_LENGTH> target)
 {
+
+#if TESTING_INCLUSION
    // For Hub devices
    if (deviceType == MeshDeviceType::HUB) {
       // If it's an inclusion message, hub must be in inclusion mode
@@ -207,6 +209,8 @@ int RadioMeshDevice::sendData(const uint8_t topic, const std::vector<byte> data,
          return RM_E_INVALID_STATE;
       }
    }
+
+
    // For non-Hub devices
    else {
       if (this->isIncluded()) {
@@ -221,6 +225,7 @@ int RadioMeshDevice::sendData(const uint8_t topic, const std::vector<byte> data,
          }
       }
    }
+#endif
 
    if (target.size() != DEV_ID_LENGTH) {
       logerr_ln("Invalid target device ID length: %d, expected: %d",
@@ -311,15 +316,16 @@ int RadioMeshDevice::handleReceivedData()
          onPacketReceived(&receivedPacket, RM_E_NONE);
    }
 
+#if TESTING_INCLUSION
    // Temporary Hack to handle inclusion messages
    // we include ourselves in the network if we receive an inclusion open message
-
    if (deviceType != MeshDeviceType::HUB &&
        MessageTopicUtils::isIncludeOpen(receivedPacket.topic) && !deviceIncluded) {
       loginfo_ln("Received inclusion open message. Including device...");
       deviceIncluded = true;
       return RM_E_NONE;
    }
+#endif
 
    // The hub is a final destination for all packets and also if the packet is for this device
    if (this->deviceType == MeshDeviceType::HUB || receivedPacket.destDevId == this->id) {
@@ -450,7 +456,7 @@ int RadioMeshDevice::enableInclusionMode(bool enable)
 int RadioMeshDevice::initialize()
 {
 
-   // TODO: Handle HUB inclusion state. For new we assume the hub is included and in normal mode
+   // TODO: Handle HUB inclusion state. For now we assume the hub is included and in normal mode
    if (deviceType == MeshDeviceType::HUB) {
       hubMode = HubMode::NORMAL;
       deviceIncluded = true;

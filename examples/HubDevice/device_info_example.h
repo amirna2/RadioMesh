@@ -34,3 +34,26 @@ const std::string WIFI_AP_IP_ADDRESS = "192.168.20.1";
 const std::string WIFI_SSID = "ssid_example";
 const std::string WIFI_PASSWORD = "wifi_password_example";
 
+#ifdef USE_HELTEC_WIFI_LORA_32_V3
+LoraRadioParams radioParams = LoraRadioPresets::HELTEC_WIFI_LORA_32_V3;
+#endif
+
+#ifdef USE_XIAO_ESP32S3_WIO_SX1262
+LoraRadioParams radioParams = LoraRadioPresets::XIAO_ESP32S3_WIO_SX1262;
+#endif
+
+#ifdef USE_CUBECELL
+LoraRadioParams radioParams = LoraRadioPresets::HELTEC_CUBECELL;
+#endif
+
+#ifdef USE_DISPLAY
+OledDisplayParams displayParams = OledDisplayParams(SCL_OLED, SDA_OLED, RST_OLED, RM_FONT_SMALL);
+#endif
+
+
+#ifdef USE_WIFI
+// Default wifi configuration
+WifiParams wifiParams = {WIFI_SSID,WIFI_PASSWORD};
+// Default access point configuration
+WifiAccessPointParams apParams = {WIFI_AP_SSID, WIFI_AP_PASSWORD, WIFI_AP_IP_ADDRESS};
+#endif
