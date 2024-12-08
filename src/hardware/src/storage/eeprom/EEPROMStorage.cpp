@@ -121,93 +121,6 @@ int EEPROMStorage::end()
    return RM_E_NONE;
 }
 
-
-#if 0
-
-int EEPROMStorage::write(const std::string& key, const std::vector<byte>& data)
-{
-   logdbg_ln("Writing key: %s", key.c_str());
-   if (!initialized) {
-      logerr_ln("Storage not initialized");
-      return RM_E_STORAGE_NOT_INIT;
-   }
-
-   if (key.empty()) {
-      logerr_ln("Invalid parameter: key is empty");
-      return RM_E_INVALID_PARAM;
-   }
-   if (data.empty()) {
-      logerr_ln("Invalid parameter: data is empty");
-      return RM_E_INVALID_PARAM;
-   }
-   if (key.length() > 255) {
-      logerr_ln("Invalid parameter: key is too long");
-      return RM_E_INVALID_LENGTH;
-   }
-
-   logdbg_ln("Writing key: %s", key.c_str());
-   logdbg_ln("Data size: %d", data.size());
-   logdbg_ln("Available space: %d", available());
-
-   // check if enough space is available
-   if (available() < key.length() + data.size() + sizeof(EntryHeader)) {
-      logerr_ln("Not enough space left");
-      return RM_E_STORAGE_NOT_ENOUGH_SPACE;
-   }
-
-   // Read storage header for entry count
-   StorageHeader storageHeader;
-   if (readStorageHeader(storageHeader) != RM_E_NONE) {
-      return RM_E_STORAGE_READ_FAILED;
-   }
-   logdbg_ln("Current entries: %d", storageHeader.numEntries);
-
-   // Calculate offset for new entry - skip past existing entries
-   size_t addr = sizeof(StorageHeader);
-   for (uint16_t i = 0; i < storageHeader.numEntries; i++) {
-      EntryHeader entryHeader;
-      // Read existing entry header
-      for (size_t j = 0; j < sizeof(EntryHeader); j++) {
-         reinterpret_cast<uint8_t*>(&entryHeader)[j] = EEPROM.read(addr + j);
-      }
-      // Skip this entry (header + key + data)
-      addr += sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
-   }
-
-   logdbg_ln("Writing at offset: %d", addr);
-
-   // Write new entry header
-   EntryHeader newEntry;
-   newEntry.keyLength = key.length();
-   newEntry.dataLength = data.size();
-   newEntry.flags = ENTRY_VALID_FLAG;
-
-   for (size_t i = 0; i < sizeof(EntryHeader); i++) {
-      EEPROM.write(addr + i, reinterpret_cast<uint8_t*>(&newEntry)[i]);
-   }
-   addr += sizeof(EntryHeader);
-
-   // Write key
-   for (size_t i = 0; i < key.length(); i++) {
-      EEPROM.write(addr + i, key[i]);
-   }
-   addr += key.length();
-
-   // Write data
-   for (size_t i = 0; i < data.size(); i++) {
-      EEPROM.write(addr + i, data[i]);
-   }
-
-   // Update storage header with new entry count
-   storageHeader.numEntries++;
-   writeStorageHeader(storageHeader);
-
-   logdbg_ln("Write successful for key: %s", key.c_str());
-
-   return RM_E_NONE;
-}
-#endif
-
 int EEPROMStorage::write(const std::string& key, const std::vector<byte>& data) {
     if (!initialized) {
         logerr_ln("Storage not initialized");
@@ -247,7 +160,6 @@ int EEPROMStorage::write(const std::string& key, const std::vector<byte>& data) 
     // Search for existing key
     size_t addr = sizeof(StorageHeader);
     size_t writeAddr = addr;
-    bool foundExisting = false;
 
     for (uint16_t i = 0; i < storageHeader.numEntries; i++) {
         EntryHeader entryHeader;
@@ -273,7 +185,6 @@ int EEPROMStorage::write(const std::string& key, const std::vector<byte>& data) 
                     EEPROM.write(currentEntryStart + j,
                         reinterpret_cast<uint8_t*>(&entryHeader)[j]);
                 }
-                foundExisting = true;
                 storageHeader.numEntries--;
                 writeStorageHeader(storageHeader);
                 break;
@@ -545,8 +456,8 @@ int EEPROMStorage::defragment()
 
     // Log defragmentation stats
     size_t finalSpace = available();
-    size_t reclaimedSpace = finalSpace - initialSpace;
-    size_t removedEntries = initialEntries - validEntries;
+    [[maybe_unused]] size_t reclaimedSpace = finalSpace - initialSpace;
+    [[maybe_unused]] size_t removedEntries = initialEntries - validEntries;
 
     loginfo_ln("Defrag Stats:");
     loginfo_ln("- Entries: %d -> %d (removed %d)",

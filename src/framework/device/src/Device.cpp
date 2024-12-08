@@ -40,7 +40,7 @@ int RadioMeshDevice::initializeRadio(LoraRadioParams radioParams)
    return rc;
 }
 
-int RadioMeshDevice::initializeAesCrypto(std::vector<byte> key, std::vector<byte> iv)
+int RadioMeshDevice::initializeAesCrypto(const SecurityParams &securityParams)
 {
    crypto = AesCrypto::getInstance();
    if (crypto == nullptr) {
@@ -48,8 +48,7 @@ int RadioMeshDevice::initializeAesCrypto(std::vector<byte> key, std::vector<byte
       return RM_E_UNKNOWN;
    }
 
-   crypto->setKey(key);
-   crypto->setIV(iv);
+   crypto->setParams(securityParams);
 
    router->setCrypto(crypto);
    return RM_E_NONE;
@@ -160,6 +159,13 @@ int RadioMeshDevice::initializeWifiAccessPoint(WifiAccessPointParams wifiAPParam
    return rc;
 }
 
+IWifiAccessPoint *RadioMeshDevice::getWifiAccessPoint()
+{
+   return wifiAccessPoint;
+}
+#endif // RM_NO_WIFI
+
+
 int RadioMeshDevice::initializeStorage(ByteStorageParams storageParams)
 {
    eepromStorage = EEPROMStorage::getInstance();
@@ -176,11 +182,6 @@ int RadioMeshDevice::initializeStorage(ByteStorageParams storageParams)
    return rc;
 }
 
-IWifiAccessPoint *RadioMeshDevice::getWifiAccessPoint()
-{
-   return wifiAccessPoint;
-}
-#endif // RM_NO_WIFI
 
 IRadio *RadioMeshDevice::getRadio()
 {

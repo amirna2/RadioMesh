@@ -36,11 +36,7 @@ public:
    }
 
    // IRadio interface
-   virtual ~LoraRadio() {
-      if (radio != nullptr) {
-         delete radio;
-      }
-   }
+   virtual ~LoraRadio() {}
 
    virtual int setup(const LoraRadioParams& params) override;
    virtual int setup() override;
@@ -155,7 +151,7 @@ private:
    }
 
    LoraRadioParams radioParams;
-   SX1262 *radio=nullptr;
+   std::unique_ptr<SX1262> radio;
 
    int checkLoraParameters(LoraRadioParams params);
    int switchToReceiveMode();

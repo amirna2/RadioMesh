@@ -316,3 +316,34 @@ struct ByteStorageParams {
     ByteStorageParams(size_t size, bool persist = true, const std::string& mountPoint = "") :
         size(size), persist(persist), mountPoint(mountPoint) {}
 };
+
+
+enum class SecurityMethod {
+    NONE,
+    AES,
+    CUSTOM
+};
+
+/**
+ * @struct SecurityParams
+ * @brief This structure holds parameters for security configuration.
+*/
+struct SecurityParams {
+    std::vector<byte> key; // Key for encryption
+    std::vector<byte> iv;  // Initialization vector for encryption
+    SecurityMethod method; // Encryption method
+
+    SecurityParams() : key(), iv(), method() {}
+
+    /**
+     * @brief Construct a new Security Params object
+     *
+     * @param key Key for encryption
+     * @param iv Initialization vector for encryption
+     * @param method Encryption method. Default is AES.
+     * @return A new SecurityParams object
+    */
+    SecurityParams(const std::vector<byte>& key, const std::vector<byte>& iv,
+                   SecurityMethod method = SecurityMethod::AES) :
+        key(key), iv(iv), method(method)  {}
+};

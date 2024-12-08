@@ -43,7 +43,8 @@
 #endif
 
 // https://github.com/esp8266/Arduino/blob/65579d29081cb8501e4d7f786747bf12e7b37da2/cores/esp8266/Print.cpp#L50
-static size_t warpPrintf(const char *format, ...)
+[[maybe_unused]] // https://en.cppreference.com/w/cpp/language/attributes/maybe_unused
+static size_t rmPrintf(const char *format, ...)
 {
    va_list arg;
    va_start(arg, format);
@@ -74,18 +75,18 @@ static size_t warpPrintf(const char *format, ...)
 #define logerr(format, ...)                                \
    do                                                      \
    {                                                       \
-      warpPrintf("[E]");                                   \
-      warpPrintf("[** %s : %d] ", __FILENAME__, __LINE__); \
-      warpPrintf(format, ##__VA_ARGS__);                   \
+      rmPrintf("[E]");                                   \
+      rmPrintf("[** %s : %d] ", __FILENAME__, __LINE__); \
+      rmPrintf(format, ##__VA_ARGS__);                   \
    } while (0)
 
 #define logerr_ln(format, ...)                             \
    do                                                      \
    {                                                       \
-      warpPrintf("[E]");                                   \
-      warpPrintf("[** %s : %d] ", __FILENAME__, __LINE__); \
-      warpPrintf(format, ##__VA_ARGS__);                   \
-      warpPrintf("\n");                                    \
+      rmPrintf("[E]");                                   \
+      rmPrintf("[** %s : %d] ", __FILENAME__, __LINE__); \
+      rmPrintf(format, ##__VA_ARGS__);                   \
+      rmPrintf("\n");                                    \
    } while (0)
 #else
 #define logerr(format, ...) \
@@ -100,18 +101,18 @@ static size_t warpPrintf(const char *format, ...)
 #define logwarn(format, ...)                            \
    do                                                   \
    {                                                    \
-      warpPrintf("[W]");                                \
-      warpPrintf("[%s : %d] ", __FILENAME__, __LINE__); \
-      warpPrintf(format, ##__VA_ARGS__);                \
+      rmPrintf("[W]");                                \
+      rmPrintf("[%s : %d] ", __FILENAME__, __LINE__); \
+      rmPrintf(format, ##__VA_ARGS__);                \
    } while (0)
 
 #define logwarn_ln(format, ...)                         \
    do                                                   \
    {                                                    \
-      warpPrintf("[W]");                                \
-      warpPrintf("[%s : %d] ", __FILENAME__, __LINE__); \
-      warpPrintf(format, ##__VA_ARGS__);                \
-      warpPrintf("\n");                                 \
+      rmPrintf("[W]");                                \
+      rmPrintf("[%s : %d] ", __FILENAME__, __LINE__); \
+      rmPrintf(format, ##__VA_ARGS__);                \
+      rmPrintf("\n");                                 \
    } while (0)
 #else
 #define logwarn(format, ...) \
@@ -126,18 +127,18 @@ static size_t warpPrintf(const char *format, ...)
 #define loginfo(format, ...)             \
    do                                    \
    {                                     \
-      warpPrintf("[I]");                 \
-      warpPrintf("[%s] ", __FILENAME__); \
-      warpPrintf(format, ##__VA_ARGS__); \
+      rmPrintf("[I]");                 \
+      rmPrintf("[%s] ", __FILENAME__); \
+      rmPrintf(format, ##__VA_ARGS__); \
    } while (0)
 
 #define loginfo_ln(format, ...)          \
    do                                    \
    {                                     \
-      warpPrintf("[I]");                 \
-      warpPrintf("[%s] ", __FILENAME__); \
-      warpPrintf(format, ##__VA_ARGS__); \
-      warpPrintf("\n");                  \
+      rmPrintf("[I]");                 \
+      rmPrintf("[%s] ", __FILENAME__); \
+      rmPrintf(format, ##__VA_ARGS__); \
+      rmPrintf("\n");                  \
    } while (0)
 #else
 #define loginfo(format, ...) \
@@ -152,18 +153,18 @@ static size_t warpPrintf(const char *format, ...)
 #define logdbg(format, ...)              \
    do                                    \
    {                                     \
-      warpPrintf("[D]");                 \
-      warpPrintf("[%s] ", __FILENAME__); \
-      warpPrintf(format, ##__VA_ARGS__); \
+      rmPrintf("[D]");                 \
+      rmPrintf("[%s] ", __FILENAME__); \
+      rmPrintf(format, ##__VA_ARGS__); \
    } while (0)
 
 #define logdbg_ln(format, ...)           \
    do                                    \
    {                                     \
-      warpPrintf("[D]");                 \
-      warpPrintf("[%s] ", __FILENAME__); \
-      warpPrintf(format, ##__VA_ARGS__); \
-      warpPrintf("\n");                  \
+      rmPrintf("[D]");                 \
+      rmPrintf("[%s] ", __FILENAME__); \
+      rmPrintf(format, ##__VA_ARGS__); \
+      rmPrintf("\n");                  \
    } while (0)
 #else
 #define logdbg(format, ...) \
@@ -178,18 +179,18 @@ static size_t warpPrintf(const char *format, ...)
 #define logtrace(format, ...)              \
    do                                    \
    {                                     \
-      warpPrintf("[T]");                 \
-      warpPrintf("[%s] ", __FILENAME__); \
-      warpPrintf(format, ##__VA_ARGS__); \
+      rmPrintf("[T]");                 \
+      rmPrintf("[%s] ", __FILENAME__); \
+      rmPrintf(format, ##__VA_ARGS__); \
    } while (0)
 
 #define logtrace_ln(format, ...)           \
    do                                    \
    {                                     \
-      warpPrintf("[T]");                 \
-      warpPrintf("[%s] ", __FILENAME__); \
-      warpPrintf(format, ##__VA_ARGS__); \
-      warpPrintf("\n");                  \
+      rmPrintf("[T]");                 \
+      rmPrintf("[%s] ", __FILENAME__); \
+      rmPrintf(format, ##__VA_ARGS__); \
+      rmPrintf("\n");                  \
    } while (0)
 #else
 #define logtrace(format, ...) \

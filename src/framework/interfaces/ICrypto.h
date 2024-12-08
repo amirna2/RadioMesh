@@ -17,24 +17,12 @@ public:
    virtual ~ICrypto() = default;
 
    /**
-    * @brief Set the key for the crypto object.
-    * @param key The key to set.
-   */
-   virtual void setKey(const std::vector<byte>& key) = 0;
-
-   /**
-    * @brief Get the key for the crypto object.
-    * @return std::vector<byte> containing the key.
-   */
-   virtual const std::vector<byte> getKey() = 0;
-
-   /**
-    * @brief Generate a key of the specified size.
-    * @param keySize The size of the key to generate.
-    * @return std::vector<byte> containing the generated key.
-   */
-   virtual const std::vector<byte> generateKey(size_t keySize) = 0;
-
+    * @brief Reset security parameters.
+    * @param params New
+    * @warning This executes only when the device is instructed to reset the security parameters from the hub.
+    * @return RM_E_NONE if the security parameters were successfully reset, an error code otherwise.
+    */
+   virtual int resetSecurityParams(const SecurityParams &params) = 0;
    /**
     * @brief Encrypt the provided data.
     * @param clearData The data to encrypt.

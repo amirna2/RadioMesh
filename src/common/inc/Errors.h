@@ -152,6 +152,12 @@
 */
 #define RM_E_INVALID_DISPLAY_PARAMS               (-205)
 
+
+/**
+ * @brief The display failed to draw string.
+ */
+#define RM_E_DISPLAY_DRAW_STRING                  (-206)
+
 /**
  * @brief SSID in not available.
  */

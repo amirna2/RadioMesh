@@ -15,7 +15,4 @@ class IAesCrypto : public ICrypto
 {
 public:
    virtual ~IAesCrypto() = default;
-
-   virtual void setIV(const std::vector<byte>& iv) = 0;
-   virtual const std::vector<byte> getIV() = 0;
 };

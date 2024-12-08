@@ -1,5 +1,9 @@
+static_assert(__cplusplus >= 201703L, "C++17 required");
+
+
 #include <vector>
 #include <string>
+#include <memory>
 
 #include <common/inc/Logger.h>
 #include <common/utils/Utils.h>
@@ -25,18 +29,21 @@ int LoraRadio::setParams(LoraRadioParams params)
 int LoraRadio::createModule(const LoraRadioParams& params)
 {
    logdbg_ln("Creating radio module");
-   if (radio != nullptr) {
-      logdbg_ln("Deleting existing radio module");
-      delete radio;
-   }
    if (params.pinConfig.ss == PinConfig::PIN_UNDEFINED) {
       logerr_ln("ERROR radio parameters are not set");
       return RM_E_INVALID_RADIO_PARAMS;
    }
-   radio = new SX1262(new Module(params.pinConfig.ss,
-                                 params.pinConfig.di1,
-                                 params.pinConfig.rst,
-                                 params.pinConfig.di0 /*busy pin*/));
+
+   // Create new module and radio with smart pointers
+   auto module = std::make_unique<Module>(
+      params.pinConfig.ss,
+      params.pinConfig.di1,
+      params.pinConfig.rst,
+      params.pinConfig.di0 /*busy pin*/
+   );
+
+   radio = std::make_unique<SX1262>(module.release());
+
    logdbg_ln("Radio module created");
    radioParams = params;
    return RM_E_NONE;
@@ -78,9 +85,7 @@ int LoraRadio::setup(const LoraRadioParams& params)
    }
    rc = checkLoraParameters(params);
    if (rc != RM_E_NONE) {
-      if (radio != nullptr) {
-         delete radio;
-      }
+      logerr_ln("ERROR  invalid radio parameters");
       return rc;
    }
    if (isSetup) {
@@ -185,7 +190,7 @@ int LoraRadio::startTransmitPacket(byte *data, int length)
 
    resetRadioState(TX_STATE);
 
-   long t1 = millis();
+   [[maybe_unused]] long t1 = millis();
    // TODO: Request RadioLib to use a const byte* instead of byte*
    tx_err = radio->startTransmit(data, length);
    switch (tx_err) {
@@ -247,7 +252,6 @@ int LoraRadio::readReceivedData(std::vector<byte>* packetBytes)
 {
    int packet_length = 0;
    int err = RM_E_NONE;
-   int rxState = RM_E_NONE;
 
    if (!isSetup) {
       logerr_ln("ERROR  LoRa radio not setup");
@@ -332,7 +336,6 @@ bool LoraRadio::checkAndClearTxFlag() {
 int LoraRadio::getRadioStateError()
 {
    // TODO: review this function. There's probably a better place to switch to receive mode when an error occurs.
-   int error = radioStateError;
    if (radioStateError != RM_E_NONE) {
       resetRadioState();
       switchToReceiveMode();
