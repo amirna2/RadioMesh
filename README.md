@@ -9,7 +9,7 @@
 
 # RadioMesh
 RadioMesh is a library for building long-range, low-power mesh networks with an adaptive wireless protocol and a flexible device development kit.
-It leverages [Semtech LoRa](https://www.semtech.com/lora) radios and currently supports Arduino ESP32 micro-controller boards.
+It leverages [Semtech LoRa](https://www.semtech.com/lora) radios and currently supports Arduino ESP32 and Heltec CubeCell series micro-controller boards.
 
 ## Core Components
 
@@ -29,6 +29,11 @@ Additionally, RadioMesh provides an developer friendly framework for building me
 - Modular component architecture
 - Security and encryption
 - Easy-to-use builder pattern for device configuration
+
+### Currently Supported Boards
+- Heltec Wifi Lora 32 v3
+- Seeed Studio Xiao ESP32 WIO-SX1262
+- Heltec CubeCell ASR650X series, e.g: CubeCell Board v2, CubeCell Board Plus,...
 
 ## Contributing
 RadioMesh welcomes contributions! Whether you're interested in adding new features, fixing bugs, improving documentation, or sharing example applications, check out the [Contributing Guide](CONTRIBUTING.md) to get started.
