@@ -2,6 +2,7 @@ var group__error__codes =
 [
     [ "RM_E_CRYPTO_SETUP", "group__error__codes.html#ga8a50d2e67a43654b06ba5e1b1321c8bd", null ],
     [ "RM_E_DEVICE_NOT_INCLUDED", "group__error__codes.html#ga9550a629f5f5657498b8565db0c75f0a", null ],
+    [ "RM_E_DISPLAY_DRAW_STRING", "group__error__codes.html#ga540528b63aeb44e5699d68cf0013c6b6", null ],
     [ "RM_E_DISPLAY_FAILURE", "group__error__codes.html#ga297068cf97e6d1cb329ff89da75761c2", null ],
     [ "RM_E_DISPLAY_INVALID_FONT", "group__error__codes.html#ga05ab9cff04efb0032e02f2d22a211fdc", null ],
     [ "RM_E_DISPLAY_NOT_SETUP", "group__error__codes.html#ga4b39fabec90fc4d93b8817da30bc7920", null ],

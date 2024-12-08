@@ -5,6 +5,7 @@ var _definitions_8h =
     [ "WifiParams", "struct_wifi_params.html", "struct_wifi_params" ],
     [ "WifiAccessPointParams", "struct_wifi_access_point_params.html", "struct_wifi_access_point_params" ],
     [ "ByteStorageParams", "struct_byte_storage_params.html", "struct_byte_storage_params" ],
+    [ "SecurityParams", "struct_security_params.html", "struct_security_params" ],
     [ "RM_FONT_BATTERY", "_definitions_8h.html#a7bdbb985f9fa6d4a7adecb64362f204e", null ],
     [ "RM_FONT_LARGE", "_definitions_8h.html#aecce8ab90e4dc7faa440b0e6be38070c", null ],
     [ "RM_FONT_MEDIUM", "_definitions_8h.html#ae5be18dba4ab1bf9b6f4b53b77556981", null ],
@@ -29,6 +30,11 @@ var _definitions_8h =
       [ "INCLUDE_OPEN", "_definitions_8h.html#a16002a54ff94e67b3e7b1ea618d5ca19a56fd0f7fc4990ea8b10915c33bf0f678", null ],
       [ "INCLUDE_CONFIRM", "_definitions_8h.html#a16002a54ff94e67b3e7b1ea618d5ca19a5d485d4d001b25c800c8469e6c082ee3", null ],
       [ "MAX_RESERVED", "_definitions_8h.html#a16002a54ff94e67b3e7b1ea618d5ca19acb968fcc42aafa43925035d89fff01d6", null ]
+    ] ],
+    [ "SecurityMethod", "_definitions_8h.html#a4998ecc06c3d67ef25a6835871ef480c", [
+      [ "NONE", "_definitions_8h.html#a4998ecc06c3d67ef25a6835871ef480cab50339a10e1de285ac99d4c3990b8693", null ],
+      [ "AES", "_definitions_8h.html#a4998ecc06c3d67ef25a6835871ef480ca76b7593457e2ab50befe2dcd63cf388f", null ],
+      [ "CUSTOM", "_definitions_8h.html#a4998ecc06c3d67ef25a6835871ef480ca72baef04098f035e8a320b03ad197818", null ]
     ] ],
     [ "SignalIndicator", "_definitions_8h.html#a7d69b0ee36f5ed62aab573a8028612a6", [
       [ "NO_SIGNAL", "_definitions_8h.html#a7d69b0ee36f5ed62aab573a8028612a6a0b977964da4bb29306874ab27ac421dc", null ],

@@ -94,53 +94,53 @@ $(document).ready(function(){initNavTree('_aes_crypto_8h_source.html',''); initR
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="_definitions_8h.html">common/inc/Definitions.h</a>&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;framework/interfaces/IAesCrypto.h&gt;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment">/***</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment"> * @class AesCrypto class</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment"> * @brief This class provides AES encryption and decryption functionality.</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="class_aes_crypto.html">   14</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_aes_crypto.html">AesCrypto</a>: <span class="keyword">public</span> <a class="code" href="class_i_aes_crypto.html">IAesCrypto</a></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;   <span class="keyword">static</span> <a class="code" href="class_aes_crypto.html">AesCrypto</a> *getInstance()</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;   {</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;      <span class="keywordflow">if</span> (!instance) {</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;         instance = <span class="keyword">new</span> <a class="code" href="class_aes_crypto.html">AesCrypto</a>();</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;      }</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;      <span class="keywordflow">return</span> instance;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;   }</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;   <span class="keyword">virtual</span> ~<a class="code" href="class_aes_crypto.html">AesCrypto</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;   <span class="comment">// IAesCrypto interface</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;   <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_aes_crypto.html#a1960096389cdd7353d21fc6696f638e0">setKey</a>(<span class="keyword">const</span> std::vector&lt;byte&gt;&amp; key) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;   <span class="keyword">virtual</span> <span class="keyword">const</span> std::vector&lt;byte&gt; <a class="code" href="class_aes_crypto.html#ac0db8d1196b6334ffa42c4a5f054c62c">getKey</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;   <span class="keyword">virtual</span> <span class="keyword">const</span> std::vector&lt;byte&gt; <a class="code" href="class_aes_crypto.html#a6d5277c6bc872f45b548de8b89872cc1">generateKey</a>(<span class="keywordtype">size_t</span> keySize) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;   <span class="keyword">virtual</span> <span class="keywordtype">void</span> setIV(<span class="keyword">const</span> std::vector&lt;byte&gt;&amp; iv) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;   <span class="keyword">virtual</span> <span class="keyword">const</span> std::vector&lt;byte&gt; getIV() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment">/***</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment"> * @class AesCrypto class</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment"> * @brief This class provides AES encryption and decryption functionality.</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">*/</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="class_aes_crypto.html">   16</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_aes_crypto.html">AesCrypto</a>: <span class="keyword">public</span> <a class="code" href="class_i_aes_crypto.html">IAesCrypto</a></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;   <span class="keyword">static</span> <span class="keyword">const</span> uint8_t AES_KEY_SIZE = 32;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;   <span class="keyword">static</span> <span class="keyword">const</span> uint8_t AES_IV_SIZE = 16;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;   <span class="keyword">static</span> <a class="code" href="class_aes_crypto.html">AesCrypto</a> *getInstance()</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;   {</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;      <span class="keywordflow">if</span> (!instance) {</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;         instance = <span class="keyword">new</span> <a class="code" href="class_aes_crypto.html">AesCrypto</a>();</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;      }</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;      <span class="keywordflow">return</span> instance;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;   }</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;   <span class="keyword">virtual</span> ~<a class="code" href="class_aes_crypto.html">AesCrypto</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;   <span class="comment">// IAesCrypto interface</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;   <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="class_aes_crypto.html#a8856d27731d1f60f40f302ddb92f0cca">resetSecurityParams</a>(<span class="keyword">const</span> <a class="code" href="struct_security_params.html">SecurityParams</a> &amp;params) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;   <span class="keyword">virtual</span> std::vector&lt;byte&gt; <a class="code" href="class_aes_crypto.html#ab7751972a0059261822e2800df24b65b">encrypt</a>(<span class="keyword">const</span> std::vector&lt;byte&gt;&amp; clearData) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;   <span class="keyword">virtual</span> std::vector&lt;byte&gt; <a class="code" href="class_aes_crypto.html#a8b2b38079990dea9199b00c990398846">decrypt</a>(<span class="keyword">const</span> std::vector&lt;byte&gt;&amp; encryptedData) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;   <span class="comment">// AesCrypto specific</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;   <span class="keywordtype">int</span> setParams(<span class="keyword">const</span> std::vector&lt;byte&gt;&amp; key, <span class="keyword">const</span> std::vector&lt;byte&gt;&amp; iv);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;   <span class="keywordtype">int</span> setParams(<span class="keyword">const</span> <a class="code" href="struct_security_params.html">SecurityParams</a> &amp;params);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;   <a class="code" href="class_aes_crypto.html">AesCrypto</a>() {}</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;   <a class="code" href="class_aes_crypto.html">AesCrypto</a>(<span class="keyword">const</span> <a class="code" href="class_aes_crypto.html">AesCrypto</a> &amp;) = <span class="keyword">delete</span>;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;   <span class="keywordtype">void</span> operator=(<span class="keyword">const</span> <a class="code" href="class_aes_crypto.html">AesCrypto</a> &amp;) = <span class="keyword">delete</span>;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;   <span class="keyword">static</span> <a class="code" href="class_aes_crypto.html">AesCrypto</a> *instance;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;   std::vector&lt;byte&gt; key;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;   std::vector&lt;byte&gt; iv;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;};</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;   <a class="code" href="struct_security_params.html">SecurityParams</a> securityParams;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;   <span class="keyword">const</span> uint8_t AES_BLOCK_SIZE = 16;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;   <span class="keyword">const</span> uint8_t AES_COUNTER_SIZE = 4;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;};</div>
 <div class="ttc" id="a_definitions_8h_html"><div class="ttname"><a href="_definitions_8h.html">Definitions.h</a></div><div class="ttdoc">This file contains type definitions used in the RadioMesh project.</div></div>
-<div class="ttc" id="aclass_aes_crypto_html"><div class="ttname"><a href="class_aes_crypto.html">AesCrypto</a></div><div class="ttdef"><b>Definition:</b> AesCrypto.h:15</div></div>
-<div class="ttc" id="aclass_aes_crypto_html_a1960096389cdd7353d21fc6696f638e0"><div class="ttname"><a href="class_aes_crypto.html#a1960096389cdd7353d21fc6696f638e0">AesCrypto::setKey</a></div><div class="ttdeci">virtual void setKey(const std::vector&lt; byte &gt; &amp;key) override</div><div class="ttdoc">Set the key for the crypto object.</div><div class="ttdef"><b>Definition:</b> AesCrypto.cpp:34</div></div>
-<div class="ttc" id="aclass_aes_crypto_html_a6d5277c6bc872f45b548de8b89872cc1"><div class="ttname"><a href="class_aes_crypto.html#a6d5277c6bc872f45b548de8b89872cc1">AesCrypto::generateKey</a></div><div class="ttdeci">virtual const std::vector&lt; byte &gt; generateKey(size_t keySize) override</div><div class="ttdoc">Generate a key of the specified size.</div><div class="ttdef"><b>Definition:</b> AesCrypto.cpp:54</div></div>
-<div class="ttc" id="aclass_aes_crypto_html_a8b2b38079990dea9199b00c990398846"><div class="ttname"><a href="class_aes_crypto.html#a8b2b38079990dea9199b00c990398846">AesCrypto::decrypt</a></div><div class="ttdeci">virtual std::vector&lt; byte &gt; decrypt(const std::vector&lt; byte &gt; &amp;encryptedData) override</div><div class="ttdoc">Decrypt the provided data.</div><div class="ttdef"><b>Definition:</b> AesCrypto.cpp:86</div></div>
-<div class="ttc" id="aclass_aes_crypto_html_ab7751972a0059261822e2800df24b65b"><div class="ttname"><a href="class_aes_crypto.html#ab7751972a0059261822e2800df24b65b">AesCrypto::encrypt</a></div><div class="ttdeci">virtual std::vector&lt; byte &gt; encrypt(const std::vector&lt; byte &gt; &amp;clearData) override</div><div class="ttdoc">Encrypt the provided data.</div><div class="ttdef"><b>Definition:</b> AesCrypto.cpp:61</div></div>
-<div class="ttc" id="aclass_aes_crypto_html_ac0db8d1196b6334ffa42c4a5f054c62c"><div class="ttname"><a href="class_aes_crypto.html#ac0db8d1196b6334ffa42c4a5f054c62c">AesCrypto::getKey</a></div><div class="ttdeci">virtual const std::vector&lt; byte &gt; getKey() override</div><div class="ttdoc">Get the key for the crypto object.</div><div class="ttdef"><b>Definition:</b> AesCrypto.cpp:39</div></div>
+<div class="ttc" id="aclass_aes_crypto_html"><div class="ttname"><a href="class_aes_crypto.html">AesCrypto</a></div><div class="ttdef"><b>Definition:</b> AesCrypto.h:17</div></div>
+<div class="ttc" id="aclass_aes_crypto_html_a8856d27731d1f60f40f302ddb92f0cca"><div class="ttname"><a href="class_aes_crypto.html#a8856d27731d1f60f40f302ddb92f0cca">AesCrypto::resetSecurityParams</a></div><div class="ttdeci">virtual int resetSecurityParams(const SecurityParams &amp;params) override</div><div class="ttdoc">Reset security parameters.</div><div class="ttdef"><b>Definition:</b> AesCrypto.cpp:35</div></div>
+<div class="ttc" id="aclass_aes_crypto_html_a8b2b38079990dea9199b00c990398846"><div class="ttname"><a href="class_aes_crypto.html#a8b2b38079990dea9199b00c990398846">AesCrypto::decrypt</a></div><div class="ttdeci">virtual std::vector&lt; byte &gt; decrypt(const std::vector&lt; byte &gt; &amp;encryptedData) override</div><div class="ttdoc">Decrypt the provided data.</div><div class="ttdef"><b>Definition:</b> AesCrypto.cpp:65</div></div>
+<div class="ttc" id="aclass_aes_crypto_html_ab7751972a0059261822e2800df24b65b"><div class="ttname"><a href="class_aes_crypto.html#ab7751972a0059261822e2800df24b65b">AesCrypto::encrypt</a></div><div class="ttdeci">virtual std::vector&lt; byte &gt; encrypt(const std::vector&lt; byte &gt; &amp;clearData) override</div><div class="ttdoc">Encrypt the provided data.</div><div class="ttdef"><b>Definition:</b> AesCrypto.cpp:40</div></div>
 <div class="ttc" id="aclass_i_aes_crypto_html"><div class="ttname"><a href="class_i_aes_crypto.html">IAesCrypto</a></div><div class="ttdef"><b>Definition:</b> IAesCrypto.h:15</div></div>
+<div class="ttc" id="astruct_security_params_html"><div class="ttname"><a href="struct_security_params.html">SecurityParams</a></div><div class="ttdoc">This structure holds parameters for security configuration.</div><div class="ttdef"><b>Definition:</b> Definitions.h:331</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

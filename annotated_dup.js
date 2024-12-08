@@ -27,6 +27,7 @@ var annotated_dup =
     [ "RadioMeshPacket", "class_radio_mesh_packet.html", "class_radio_mesh_packet" ],
     [ "RouteEntry", "struct_route_entry.html", "struct_route_entry" ],
     [ "RoutingTable", "class_routing_table.html", "class_routing_table" ],
+    [ "SecurityParams", "struct_security_params.html", "struct_security_params" ],
     [ "WifiAccessPoint", "class_wifi_access_point.html", "class_wifi_access_point" ],
     [ "WifiAccessPointParams", "struct_wifi_access_point_params.html", "struct_wifi_access_point_params" ],
     [ "WifiConnector", "class_wifi_connector.html", "class_wifi_connector" ],

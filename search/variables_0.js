@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['band_392',['band',['../class_lora_radio_params.html#a8ef6fd8d4cace121b075d0bb89ff978c',1,'LoraRadioParams']]],
-  ['bw_393',['bw',['../class_lora_radio_params.html#ab436b9f99a5afb2727b84b41a9093177',1,'LoraRadioParams']]]
+  ['band_394',['band',['../class_lora_radio_params.html#a8ef6fd8d4cace121b075d0bb89ff978c',1,'LoraRadioParams']]],
+  ['bw_395',['bw',['../class_lora_radio_params.html#ab436b9f99a5afb2727b84b41a9093177',1,'LoraRadioParams']]]
 ];

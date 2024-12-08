@@ -35,6 +35,7 @@ var hierarchy =
     [ "RadioMeshPacket", "class_radio_mesh_packet.html", null ],
     [ "RouteEntry", "struct_route_entry.html", null ],
     [ "RoutingTable", "class_routing_table.html", null ],
+    [ "SecurityParams", "struct_security_params.html", null ],
     [ "WifiAccessPointParams", "struct_wifi_access_point_params.html", null ],
     [ "WifiParams", "struct_wifi_params.html", null ]
 ];

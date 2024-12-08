@@ -85,6 +85,7 @@ $(document).ready(function(){initNavTree('class_aes_crypto.html',''); initResiza
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="class_aes_crypto-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">AesCrypto Class Reference</div>  </div>
@@ -103,36 +104,33 @@ Inheritance diagram for AesCrypto:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1960096389cdd7353d21fc6696f638e0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_aes_crypto.html#a1960096389cdd7353d21fc6696f638e0">setKey</a> (const std::vector&lt; byte &gt; &amp;key) override</td></tr>
-<tr class="memdesc:a1960096389cdd7353d21fc6696f638e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the key for the crypto object.  <a href="class_aes_crypto.html#a1960096389cdd7353d21fc6696f638e0">More...</a><br /></td></tr>
-<tr class="separator:a1960096389cdd7353d21fc6696f638e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0db8d1196b6334ffa42c4a5f054c62c"><td class="memItemLeft" align="right" valign="top">virtual const std::vector&lt; byte &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_aes_crypto.html#ac0db8d1196b6334ffa42c4a5f054c62c">getKey</a> () override</td></tr>
-<tr class="memdesc:ac0db8d1196b6334ffa42c4a5f054c62c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the key for the crypto object.  <a href="class_aes_crypto.html#ac0db8d1196b6334ffa42c4a5f054c62c">More...</a><br /></td></tr>
-<tr class="separator:ac0db8d1196b6334ffa42c4a5f054c62c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d5277c6bc872f45b548de8b89872cc1"><td class="memItemLeft" align="right" valign="top">virtual const std::vector&lt; byte &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_aes_crypto.html#a6d5277c6bc872f45b548de8b89872cc1">generateKey</a> (size_t keySize) override</td></tr>
-<tr class="memdesc:a6d5277c6bc872f45b548de8b89872cc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a key of the specified size.  <a href="class_aes_crypto.html#a6d5277c6bc872f45b548de8b89872cc1">More...</a><br /></td></tr>
-<tr class="separator:a6d5277c6bc872f45b548de8b89872cc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adfb986907a8d8cc6580a91e235016b2d"><td class="memItemLeft" align="right" valign="top"><a id="adfb986907a8d8cc6580a91e235016b2d"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>setIV</b> (const std::vector&lt; byte &gt; &amp;iv) override</td></tr>
-<tr class="separator:adfb986907a8d8cc6580a91e235016b2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac89299e9e97c8b9c9dde728f17f5bfde"><td class="memItemLeft" align="right" valign="top"><a id="ac89299e9e97c8b9c9dde728f17f5bfde"></a>
-virtual const std::vector&lt; byte &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getIV</b> () override</td></tr>
-<tr class="separator:ac89299e9e97c8b9c9dde728f17f5bfde"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8856d27731d1f60f40f302ddb92f0cca"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_aes_crypto.html#a8856d27731d1f60f40f302ddb92f0cca">resetSecurityParams</a> (const <a class="el" href="struct_security_params.html">SecurityParams</a> &amp;params) override</td></tr>
+<tr class="memdesc:a8856d27731d1f60f40f302ddb92f0cca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset security parameters.  <a href="class_aes_crypto.html#a8856d27731d1f60f40f302ddb92f0cca">More...</a><br /></td></tr>
+<tr class="separator:a8856d27731d1f60f40f302ddb92f0cca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7751972a0059261822e2800df24b65b"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; byte &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_aes_crypto.html#ab7751972a0059261822e2800df24b65b">encrypt</a> (const std::vector&lt; byte &gt; &amp;clearData) override</td></tr>
 <tr class="memdesc:ab7751972a0059261822e2800df24b65b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encrypt the provided data.  <a href="class_aes_crypto.html#ab7751972a0059261822e2800df24b65b">More...</a><br /></td></tr>
 <tr class="separator:ab7751972a0059261822e2800df24b65b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b2b38079990dea9199b00c990398846"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; byte &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_aes_crypto.html#a8b2b38079990dea9199b00c990398846">decrypt</a> (const std::vector&lt; byte &gt; &amp;encryptedData) override</td></tr>
 <tr class="memdesc:a8b2b38079990dea9199b00c990398846"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decrypt the provided data.  <a href="class_aes_crypto.html#a8b2b38079990dea9199b00c990398846">More...</a><br /></td></tr>
 <tr class="separator:a8b2b38079990dea9199b00c990398846"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97543a3192a06d1e646332849d030a4c"><td class="memItemLeft" align="right" valign="top"><a id="a97543a3192a06d1e646332849d030a4c"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>setParams</b> (const std::vector&lt; byte &gt; &amp;key, const std::vector&lt; byte &gt; &amp;iv)</td></tr>
-<tr class="separator:a97543a3192a06d1e646332849d030a4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9eff5b4e3a21fa688207265c585fac90"><td class="memItemLeft" align="right" valign="top"><a id="a9eff5b4e3a21fa688207265c585fac90"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>setParams</b> (const <a class="el" href="struct_security_params.html">SecurityParams</a> &amp;params)</td></tr>
+<tr class="separator:a9eff5b4e3a21fa688207265c585fac90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a3ea05ded3a9a4587c9f09e8f51214a69"><td class="memItemLeft" align="right" valign="top"><a id="a3ea05ded3a9a4587c9f09e8f51214a69"></a>
 static <a class="el" href="class_aes_crypto.html">AesCrypto</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getInstance</b> ()</td></tr>
 <tr class="separator:a3ea05ded3a9a4587c9f09e8f51214a69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:aa8cd45c284264d58bc55047d2f940c37"><td class="memItemLeft" align="right" valign="top"><a id="aa8cd45c284264d58bc55047d2f940c37"></a>
+static const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>AES_KEY_SIZE</b> = 32</td></tr>
+<tr class="separator:aa8cd45c284264d58bc55047d2f940c37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79637556d8f1ceb54ca39ad6a83424d3"><td class="memItemLeft" align="right" valign="top"><a id="a79637556d8f1ceb54ca39ad6a83424d3"></a>
+static const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>AES_IV_SIZE</b> = 16</td></tr>
+<tr class="separator:a79637556d8f1ceb54ca39ad6a83424d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a8b2b38079990dea9199b00c990398846"></a>
@@ -209,8 +207,8 @@ static <a class="el" href="class_aes_crypto.html">AesCrypto</a> *&#160;</td><td 
 
 </div>
 </div>
-<a id="a6d5277c6bc872f45b548de8b89872cc1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6d5277c6bc872f45b548de8b89872cc1">&#9670;&nbsp;</a></span>generateKey()</h2>
+<a id="a8856d27731d1f60f40f302ddb92f0cca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8856d27731d1f60f40f302ddb92f0cca">&#9670;&nbsp;</a></span>resetSecurityParams()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -219,10 +217,10 @@ static <a class="el" href="class_aes_crypto.html">AesCrypto</a> *&#160;</td><td 
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const std::vector&lt; byte &gt; AesCrypto::generateKey </td>
+          <td class="memname">int AesCrypto::resetSecurityParams </td>
           <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>keySize</em></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="struct_security_params.html">SecurityParams</a> &amp;&#160;</td>
+          <td class="paramname"><em>params</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -233,82 +231,17 @@ static <a class="el" href="class_aes_crypto.html">AesCrypto</a> *&#160;</td><td 
 </table>
 </div><div class="memdoc">
 
-<p>Generate a key of the specified size. </p>
+<p>Reset security parameters. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">keySize</td><td>The size of the key to generate. </td></tr>
+    <tr><td class="paramname">params</td><td>New </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>std::vector&lt;byte&gt; containing the generated key. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>This executes only when the device is instructed to reset the security parameters from the hub. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the security parameters were successfully reset, an error code otherwise. </dd></dl>
 
-<p>Implements <a class="el" href="class_i_crypto.html#aea25fded1397fffcc7538349e20ddc4a">ICrypto</a>.</p>
-
-</div>
-</div>
-<a id="ac0db8d1196b6334ffa42c4a5f054c62c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac0db8d1196b6334ffa42c4a5f054c62c">&#9670;&nbsp;</a></span>getKey()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const std::vector&lt; byte &gt; AesCrypto::getKey </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Get the key for the crypto object. </p>
-<dl class="section return"><dt>Returns</dt><dd>std::vector&lt;byte&gt; containing the key. </dd></dl>
-
-<p>Implements <a class="el" href="class_i_crypto.html#a7d8b3183e1d8728c88040807f7e9dcf3">ICrypto</a>.</p>
-
-</div>
-</div>
-<a id="a1960096389cdd7353d21fc6696f638e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1960096389cdd7353d21fc6696f638e0">&#9670;&nbsp;</a></span>setKey()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void AesCrypto::setKey </td>
-          <td>(</td>
-          <td class="paramtype">const std::vector&lt; byte &gt; &amp;&#160;</td>
-          <td class="paramname"><em>key</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Set the key for the crypto object. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">key</td><td>The key to set. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Implements <a class="el" href="class_i_crypto.html#a979edc1ba85672a2c55ed80671691fa7">ICrypto</a>.</p>
+<p>Implements <a class="el" href="class_i_crypto.html#acb25a9b953d220ecc297e6aaaa691b33">ICrypto</a>.</p>
 
 </div>
 </div>
