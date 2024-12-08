@@ -94,6 +94,14 @@ public:
    */
    DeviceBuilder& withStorage(const ByteStorageParams& params);
 
+
+   /**
+    * @brief Add secure messaging to the device with the given parameters
+    * @param params The parameters for the secure messaging
+    * @return A reference to the updated builder
+   */
+   DeviceBuilder& withSecureMessaging(const SecurityParams &params);
+
    /**
     * @brief Build the device
     * @param name The name of the device
@@ -119,8 +127,7 @@ private:
 
    // Device parameters
    LoraRadioParams radioParams;
-   std::vector<byte> aesKey;
-   std::vector<byte> aesIV;
+   SecurityParams securityParams;
    bool relayEnabled = false;
    PacketReceivedCallback rxCallback = nullptr;
    PacketSentCallback txCallback = nullptr;

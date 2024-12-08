@@ -121,7 +121,7 @@ public:
     *
     * @return int RM_E_NONE if the crypto component was successfully initialized, an error code otherwise.
     */
-   int initializeAesCrypto(std::vector<byte> key, std::vector<byte> iv);
+   int initializeAesCrypto(const SecurityParams &securityParams);
 
    /**
     * @brief Initialize the WiFi module with the given parameters

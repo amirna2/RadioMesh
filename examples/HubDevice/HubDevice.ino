@@ -34,6 +34,8 @@ bool inclusionMode = false;
 int counter = 1;
 bool txComplete = true;  // Flag to track if previous TX is done
 
+SecurityParams securityParams(key, iv, SecurityMethod::AES);
+
 // convert a vector of bytes to a hex string
 std::string toHex(const byte *data, int size)
 {
@@ -228,12 +230,12 @@ void setup()
    // The HUB device has wifi capabilities so it can connect to a wifi network to send data
    // and also create an access point to allow other devices to connect to it
    device = builder.start()
-                   .withLoraRadio(LoraRadioPresets::HELTEC_WIFI_LORA_32_V3)
-                   //.withWifi(wifiParams)
-                   //.withWifiAccessPoint(apParams)
+                   .withLoraRadio(radioParams)
+                   .withWifi(wifiParams)
+                   .withWifiAccessPoint(apParams)
                    .withRxPacketCallback(RxCallback)
                    .withTxPacketCallback(TxCallback)
-                   .withAesCrypto(key, iv)
+                   .withSecureMessaging(securityParams)
                    .withOledDisplay(displayParams)
                    .build(DEVICE_NAME, DEVICE_ID, MeshDeviceType::HUB);
 

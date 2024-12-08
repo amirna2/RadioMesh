@@ -113,12 +113,7 @@ private:
 
     // Add helper method declarations
     void initializeStorageHeader();
-    int commitStorageHeader();
     int readStorageHeader(StorageHeader& header);
     int writeStorageHeader(const StorageHeader& header);
     bool isStorageValid();
-
-    // Helper methods for entry management
-    int findEntry(const std::string& key, size_t& offset);
-    int writeEntry(size_t offset, const std::string& key, const std::vector<byte>& data);
 };

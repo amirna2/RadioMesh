@@ -61,12 +61,13 @@ DeviceBuilder &DeviceBuilder::withRelayEnabled(bool enabled)
    return *this;
 }
 
-DeviceBuilder &DeviceBuilder::withAesCrypto(const std::vector<byte>& key, const std::vector<byte>& iv)
+DeviceBuilder &DeviceBuilder::withSecureMessaging(const SecurityParams &params)
 {
-   loginfo_ln("Setting AesCrypto key and IV");
+   loginfo_ln("Setting secure messaging params");
    blueprint.usesCrypto = true;
-   aesKey.assign(key.begin(), key.end());
-   aesIV.assign(iv.begin(), iv.end());
+   securityParams.method = params.method;
+   securityParams.iv.assign(params.iv.begin(), params.iv.end());
+   securityParams.key.assign(params.key.begin(), params.key.end());
    return *this;
 }
 
@@ -164,7 +165,7 @@ IDevice *DeviceBuilder::build(const std::string name, std::array<byte, RM_ID_LEN
    }
 
    if (blueprint.usesCrypto) {
-      build_error = device->initializeAesCrypto(aesKey, aesIV);
+      build_error = device->initializeAesCrypto(securityParams);
       if (build_error != RM_E_NONE) {
          logerr_ln("ERROR: Aes crypto initialization failed. [%d]", build_error);
          destroyDevice(device);

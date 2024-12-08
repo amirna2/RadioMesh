@@ -61,6 +61,10 @@ int OledDisplay::drawString(uint8_t x, uint8_t y, const char* text)
       return RM_E_DISPLAY_NOT_SETUP;
    }
    int res = u8g2->drawStr(x, y, text);
+   if (res == 0) {
+      logerr_ln("ERROR  failed to draw string");
+      return RM_E_DISPLAY_DRAW_STRING;
+   }
    // TODO: should we have a deffered sendBuffer()?
    // Maybe a flag to indicate that the buffer should be sent after a drawString() call?
    u8g2->sendBuffer();

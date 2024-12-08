@@ -6,6 +6,8 @@
 #include <common/inc/Definitions.h>
 #include <framework/interfaces/IAesCrypto.h>
 
+
+
 /***
  * @class AesCrypto class
  * @brief This class provides AES encryption and decryption functionality.
@@ -14,6 +16,8 @@
 class AesCrypto: public IAesCrypto
 {
 public:
+   static const uint8_t AES_KEY_SIZE = 32;
+   static const uint8_t AES_IV_SIZE = 16;
 
    static AesCrypto *getInstance()
    {
@@ -26,22 +30,19 @@ public:
    virtual ~AesCrypto() = default;
 
    // IAesCrypto interface
-   virtual void setKey(const std::vector<byte>& key) override;
-   virtual const std::vector<byte> getKey() override;
-   virtual const std::vector<byte> generateKey(size_t keySize) override;
-   virtual void setIV(const std::vector<byte>& iv) override;
-   virtual const std::vector<byte> getIV() override;
+   virtual int resetSecurityParams(const SecurityParams &params) override;
    virtual std::vector<byte> encrypt(const std::vector<byte>& clearData) override;
    virtual std::vector<byte> decrypt(const std::vector<byte>& encryptedData) override;
 
-   // AesCrypto specific
-   int setParams(const std::vector<byte>& key, const std::vector<byte>& iv);
+   int setParams(const SecurityParams &params);
+
 private:
    AesCrypto() {}
    AesCrypto(const AesCrypto &) = delete;
    void operator=(const AesCrypto &) = delete;
    static AesCrypto *instance;
+   SecurityParams securityParams;
 
-   std::vector<byte> key;
-   std::vector<byte> iv;
+   const uint8_t AES_BLOCK_SIZE = 16;
+   const uint8_t AES_COUNTER_SIZE = 4;
 };

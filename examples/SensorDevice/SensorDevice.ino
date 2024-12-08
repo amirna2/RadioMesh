@@ -26,6 +26,8 @@ auto timer = timer_create_default();
 const int INTERVAL_MS = 15000;
 uint32_t counter = 1000;
 
+SecurityParams securityParams(key, iv, SecurityMethod::AES);
+
 // convert a vector of bytes to a hex string
 std::string toHex(const byte *data, int size)
 {
@@ -165,7 +167,9 @@ void setup()
                    .withLoraRadio(radioParams)
                    .withRelayEnabled(false)
                    .withRxPacketCallback(RxCallback)
-                   .withAesCrypto(key, iv)
+                   .withTxPacketCallback(TxCallback)
+                   .withWifi(wifiParams)
+                   .withSecureMessaging(securityParams)
 #ifdef USE_DISPLAY
                    .withOledDisplay(displayParams)
 #endif
