@@ -33,9 +33,9 @@ Additionally, RadioMesh provides an developer friendly framework for building me
 - Easy-to-use builder pattern for device configuration
 
 ### Currently Supported Boards
-- Heltec Wifi Lora 32 v3
-- Seeed Studio Xiao ESP32 WIO-SX1262
-- Heltec CubeCell ASR650X series, e.g: CubeCell Board v2, CubeCell Board Plus,...
+- [Heltec Wifi Lora 32 v3](https://heltec.org/project/wifi-lora-32-v3/) ESP32S3 with OLED display and SX1262 radio
+- [Seeed Studio Xiao ESP32 WIO-SX1262](https://wiki.seeedstudio.com/wio_sx1262_with_xiao_esp32s3_kit/) Thumb size ESP32S3 board with SX1262 radio
+- [Heltec CubeCell](https://heltec.org/project/htcc-ab01-v2/) ASR650X series with SX1262 radio , e.g: CubeCell Board v2, CubeCell Board Plus,...
 
 ## Steps To Get Started
 - Install VSCode
