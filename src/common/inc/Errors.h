@@ -131,12 +131,12 @@
 #define RM_E_DISPLAY_SETUP                        (-201)
 
 /**
- * @brief The display failed to display.
+ * @brief The display operation failed to complete.
 */
 #define RM_E_DISPLAY_FAILURE                      (-202)
 
 /**
- * @brief The display is not setup.
+ * @brief The display is not setup. Call setup() first.
  */
 #define RM_E_DISPLAY_NOT_SETUP                    (-203)
 
@@ -145,18 +145,30 @@
  */
 #define RM_E_DISPLAY_INVALID_FONT                 (-204)
 
-
-/**
- * @brief The display parameters are invalid.
-
-*/
-#define RM_E_INVALID_DISPLAY_PARAMS               (-205)
-
-
 /**
  * @brief The display failed to draw string.
  */
-#define RM_E_DISPLAY_DRAW_STRING                  (-206)
+#define RM_E_DISPLAY_DRAW_STRING                  (-205)
+
+/**
+ * @brief The display failed to draw number.
+ */
+#define RM_E_DISPLAY_DRAW_NUMBER                  (-206)
+
+/**
+ * @brief The display coordinates are invalid/out of bounds.
+ */
+#define RM_E_DISPLAY_INVALID_COORDS               (-207)
+
+/**
+ * @brief The display rotation is invalid.
+ */
+#define RM_E_DISPLAY_INVALID_ROTATION             (-208)
+
+/**
+ * @brief The display brightness is invalid.
+ */
+#define RM_E_DISPLAY_INVALID_BRIGHTNESS           (-209)
 
 /**
  * @brief SSID in not available.

@@ -67,28 +67,42 @@ IDisplay *RadioMeshDevice::getDisplay()
    return nullptr;
 }
 #else
+
+int RadioMeshDevice::setCustomDisplay(IDisplay *display)
+{
+   if (display == nullptr) {
+      logerr_ln("Custom display cannot be null");
+      return RM_E_INVALID_PARAM;
+   }
+   this->customDisplay = display; // Use the provided custom display
+   return RM_E_NONE;
+}
+
 int RadioMeshDevice::initializeOledDisplay(OledDisplayParams displayParams)
 {
    int rc = RM_E_NONE;
 
-   display = OledDisplay::getInstance();
+   oledDisplay = OledDisplay::getInstance();
 
-   if (display == nullptr) {
+   if (oledDisplay == nullptr) {
       logerr_ln("Failed to create display");
       return RM_E_UNKNOWN;
    }
 
-   rc = display->setParams(displayParams);
+   rc = oledDisplay->setParams(displayParams);
    if (rc != RM_E_NONE) {
       logerr_ln("Failed to set display params");
-      display = nullptr;
+      oledDisplay = nullptr;
    }
    return rc;
 }
 
 IDisplay *RadioMeshDevice::getDisplay()
 {
-   return display;
+   if (customDisplay != nullptr) {
+      return customDisplay;
+   }
+   return oledDisplay;
 }
 #endif // RM_NO_DISPLAY
 
