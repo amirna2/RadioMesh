@@ -6,7 +6,6 @@
   <img src="https://github.com/amirna2/RadioMesh/actions/workflows/main_ci.yml/badge.svg" alt="Build Status">
 </p>
 
-
 # RadioMesh
 A library for building wide area mesh networks of embedded devices using long range radios.
 Perfect for sensor networks, IoT applications, and remote control/monitoring systems.
@@ -38,5 +37,19 @@ Additionally, RadioMesh provides an developer friendly framework for building me
 - Seeed Studio Xiao ESP32 WIO-SX1262
 - Heltec CubeCell ASR650X series, e.g: CubeCell Board v2, CubeCell Board Plus,...
 
+### Steps To Get Started
+- Install VSCode
+- Install PlatformIO IDE
+- Connect a board to your PC USB e.g [Heltec WiFi LoRa 32 V3](https://heltec.org/project/wifi-lora-32-v3/)
+- Clone the project: `git clone https://github.com/amirna2/RadioMesh`
+- From the project root
+  - Navigate to the [SensorDevice](https://github.com/amirna2/RadioMesh/tree/main/examples/SensorDevice) example
+  - Update the `device_config_example.h` as indicated.
+  - Switch the `env.lib_deps` to use the local library: `${radio_mesh.local}`
+  - Build and Deploy the example to the board: `../tools/builder.py build -t heltec_wifi_lora_32_V3 --clean --deploy`
+- Open a serial terminal and check the output. The device will initialize and start sending a simple counter message periodically
+- Repeat the build/deploy steps with the [HubDevice](https://github.com/amirna2/RadioMesh/tree/main/examples/HubDevice) example to setup a device-to-device communication
+
+    
 ## Contributing
 RadioMesh welcomes contributions! Whether you're interested in adding new features, fixing bugs, improving documentation, or sharing example applications, check out the [Contributing Guide](CONTRIBUTING.md) to get started.
