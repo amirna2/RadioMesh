@@ -90,7 +90,7 @@ $(document).ready(function(){initNavTree('class_i_display.html',''); initResizab
 </div><!--header-->
 <div class="contents">
 
-<p>This class is an interface for a display.  
+<p>Interface for display implementations in the RadioMesh framework.  
  <a href="class_i_display.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_i_display_8h_source.html">IDisplay.h</a>&gt;</code></p>
@@ -107,7 +107,7 @@ Inheritance diagram for IDisplay:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa70bac13812b8b0b1c143cf649de5358"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_display.html#aa70bac13812b8b0b1c143cf649de5358">setup</a> ()=0</td></tr>
-<tr class="memdesc:aa70bac13812b8b0b1c143cf649de5358"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setup the display with the currently stored parameters.  <a href="class_i_display.html#aa70bac13812b8b0b1c143cf649de5358">More...</a><br /></td></tr>
+<tr class="memdesc:aa70bac13812b8b0b1c143cf649de5358"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the display hardware.  <a href="class_i_display.html#aa70bac13812b8b0b1c143cf649de5358">More...</a><br /></td></tr>
 <tr class="separator:aa70bac13812b8b0b1c143cf649de5358"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70448a16019450d38cb728b94d35e205"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_display.html#a70448a16019450d38cb728b94d35e205">powerSave</a> (bool save)=0</td></tr>
 <tr class="memdesc:a70448a16019450d38cb728b94d35e205"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the display into standby mode.  <a href="class_i_display.html#a70448a16019450d38cb728b94d35e205">More...</a><br /></td></tr>
@@ -145,10 +145,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab7889733495189ac11cf92a732f51a60"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_display.html#ab7889733495189ac11cf92a732f51a60">setFont</a> (uint8_t fontId)=0</td></tr>
 <tr class="memdesc:ab7889733495189ac11cf92a732f51a60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the font of the display.  <a href="class_i_display.html#ab7889733495189ac11cf92a732f51a60">More...</a><br /></td></tr>
 <tr class="separator:ab7889733495189ac11cf92a732f51a60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0dca8ccc1ccbb0ec0727d127197a0342"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_display.html#a0dca8ccc1ccbb0ec0727d127197a0342">setBrightness</a> (uint8_t level)=0</td></tr>
+<tr class="memdesc:a0dca8ccc1ccbb0ec0727d127197a0342"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the parameters of the display.  <a href="class_i_display.html#a0dca8ccc1ccbb0ec0727d127197a0342">More...</a><br /></td></tr>
+<tr class="separator:a0dca8ccc1ccbb0ec0727d127197a0342"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af73d2a06a3b55a4223083e3ae288afc2"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_display.html#af73d2a06a3b55a4223083e3ae288afc2">setRotation</a> (uint8_t rotation)=0</td></tr>
+<tr class="memdesc:af73d2a06a3b55a4223083e3ae288afc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the rotation of the display.  <a href="class_i_display.html#af73d2a06a3b55a4223083e3ae288afc2">More...</a><br /></td></tr>
+<tr class="separator:af73d2a06a3b55a4223083e3ae288afc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>This class is an interface for a display. </p>
-<p>It provides the structure for setting up the display component of a device. Use this interface to create specialized display components such as OLED, E-Ink, etc. </p>
+<div class="textblock"><p>Interface for display implementations in the RadioMesh framework. </p>
+<p>This interface defines the contract for display implementations. Custom display implementations must use the standard RM_E_* error codes to maintain consistent error handling throughout the system. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a18d6fbd4f1e1eae404fcd9bdda9d1ead"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a18d6fbd4f1e1eae404fcd9bdda9d1ead">&#9670;&nbsp;</a></span>clear()</h2>
@@ -174,7 +180,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Clear the display buffer. </p>
-<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the display buffer was successfully cleared, an error code otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE Success. A RadioMesh error (RM_E_*) code on failure. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_oled_display.html#ab53a337ac922c0eaf50f092921bc394c">OledDisplay</a>.</p>
 
@@ -229,7 +235,7 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the number was successfully drawn, an error code otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE Success. A RadioMesh error (RM_E_*) code on failure. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_oled_display.html#a56636cc8001fd76f98f8082b965406f9">OledDisplay</a>.</p>
 
@@ -285,7 +291,7 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the string was successfully drawn, an error code otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE Success. A RadioMesh error (RM_E_*) code on failure. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_oled_display.html#a93ef454381c4960ca191036c7500cdde">OledDisplay</a>.</p>
 
@@ -341,7 +347,7 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the string was successfully drawn, an error code otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE Success. A RadioMesh error (RM_E_*) code on failure. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_oled_display.html#a0b81ffa5703dbaad8c329e8416cc4690">OledDisplay</a>.</p>
 
@@ -371,7 +377,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Send the display buffer to the display. </p>
-<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the display buffer was successfully sent, an error code otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE Success. A RadioMesh error (RM_E_*) code on failure. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_oled_display.html#a66196b7ec5d4426a32376b1e63dd3c66">OledDisplay</a>.</p>
 
@@ -468,7 +474,7 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the display was successfully put into standby mode, an error code otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE Success. A RadioMesh error (RM_E_*) code on failure. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_oled_display.html#a7840f62a06f0cbdd4838f348ff77c9f6">OledDisplay</a>.</p>
 
@@ -505,9 +511,46 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the text was successfully printed, an error code otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE Success. A RadioMesh error (RM_E_*) code on failure. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_oled_display.html#a374e6acc3036a44c832ff2126df2db11">OledDisplay</a>.</p>
+
+</div>
+</div>
+<a id="a0dca8ccc1ccbb0ec0727d127197a0342"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dca8ccc1ccbb0ec0727d127197a0342">&#9670;&nbsp;</a></span>setBrightness()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual int IDisplay::setBrightness </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>level</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the parameters of the display. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">params</td><td>The parameters to set. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE Success. A RadioMesh error (RM_E_*) code on failure. </dd></dl>
+
+<p>Implemented in <a class="el" href="class_oled_display.html#a349de9718e31c89c628f6ec5973e4c85">OledDisplay</a>.</p>
 
 </div>
 </div>
@@ -553,7 +596,7 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the cursor was successfully set, an error code otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE Success. A RadioMesh error (RM_E_*) code on failure. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_oled_display.html#a08f115335062517dc9bee6cca5598394">OledDisplay</a>.</p>
 
@@ -590,9 +633,46 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the font was successfully set, an error code otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE Success. A RadioMesh error (RM_E_*) code on failure. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_oled_display.html#aef11037391d4b4dcf060e6ccc43cd0a1">OledDisplay</a>.</p>
+
+</div>
+</div>
+<a id="af73d2a06a3b55a4223083e3ae288afc2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af73d2a06a3b55a4223083e3ae288afc2">&#9670;&nbsp;</a></span>setRotation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual int IDisplay::setRotation </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>rotation</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the rotation of the display. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rotation</td><td>The rotation to set. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE Success. A RadioMesh error (RM_E_*) code on failure. </dd></dl>
+
+<p>Implemented in <a class="el" href="class_oled_display.html#acbd7483a43bcbcc33d88b67999c65dd0">OledDisplay</a>.</p>
 
 </div>
 </div>
@@ -619,8 +699,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Setup the display with the currently stored parameters. </p>
-<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the display was successfully setup, an error code otherwise. </dd></dl>
+<p>Initialize the display hardware. </p>
+<p>Must be called after device configuration but before any display operations. Performs actual hardware initialization.</p>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE Success. A RadioMesh error (RM_E_*) code on failure. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_oled_display.html#a4bdb648cce54914378ccd3dfe98197c5">OledDisplay</a>.</p>
 
@@ -650,7 +731,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Show the splash screen on the display. </p>
-<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the splash screen was successfully shown, an error code otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE Success. A RadioMesh error (RM_E_*) code on failure. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_oled_display.html#a4b2aea09aa50c7db4db66f4e2af1e411">OledDisplay</a>.</p>
 

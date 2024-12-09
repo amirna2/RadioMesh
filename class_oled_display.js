@@ -10,9 +10,11 @@ var class_oled_display =
     [ "getWidth", "class_oled_display.html#a462467bae203ed4b45afed91c002f752", null ],
     [ "powerSave", "class_oled_display.html#a7840f62a06f0cbdd4838f348ff77c9f6", null ],
     [ "print", "class_oled_display.html#a374e6acc3036a44c832ff2126df2db11", null ],
+    [ "setBrightness", "class_oled_display.html#a349de9718e31c89c628f6ec5973e4c85", null ],
     [ "setCursor", "class_oled_display.html#a08f115335062517dc9bee6cca5598394", null ],
     [ "setFont", "class_oled_display.html#aef11037391d4b4dcf060e6ccc43cd0a1", null ],
     [ "setParams", "class_oled_display.html#a1b3e4eec1935b997fe96add108f6f86a", null ],
+    [ "setRotation", "class_oled_display.html#acbd7483a43bcbcc33d88b67999c65dd0", null ],
     [ "setup", "class_oled_display.html#a4bdb648cce54914378ccd3dfe98197c5", null ],
     [ "showSplashScreen", "class_oled_display.html#a4b2aea09aa50c7db4db66f4e2af1e411", null ]
 ];

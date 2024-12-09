@@ -112,9 +112,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5d9ccccd560c3efc170fad6e79f431bc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_device_builder.html">DeviceBuilder</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_device_builder.html#a5d9ccccd560c3efc170fad6e79f431bc">withTxPacketCallback</a> (PacketSentCallback callback)</td></tr>
 <tr class="memdesc:a5d9ccccd560c3efc170fad6e79f431bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a callback for transmitted packets.  <a href="class_device_builder.html#a5d9ccccd560c3efc170fad6e79f431bc">More...</a><br /></td></tr>
 <tr class="separator:a5d9ccccd560c3efc170fad6e79f431bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9f3d7c3abd49fe32d21ffce32a480c7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_device_builder.html">DeviceBuilder</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_device_builder.html#aa9f3d7c3abd49fe32d21ffce32a480c7">withAesCrypto</a> (const std::vector&lt; byte &gt; &amp;key, const std::vector&lt; byte &gt; &amp;iv)</td></tr>
-<tr class="memdesc:aa9f3d7c3abd49fe32d21ffce32a480c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add <a class="el" href="class_aes_crypto.html">AesCrypto</a> to the device with the given key and IV.  <a href="class_device_builder.html#aa9f3d7c3abd49fe32d21ffce32a480c7">More...</a><br /></td></tr>
-<tr class="separator:aa9f3d7c3abd49fe32d21ffce32a480c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0802dfd7344dd25df0726d190adddbb0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_device_builder.html">DeviceBuilder</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_device_builder.html#a0802dfd7344dd25df0726d190adddbb0">withOledDisplay</a> (const <a class="el" href="class_oled_display_params.html">OledDisplayParams</a> &amp;params)</td></tr>
 <tr class="memdesc:a0802dfd7344dd25df0726d190adddbb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add an OLED display to the device with the given parameters.  <a href="class_device_builder.html#a0802dfd7344dd25df0726d190adddbb0">More...</a><br /></td></tr>
 <tr class="separator:a0802dfd7344dd25df0726d190adddbb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -130,6 +127,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa61d6d7675735dd594eb6e7ce676936a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_device_builder.html">DeviceBuilder</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_device_builder.html#aa61d6d7675735dd594eb6e7ce676936a">withSecureMessaging</a> (const <a class="el" href="struct_security_params.html">SecurityParams</a> &amp;params)</td></tr>
 <tr class="memdesc:aa61d6d7675735dd594eb6e7ce676936a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add secure messaging to the device with the given parameters.  <a href="class_device_builder.html#aa61d6d7675735dd594eb6e7ce676936a">More...</a><br /></td></tr>
 <tr class="separator:aa61d6d7675735dd594eb6e7ce676936a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff75a57ab4bd434f2ead9f7ab2c1e19c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_device_builder.html">DeviceBuilder</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_device_builder.html#aff75a57ab4bd434f2ead9f7ab2c1e19c">withCustomDisplay</a> (<a class="el" href="class_i_display.html">IDisplay</a> *display)</td></tr>
+<tr class="memdesc:aff75a57ab4bd434f2ead9f7ab2c1e19c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a custom display to the device.  <a href="class_device_builder.html#aff75a57ab4bd434f2ead9f7ab2c1e19c">More...</a><br /></td></tr>
+<tr class="separator:aff75a57ab4bd434f2ead9f7ab2c1e19c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a705c01d70489a8eb94b2ab9eb49d8a51"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_i_device.html">IDevice</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_device_builder.html#a705c01d70489a8eb94b2ab9eb49d8a51">build</a> (const std::string name, std::array&lt; byte, <a class="el" href="_definitions_8h.html#a6349283678d1d5eb8b4fc6442d1b2ad0">RM_ID_LENGTH</a> &gt; id, <a class="el" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7f">MeshDeviceType</a> deviceType=<a class="el" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c">MeshDeviceType::UNKNOWN</a>)</td></tr>
 <tr class="memdesc:a705c01d70489a8eb94b2ab9eb49d8a51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Build the device.  <a href="class_device_builder.html#a705c01d70489a8eb94b2ab9eb49d8a51">More...</a><br /></td></tr>
 <tr class="separator:a705c01d70489a8eb94b2ab9eb49d8a51"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -232,37 +232,26 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa9f3d7c3abd49fe32d21ffce32a480c7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa9f3d7c3abd49fe32d21ffce32a480c7">&#9670;&nbsp;</a></span>withAesCrypto()</h2>
+<a id="aff75a57ab4bd434f2ead9f7ab2c1e19c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff75a57ab4bd434f2ead9f7ab2c1e19c">&#9670;&nbsp;</a></span>withCustomDisplay()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_device_builder.html">DeviceBuilder</a>&amp; DeviceBuilder::withAesCrypto </td>
+          <td class="memname"><a class="el" href="class_device_builder.html">DeviceBuilder</a> &amp; DeviceBuilder::withCustomDisplay </td>
           <td>(</td>
-          <td class="paramtype">const std::vector&lt; byte &gt; &amp;&#160;</td>
-          <td class="paramname"><em>key</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype"><a class="el" href="class_i_display.html">IDisplay</a> *&#160;</td>
+          <td class="paramname"><em>display</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; byte &gt; &amp;&#160;</td>
-          <td class="paramname"><em>iv</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Add <a class="el" href="class_aes_crypto.html">AesCrypto</a> to the device with the given key and IV. </p>
+<p>Add a custom display to the device. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">key</td><td>The key for the <a class="el" href="class_aes_crypto.html">AesCrypto</a> </td></tr>
-    <tr><td class="paramname">iv</td><td>The IV for the <a class="el" href="class_aes_crypto.html">AesCrypto</a> </td></tr>
+    <tr><td class="paramname">display</td><td>The custom display to add </td></tr>
   </table>
   </dd>
 </dl>

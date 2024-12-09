@@ -10,8 +10,10 @@ var class_i_display =
     [ "getWidth", "class_i_display.html#a53848e665745ac2bec8236627e174469", null ],
     [ "powerSave", "class_i_display.html#a70448a16019450d38cb728b94d35e205", null ],
     [ "print", "class_i_display.html#a4f4a0ab9e42bef85b472ac5db9ac04a4", null ],
+    [ "setBrightness", "class_i_display.html#a0dca8ccc1ccbb0ec0727d127197a0342", null ],
     [ "setCursor", "class_i_display.html#a5c5bac7389b41c31f83b01d174cf7b6b", null ],
     [ "setFont", "class_i_display.html#ab7889733495189ac11cf92a732f51a60", null ],
+    [ "setRotation", "class_i_display.html#af73d2a06a3b55a4223083e3ae288afc2", null ],
     [ "setup", "class_i_display.html#aa70bac13812b8b0b1c143cf649de5358", null ],
     [ "showSplashScreen", "class_i_display.html#ae9ac60edbe7ebf1687275c45e93e1d38", null ]
 ];

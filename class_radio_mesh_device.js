@@ -29,5 +29,6 @@ var class_radio_mesh_device =
     [ "sendData", "class_radio_mesh_device.html#a5f316931f893f1320c39727b6f379c78", null ],
     [ "sendInclusionOpen", "class_radio_mesh_device.html#a20d0f7edf24604272a218baca05b0c89", null ],
     [ "sendInclusionRequest", "class_radio_mesh_device.html#aa4d4fb680f749143e6ab2d2fb10238bb", null ],
+    [ "setCustomDisplay", "class_radio_mesh_device.html#a1aa74113031cd886d047c95491766b3a", null ],
     [ "setDeviceType", "class_radio_mesh_device.html#ab586ea6da9e70b01081d7e95b046fdf7", null ]
 ];

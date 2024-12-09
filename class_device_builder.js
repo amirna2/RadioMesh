@@ -4,7 +4,7 @@ var class_device_builder =
     [ "build", "class_device_builder.html#a705c01d70489a8eb94b2ab9eb49d8a51", null ],
     [ "getBlueprint", "class_device_builder.html#af9c67f46c105687119217d863a0d5a70", null ],
     [ "start", "class_device_builder.html#abaa8674b067a6dd270e1c576ee1e29e8", null ],
-    [ "withAesCrypto", "class_device_builder.html#aa9f3d7c3abd49fe32d21ffce32a480c7", null ],
+    [ "withCustomDisplay", "class_device_builder.html#aff75a57ab4bd434f2ead9f7ab2c1e19c", null ],
     [ "withLoraRadio", "class_device_builder.html#aaa9f0ea443a483b4ceb5e870fd6c5a0e", null ],
     [ "withOledDisplay", "class_device_builder.html#a0802dfd7344dd25df0726d190adddbb0", null ],
     [ "withRelayEnabled", "class_device_builder.html#a1b17544efa3c840d7a04105cc2ebd773", null ],

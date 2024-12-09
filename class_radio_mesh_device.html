@@ -173,6 +173,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2c0acfde48c00a73f5307253448e6b89"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_radio_mesh_device.html#a2c0acfde48c00a73f5307253448e6b89">initializeOledDisplay</a> (<a class="el" href="class_oled_display_params.html">OledDisplayParams</a> displayParams)</td></tr>
 <tr class="memdesc:a2c0acfde48c00a73f5307253448e6b89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the OLED display with the given parameters.  <a href="class_radio_mesh_device.html#a2c0acfde48c00a73f5307253448e6b89">More...</a><br /></td></tr>
 <tr class="separator:a2c0acfde48c00a73f5307253448e6b89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1aa74113031cd886d047c95491766b3a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_radio_mesh_device.html#a1aa74113031cd886d047c95491766b3a">setCustomDisplay</a> (<a class="el" href="class_i_display.html">IDisplay</a> *display)</td></tr>
+<tr class="memdesc:a1aa74113031cd886d047c95491766b3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the custom display.  <a href="class_radio_mesh_device.html#a1aa74113031cd886d047c95491766b3a">More...</a><br /></td></tr>
+<tr class="separator:a1aa74113031cd886d047c95491766b3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2b8e17bc24488a15ada3dbb83bef739"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_radio_mesh_device.html#ab2b8e17bc24488a15ada3dbb83bef739">initializeAesCrypto</a> (const <a class="el" href="struct_security_params.html">SecurityParams</a> &amp;securityParams)</td></tr>
 <tr class="memdesc:ab2b8e17bc24488a15ada3dbb83bef739"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the crypto component.  <a href="class_radio_mesh_device.html#ab2b8e17bc24488a15ada3dbb83bef739">More...</a><br /></td></tr>
 <tr class="separator:ab2b8e17bc24488a15ada3dbb83bef739"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1034,6 +1037,33 @@ RM_E_INVALID_STATE if device already included </dd>
 RM_E_INVALID_DEVICE_TYPE if device is a HUB </dd></dl>
 
 <p>Implements <a class="el" href="class_i_device.html#ac0a5a565b9e0e9a7fe55b41c66d21f55">IDevice</a>.</p>
+
+</div>
+</div>
+<a id="a1aa74113031cd886d047c95491766b3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1aa74113031cd886d047c95491766b3a">&#9670;&nbsp;</a></span>setCustomDisplay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int RadioMeshDevice::setCustomDisplay </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_i_display.html">IDisplay</a> *&#160;</td>
+          <td class="paramname"><em>display</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the custom display. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">display</td><td><a class="el" href="class_i_display.html" title="Interface for display implementations in the RadioMesh framework.">IDisplay</a> object to set </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the display was successfully set, an error code otherwise. </dd></dl>
 
 </div>
 </div>

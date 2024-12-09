@@ -51,8 +51,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_aes_crypto_8h_source.html",
-"class_oled_display_params.html#a386e57cebf4ef546eafb7529a4f12649",
-"group__error__codes.html#gae13846a9f68a71560eade8131bbd1837"
+"class_oled_display.html#acbd7483a43bcbcc33d88b67999c65dd0",
+"group__error__codes.html#gab3d25ce0f7b2ea77c76489b5ceeb0b80"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
