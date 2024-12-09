@@ -37,7 +37,7 @@ Additionally, RadioMesh provides an developer friendly framework for building me
 - Seeed Studio Xiao ESP32 WIO-SX1262
 - Heltec CubeCell ASR650X series, e.g: CubeCell Board v2, CubeCell Board Plus,...
 
-### Steps To Get Started
+## Steps To Get Started
 - Install VSCode
 - Install PlatformIO IDE
 - Connect a board to your PC USB e.g [Heltec WiFi LoRa 32 V3](https://heltec.org/project/wifi-lora-32-v3/)
@@ -49,6 +49,7 @@ Additionally, RadioMesh provides an developer friendly framework for building me
   - Build and Deploy the example to the board: `../tools/builder.py build -t heltec_wifi_lora_32_V3 --clean --deploy`
 - Open a serial terminal and check the output. The device will initialize and start sending a simple counter message periodically
 - Repeat the build/deploy steps with the [HubDevice](https://github.com/amirna2/RadioMesh/tree/main/examples/HubDevice) example to setup a device-to-device communication
+- Detailed instructions are in the [Wiki](https://github.com/amirna2/RadioMesh/wiki/Getting-Started)
 
     
 ## Contributing
