@@ -1,7 +1,7 @@
 {
     "name": "RadioMesh",
     "keywords": "mesh-network, long-range, low-power, radio, protocol, toolkit, wireless, networking, iot, esp32, arduino",
-    "description": "A library for building low-power, long-range IoT mesh networks using embedded radio devices.",
+    "description": "A library for building wide area mesh networks of embedded devices using long range radios.",
 
     "authors":
     {
@@ -10,7 +10,7 @@
         "url": "https://github.com/amirna2/RadioMesh",
         "maintainer": true
     },
-    "version": "0.0.7",
+    "version": "0.0.8",
     "repository":
     {
         "type": "git",
