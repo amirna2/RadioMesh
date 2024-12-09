@@ -57,14 +57,6 @@ public:
    DeviceBuilder &withTxPacketCallback(PacketSentCallback callback);
 
    /**
-    * @brief Add AesCrypto to the device with the given key and IV
-    * @param key The key for the AesCrypto
-    * @param iv The IV for the AesCrypto
-    * @return A reference to the updated builder
-   */
-   DeviceBuilder &withAesCrypto(const std::vector<byte>& key, const std::vector<byte>& iv);
-
-   /**
     * @brief Add an OLED display to the device with the given parameters
     * @param params The parameters for the OLED display
     * @return A reference to the updated builder
@@ -103,6 +95,13 @@ public:
    DeviceBuilder& withSecureMessaging(const SecurityParams &params);
 
    /**
+    * @brief Add a custom display to the device
+    * @param display The custom display to add
+    * @return A reference to the updated builder
+   */
+   DeviceBuilder& withCustomDisplay(IDisplay *display);
+
+   /**
     * @brief Build the device
     * @param name The name of the device
     * @param id The ID of the device
@@ -128,13 +127,16 @@ private:
    // Device parameters
    LoraRadioParams radioParams;
    SecurityParams securityParams;
-   bool relayEnabled = false;
-   PacketReceivedCallback rxCallback = nullptr;
-   PacketSentCallback txCallback = nullptr;
    OledDisplayParams oledDisplayParams;
    WifiParams wifiParams = WifiParams();
    WifiAccessPointParams wifiAPParams = WifiAccessPointParams();
    ByteStorageParams storageParams;
+
+   bool relayEnabled = false;
+   PacketReceivedCallback rxCallback = nullptr;
+   PacketSentCallback txCallback = nullptr;
+   IDisplay* customDisplay = nullptr;
+   bool useCustomDisplay = false;
 
    void destroyDevice(IDevice *device) {
       if (device != nullptr) {

@@ -45,8 +45,12 @@ public:
    uint8_t getWidth() override { return 0; }
    uint8_t getHeight() override { return 0; }
    int setFont(uint8_t fontId) override { return RM_E_NOT_SUPPORTED; }
-   int setParams(const OledDisplayParams& params) { return RM_E_NOT_SUPPORTED; }
    int drawNumber(uint8_t x, uint8_t y, int number) override { return RM_E_NOT_SUPPORTED; }
+
+   int setParams(const OledDisplayParams& params) { return RM_E_NOT_SUPPORTED; }
+   int setBrightness(uint8_t brightness) override { return RM_E_NOT_SUPPORTED; }
+   int setRotation(uint8_t rotation) override { return RM_E_NOT_SUPPORTED; }
+
 #else
    int setup() override;
    int powerSave(bool save) override;
@@ -61,6 +65,10 @@ public:
    uint8_t getHeight() override;
    int setFont(uint8_t fontId) override;
    int drawNumber(uint8_t x, uint8_t y, int number) override;
+
+   int setBrightness(uint8_t brightness) override { return RM_E_NOT_SUPPORTED; }
+   int setRotation(uint8_t rotation) override { return RM_E_NOT_SUPPORTED; }
+
    int setParams(const OledDisplayParams& params);
 #endif
 

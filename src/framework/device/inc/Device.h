@@ -37,7 +37,7 @@ public:
       wifiAccessPoint = nullptr;
 #endif
 #ifndef RM_NO_DISPLAY
-      display = nullptr;
+      oledDisplay = nullptr;
 #endif
       }
 
@@ -117,6 +117,14 @@ public:
    int initializeOledDisplay(OledDisplayParams displayParams);
 
    /**
+    * @brief Set the custom display
+    *
+    * @param display IDisplay object to set
+    * @return RM_E_NONE if the display was successfully set, an error code otherwise.
+    */
+   int setCustomDisplay(IDisplay *display);
+
+   /**
     * @brief Initialize the crypto component
     *
     * @return int RM_E_NONE if the crypto component was successfully initialized, an error code otherwise.
@@ -167,7 +175,8 @@ private:
    EEPROMStorage* eepromStorage = nullptr;
 
 #ifndef RM_NO_DISPLAY
-   OledDisplay* display = nullptr;
+   OledDisplay* oledDisplay = nullptr;
+   IDisplay* customDisplay = nullptr;
 #endif
 
 #ifndef RM_NO_WIFI

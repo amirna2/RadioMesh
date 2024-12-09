@@ -76,8 +76,19 @@ DeviceBuilder &DeviceBuilder::withOledDisplay(const OledDisplayParams &params)
    loginfo_ln("Setting OLED display params");
    blueprint.hasDisplay = true;
    oledDisplayParams = params;
+   useCustomDisplay = true;
+
    return *this;
 }
+
+DeviceBuilder &DeviceBuilder::withCustomDisplay(IDisplay* display)
+{
+   blueprint.hasDisplay = true;
+   useCustomDisplay = true;
+   customDisplay = display;
+   return *this;
+}
+
 
 DeviceBuilder &DeviceBuilder::withWifi(const WifiParams &params)
 {
@@ -175,13 +186,23 @@ IDevice *DeviceBuilder::build(const std::string name, std::array<byte, RM_ID_LEN
    }
 
    if (blueprint.hasDisplay) {
-      build_error = device->initializeOledDisplay(oledDisplayParams);
-      if (build_error != RM_E_NONE) {
-         logerr_ln("ERROR: Failed to create display [%d]", build_error);
-         destroyDevice(device);
-         return nullptr;
+      if (useCustomDisplay) {
+         if (customDisplay == nullptr) {
+            logerr_ln("ERROR: Custom display cannot be null.");
+            destroyDevice(device);
+            return nullptr;
+         }
+         device->setCustomDisplay(customDisplay);
+         logdbg_ln("Custom display initialized.");
+      } else {
+         build_error = device->initializeOledDisplay(oledDisplayParams);
+         if (build_error != RM_E_NONE) {
+            logerr_ln("ERROR: Failed to create display [%d]", build_error);
+            destroyDevice(device);
+            return nullptr;
+         }
+         logdbg_ln("OLED display initialized.");
       }
-      logdbg_ln("Display initialized.");
    }
 
    if (blueprint.hasWifi) {

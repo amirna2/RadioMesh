@@ -32,7 +32,7 @@ int OledDisplay::setup() {
    }
 
    u8g2->clearDisplay();
-   drawString(5, 40, "W.A.R.P. SDK");
+   drawString(5, 40, "RadioMesh");
    drawString(5, 54, "v" + RadioMeshUtils::getVersion());
 
    width = u8g2->getCols();
@@ -142,8 +142,9 @@ uint8_t OledDisplay::getHeight() {
 
 int OledDisplay::setFont(uint8_t fontId) {
    if (u8g2 == nullptr) {
-      return RM_E_UNKNOWN;
+      return RM_E_DISPLAY_NOT_SETUP;
    }
+
    if (fontId == RM_FONT_TINY) {
       u8g2->setFont(u8g2_font_5x7_tf);
    } else if (fontId == RM_FONT_SMALL) {
@@ -155,7 +156,7 @@ int OledDisplay::setFont(uint8_t fontId) {
    } else if (fontId == RM_FONT_BATTERY) {
       u8g2->setFont(u8g2_font_battery19_tn);
    } else {
-      return RM_E_INVALID_PARAM;
+      return RM_E_DISPLAY_INVALID_FONT;
    }
    return RM_E_NONE;
 }
