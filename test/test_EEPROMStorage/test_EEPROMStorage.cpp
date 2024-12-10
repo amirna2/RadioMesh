@@ -1,10 +1,9 @@
-#include <unity.h>
 #include <RadioMesh.h>
+#include <unity.h>
 
+auto storage = EEPROMStorage::getInstance();
 
-auto storage =  EEPROMStorage::getInstance();
-
-EEPROMStorage* initStorage(int size=128)
+EEPROMStorage* initStorage(int size = 128)
 {
    ByteStorageParams params;
    TEST_ASSERT_NOT_NULL(storage);
@@ -15,7 +14,7 @@ EEPROMStorage* initStorage(int size=128)
    TEST_ASSERT_EQUAL(RM_E_STORAGE_INVALID_SIZE, storage->setParams(params));
    params.size = size;
    TEST_ASSERT_EQUAL(RM_E_NONE, storage->setParams(params));
-   TEST_ASSERT_EQUAL(RM_E_NONE,storage->begin());
+   TEST_ASSERT_EQUAL(RM_E_NONE, storage->begin());
    TEST_ASSERT_EQUAL(RM_E_NONE, storage->clear());
    TEST_ASSERT_EQUAL(0, storage->getEntryCount());
    TEST_ASSERT_TRUE((storage->available() > 0));
@@ -91,8 +90,7 @@ void test_EEPROMStorage_isFull(void)
    // - Any alignment padding
    const int overhead = 10;
 
-   std::vector<byte> writeData(size-overhead, 'a');
-
+   std::vector<byte> writeData(size - overhead, 'a');
 
    TEST_ASSERT_TRUE(size > 0);
    TEST_ASSERT_FALSE(storage->isFull());
@@ -103,7 +101,6 @@ void test_EEPROMStorage_isFull(void)
    TEST_ASSERT_TRUE(storage->isFull());
    TEST_ASSERT_EQUAL(0, storage->available());
    TEST_ASSERT_EQUAL(RM_E_NONE, storage->clear());
-
 }
 
 void test_EEPROMStorage_read_nonexistent(void)
@@ -132,7 +129,7 @@ void test_EEPROMStorage_write_empty_data(void)
 
 void test_EEPROMStorage_write_too_long_key(void)
 {
-   std::string longKey(256, 'a');  // 256 byte key
+   std::string longKey(256, 'a'); // 256 byte key
    std::vector<byte> data = {1};
    TEST_ASSERT_EQUAL(RM_E_INVALID_LENGTH, storage->write(longKey, data));
 }
@@ -168,7 +165,8 @@ void test_EEPROMStorage_write_too_long_data(void)
 {
    TEST_ASSERT_EQUAL(RM_E_NONE, storage->clear());
    std::string longData(129, 'a');
-   TEST_ASSERT_EQUAL(RM_E_STORAGE_NOT_ENOUGH_SPACE, storage->write("test", std::vector<byte>(longData.begin(), longData.end())));
+   TEST_ASSERT_EQUAL(RM_E_STORAGE_NOT_ENOUGH_SPACE,
+                     storage->write("test", std::vector<byte>(longData.begin(), longData.end())));
 }
 
 void test_EEPROMStorage_commit(void)
@@ -217,7 +215,8 @@ void test_EEPROMStorage_write_and_commit_same_key(void)
 void setup()
 {
    Serial.begin(115200);
-   while (!Serial);  // Wait for serial connection (optional)
+   while (!Serial)
+      ; // Wait for serial connection (optional)
 
    initStorage();
    UNITY_BEGIN();

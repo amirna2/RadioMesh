@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <common/inc/Definitions.h>
 #include <framework/interfaces/IWifiAccessPoint.h>
@@ -9,22 +9,24 @@
 class WifiAccessPoint : public IWifiAccessPoint
 {
 public:
-
    /**
     * @brief Get the instance of the WifiAccessPoint.
     * @returns A pointer to the instance of the WifiAccessPoint.
-   */
-   static WifiAccessPoint* getInstance() {
-   #ifdef RM_NO_WIFI
+    */
+   static WifiAccessPoint* getInstance()
+   {
+#ifdef RM_NO_WIFI
       return nullptr;
-   #endif
+#endif
       if (!instance) {
          instance = new WifiAccessPoint();
       }
       return instance;
    }
 
-   virtual ~WifiAccessPoint() {}
+   virtual ~WifiAccessPoint()
+   {
+   }
 
    // IWifiAccessPoint interface
    int setup(WifiAccessPointParams& params) override;
@@ -37,13 +39,13 @@ public:
     * @brief Set the parameters of the WiFi access point.
     * @param params The parameters of the WiFi access point.
     * @returns RM_E_NONE if the parameters were successfully set, an error code otherwise.
-   */
+    */
    int setParams(const WifiAccessPointParams& params);
 
    /**
     * @brief Get the access point status
     * @returns true if the access point is started, false otherwise.
-   */
+    */
    bool isStarted();
 
 private:
@@ -53,7 +55,6 @@ private:
 
    static WifiAccessPoint* instance;
 
-   WifiAccessPointParams params = {"","", {0,0,0,0}};
+   WifiAccessPointParams params = {"", "", {0, 0, 0, 0}};
    bool started = false;
-
 };

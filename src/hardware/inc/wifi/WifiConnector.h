@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <common/inc/Definitions.h>
 #include <framework/interfaces/IWifiConnector.h>
@@ -9,15 +9,15 @@
 class WifiConnector : public IWifiConnector
 {
 public:
-
    /**
     * @brief Get the instance of the WifiConnector.
     * @returns A pointer to the instance of the WifiConnector.
-   */
-   static WifiConnector* getInstance() {
-   #ifdef RM_NO_WIFI
+    */
+   static WifiConnector* getInstance()
+   {
+#ifdef RM_NO_WIFI
       return nullptr;
-   #endif
+#endif
 
       if (!instance) {
          instance = new WifiConnector();
@@ -25,11 +25,13 @@ public:
       return instance;
    }
 
-   virtual ~WifiConnector() {}
+   virtual ~WifiConnector()
+   {
+   }
 
    // IWifiConnector interface
 
-   int connect(const std::string ssid = "", const std::string password ="") override;
+   int connect(const std::string ssid = "", const std::string password = "") override;
    int disconnect(bool wifiOff) override;
    int reconnect() override;
    std::string getIpAddress() override;
@@ -45,7 +47,7 @@ public:
     * @brief Set the parameters for the WiFi connection.
     * @param params The parameters to set.
     * @return int RM_E_NONE if successful, otherwise an error code.
-   */
+    */
    int setParams(const WifiParams& params);
 
 private:
@@ -57,7 +59,7 @@ private:
 
    std::string ipAddress = "";
    std::string macAddress = "";
-   WifiParams params = {"",""};
+   WifiParams params = {"", ""};
    bool connected = false;
    SignalIndicator signalIndicator = NO_SIGNAL;
 
@@ -67,4 +69,3 @@ private:
 
    static const uint32_t AP_SCAN_INTERVAL_MS = 800;
 };
-

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <common/inc/Options.h>
 #include <common/inc/RadioConfigs.h>
@@ -12,11 +12,13 @@
  * @brief This class is an interface for a radio.
  *
  * It currently provides methods to setup a LoRa radio.
-*/
+ */
 class IRadio
 {
 public:
-   virtual ~IRadio() {}
+   virtual ~IRadio()
+   {
+   }
 
    /**
     * @brief Setup the radio with the given parameters.
@@ -60,5 +62,4 @@ public:
     * @returns RM_E_NONE if the radio is successfully set in sleep mode, an error code otherwise.
     */
    virtual int sleep() = 0;
-
 };

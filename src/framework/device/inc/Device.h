@@ -1,21 +1,21 @@
 #pragma once
 
-#include <vector>
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
 
 #include <common/inc/Definitions.h>
-#include <framework/interfaces/IDevice.h>
-#include <core/protocol/inc/routing/PacketRouter.h>
-#include <hardware/inc/radio/LoraRadio.h>
-#include <hardware/inc/storage/eeprom/EEPROMStorage.h>
+#include <common/inc/Errors.h>
 #include <core/protocol/inc/crypto/aes/AesCrypto.h>
 #include <core/protocol/inc/packet/Callbacks.h>
-#include <common/inc/Errors.h>
+#include <core/protocol/inc/routing/PacketRouter.h>
+#include <framework/interfaces/IDevice.h>
+#include <hardware/inc/radio/LoraRadio.h>
+#include <hardware/inc/storage/eeprom/EEPROMStorage.h>
 
 #ifndef RM_NO_WIFI
-#include <hardware/inc/wifi/WifiConnector.h>
 #include <hardware/inc/wifi/WifiAccessPoint.h>
+#include <hardware/inc/wifi/WifiConnector.h>
 #endif
 
 #ifndef RM_NO_DISPLAY
@@ -25,11 +25,13 @@
 class RadioMeshDevice : public IDevice
 {
 public:
-
    RadioMeshDevice(const std::string& name, const std::array<byte, RM_ID_LENGTH>& id)
-      : name(name), id(id) {}
+       : name(name), id(id)
+   {
+   }
 
-   virtual ~RadioMeshDevice() {
+   virtual ~RadioMeshDevice()
+   {
       radio = nullptr;
       crypto = nullptr;
 #ifndef RM_NO_WIFI
@@ -39,19 +41,20 @@ public:
 #ifndef RM_NO_DISPLAY
       oledDisplay = nullptr;
 #endif
-      }
+   }
 
    // IDevice interface
 
    // Components
-   IRadio *getRadio() override;
-   IAesCrypto *getCrypto() override;
-   IDisplay *getDisplay() override;
-   IWifiConnector *getWifiConnector() override;
-   IWifiAccessPoint *getWifiAccessPoint() override;
-   IByteStorage *getByteStorage() override;
+   IRadio* getRadio() override;
+   IAesCrypto* getCrypto() override;
+   IDisplay* getDisplay() override;
+   IWifiConnector* getWifiConnector() override;
+   IWifiAccessPoint* getWifiAccessPoint() override;
+   IByteStorage* getByteStorage() override;
 
-   int sendData(const uint8_t topic, const std::vector<byte> data, std::array<byte, RM_ID_LENGTH> target = BROADCAST_ADDR) override;
+   int sendData(const uint8_t topic, const std::vector<byte> data,
+                std::array<byte, RM_ID_LENGTH> target = BROADCAST_ADDR) override;
    void enableRelay(bool enabled) override;
    bool isRelayEnabled() override;
    int run() override;
@@ -70,14 +73,20 @@ public:
     *
     * @return LoraRadioParams
     */
-   LoraRadioParams getLoRaRadioParams() { return radioParams; };
+   LoraRadioParams getLoRaRadioParams()
+   {
+      return radioParams;
+   };
 
    /**
     * @brief Get the device type
     *
     * @return DeviceType
     */
-   MeshDeviceType getDeviceType() { return deviceType; }
+   MeshDeviceType getDeviceType()
+   {
+      return deviceType;
+   }
 
    /**
     * @brief Initialize the device
@@ -91,14 +100,20 @@ public:
     *
     * @param callback  Callback function to register
     */
-   void registerCallback(PacketReceivedCallback callback) { this->onPacketReceived = callback; }
+   void registerCallback(PacketReceivedCallback callback)
+   {
+      this->onPacketReceived = callback;
+   }
 
    /**
     * @brief Register a Tx callback function for when a packet is received
     *
     * @param callback  Callback function to register
     */
-   void registerTxCallback(PacketSentCallback callback) { this->onPacketSent = callback; }
+   void registerTxCallback(PacketSentCallback callback)
+   {
+      this->onPacketSent = callback;
+   }
 
    /**
     * @brief Initialize the radio with the given parameters
@@ -122,20 +137,22 @@ public:
     * @param display IDisplay object to set
     * @return RM_E_NONE if the display was successfully set, an error code otherwise.
     */
-   int setCustomDisplay(IDisplay *display);
+   int setCustomDisplay(IDisplay* display);
 
    /**
     * @brief Initialize the crypto component
     *
-    * @return int RM_E_NONE if the crypto component was successfully initialized, an error code otherwise.
+    * @return int RM_E_NONE if the crypto component was successfully initialized, an error code
+    * otherwise.
     */
-   int initializeAesCrypto(const SecurityParams &securityParams);
+   int initializeAesCrypto(const SecurityParams& securityParams);
 
    /**
     * @brief Initialize the WiFi module with the given parameters
     *
     * @param wifiParams WifiParams object containing the WiFi parameters
-    * @return int RM_E_NONE if the WiFi module was successfully initialized, an error code otherwise.
+    * @return int RM_E_NONE if the WiFi module was successfully initialized, an error code
+    * otherwise.
     */
    int initializeWifi(WifiParams wifiParams);
 
@@ -143,7 +160,8 @@ public:
     * @brief Initialize the WiFi access point with the given parameters
     *
     * @param wifiAPParams WifiAccessPointParams object containing the WiFi access point parameters
-    * @return int RM_E_NONE if the WiFi access point was successfully initialized, an error code otherwise.
+    * @return int RM_E_NONE if the WiFi access point was successfully initialized, an error code
+    * otherwise.
     */
    int initializeWifiAccessPoint(WifiAccessPointParams wifiAPParams);
 
@@ -151,7 +169,8 @@ public:
     * @brief Initialize the storage component with the given parameters
     *
     * @param storageParams ByteStorageParams object containing the storage parameters
-    * @return int RM_E_NONE if the storage component was successfully initialized, an error code otherwise.
+    * @return int RM_E_NONE if the storage component was successfully initialized, an error code
+    * otherwise.
     */
    int initializeStorage(ByteStorageParams storageParams);
 
@@ -162,9 +181,7 @@ public:
     */
    int handleReceivedData();
 
-
 private:
-
    std::string name;
    std::array<byte, RM_ID_LENGTH> id;
    DeviceBlueprint blueprint;
@@ -193,14 +210,15 @@ private:
    MeshDeviceType deviceType = MeshDeviceType::UNKNOWN;
    PacketReceivedCallback onPacketReceived = nullptr;
    PacketSentCallback onPacketSent = nullptr;
-   PacketRouter *router = PacketRouter::getInstance();
+   PacketRouter* router = PacketRouter::getInstance();
 
-   bool isReceivedDataCrcValid(RadioMeshPacket &receivedPacket);
+   bool isReceivedDataCrcValid(RadioMeshPacket& receivedPacket);
 
    // Inclusion mode
-   enum class HubMode {
-    NORMAL,
-    INCLUSION    // Hub is accepting new devices
+   enum class HubMode
+   {
+      NORMAL,
+      INCLUSION // Hub is accepting new devices
    };
 
    HubMode hubMode = HubMode::NORMAL;
@@ -209,6 +227,8 @@ private:
 
    RadioMeshPacket txPacket = RadioMeshPacket();
 
-   bool isIncluded() { return deviceIncluded; }
-
+   bool isIncluded()
+   {
+      return deviceIncluded;
+   }
 };

@@ -1,19 +1,18 @@
-#include <unity.h>
 #include <RadioMesh.h>
+#include <unity.h>
 
 WifiAccessPointParams apParams = {"WarpAP", "WarpAP123", "192.168.1.1"};
-
 
 // positive test cases
 void test_WifiAccessPoint_getInstance(void)
 {
-   WifiAccessPoint *ap = WifiAccessPoint::getInstance();
+   WifiAccessPoint* ap = WifiAccessPoint::getInstance();
    TEST_ASSERT_NOT_NULL(ap);
 }
 
 void test_WifiAccessPoint_setParams(void)
 {
-   WifiAccessPoint *ap = WifiAccessPoint::getInstance();
+   WifiAccessPoint* ap = WifiAccessPoint::getInstance();
    int rc = ap->setParams(apParams);
    TEST_ASSERT_EQUAL(RM_E_NONE, rc);
    rc = ap->setup();
@@ -22,7 +21,7 @@ void test_WifiAccessPoint_setParams(void)
 
 void test_WifiAccessPoint_start(void)
 {
-   WifiAccessPoint *ap = WifiAccessPoint::getInstance();
+   WifiAccessPoint* ap = WifiAccessPoint::getInstance();
    int rc = ap->start();
    TEST_ASSERT_EQUAL(RM_E_NONE, rc);
    bool isRunning = ap->isStarted();
@@ -31,7 +30,7 @@ void test_WifiAccessPoint_start(void)
 
 void test_WifiAccessPoint_stop(void)
 {
-   WifiAccessPoint *ap = WifiAccessPoint::getInstance();
+   WifiAccessPoint* ap = WifiAccessPoint::getInstance();
    int rc = ap->stop(false);
    TEST_ASSERT_EQUAL(RM_E_NONE, rc);
    bool isRunning = ap->isStarted();
@@ -41,7 +40,7 @@ void test_WifiAccessPoint_stop(void)
 // negative test cases
 void test_WifiAccessPoint_setParams_with_invalid_ssid_length(void)
 {
-   WifiAccessPoint *ap = WifiAccessPoint::getInstance();
+   WifiAccessPoint* ap = WifiAccessPoint::getInstance();
    std::string longSsid(65, 'a');
    WifiAccessPointParams apParams = {longSsid, "WarpAP123", "192.168.1.1"}; // SSID is too long
    int rc = ap->setParams(apParams);
@@ -50,17 +49,17 @@ void test_WifiAccessPoint_setParams_with_invalid_ssid_length(void)
 
 void test_WifiAccessPoint_setParams_with_invalid_password_length(void)
 {
-   WifiAccessPoint *ap = WifiAccessPoint::getInstance();
+   WifiAccessPoint* ap = WifiAccessPoint::getInstance();
    std::string longPassword(1, 'a');
-   WifiAccessPointParams apParams = {"WarpAP", longPassword, "192.168.1.1"}; // Password is too short
+   WifiAccessPointParams apParams = {"WarpAP", longPassword,
+                                     "192.168.1.1"}; // Password is too short
    int rc = ap->setParams(apParams);
    TEST_ASSERT_EQUAL(RM_E_INVALID_AP_PARAMS, rc);
 }
 
-
 void test_WifiAccessPoint_setParams_with_empty_params(void)
 {
-   WifiAccessPoint *ap = WifiAccessPoint::getInstance();
+   WifiAccessPoint* ap = WifiAccessPoint::getInstance();
    WifiAccessPointParams apParams = {"", "password1234", "192.168.1.1"};
    int rc = ap->setParams(apParams);
    TEST_ASSERT_EQUAL(RM_E_INVALID_AP_PARAMS, rc);

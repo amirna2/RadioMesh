@@ -15,8 +15,12 @@
 class CustomDisplay : public IDisplay
 {
 public:
-   CustomDisplay() {}
-   virtual ~CustomDisplay() {}
+   CustomDisplay()
+   {
+   }
+   virtual ~CustomDisplay()
+   {
+   }
 
    int setup() override;
    int powerSave(bool save) override;

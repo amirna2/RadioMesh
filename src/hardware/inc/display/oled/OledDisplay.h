@@ -1,11 +1,11 @@
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <common/inc/Definitions.h>
-#include <framework/interfaces/IDisplay.h>
 #include <common/inc/Errors.h>
+#include <framework/interfaces/IDisplay.h>
 
 #ifndef RM_NO_DISPLAY
 #include <U8g2lib.h>
@@ -17,11 +17,12 @@ public:
    /**
     * @brief Get the instance of the OledDisplay class.
     * @returns A pointer to the instance of the OledDisplay class.
-   */
-   static OledDisplay* getInstance() {
-   #ifdef RM_NO_DISPLAY
+    */
+   static OledDisplay* getInstance()
+   {
+#ifdef RM_NO_DISPLAY
       return nullptr;
-   #endif
+#endif
 
       if (!instance) {
          instance = new OledDisplay();
@@ -29,27 +30,77 @@ public:
       return instance;
    }
 
-   virtual ~OledDisplay() {}
+   virtual ~OledDisplay()
+   {
+   }
 
-   // IDisplay interface
-   #ifdef RM_NO_DISPLAY
-   int setup() override { return RM_E_NOT_SUPPORTED; }
-   int powerSave(bool save) override { return RM_E_NOT_SUPPORTED; }
-   int drawString(uint8_t x, uint8_t y, const std::string text) override { return RM_E_NOT_SUPPORTED; }
-   int drawString(uint8_t x, uint8_t y, const char* text) override { return RM_E_NOT_SUPPORTED; }
-   int setCursor(uint8_t x, uint8_t y) override { return RM_E_NOT_SUPPORTED; }
-   int print(const std::string text) override { return RM_E_NOT_SUPPORTED; }
-   int clear() override { return RM_E_NOT_SUPPORTED; }
-   int flush() override { return RM_E_NOT_SUPPORTED; }
-   int showSplashScreen() override { return RM_E_NOT_SUPPORTED; }
-   uint8_t getWidth() override { return 0; }
-   uint8_t getHeight() override { return 0; }
-   int setFont(uint8_t fontId) override { return RM_E_NOT_SUPPORTED; }
-   int drawNumber(uint8_t x, uint8_t y, int number) override { return RM_E_NOT_SUPPORTED; }
+// IDisplay interface
+#ifdef RM_NO_DISPLAY
+   int setup() override
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
+   int powerSave(bool save) override
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
+   int drawString(uint8_t x, uint8_t y, const std::string text) override
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
+   int drawString(uint8_t x, uint8_t y, const char* text) override
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
+   int setCursor(uint8_t x, uint8_t y) override
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
+   int print(const std::string text) override
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
+   int clear() override
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
+   int flush() override
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
+   int showSplashScreen() override
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
+   uint8_t getWidth() override
+   {
+      return 0;
+   }
+   uint8_t getHeight() override
+   {
+      return 0;
+   }
+   int setFont(uint8_t fontId) override
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
+   int drawNumber(uint8_t x, uint8_t y, int number) override
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
 
-   int setParams(const OledDisplayParams& params) { return RM_E_NOT_SUPPORTED; }
-   int setBrightness(uint8_t brightness) override { return RM_E_NOT_SUPPORTED; }
-   int setRotation(uint8_t rotation) override { return RM_E_NOT_SUPPORTED; }
+   int setParams(const OledDisplayParams& params)
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
+   int setBrightness(uint8_t brightness) override
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
+   int setRotation(uint8_t rotation) override
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
 
 #else
    int setup() override;
@@ -66,14 +117,19 @@ public:
    int setFont(uint8_t fontId) override;
    int drawNumber(uint8_t x, uint8_t y, int number) override;
 
-   int setBrightness(uint8_t brightness) override { return RM_E_NOT_SUPPORTED; }
-   int setRotation(uint8_t rotation) override { return RM_E_NOT_SUPPORTED; }
+   int setBrightness(uint8_t brightness) override
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
+   int setRotation(uint8_t rotation) override
+   {
+      return RM_E_NOT_SUPPORTED;
+   }
 
    int setParams(const OledDisplayParams& params);
 #endif
 
 private:
-
    OledDisplay() {};
    OledDisplay(OledDisplay const&) = delete;
    OledDisplay& operator=(OledDisplay const&) = delete;

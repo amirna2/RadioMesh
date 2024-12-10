@@ -1,5 +1,5 @@
-#include <unity.h>
 #include <RadioMesh.h>
+#include <unity.h>
 
 void test_PacketTracker_addEntry(void)
 {

@@ -1,18 +1,20 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include <array>
 #include <common/inc/Definitions.h>
+#include <string>
+#include <vector>
 
-enum class DataFormat {
-    DECIMAL,
-    HEXD,
-    HEXD_SPACED,
-    ASCII
+enum class DataFormat
+{
+   DECIMAL,
+   HEXD,
+   HEXD_SPACED,
+   ASCII
 };
 
-namespace RadioMeshUtils {
+namespace RadioMeshUtils
+{
 
 /**
  * @brief Get the version of the RadioMesh library.
@@ -25,7 +27,7 @@ std::string getVersion();
  * @brief create a UUID
  * @param length The length of the UUID
  * @return std::string The UUID
-*/
+ */
 std::string createUuid(int length);
 
 /**
@@ -41,7 +43,7 @@ std::string convertToHex(const byte* data, int size);
  * @brief Convert a byte array to a uint32_t.
  * @param data The byte array to convert.
  * @returns A uint32_t representing the byte array.
-*/
+ */
 uint32_t toUint32(const byte* data);
 
 /**
@@ -67,9 +69,8 @@ std::string toString(const std::vector<byte>& vec, DataFormat format = DataForma
  *
  * @param signal The signal indicator to convert.
  * @returns A string representing the signal indicator.
-*/
+ */
 std::string wifiSignalToString(SignalIndicator signal);
-
 
 /**
  * @brief Generate a random number.
@@ -92,7 +93,8 @@ bool isBroadcastAddress(const std::array<byte, RM_ID_LENGTH>& address);
  * @param id2 The second device ID
  * @returns true if the device IDs are equal, false otherwise.
  */
-bool areDeviceIdsEqual(const std::array<byte, RM_ID_LENGTH>& id1, const std::array<byte, RM_ID_LENGTH>& id2);
+bool areDeviceIdsEqual(const std::array<byte, RM_ID_LENGTH>& id1,
+                       const std::array<byte, RM_ID_LENGTH>& id2);
 
 /**
  * @brief Convert a device ID to a uint32_t.
@@ -114,12 +116,13 @@ std::array<byte, RM_ID_LENGTH> uint32ToDeviceId(uint32_t value);
  * @returns A vector<byte> representing the number.
  */
 template <typename T>
-std::vector<byte> numberToBytes(T number) {
-    std::vector<byte> bytes(sizeof(T));
-    for (size_t i = 0; i < sizeof(T); ++i) {
-        bytes[i] = static_cast<byte>((number >> (8 * (sizeof(T) - 1 - i))) & 0xFF);
-    }
-    return bytes;
+std::vector<byte> numberToBytes(T number)
+{
+   std::vector<byte> bytes(sizeof(T));
+   for (size_t i = 0; i < sizeof(T); ++i) {
+      bytes[i] = static_cast<byte>((number >> (8 * (sizeof(T) - 1 - i))) & 0xFF);
+   }
+   return bytes;
 }
 
 /**
@@ -128,13 +131,14 @@ std::vector<byte> numberToBytes(T number) {
  * @returns The original number.
  */
 template <typename T>
-T bytesToNumber(const std::vector<byte>& bytes) {
-    T number = 0;
-    size_t limit = std::min(bytes.size(), sizeof(T));
-    for (size_t i = 0; i < limit; ++i) {
-        number = (number << 8) | bytes[i];
-    }
-    return number;
+T bytesToNumber(const std::vector<byte>& bytes)
+{
+   T number = 0;
+   size_t limit = std::min(bytes.size(), sizeof(T));
+   for (size_t i = 0; i < limit; ++i) {
+      number = (number << 8) | bytes[i];
+   }
+   return number;
 }
 
 /**
@@ -146,12 +150,12 @@ T bytesToNumber(const std::vector<byte>& bytes) {
 template <std::size_t length>
 std::array<byte, length> getRandomBytesArray()
 {
-  const char* digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  randomSeed(simpleRNG(4));
-  std::array<byte, length> bytes;
-  for (std::size_t i = 0; i < length; i++) {
-    bytes[i] = digits[random(36)];
-  }
-  return bytes;
+   const char* digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+   randomSeed(simpleRNG(4));
+   std::array<byte, length> bytes;
+   for (std::size_t i = 0; i < length; i++) {
+      bytes[i] = digits[random(36)];
+   }
+   return bytes;
 }
 } // namespace RadioMeshUtils

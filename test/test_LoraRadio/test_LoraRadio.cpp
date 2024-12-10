@@ -1,11 +1,13 @@
-#include <unity.h>
 #include <RadioMesh.h>
+#include <unity.h>
 
 // These radio parameters will only work for the Heltec WiFi LoRa 32 V3
-const LoraRadioParams  radioParams = LoraRadioParams(PinConfig(8, 12, 13, 14), 915.0, 20, 125.0, 8, 0, true);
-const LoraRadioParams  badRadioParams = LoraRadioParams(PinConfig(0, 0, 0, 0), 915.0, 20, 125.0, 8, 0, true);
+const LoraRadioParams radioParams =
+    LoraRadioParams(PinConfig(8, 12, 13, 14), 915.0, 20, 125.0, 8, 0, true);
+const LoraRadioParams badRadioParams =
+    LoraRadioParams(PinConfig(0, 0, 0, 0), 915.0, 20, 125.0, 8, 0, true);
 
-LoraRadio *radio = nullptr;
+LoraRadio* radio = nullptr;
 
 void test_LoraRadio_getInstance(void)
 {
@@ -25,7 +27,6 @@ void test_LoraRadio_setParams_valid_parameters(void)
    TEST_ASSERT_NOT_EQUAL(PinConfig::PIN_UNDEFINED, defaultParams.pinConfig.di1);
    TEST_ASSERT_NOT_EQUAL(PinConfig::PIN_UNDEFINED, defaultParams.pinConfig.rst);
    TEST_ASSERT_NOT_EQUAL(PinConfig::PIN_UNDEFINED, defaultParams.pinConfig.di0);
-
 
    int rc = radio->setParams(radioParams);
    TEST_ASSERT_EQUAL(RM_E_NONE, rc);
@@ -50,7 +51,6 @@ void test_LoraRadio_setParams_bad_parameters(void)
 
    int rc = radio->setParams(badRadioParams);
    TEST_ASSERT_EQUAL(RM_E_NONE, rc);
-
 }
 
 void test_LoraRadio_setup_without_set_params(void)

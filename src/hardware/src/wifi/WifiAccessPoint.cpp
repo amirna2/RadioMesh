@@ -1,5 +1,5 @@
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <common/inc/Definitions.h>
 #include <common/inc/Errors.h>
@@ -12,15 +12,32 @@
 
 WifiAccessPoint* WifiAccessPoint::instance = nullptr;
 
-
 #ifdef RM_NO_WIFI
-int WifiAccessPoint::setup(WifiAccessPointParams& params) { return RM_E_NOT_SUPPORTED; }
-int WifiAccessPoint::setup() { return RM_E_NOT_SUPPORTED; }
-int WifiAccessPoint::start() { return RM_E_NOT_SUPPORTED; }
-int WifiAccessPoint::stop(bool wifiOff) { return RM_E_NOT_SUPPORTED; }
+int WifiAccessPoint::setup(WifiAccessPointParams& params)
+{
+   return RM_E_NOT_SUPPORTED;
+}
+int WifiAccessPoint::setup()
+{
+   return RM_E_NOT_SUPPORTED;
+}
+int WifiAccessPoint::start()
+{
+   return RM_E_NOT_SUPPORTED;
+}
+int WifiAccessPoint::stop(bool wifiOff)
+{
+   return RM_E_NOT_SUPPORTED;
+}
 
-int setParams(const WifiAccessPointParams& params) { return RM_E_NOT_SUPPORTED; }
-bool isStarted() { return false; }
+int setParams(const WifiAccessPointParams& params)
+{
+   return RM_E_NOT_SUPPORTED;
+}
+bool isStarted()
+{
+   return false;
+}
 
 #else
 
@@ -96,13 +113,13 @@ int WifiAccessPoint::setup(WifiAccessPointParams& params)
    return RM_E_NONE;
 }
 
-int WifiAccessPoint::setup() {
+int WifiAccessPoint::setup()
+{
    return setup(params);
 }
 
 int WifiAccessPoint::start()
 {
-
    IPAddress ip;
    bool success = false;
 
@@ -129,7 +146,7 @@ int WifiAccessPoint::start()
       return RM_E_WIFI_AP_START_FAILED;
    }
 
-   //TODO: need to find out why there is a delay here
+   // TODO: need to find out why there is a delay here
    delay(200);
    success = WiFi.softAPConfig(ip, ip, IPAddress(255, 255, 255, 0));
    if (!success) {

@@ -1,5 +1,5 @@
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <common/inc/Definitions.h>
 #include <common/inc/Errors.h>
@@ -14,20 +14,49 @@
 WifiConnector* WifiConnector::instance = nullptr;
 
 #ifdef RM_NO_WIFI
-   // IWifiConnector interface
-   int WifiConnector::connect(const std::string ssid, const std::string password) { return RM_E_NOT_SUPPORTED; }
-   int WifiConnector::disconnect(bool wifiOff) { return RM_E_NOT_SUPPORTED; }
-   int WifiConnector::reconnect() { return RM_E_NOT_SUPPORTED; }
-   std::string WifiConnector::getIpAddress() { return ""; }
-   std::string WifiConnector::getMacAddress() { return ""; }
-   SignalIndicator WifiConnector::getSignalIndicator() { return NO_SIGNAL; }
-   int WifiConnector::getSignalStrength() { return 0; }
-   std::string WifiConnector::getSSID() { return ""; }
-   std::vector<std::string> WifiConnector::getAvailableNetworks() { return std::vector<std::string>(); }
+// IWifiConnector interface
+int WifiConnector::connect(const std::string ssid, const std::string password)
+{
+   return RM_E_NOT_SUPPORTED;
+}
+int WifiConnector::disconnect(bool wifiOff)
+{
+   return RM_E_NOT_SUPPORTED;
+}
+int WifiConnector::reconnect()
+{
+   return RM_E_NOT_SUPPORTED;
+}
+std::string WifiConnector::getIpAddress()
+{
+   return "";
+}
+std::string WifiConnector::getMacAddress()
+{
+   return "";
+}
+SignalIndicator WifiConnector::getSignalIndicator()
+{
+   return NO_SIGNAL;
+}
+int WifiConnector::getSignalStrength()
+{
+   return 0;
+}
+std::string WifiConnector::getSSID()
+{
+   return "";
+}
+std::vector<std::string> WifiConnector::getAvailableNetworks()
+{
+   return std::vector<std::string>();
+}
 
-   // WifiConnector specific
-   int WifiConnector::setParams(const WifiParams& params) { return RM_E_NOT_SUPPORTED; }
-
+// WifiConnector specific
+int WifiConnector::setParams(const WifiParams& params)
+{
+   return RM_E_NOT_SUPPORTED;
+}
 
 #else
 int WifiConnector::setParams(const WifiParams& params)
@@ -85,11 +114,11 @@ bool WifiConnector::ssidAvailable(std::string ssidToCheck)
    if (n != 0) {
       logdbg_ln("Networks found: %d", n);
       for (int i = 0; i < n; ++i) {
-      if (WiFi.SSID(i) == ssidToCheck.c_str()) {
-         logdbg_ln("Given ssid is available!");
-         return true;
-      }
-      delay(AP_SCAN_INTERVAL_MS);
+         if (WiFi.SSID(i) == ssidToCheck.c_str()) {
+            logdbg_ln("Given ssid is available!");
+            return true;
+         }
+         delay(AP_SCAN_INTERVAL_MS);
       }
    }
    loginfo_ln("Given ssid is not available");
@@ -154,10 +183,11 @@ int WifiConnector::connect(const std::string ssid, const std::string password)
    }
 
    //  Connect to Access Point
-   loginfo_ln("Connecting to WiFi access point SSID: %s",_ssid.c_str());
+   loginfo_ln("Connecting to WiFi access point SSID: %s", _ssid.c_str());
    WiFi.begin(_ssid.c_str(), _password.c_str(), false);
 
-   // We need to wait here for the connection to estanlish. Otherwise the WiFi.status() may return a false negative
+   // We need to wait here for the connection to estanlish. Otherwise the WiFi.status() may return a
+   // false negative
    loginfo_ln("Waiting for connect results for %s", _ssid.c_str());
    WiFi.waitForConnectResult(WIFI_CONNECTION_TIMEOUT_MS);
 
@@ -206,7 +236,8 @@ SignalIndicator WifiConnector::getSignalIndicator()
    return signalIndicator;
 }
 
-int WifiConnector::disconnect(bool wifiOff) {
+int WifiConnector::disconnect(bool wifiOff)
+{
    bool result = WiFi.disconnect(wifiOff);
    int rc = RM_E_NONE;
    if (result) {
@@ -218,23 +249,26 @@ int WifiConnector::disconnect(bool wifiOff) {
       logerr_ln("Failed to disconnect from WiFi network");
       rc = RM_E_WIFI_DISCONNECT_FAILED;
    }
-  return rc;
+   return rc;
 }
 
-std::string WifiConnector::getIpAddress() {
-
+std::string WifiConnector::getIpAddress()
+{
    return ipAddress;
 }
 
-std::string WifiConnector::getMacAddress() {
+std::string WifiConnector::getMacAddress()
+{
    return macAddress;
 }
 
-std::string WifiConnector::getSSID() {
+std::string WifiConnector::getSSID()
+{
    return WiFi.SSID().c_str();
 }
 
-int WifiConnector::getSignalStrength() {
+int WifiConnector::getSignalStrength()
+{
    return WiFi.RSSI();
 }
 #endif // RM_NO_WIFI

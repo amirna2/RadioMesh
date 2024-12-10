@@ -1,15 +1,14 @@
 static_assert(__cplusplus >= 201703L, "C++17 required");
 
-
-#include <vector>
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
 
-#include <common/inc/Logger.h>
-#include <common/utils/Utils.h>
-#include <common/utils/RadioMeshCrc32.h>
 #include <common/inc/Definitions.h>
+#include <common/inc/Logger.h>
 #include <common/inc/RadioConfigs.h>
+#include <common/utils/RadioMeshCrc32.h>
+#include <common/utils/Utils.h>
 #include <hardware/inc/radio/LoraRadio.h>
 
 LoraRadio* LoraRadio::instance = nullptr;
@@ -35,11 +34,8 @@ int LoraRadio::createModule(const LoraRadioParams& params)
    }
 
    // Create new module and radio with smart pointers
-   auto module = std::make_unique<Module>(
-      params.pinConfig.ss,
-      params.pinConfig.di1,
-      params.pinConfig.rst,
-      params.pinConfig.di0 /*busy pin*/
+   auto module = std::make_unique<Module>(params.pinConfig.ss, params.pinConfig.di1,
+                                          params.pinConfig.rst, params.pinConfig.di0 /*busy pin*/
    );
 
    radio = std::make_unique<SX1262>(module.release());
@@ -51,28 +47,28 @@ int LoraRadio::createModule(const LoraRadioParams& params)
 
 int LoraRadio::checkLoraParameters(LoraRadioParams params)
 {
-    if (params.sf < 6 || params.sf > 12) {
-        logerr_ln("ERROR  spreading factor is invalid");
-        return RM_E_INVALID_PARAM;
-    }
-    if (params.band < 150.0 || params.band > 960.0) {
-        logerr_ln("ERROR  frequency is invalid");
-        return RM_E_INVALID_PARAM;
-    }
-    if (params.txPower < -9 || params.txPower > 22) {
-        logerr_ln("ERROR  tx power is invalid");
-        return RM_E_INVALID_PARAM;
-    }
-    if (params.bw < 7.8 || params.bw > 500.0) {
-        logerr_ln("ERROR  bandwidth is invalid");
-        return RM_E_INVALID_PARAM;
-    }
-    if (params.gain < 0 || params.gain > 3) {
-        logerr_ln("ERROR  gain is invalid");
-        return RM_E_INVALID_PARAM;
-    }
+   if (params.sf < 6 || params.sf > 12) {
+      logerr_ln("ERROR  spreading factor is invalid");
+      return RM_E_INVALID_PARAM;
+   }
+   if (params.band < 150.0 || params.band > 960.0) {
+      logerr_ln("ERROR  frequency is invalid");
+      return RM_E_INVALID_PARAM;
+   }
+   if (params.txPower < -9 || params.txPower > 22) {
+      logerr_ln("ERROR  tx power is invalid");
+      return RM_E_INVALID_PARAM;
+   }
+   if (params.bw < 7.8 || params.bw > 500.0) {
+      logerr_ln("ERROR  bandwidth is invalid");
+      return RM_E_INVALID_PARAM;
+   }
+   if (params.gain < 0 || params.gain > 3) {
+      logerr_ln("ERROR  gain is invalid");
+      return RM_E_INVALID_PARAM;
+   }
 
-    return RM_E_NONE;
+   return RM_E_NONE;
 }
 
 int LoraRadio::setup(const LoraRadioParams& params)
@@ -128,8 +124,7 @@ int LoraRadio::setup(const LoraRadioParams& params)
 
    if (params.privateNetwork) {
       rc = radio->setSyncWord(0x12);
-   }
-   else {
+   } else {
       rc = radio->setSyncWord(0x34);
    }
 
@@ -182,7 +177,7 @@ int LoraRadio::startReceive()
    return RM_E_NONE;
 }
 
-int LoraRadio::startTransmitPacket(byte *data, int length)
+int LoraRadio::startTransmitPacket(byte* data, int length)
 {
    int err = RM_E_NONE;
    int tx_err = RADIOLIB_ERR_NONE;
@@ -194,25 +189,25 @@ int LoraRadio::startTransmitPacket(byte *data, int length)
    // TODO: Request RadioLib to use a const byte* instead of byte*
    tx_err = radio->startTransmit(data, length);
    switch (tx_err) {
-      case RADIOLIB_ERR_NONE:
-         logdbg_ln("TX data done in : %d ms",(millis() - t1));
-         err = RM_E_NONE;
-         break;
+   case RADIOLIB_ERR_NONE:
+      logdbg_ln("TX data done in : %d ms", (millis() - t1));
+      err = RM_E_NONE;
+      break;
 
-      case RADIOLIB_ERR_PACKET_TOO_LONG:
-         logerr_ln("ERROR startTransmitData too long!");
-         err = RM_E_PACKET_TOO_LONG;
-         break;
+   case RADIOLIB_ERR_PACKET_TOO_LONG:
+      logerr_ln("ERROR startTransmitData too long!");
+      err = RM_E_PACKET_TOO_LONG;
+      break;
 
-      case RADIOLIB_ERR_TX_TIMEOUT:
-         logerr_ln("ERROR startTransmitData timeout!");
-         err = RM_E_RADIO_TX_TIMEOUT;
-         break;
+   case RADIOLIB_ERR_TX_TIMEOUT:
+      logerr_ln("ERROR startTransmitData timeout!");
+      err = RM_E_RADIO_TX_TIMEOUT;
+      break;
 
-      default:
-         logerr_ln("ERROR startTransmitData failed, err: %d", tx_err);
-         err = RM_E_RADIO_TX;
-         break;
+   default:
+      logerr_ln("ERROR startTransmitData failed, err: %d", tx_err);
+      err = RM_E_RADIO_TX;
+      break;
    }
 
    return err;
@@ -272,7 +267,8 @@ int LoraRadio::readReceivedData(std::vector<byte>* packetBytes)
       return RM_E_RADIO_FAILURE;
    }
 
-   logdbg_ln("Rx packet: %s", RadioMeshUtils::convertToHex(packetBytes->data(), packetBytes->size()).c_str());
+   logdbg_ln("Rx packet: %s",
+             RadioMeshUtils::convertToHex(packetBytes->data(), packetBytes->size()).c_str());
    logdbg_ln("RX: rssi: %f snr: %f size: %d", radio->getRSSI(), radio->getSNR(), packet_length);
 
    resetRadioState(RX_TX_STATE);
@@ -282,7 +278,7 @@ int LoraRadio::readReceivedData(std::vector<byte>* packetBytes)
 }
 
 // IMPORTANT: this function MUST be 'void' type and MUST NOT have any arguments!
-#if defined (ESP32) || defined (ESP8266)
+#if defined(ESP32) || defined(ESP8266)
 void ICACHE_RAM_ATTR LoraRadio::onInterrupt()
 #else
 void LoraRadio::onInterrupt()
@@ -299,7 +295,7 @@ void LoraRadio::onInterrupt()
       instance->txDone = true;
    }
 
-   if (irqStatus & RADIOLIB_SX126X_IRQ_TIMEOUT ) {
+   if (irqStatus & RADIOLIB_SX126X_IRQ_TIMEOUT) {
       if (instance->rxDone) {
          instance->radioStateError = RM_E_RADIO_RX_TIMEOUT;
       }
@@ -308,16 +304,16 @@ void LoraRadio::onInterrupt()
       }
    }
 
-   if (irqStatus & RADIOLIB_SX126X_IRQ_CRC_ERR ) {
+   if (irqStatus & RADIOLIB_SX126X_IRQ_CRC_ERR) {
       instance->radioStateError = RM_E_RADIO_CRC_MISMATCH;
    }
-   if (irqStatus & RADIOLIB_SX126X_IRQ_HEADER_ERR ) {
+   if (irqStatus & RADIOLIB_SX126X_IRQ_HEADER_ERR) {
       instance->radioStateError = RM_E_RADIO_HEADER_CRC_MISMATCH;
    }
 }
 
-bool LoraRadio::checkAndClearRxFlag() {
-
+bool LoraRadio::checkAndClearRxFlag()
+{
    if (rxDone) {
       rxDone = false;
       return true;
@@ -325,7 +321,8 @@ bool LoraRadio::checkAndClearRxFlag() {
    return false;
 }
 
-bool LoraRadio::checkAndClearTxFlag() {
+bool LoraRadio::checkAndClearTxFlag()
+{
    if (txDone) {
       txDone = false;
       return true;
@@ -335,7 +332,8 @@ bool LoraRadio::checkAndClearTxFlag() {
 
 int LoraRadio::getRadioStateError()
 {
-   // TODO: review this function. There's probably a better place to switch to receive mode when an error occurs.
+   // TODO: review this function. There's probably a better place to switch to receive mode when an
+   // error occurs.
    if (radioStateError != RM_E_NONE) {
       resetRadioState();
       switchToReceiveMode();

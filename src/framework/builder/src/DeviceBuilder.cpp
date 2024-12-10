@@ -1,20 +1,18 @@
-#include <framework/builder/inc/DeviceBuilder.h>
-#include <common/inc/Logger.h>
 #include <common/inc/Errors.h>
+#include <common/inc/Logger.h>
+#include <framework/builder/inc/DeviceBuilder.h>
 
-DeviceBuilder &DeviceBuilder::start()
+DeviceBuilder& DeviceBuilder::start()
 {
-   blueprint = {
-      .hasRadio = false,
-      .canRelay = false,
-      .hasDisplay = false,
-      .usesCrypto = false,
-      .hasRxCallback = false,
-      .hasTxCallback = false,
-      .hasWifi = false,
-      .hasWifiAccessPoint = false,
-      .hasStorage = false
-   };
+   blueprint = {.hasRadio = false,
+                .canRelay = false,
+                .hasDisplay = false,
+                .usesCrypto = false,
+                .hasRxCallback = false,
+                .hasTxCallback = false,
+                .hasWifi = false,
+                .hasWifiAccessPoint = false,
+                .hasStorage = false};
    relayEnabled = false;
    isBuilderStarted = true;
 
@@ -23,13 +21,13 @@ DeviceBuilder &DeviceBuilder::start()
    while (!Serial && millis() < 10000)
       ;
    Serial.begin(115200);
-   loginfo_ln("Running RadioMesh %s",RadioMeshUtils::getVersion().c_str());
+   loginfo_ln("Running RadioMesh %s", RadioMeshUtils::getVersion().c_str());
    loginfo_ln("DeviceBuilder started...");
 
    return *this;
 }
 
-DeviceBuilder &DeviceBuilder::withRxPacketCallback(PacketReceivedCallback callback)
+DeviceBuilder& DeviceBuilder::withRxPacketCallback(PacketReceivedCallback callback)
 {
    loginfo_ln("Setting Rx callback %p", callback);
    blueprint.hasRxCallback = true;
@@ -37,7 +35,7 @@ DeviceBuilder &DeviceBuilder::withRxPacketCallback(PacketReceivedCallback callba
    return *this;
 }
 
-DeviceBuilder &DeviceBuilder::withTxPacketCallback(PacketSentCallback callback)
+DeviceBuilder& DeviceBuilder::withTxPacketCallback(PacketSentCallback callback)
 {
    loginfo_ln("Setting Tx callback %p", callback);
    blueprint.hasTxCallback = true;
@@ -45,7 +43,7 @@ DeviceBuilder &DeviceBuilder::withTxPacketCallback(PacketSentCallback callback)
    return *this;
 }
 
-DeviceBuilder &DeviceBuilder::withLoraRadio(const LoraRadioParams &params)
+DeviceBuilder& DeviceBuilder::withLoraRadio(const LoraRadioParams& params)
 {
    loginfo_ln("Setting LoRa radio params: %s", params.toString().c_str());
    blueprint.hasRadio = true;
@@ -53,7 +51,7 @@ DeviceBuilder &DeviceBuilder::withLoraRadio(const LoraRadioParams &params)
    return *this;
 }
 
-DeviceBuilder &DeviceBuilder::withRelayEnabled(bool enabled)
+DeviceBuilder& DeviceBuilder::withRelayEnabled(bool enabled)
 {
    loginfo_ln("Setting relay enabled: %d", enabled);
    blueprint.canRelay = true;
@@ -61,7 +59,7 @@ DeviceBuilder &DeviceBuilder::withRelayEnabled(bool enabled)
    return *this;
 }
 
-DeviceBuilder &DeviceBuilder::withSecureMessaging(const SecurityParams &params)
+DeviceBuilder& DeviceBuilder::withSecureMessaging(const SecurityParams& params)
 {
    loginfo_ln("Setting secure messaging params");
    blueprint.usesCrypto = true;
@@ -71,7 +69,7 @@ DeviceBuilder &DeviceBuilder::withSecureMessaging(const SecurityParams &params)
    return *this;
 }
 
-DeviceBuilder &DeviceBuilder::withOledDisplay(const OledDisplayParams &params)
+DeviceBuilder& DeviceBuilder::withOledDisplay(const OledDisplayParams& params)
 {
    loginfo_ln("Setting OLED display params");
    blueprint.hasDisplay = true;
@@ -81,7 +79,7 @@ DeviceBuilder &DeviceBuilder::withOledDisplay(const OledDisplayParams &params)
    return *this;
 }
 
-DeviceBuilder &DeviceBuilder::withCustomDisplay(IDisplay* display)
+DeviceBuilder& DeviceBuilder::withCustomDisplay(IDisplay* display)
 {
    blueprint.hasDisplay = true;
    useCustomDisplay = true;
@@ -89,8 +87,7 @@ DeviceBuilder &DeviceBuilder::withCustomDisplay(IDisplay* display)
    return *this;
 }
 
-
-DeviceBuilder &DeviceBuilder::withWifi(const WifiParams &params)
+DeviceBuilder& DeviceBuilder::withWifi(const WifiParams& params)
 {
    loginfo_ln("Setting WiFi params");
    blueprint.hasWifi = true;
@@ -99,7 +96,7 @@ DeviceBuilder &DeviceBuilder::withWifi(const WifiParams &params)
    return *this;
 }
 
-DeviceBuilder &DeviceBuilder::withWifiAccessPoint(const WifiAccessPointParams &params)
+DeviceBuilder& DeviceBuilder::withWifiAccessPoint(const WifiAccessPointParams& params)
 {
    loginfo_ln("Setting WiFi access point params");
    blueprint.hasWifiAccessPoint = true;
@@ -109,7 +106,7 @@ DeviceBuilder &DeviceBuilder::withWifiAccessPoint(const WifiAccessPointParams &p
    return *this;
 }
 
-DeviceBuilder &DeviceBuilder::withStorage(const ByteStorageParams& params)
+DeviceBuilder& DeviceBuilder::withStorage(const ByteStorageParams& params)
 {
    loginfo_ln("Setting storage params");
    blueprint.hasStorage = true;
@@ -117,7 +114,8 @@ DeviceBuilder &DeviceBuilder::withStorage(const ByteStorageParams& params)
    return *this;
 }
 
-IDevice *DeviceBuilder::build(const std::string name, std::array<byte, RM_ID_LENGTH> id, MeshDeviceType deviceType)
+IDevice* DeviceBuilder::build(const std::string name, std::array<byte, RM_ID_LENGTH> id,
+                              MeshDeviceType deviceType)
 {
    int build_error = RM_E_NONE;
    loginfo_ln("Building device...");
@@ -127,7 +125,7 @@ IDevice *DeviceBuilder::build(const std::string name, std::array<byte, RM_ID_LEN
    }
 
    // Create the Device object using setters as needed as per the blueprint
-   RadioMeshDevice *device = new RadioMeshDevice(name, id);
+   RadioMeshDevice* device = new RadioMeshDevice(name, id);
 
    build_error = device->initialize();
    if (build_error != RM_E_NONE) {

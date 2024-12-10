@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
 
 #include <common/inc/Definitions.h>
 #include <common/inc/Errors.h>
@@ -10,24 +10,23 @@
 
 #include <RadioLib.h>
 
-#define RX_TX_STATE  0
-#define RX_STATE     1
-#define TX_STATE     2
+#define RX_TX_STATE 0
+#define RX_STATE 1
+#define TX_STATE 2
 
 /**
  * @class LoraRadio
  *
  * @brief This class implements the IRadio interface for a LoRa radio.
-*/
+ */
 class LoraRadio : public IRadio
 {
 public:
-
    /**
     * @brief Get the instance of the LoraRadio.
     * @returns A pointer to the instance of the LoraRadio.
-   */
-   static LoraRadio *getInstance()
+    */
+   static LoraRadio* getInstance()
    {
       if (!instance) {
          instance = new LoraRadio();
@@ -36,7 +35,9 @@ public:
    }
 
    // IRadio interface
-   virtual ~LoraRadio() {}
+   virtual ~LoraRadio()
+   {
+   }
 
    virtual int setup(const LoraRadioParams& params) override;
    virtual int setup() override;
@@ -58,14 +59,20 @@ public:
     *
     * @return true if the radio has been setup, false otherwise
     */
-   bool isRadioSetup() { return isSetup; }
+   bool isRadioSetup()
+   {
+      return isSetup;
+   }
 
    /**
     * @brief Get the radio parameters.
     *
     * @return LoraRadioParams object containing the radio parameters
     */
-   LoraRadioParams getParams() { return radioParams; }
+   LoraRadioParams getParams()
+   {
+      return radioParams;
+   }
 
    /**
     * @brief Set the radio parameters.
@@ -86,7 +93,8 @@ public:
    /**
     * @brief switch the radio to receive mode.
     *
-    * @return RM_E_NONE if the radio was successfully switched to receive mode, an error code otherwise.
+    * @return RM_E_NONE if the radio was successfully switched to receive mode, an error code
+    * otherwise.
     */
    int startReceive();
 
@@ -97,7 +105,7 @@ public:
     * @param length the length of the data array
     * @return RM_E_NONE if the packet was successfully transmitted, an error code otherwise.
     */
-   int startTransmitPacket(byte *data, int length);
+   int startTransmitPacket(byte* data, int length);
 
    /**
     * @brief Read the received data from the radio.
@@ -105,7 +113,7 @@ public:
     * @param packetData vector of bytes to store the received data
     * @return WAR_ERR_NONE if the data was successfully read, an error code otherwise.
     */
-   int readReceivedData(std::vector<byte> *packetData);
+   int readReceivedData(std::vector<byte>* packetData);
 
    /**
     * @brief Check if the radio is in receive mode.
@@ -126,19 +134,21 @@ public:
    int getRadioStateError();
 
 private:
-   LoraRadio() {}
-   LoraRadio(const LoraRadio &) = delete;      // Prevent copy
-   void operator=(const LoraRadio &) = delete; // Prevent assignment
+   LoraRadio()
+   {
+   }
+   LoraRadio(const LoraRadio&) = delete;      // Prevent copy
+   void operator=(const LoraRadio&) = delete; // Prevent assignment
 
-   static LoraRadio *instance;
+   static LoraRadio* instance;
 
    volatile bool rxDone = false;
    volatile bool txDone = false;
    volatile bool isSetup = false;
    volatile int16_t radioStateError = RM_E_NONE;
 
-   void resetRadioState(int flag=RX_TX_STATE) {
-
+   void resetRadioState(int flag = RX_TX_STATE)
+   {
       if (flag == RX_TX_STATE) {
          rxDone = false;
          txDone = false;
@@ -156,6 +166,4 @@ private:
    int checkLoraParameters(LoraRadioParams params);
    int switchToReceiveMode();
    int createModule(const LoraRadioParams& params);
-
-
 };

@@ -1,13 +1,13 @@
 #pragma once
 
-#include <vector>
 #include <array>
-#include <string>
 #include <cstring>
+#include <string>
+#include <vector>
 
 #include <common/inc/Definitions.h>
-#include <common/utils/Utils.h>
 #include <common/inc/Logger.h>
+#include <common/utils/Utils.h>
 
 // Protocol version
 #define RM_PROTOCOL_VERSION 2
@@ -17,17 +17,16 @@
 #define PACKET_LENGTH 256
 #define MAX_HOPS 7
 
-
 // Header field lengths in bytes
-#define PROTOCOL_VERSION_LENGTH  1
-#define DEV_ID_LENGTH            RM_ID_LENGTH
-#define MSG_ID_LENGTH            RM_ID_LENGTH
-#define TOPIC_LENGTH             1
-#define DEVICE_TYPE_LENGTH       1
-#define HOP_COUNT_LENGTH         1
-#define DATA_CRC_LENGTH          4
-#define FCOUNTER_LENGTH          4
-#define RESERVED_LENGTH          3
+#define PROTOCOL_VERSION_LENGTH 1
+#define DEV_ID_LENGTH RM_ID_LENGTH
+#define MSG_ID_LENGTH RM_ID_LENGTH
+#define TOPIC_LENGTH 1
+#define DEVICE_TYPE_LENGTH 1
+#define HOP_COUNT_LENGTH 1
+#define DATA_CRC_LENGTH 4
+#define FCOUNTER_LENGTH 4
+#define RESERVED_LENGTH 3
 
 // Field positions in packet
 #define VERSION_POS 0
@@ -50,7 +49,6 @@
 #define MAX_DATA_LENGTH (PACKET_LENGTH - HEADER_LENGTH)
 #define MIN_PACKET_LENGTH (HEADER_LENGTH + 1)
 
-
 /**
  * @class RadioMeshPacket
  * @brief Optimized packet structure for the mesh protocol
@@ -69,7 +67,6 @@
  * - Next Hop ID           (4 bytes) : Next relay identifier
  * - Reserved              (3 bytes) : Future use
  */
-
 class RadioMeshPacket
 {
 public:
@@ -129,15 +126,11 @@ public:
       hopCount = buffer[HOP_COUNT_POS];
 
       // Multi-byte fields
-      packetCrc = (buffer[DATA_CRC_POS] << 24) |
-                  (buffer[DATA_CRC_POS + 1] << 16) |
-                  (buffer[DATA_CRC_POS + 2] << 8) |
-                  buffer[DATA_CRC_POS + 3];
+      packetCrc = (buffer[DATA_CRC_POS] << 24) | (buffer[DATA_CRC_POS + 1] << 16) |
+                  (buffer[DATA_CRC_POS + 2] << 8) | buffer[DATA_CRC_POS + 3];
 
-      fcounter = (buffer[FCOUNTER_POS] << 24) |
-                  (buffer[FCOUNTER_POS + 1] << 16) |
-                  (buffer[FCOUNTER_POS + 2] << 8) |
-                  buffer[FCOUNTER_POS + 3];
+      fcounter = (buffer[FCOUNTER_POS] << 24) | (buffer[FCOUNTER_POS + 1] << 16) |
+                 (buffer[FCOUNTER_POS + 2] << 8) | buffer[FCOUNTER_POS + 3];
 
       // Routing IDs
       std::copy_n(buffer.begin() + LAST_HOP_ID_POS, DEV_ID_LENGTH, lastHopId.begin());
@@ -231,8 +224,7 @@ public:
       logdbg_ln("  Reserved: %s",
                 RadioMeshUtils::convertToHex(reserved.data(), reserved.size()).c_str());
       logdbg_ln("  Data Length: %d bytes", packetData.size());
-      if (!packetData.empty())
-      {
+      if (!packetData.empty()) {
          logdbg_ln("  Data (encrypted): %s",
                    RadioMeshUtils::convertToHex(packetData.data(), packetData.size()).c_str());
       }
@@ -249,15 +241,13 @@ public:
 
    static bool isInclusionTopic(uint8_t topic)
    {
-      return (topic == MessageTopic::INCLUDE_REQUEST ||
-              topic == MessageTopic::INCLUDE_RESPONSE ||
-              topic == MessageTopic::INCLUDE_OPEN ||
-              topic == MessageTopic::INCLUDE_CONFIRM);
+      return (topic == MessageTopic::INCLUDE_REQUEST || topic == MessageTopic::INCLUDE_RESPONSE ||
+              topic == MessageTopic::INCLUDE_OPEN || topic == MessageTopic::INCLUDE_CONFIRM);
    }
    /**
     * @brief Assignment operator
     */
-   RadioMeshPacket &operator=(const RadioMeshPacket &other)
+   RadioMeshPacket& operator=(const RadioMeshPacket& other)
    {
       if (this != &other) {
          sourceDevId = other.sourceDevId;

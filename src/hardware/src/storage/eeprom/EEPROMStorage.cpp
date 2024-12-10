@@ -1,11 +1,11 @@
-#include <vector>
 #include <string>
+#include <vector>
 
-#include <common/inc/Logger.h>
-#include <common/inc/Errors.h>
-#include <common/inc/Definitions.h>
-#include <hardware/inc/storage/eeprom/EEPROMStorage.h>
 #include <EEPROM.h>
+#include <common/inc/Definitions.h>
+#include <common/inc/Errors.h>
+#include <common/inc/Logger.h>
+#include <hardware/inc/storage/eeprom/EEPROMStorage.h>
 
 EEPROMStorage* EEPROMStorage::instance = nullptr;
 
@@ -38,39 +38,38 @@ void EEPROMStorage::initializeStorageHeader()
 
 int EEPROMStorage::readStorageHeader(StorageHeader& header)
 {
-    if (!initialized) {
-        return RM_E_STORAGE_NOT_INIT;
-    }
+   if (!initialized) {
+      return RM_E_STORAGE_NOT_INIT;
+   }
 
-    // Read header from start of EEPROM
-    for (size_t i = 0; i < sizeof(StorageHeader); i++) {
-        reinterpret_cast<uint8_t*>(&header)[i] = EEPROM.read(i);
-    }
-    return RM_E_NONE;
+   // Read header from start of EEPROM
+   for (size_t i = 0; i < sizeof(StorageHeader); i++) {
+      reinterpret_cast<uint8_t*>(&header)[i] = EEPROM.read(i);
+   }
+   return RM_E_NONE;
 }
 
 int EEPROMStorage::writeStorageHeader(const StorageHeader& header)
 {
-    if (!initialized) {
-        return RM_E_STORAGE_NOT_INIT;
-    }
+   if (!initialized) {
+      return RM_E_STORAGE_NOT_INIT;
+   }
 
-    // Write header to start of EEPROM without committing
-    for (size_t i = 0; i < sizeof(StorageHeader); i++) {
-        EEPROM.write(i, reinterpret_cast<const uint8_t*>(&header)[i]);
-    }
-    return RM_E_NONE;
+   // Write header to start of EEPROM without committing
+   for (size_t i = 0; i < sizeof(StorageHeader); i++) {
+      EEPROM.write(i, reinterpret_cast<const uint8_t*>(&header)[i]);
+   }
+   return RM_E_NONE;
 }
 
 bool EEPROMStorage::isStorageValid()
 {
-    StorageHeader header;
-    if (readStorageHeader(header) != RM_E_NONE) {
-        return false;
-    }
-    return header.magic == STORAGE_MAGIC && header.version == STORAGE_VERSION;
+   StorageHeader header;
+   if (readStorageHeader(header) != RM_E_NONE) {
+      return false;
+   }
+   return header.magic == STORAGE_MAGIC && header.version == STORAGE_VERSION;
 }
-
 
 int EEPROMStorage::begin()
 {
@@ -121,109 +120,109 @@ int EEPROMStorage::end()
    return RM_E_NONE;
 }
 
-int EEPROMStorage::write(const std::string& key, const std::vector<byte>& data) {
-    if (!initialized) {
-        logerr_ln("Storage not initialized");
-        return RM_E_STORAGE_NOT_INIT;
-    }
+int EEPROMStorage::write(const std::string& key, const std::vector<byte>& data)
+{
+   if (!initialized) {
+      logerr_ln("Storage not initialized");
+      return RM_E_STORAGE_NOT_INIT;
+   }
 
-    if (key.empty()) {
-        logerr_ln("Invalid parameter: key is empty");
-        return RM_E_INVALID_PARAM;
-    }
-    if (data.empty()) {
-        logerr_ln("Invalid parameter: data is empty");
-        return RM_E_INVALID_PARAM;
-    }
-    if (key.length() > 255) {
-        logerr_ln("Invalid parameter: key is too long");
-        return RM_E_INVALID_LENGTH;
-    }
+   if (key.empty()) {
+      logerr_ln("Invalid parameter: key is empty");
+      return RM_E_INVALID_PARAM;
+   }
+   if (data.empty()) {
+      logerr_ln("Invalid parameter: data is empty");
+      return RM_E_INVALID_PARAM;
+   }
+   if (key.length() > 255) {
+      logerr_ln("Invalid parameter: key is too long");
+      return RM_E_INVALID_LENGTH;
+   }
 
-    logdbg_ln("Writing key: %s", key.c_str());
-    logdbg_ln("Data size: %d", data.size());
-    logdbg_ln("Available space: %d", available());
-    logdbg_ln("Space needed: %d", key.length() + data.size() + sizeof(EntryHeader));
+   logdbg_ln("Writing key: %s", key.c_str());
+   logdbg_ln("Data size: %d", data.size());
+   logdbg_ln("Available space: %d", available());
+   logdbg_ln("Space needed: %d", key.length() + data.size() + sizeof(EntryHeader));
 
-    // Check space availability
+   // Check space availability
 
-    if (available() < key.length() + data.size() + sizeof(EntryHeader)) {
-        logerr_ln("Not enough space left");
-        return RM_E_STORAGE_NOT_ENOUGH_SPACE;
-    }
+   if (available() < key.length() + data.size() + sizeof(EntryHeader)) {
+      logerr_ln("Not enough space left");
+      return RM_E_STORAGE_NOT_ENOUGH_SPACE;
+   }
 
-    StorageHeader storageHeader;
-    if (readStorageHeader(storageHeader) != RM_E_NONE) {
-        return RM_E_STORAGE_READ_FAILED;
-    }
+   StorageHeader storageHeader;
+   if (readStorageHeader(storageHeader) != RM_E_NONE) {
+      return RM_E_STORAGE_READ_FAILED;
+   }
 
-    // Search for existing key
-    size_t addr = sizeof(StorageHeader);
-    size_t writeAddr = addr;
+   // Search for existing key
+   size_t addr = sizeof(StorageHeader);
+   size_t writeAddr = addr;
 
-    for (uint16_t i = 0; i < storageHeader.numEntries; i++) {
-        EntryHeader entryHeader;
-        size_t currentEntryStart = addr;
+   for (uint16_t i = 0; i < storageHeader.numEntries; i++) {
+      EntryHeader entryHeader;
+      size_t currentEntryStart = addr;
 
-        // Read entry header
-        for (size_t j = 0; j < sizeof(EntryHeader); j++) {
-            reinterpret_cast<uint8_t*>(&entryHeader)[j] = EEPROM.read(addr + j);
-        }
+      // Read entry header
+      for (size_t j = 0; j < sizeof(EntryHeader); j++) {
+         reinterpret_cast<uint8_t*>(&entryHeader)[j] = EEPROM.read(addr + j);
+      }
 
-        // Read key if entry is valid
-        if (entryHeader.flags & ENTRY_VALID_FLAG) {
-            std::string storedKey;
-            storedKey.resize(entryHeader.keyLength);
-            for (size_t j = 0; j < entryHeader.keyLength; j++) {
-                storedKey[j] = EEPROM.read(addr + sizeof(EntryHeader) + j);
+      // Read key if entry is valid
+      if (entryHeader.flags & ENTRY_VALID_FLAG) {
+         std::string storedKey;
+         storedKey.resize(entryHeader.keyLength);
+         for (size_t j = 0; j < entryHeader.keyLength; j++) {
+            storedKey[j] = EEPROM.read(addr + sizeof(EntryHeader) + j);
+         }
+
+         if (storedKey == key) {
+            // Invalidate existing entry
+            entryHeader.flags &= ~ENTRY_VALID_FLAG;
+            for (size_t j = 0; j < sizeof(EntryHeader); j++) {
+               EEPROM.write(currentEntryStart + j, reinterpret_cast<uint8_t*>(&entryHeader)[j]);
             }
+            storageHeader.numEntries--;
+            writeStorageHeader(storageHeader);
+            break;
+         }
+      }
 
-            if (storedKey == key) {
-                // Invalidate existing entry
-                entryHeader.flags &= ~ENTRY_VALID_FLAG;
-                for (size_t j = 0; j < sizeof(EntryHeader); j++) {
-                    EEPROM.write(currentEntryStart + j,
-                        reinterpret_cast<uint8_t*>(&entryHeader)[j]);
-                }
-                storageHeader.numEntries--;
-                writeStorageHeader(storageHeader);
-                break;
-            }
-        }
+      writeAddr = addr + sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
+      addr = writeAddr;
+   }
 
-        writeAddr = addr + sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
-        addr = writeAddr;
-    }
+   // Write new entry
+   EntryHeader newEntry;
+   newEntry.keyLength = key.length();
+   newEntry.dataLength = data.size();
+   newEntry.flags = ENTRY_VALID_FLAG;
 
-    // Write new entry
-    EntryHeader newEntry;
-    newEntry.keyLength = key.length();
-    newEntry.dataLength = data.size();
-    newEntry.flags = ENTRY_VALID_FLAG;
+   // Write entry header
+   for (size_t i = 0; i < sizeof(EntryHeader); i++) {
+      EEPROM.write(writeAddr + i, reinterpret_cast<uint8_t*>(&newEntry)[i]);
+   }
+   writeAddr += sizeof(EntryHeader);
 
-    // Write entry header
-    for (size_t i = 0; i < sizeof(EntryHeader); i++) {
-        EEPROM.write(writeAddr + i, reinterpret_cast<uint8_t*>(&newEntry)[i]);
-    }
-    writeAddr += sizeof(EntryHeader);
+   // Write key
+   for (size_t i = 0; i < key.length(); i++) {
+      EEPROM.write(writeAddr + i, key[i]);
+   }
+   writeAddr += key.length();
 
-    // Write key
-    for (size_t i = 0; i < key.length(); i++) {
-        EEPROM.write(writeAddr + i, key[i]);
-    }
-    writeAddr += key.length();
+   // Write data
+   for (size_t i = 0; i < data.size(); i++) {
+      EEPROM.write(writeAddr + i, data[i]);
+   }
 
-    // Write data
-    for (size_t i = 0; i < data.size(); i++) {
-        EEPROM.write(writeAddr + i, data[i]);
-    }
+   // Update storage header
+   storageHeader.numEntries++;
+   writeStorageHeader(storageHeader);
 
-    // Update storage header
-    storageHeader.numEntries++;
-    writeStorageHeader(storageHeader);
-
-    logdbg_ln("Write complete for key: %s", key.c_str());
-    return RM_E_NONE;
+   logdbg_ln("Write complete for key: %s", key.c_str());
+   return RM_E_NONE;
 }
 
 int EEPROMStorage::writeAndCommit(const std::string& key, const std::vector<byte>& data)
@@ -332,10 +331,10 @@ int EEPROMStorage::read(const std::string& key, std::vector<byte>& data)
 
       if (storedKey == key && (entryHeader.flags & ENTRY_VALID_FLAG)) {
          // Found matching key - read data
-         addr += entryHeader.keyLength;  // Skip to data
+         addr += entryHeader.keyLength; // Skip to data
          data.resize(entryHeader.dataLength);
          for (size_t j = 0; j < entryHeader.dataLength; j++) {
-               data[j] = EEPROM.read(addr + j);
+            data[j] = EEPROM.read(addr + j);
          }
          logdbg_ln("Read successful for key: %s", key.c_str());
          return RM_E_NONE;
@@ -404,70 +403,68 @@ int EEPROMStorage::remove(const std::string& key)
 
 int EEPROMStorage::defragment()
 {
-    if (!initialized) {
-        return RM_E_STORAGE_NOT_INIT;
-    }
+   if (!initialized) {
+      return RM_E_STORAGE_NOT_INIT;
+   }
 
-    StorageHeader storageHeader;
-    if (readStorageHeader(storageHeader) != RM_E_NONE) {
-        return RM_E_STORAGE_READ_FAILED;
-    }
+   StorageHeader storageHeader;
+   if (readStorageHeader(storageHeader) != RM_E_NONE) {
+      return RM_E_STORAGE_READ_FAILED;
+   }
 
-    // Capture initial state
-    size_t initialEntries = storageHeader.numEntries;
-    size_t initialSpace = available();
+   // Capture initial state
+   size_t initialEntries = storageHeader.numEntries;
+   size_t initialSpace = available();
 
-    size_t readAddr = sizeof(StorageHeader);
-    size_t writeAddr = sizeof(StorageHeader);
-    uint16_t validEntries = 0;
+   size_t readAddr = sizeof(StorageHeader);
+   size_t writeAddr = sizeof(StorageHeader);
+   uint16_t validEntries = 0;
 
-    // Iterate through all entries
-    for (uint16_t i = 0; i < storageHeader.numEntries; i++) {
-        EntryHeader entryHeader;
+   // Iterate through all entries
+   for (uint16_t i = 0; i < storageHeader.numEntries; i++) {
+      EntryHeader entryHeader;
 
-        // Read entry header
-        for (size_t j = 0; j < sizeof(EntryHeader); j++) {
-            reinterpret_cast<uint8_t*>(&entryHeader)[j] = EEPROM.read(readAddr + j);
-        }
+      // Read entry header
+      for (size_t j = 0; j < sizeof(EntryHeader); j++) {
+         reinterpret_cast<uint8_t*>(&entryHeader)[j] = EEPROM.read(readAddr + j);
+      }
 
-        if (entryHeader.flags & ENTRY_VALID_FLAG) {
-            if (readAddr != writeAddr) {
-                // Move entry header
-                for (size_t j = 0; j < sizeof(EntryHeader); j++) {
-                    EEPROM.write(writeAddr + j, reinterpret_cast<uint8_t*>(&entryHeader)[j]);
-                }
-
-                // Move key and data
-                size_t totalSize = entryHeader.keyLength + entryHeader.dataLength;
-                for (size_t j = 0; j < totalSize; j++) {
-                    EEPROM.write(writeAddr + sizeof(EntryHeader) + j,
-                               EEPROM.read(readAddr + sizeof(EntryHeader) + j));
-                }
+      if (entryHeader.flags & ENTRY_VALID_FLAG) {
+         if (readAddr != writeAddr) {
+            // Move entry header
+            for (size_t j = 0; j < sizeof(EntryHeader); j++) {
+               EEPROM.write(writeAddr + j, reinterpret_cast<uint8_t*>(&entryHeader)[j]);
             }
-            writeAddr += sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
-            validEntries++;
-        }
-        readAddr += sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
-    }
 
-    // Update storage header
-    storageHeader.numEntries = validEntries;
-    writeStorageHeader(storageHeader);
+            // Move key and data
+            size_t totalSize = entryHeader.keyLength + entryHeader.dataLength;
+            for (size_t j = 0; j < totalSize; j++) {
+               EEPROM.write(writeAddr + sizeof(EntryHeader) + j,
+                            EEPROM.read(readAddr + sizeof(EntryHeader) + j));
+            }
+         }
+         writeAddr += sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
+         validEntries++;
+      }
+      readAddr += sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
+   }
 
-    // Log defragmentation stats
-    size_t finalSpace = available();
-    [[maybe_unused]] size_t reclaimedSpace = finalSpace - initialSpace;
-    [[maybe_unused]] size_t removedEntries = initialEntries - validEntries;
+   // Update storage header
+   storageHeader.numEntries = validEntries;
+   writeStorageHeader(storageHeader);
 
-    loginfo_ln("Defrag Stats:");
-    loginfo_ln("- Entries: %d -> %d (removed %d)",
-               initialEntries, validEntries, removedEntries);
-    loginfo_ln("- Available Space: %d -> %d bytes (reclaimed %d)",
-               initialSpace, finalSpace, reclaimedSpace);
-    loginfo_ln("- Fragmentation: %.1f%%",
-               (100.0f * reclaimedSpace) / storageParams.size);
+   // Log defragmentation stats
+   size_t finalSpace = available();
+   [[maybe_unused]] size_t reclaimedSpace = finalSpace - initialSpace;
+   [[maybe_unused]] size_t removedEntries = initialEntries - validEntries;
 
-    return RM_E_NONE;
+   loginfo_ln("Defrag Stats:");
+   loginfo_ln("- Entries: %d -> %d (removed %d)", initialEntries, validEntries, removedEntries);
+   loginfo_ln("- Available Space: %d -> %d bytes (reclaimed %d)", initialSpace, finalSpace,
+              reclaimedSpace);
+   loginfo_ln("- Fragmentation: %.1f%%", (100.0f * reclaimedSpace) / storageParams.size);
+
+   return RM_E_NONE;
 }
 
 int EEPROMStorage::clear()
@@ -485,39 +482,41 @@ int EEPROMStorage::clear()
    return commit();
 }
 
-size_t EEPROMStorage::available() {
-    if (!initialized) {
-        logerr_ln("Storage not initialized");
-        return 0;
-    }
+size_t EEPROMStorage::available()
+{
+   if (!initialized) {
+      logerr_ln("Storage not initialized");
+      return 0;
+   }
 
-    StorageHeader storageHeader;
-    if (readStorageHeader(storageHeader) != RM_E_NONE) {
-        return 0;
-    }
+   StorageHeader storageHeader;
+   if (readStorageHeader(storageHeader) != RM_E_NONE) {
+      return 0;
+   }
 
-    // Calculate used space including invalid entries
-    size_t usedSpace = sizeof(StorageHeader);
-    size_t addr = sizeof(StorageHeader);
+   // Calculate used space including invalid entries
+   size_t usedSpace = sizeof(StorageHeader);
+   size_t addr = sizeof(StorageHeader);
 
-    for (uint16_t i = 0; i < storageHeader.numEntries; i++) {
-        EntryHeader entryHeader;
-        for (size_t j = 0; j < sizeof(EntryHeader); j++) {
-            reinterpret_cast<uint8_t*>(&entryHeader)[j] = EEPROM.read(addr + j);
-        }
-        // Count space regardless of valid flag
-        usedSpace += sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
-        addr += sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
-    }
+   for (uint16_t i = 0; i < storageHeader.numEntries; i++) {
+      EntryHeader entryHeader;
+      for (size_t j = 0; j < sizeof(EntryHeader); j++) {
+         reinterpret_cast<uint8_t*>(&entryHeader)[j] = EEPROM.read(addr + j);
+      }
+      // Count space regardless of valid flag
+      usedSpace += sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
+      addr += sizeof(EntryHeader) + entryHeader.keyLength + entryHeader.dataLength;
+   }
 
-    return storageParams.size - usedSpace;
+   return storageParams.size - usedSpace;
 }
 
-bool EEPROMStorage::isFull() {
-    if (!initialized) {
-        return true;
-    }
-    return available() == 0;
+bool EEPROMStorage::isFull()
+{
+   if (!initialized) {
+      return true;
+   }
+   return available() == 0;
 }
 
 int EEPROMStorage::getEntryCount()

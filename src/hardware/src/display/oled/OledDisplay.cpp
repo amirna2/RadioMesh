@@ -1,22 +1,25 @@
 
-#include <hardware/inc/display/oled/OledDisplay.h>
-#include <common/inc/Logger.h>
+#include <common //utils/Utils.h>
 #include <common/inc/Errors.h>
-#include <common//utils/Utils.h>
+#include <common/inc/Logger.h>
+#include <hardware/inc/display/oled/OledDisplay.h>
 
 OledDisplay* OledDisplay::instance = nullptr;
 
 #ifndef RM_NO_DISPLAY
 
-int OledDisplay::setParams(const OledDisplayParams& params) {
+int OledDisplay::setParams(const OledDisplayParams& params)
+{
    // no need to check the parameters as they are just pin numbers
    // actual call to setup the display will check if the pins are valid
    displayParams = params;
    return RM_E_NONE;
 }
 
-int OledDisplay::setup() {
-   u8g2 = new U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0, displayParams.resetPin, displayParams.clockPin, displayParams.dataPin);
+int OledDisplay::setup()
+{
+   u8g2 = new U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0, displayParams.resetPin,
+                                                  displayParams.clockPin, displayParams.dataPin);
    if (u8g2 == nullptr) {
       logerr_ln("ERROR  failed to create display object");
       return RM_E_UNKNOWN;
@@ -41,7 +44,8 @@ int OledDisplay::setup() {
    return RM_E_NONE;
 }
 
-int OledDisplay::powerSave(bool save) {
+int OledDisplay::powerSave(bool save)
+{
    if (u8g2 == nullptr) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
@@ -71,15 +75,16 @@ int OledDisplay::drawString(uint8_t x, uint8_t y, const char* text)
    return RM_E_NONE;
 }
 
-int OledDisplay::drawString(uint8_t x, uint8_t y, const std::string text) {
+int OledDisplay::drawString(uint8_t x, uint8_t y, const std::string text)
+{
    if (u8g2 == nullptr) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
    return drawString(x, y, text.c_str());
-
 }
 
-int OledDisplay::drawNumber(uint8_t x, uint8_t y, int number) {
+int OledDisplay::drawNumber(uint8_t x, uint8_t y, int number)
+{
    if (u8g2 == nullptr) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
@@ -88,7 +93,8 @@ int OledDisplay::drawNumber(uint8_t x, uint8_t y, int number) {
    return drawString(x, y, buffer);
 }
 
-int OledDisplay::setCursor(uint8_t x, uint8_t y) {
+int OledDisplay::setCursor(uint8_t x, uint8_t y)
+{
    if (u8g2 == nullptr) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
@@ -96,7 +102,8 @@ int OledDisplay::setCursor(uint8_t x, uint8_t y) {
    return RM_E_NONE;
 }
 
-int OledDisplay::print(const std::string text) {
+int OledDisplay::print(const std::string text)
+{
    if (u8g2 == nullptr) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
@@ -104,7 +111,8 @@ int OledDisplay::print(const std::string text) {
    return RM_E_NONE;
 }
 
-int OledDisplay::clear() {
+int OledDisplay::clear()
+{
    if (u8g2 == nullptr) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
@@ -112,7 +120,8 @@ int OledDisplay::clear() {
    return RM_E_NONE;
 }
 
-int OledDisplay::flush() {
+int OledDisplay::flush()
+{
    if (u8g2 == nullptr) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
@@ -120,27 +129,31 @@ int OledDisplay::flush() {
    return RM_E_NONE;
 }
 
-int OledDisplay::showSplashScreen() {
+int OledDisplay::showSplashScreen()
+{
    // show the splash screen
    // ...
    return RM_E_NOT_IMPLEMENTED;
 }
 
-uint8_t OledDisplay::getWidth() {
+uint8_t OledDisplay::getWidth()
+{
    if (u8g2 == nullptr) {
       return 0;
    }
    return u8g2->getCols();
 }
 
-uint8_t OledDisplay::getHeight() {
+uint8_t OledDisplay::getHeight()
+{
    if (u8g2 == nullptr) {
       return 0;
    }
    return u8g2->getRows();
 }
 
-int OledDisplay::setFont(uint8_t fontId) {
+int OledDisplay::setFont(uint8_t fontId)
+{
    if (u8g2 == nullptr) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
@@ -162,5 +175,3 @@ int OledDisplay::setFont(uint8_t fontId) {
 }
 
 #endif // ! RM_NO_DISPLAY
-
-

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <unordered_map>
-#include <list>
 #include <common/inc/Definitions.h>
+#include <list>
+#include <unordered_map>
 
 /**
  * @class PacketTracker
@@ -11,7 +11,7 @@
  * It defines a simple packet tracker that stores a map of key-value pairs.
  * And it is used by the PacketRouter class to track packets that have already been processed.
  * The tracker is implemented as a least recently used (LRU) cache.
-*/
+ */
 class PacketTracker
 {
 private:
@@ -23,20 +23,22 @@ private:
 
    uint32_t capacity_ = MAX_CAPACITY;
 
-   void moveToFront(uint32_t key, uint32_t value) {
+   void moveToFront(uint32_t key, uint32_t value)
+   {
       lruList.erase(map[key]);
       lruList.push_front({key, value});
       map[key] = lruList.begin();
    }
 
 public:
-
    /**
     * @brief Construct a new Packet Tracker object
     *
     * @return PacketTracker
     */
-   PacketTracker() {}
+   PacketTracker()
+   {
+   }
 
    /**
     * @brief Construct a new Packet Tracker object
@@ -121,14 +123,13 @@ public:
     * @return V the value found or the default value
     */
    template <typename K, typename V>
-   inline V findOrDefault(const K &key, const V &defaultValue)
+   inline V findOrDefault(const K& key, const V& defaultValue)
    {
       auto it = map.find(key);
       if (it != map.end()) {
          moveToFront(key, it->second->second);
          return it->second->second;
-      }
-      else {
+      } else {
          return defaultValue;
       }
    }

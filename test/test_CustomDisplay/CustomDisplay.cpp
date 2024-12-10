@@ -5,7 +5,6 @@
 
 CustomDisplay::CustomDisplay()
 {
-
 }
 
 int CustomDisplay::setup()
@@ -16,8 +15,7 @@ int CustomDisplay::setup()
 
 int CustomDisplay::powerSave(bool save)
 {
-   if (!this->isSetup)
-   {
+   if (!this->isSetup) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
    this->inPowerSave = save;
@@ -26,13 +24,11 @@ int CustomDisplay::powerSave(bool save)
 
 int CustomDisplay::drawString(uint8_t x, uint8_t y, const std::string text)
 {
-   if (!this->isSetup)
-   {
+   if (!this->isSetup) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
 
-   if (x >= width || y >= height)
-   {
+   if (x >= width || y >= height) {
       return RM_E_DISPLAY_INVALID_COORDS;
    }
 
@@ -41,14 +37,11 @@ int CustomDisplay::drawString(uint8_t x, uint8_t y, const std::string text)
 
 int CustomDisplay::drawString(uint8_t x, uint8_t y, const char* text)
 {
-
-   if (!this->isSetup)
-   {
+   if (!this->isSetup) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
 
-   if (x >= width || y >= height)
-   {
+   if (x >= width || y >= height) {
       return RM_E_DISPLAY_INVALID_COORDS;
    }
 
@@ -57,14 +50,11 @@ int CustomDisplay::drawString(uint8_t x, uint8_t y, const char* text)
 
 int CustomDisplay::setCursor(uint8_t x, uint8_t y)
 {
-
-   if (!this->isSetup)
-   {
+   if (!this->isSetup) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
 
-   if (x >= width || y >= height)
-   {
+   if (x >= width || y >= height) {
       return RM_E_DISPLAY_INVALID_COORDS;
    }
 
@@ -75,8 +65,7 @@ int CustomDisplay::setCursor(uint8_t x, uint8_t y)
 
 int CustomDisplay::print(const std::string text)
 {
-   if (!this->isSetup)
-   {
+   if (!this->isSetup) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
 
@@ -85,8 +74,7 @@ int CustomDisplay::print(const std::string text)
 
 int CustomDisplay::clear()
 {
-   if (!this->isSetup)
-   {
+   if (!this->isSetup) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
 
@@ -95,8 +83,7 @@ int CustomDisplay::clear()
 
 int CustomDisplay::flush()
 {
-   if (!this->isSetup)
-   {
+   if (!this->isSetup) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
 
@@ -105,8 +92,7 @@ int CustomDisplay::flush()
 
 int CustomDisplay::showSplashScreen()
 {
-   if (!this->isSetup)
-   {
+   if (!this->isSetup) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
 
@@ -115,8 +101,7 @@ int CustomDisplay::showSplashScreen()
 
 uint8_t CustomDisplay::getWidth()
 {
-   if (!this->isSetup)
-   {
+   if (!this->isSetup) {
       return 0;
    }
 
@@ -125,8 +110,7 @@ uint8_t CustomDisplay::getWidth()
 
 uint8_t CustomDisplay::getHeight()
 {
-   if (!this->isSetup)
-   {
+   if (!this->isSetup) {
       return 0;
    }
    return height;
@@ -134,13 +118,12 @@ uint8_t CustomDisplay::getHeight()
 
 int CustomDisplay::setFont(uint8_t fontId)
 {
-   if (!this->isSetup)
-   {
+   if (!this->isSetup) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
 
-   if (fontId != CUSTOM_DISPLAY_FONT_SMALL && fontId != CUSTOM_DISPLAY_FONT_MEDIUM && fontId != CUSTOM_DISPLAY_FONT_LARGE)
-   {
+   if (fontId != CUSTOM_DISPLAY_FONT_SMALL && fontId != CUSTOM_DISPLAY_FONT_MEDIUM &&
+       fontId != CUSTOM_DISPLAY_FONT_LARGE) {
       return RM_E_DISPLAY_INVALID_FONT;
    }
    this->fontId = fontId;
@@ -149,13 +132,11 @@ int CustomDisplay::setFont(uint8_t fontId)
 
 int CustomDisplay::drawNumber(uint8_t x, uint8_t y, int number)
 {
-   if (!this->isSetup)
-   {
+   if (!this->isSetup) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
 
-   if (x >= width || y >= height)
-   {
+   if (x >= width || y >= height) {
       return RM_E_DISPLAY_INVALID_COORDS;
    }
    return RM_E_NONE;
@@ -163,13 +144,11 @@ int CustomDisplay::drawNumber(uint8_t x, uint8_t y, int number)
 
 int CustomDisplay::setBrightness(uint8_t brightness)
 {
-   if (!this->isSetup)
-   {
+   if (!this->isSetup) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
 
-   if (brightness > 100)
-   {
+   if (brightness > 100) {
       return RM_E_DISPLAY_INVALID_BRIGHTNESS;
    }
    return RM_E_NONE;
@@ -177,17 +156,12 @@ int CustomDisplay::setBrightness(uint8_t brightness)
 
 int CustomDisplay::setRotation(uint8_t rotation)
 {
-   if (!this->isSetup)
-   {
+   if (!this->isSetup) {
       return RM_E_DISPLAY_NOT_SETUP;
    }
 
-   if (rotation > 3)
-   {
+   if (rotation > 3) {
       return RM_E_DISPLAY_INVALID_ROTATION;
    }
    return RM_E_NONE;
 }
-
-
-

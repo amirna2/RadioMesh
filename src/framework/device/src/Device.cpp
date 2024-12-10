@@ -1,5 +1,5 @@
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <framework/device/inc/Device.h>
 
@@ -40,7 +40,7 @@ int RadioMeshDevice::initializeRadio(LoraRadioParams radioParams)
    return rc;
 }
 
-int RadioMeshDevice::initializeAesCrypto(const SecurityParams &securityParams)
+int RadioMeshDevice::initializeAesCrypto(const SecurityParams& securityParams)
 {
    crypto = AesCrypto::getInstance();
    if (crypto == nullptr) {
@@ -61,14 +61,14 @@ int RadioMeshDevice::initializeOledDisplay(OledDisplayParams displayParams)
    return RM_E_NONE;
 }
 
-IDisplay *RadioMeshDevice::getDisplay()
+IDisplay* RadioMeshDevice::getDisplay()
 {
    logwarn_ln("The device does not support OLED display.");
    return nullptr;
 }
 #else
 
-int RadioMeshDevice::setCustomDisplay(IDisplay *display)
+int RadioMeshDevice::setCustomDisplay(IDisplay* display)
 {
    if (display == nullptr) {
       logerr_ln("Custom display cannot be null");
@@ -97,7 +97,7 @@ int RadioMeshDevice::initializeOledDisplay(OledDisplayParams displayParams)
    return rc;
 }
 
-IDisplay *RadioMeshDevice::getDisplay()
+IDisplay* RadioMeshDevice::getDisplay()
 {
    if (customDisplay != nullptr) {
       return customDisplay;
@@ -113,7 +113,7 @@ int RadioMeshDevice::initializeWifi(WifiParams wifiParams)
    return RM_E_NONE;
 }
 
-IWifiConnector *RadioMeshDevice::getWifiConnector()
+IWifiConnector* RadioMeshDevice::getWifiConnector()
 {
    logwarn_ln("The device does not support Wifi.");
    return nullptr;
@@ -137,7 +137,7 @@ int RadioMeshDevice::initializeWifi(WifiParams wifiParams)
    return rc;
 }
 
-IWifiConnector *RadioMeshDevice::getWifiConnector()
+IWifiConnector* RadioMeshDevice::getWifiConnector()
 {
    return wifiConnector;
 }
@@ -149,7 +149,7 @@ int RadioMeshDevice::initializeWifiAccessPoint(WifiAccessPointParams wifiAPParam
    logwarn_ln("The device does not support Wifi Access Point.");
    return RM_E_NONE;
 }
-IWifiAccessPoint *RadioMeshDevice::getWifiAccessPoint()
+IWifiAccessPoint* RadioMeshDevice::getWifiAccessPoint()
 {
    logwarn_ln("The device does not support Wifi Access Point.");
    return nullptr;
@@ -173,12 +173,11 @@ int RadioMeshDevice::initializeWifiAccessPoint(WifiAccessPointParams wifiAPParam
    return rc;
 }
 
-IWifiAccessPoint *RadioMeshDevice::getWifiAccessPoint()
+IWifiAccessPoint* RadioMeshDevice::getWifiAccessPoint()
 {
    return wifiAccessPoint;
 }
 #endif // RM_NO_WIFI
-
 
 int RadioMeshDevice::initializeStorage(ByteStorageParams storageParams)
 {
@@ -196,25 +195,24 @@ int RadioMeshDevice::initializeStorage(ByteStorageParams storageParams)
    return rc;
 }
 
-
-IRadio *RadioMeshDevice::getRadio()
+IRadio* RadioMeshDevice::getRadio()
 {
    return radio;
 }
 
-IAesCrypto *RadioMeshDevice::getCrypto()
+IAesCrypto* RadioMeshDevice::getCrypto()
 {
    return crypto;
 }
 
-IByteStorage *RadioMeshDevice::getByteStorage()
+IByteStorage* RadioMeshDevice::getByteStorage()
 {
    return eepromStorage;
 }
 
-int RadioMeshDevice::sendData(const uint8_t topic, const std::vector<byte> data, std::array<byte, RM_ID_LENGTH> target)
+int RadioMeshDevice::sendData(const uint8_t topic, const std::vector<byte> data,
+                              std::array<byte, RM_ID_LENGTH> target)
 {
-
 #if TESTING_INCLUSION
    // For Hub devices
    if (deviceType == MeshDeviceType::HUB) {
@@ -225,26 +223,24 @@ int RadioMeshDevice::sendData(const uint8_t topic, const std::vector<byte> data,
       }
    }
 
-
    // For non-Hub devices
    else {
       if (this->isIncluded()) {
          if (RadioMeshPacket::isInclusionTopic(topic)) {
-               logerr_ln("Included device cannot send inclusion messages");
-               return RM_E_INVALID_STATE;
+            logerr_ln("Included device cannot send inclusion messages");
+            return RM_E_INVALID_STATE;
          }
       } else {
          if (!RadioMeshPacket::isInclusionTopic(topic)) {
-               logerr_ln("Device not included in the network");
-               return RM_E_DEVICE_NOT_INCLUDED;
+            logerr_ln("Device not included in the network");
+            return RM_E_DEVICE_NOT_INCLUDED;
          }
       }
    }
 #endif
 
    if (target.size() != DEV_ID_LENGTH) {
-      logerr_ln("Invalid target device ID length: %d, expected: %d",
-               target.size(), DEV_ID_LENGTH);
+      logerr_ln("Invalid target device ID length: %d, expected: %d", target.size(), DEV_ID_LENGTH);
       return RM_E_INVALID_LENGTH;
    }
    if (this->id.size() != DEV_ID_LENGTH) {
@@ -253,8 +249,7 @@ int RadioMeshDevice::sendData(const uint8_t topic, const std::vector<byte> data,
    }
 
    if (data.size() > MAX_DATA_LENGTH) {
-      logerr_ln("Data too large: %d bytes, maximum: %d",
-               data.size(), MAX_DATA_LENGTH);
+      logerr_ln("Data too large: %d bytes, maximum: %d", data.size(), MAX_DATA_LENGTH);
       return RM_E_PACKET_TOO_LONG;
    }
 
@@ -273,7 +268,7 @@ int RadioMeshDevice::sendData(const uint8_t topic, const std::vector<byte> data,
    return router->routePacket(txPacket, this->id.data());
 }
 
-bool  RadioMeshDevice::isReceivedDataCrcValid(RadioMeshPacket &receivedPacket)
+bool RadioMeshDevice::isReceivedDataCrcValid(RadioMeshPacket& receivedPacket)
 {
    RadioMeshUtils::CRC32 crc32;
    crc32.update(receivedPacket.fcounter);
@@ -282,7 +277,8 @@ bool  RadioMeshDevice::isReceivedDataCrcValid(RadioMeshPacket &receivedPacket)
    crc32.reset();
 
    if (computed_data_crc != receivedPacket.packetCrc) {
-      logerr_ln("ERROR data crc mismatch: received: 0x%X, calculated: 0x%X",receivedPacket.packetCrc, computed_data_crc);
+      logerr_ln("ERROR data crc mismatch: received: 0x%X, calculated: 0x%X",
+                receivedPacket.packetCrc, computed_data_crc);
       return false;
    }
    return true;
@@ -321,14 +317,14 @@ int RadioMeshDevice::handleReceivedData()
    int lastRssi = radio->getRSSI();
    RoutingTable::getInstance()->updateRoute(receivedPacket, lastRssi);
    logdbg_ln("Updated route table for source: %s, last hop: %s, RSSI: %d",
-      RadioMeshUtils::convertToHex(receivedPacket.sourceDevId.data(), DEV_ID_LENGTH).c_str(),
-      RadioMeshUtils::convertToHex(receivedPacket.lastHopId.data(), DEV_ID_LENGTH).c_str(),
-      lastRssi);
+             RadioMeshUtils::convertToHex(receivedPacket.sourceDevId.data(), DEV_ID_LENGTH).c_str(),
+             RadioMeshUtils::convertToHex(receivedPacket.lastHopId.data(), DEV_ID_LENGTH).c_str(),
+             lastRssi);
 
    // Packet has reached its destination or the device is a HUB, let the application handle it
    if (onPacketReceived != nullptr) {
-         logdbg_ln("Calling onPacketReceived callback");
-         onPacketReceived(&receivedPacket, RM_E_NONE);
+      logdbg_ln("Calling onPacketReceived callback");
+      onPacketReceived(&receivedPacket, RM_E_NONE);
    }
 
 #if TESTING_INCLUSION
@@ -411,44 +407,39 @@ int RadioMeshDevice::run()
 
 int RadioMeshDevice::sendInclusionOpen()
 {
-    if (deviceType != MeshDeviceType::HUB) {
-        logerr_ln("Only HUB devices can send inclusion open");
-        return RM_E_INVALID_DEVICE_TYPE;
-    }
+   if (deviceType != MeshDeviceType::HUB) {
+      logerr_ln("Only HUB devices can send inclusion open");
+      return RM_E_INVALID_DEVICE_TYPE;
+   }
 
-    if (hubMode != HubMode::INCLUSION) {
-        logerr_ln("Hub must be in inclusion mode to send open message");
-        return RM_E_INVALID_STATE;
-    }
+   if (hubMode != HubMode::INCLUSION) {
+      logerr_ln("Hub must be in inclusion mode to send open message");
+      return RM_E_INVALID_STATE;
+   }
 
-    // Send empty broadcast
-    std::vector<byte> emptyData;
-    return sendData(
-        MessageTopic::INCLUDE_OPEN,
-        emptyData
-    );
+   // Send empty broadcast
+   std::vector<byte> emptyData;
+   return sendData(MessageTopic::INCLUDE_OPEN, emptyData);
 }
 
-int  RadioMeshDevice::sendInclusionRequest(const std::vector<byte>& publicKey, uint32_t initialCounter)
+int RadioMeshDevice::sendInclusionRequest(const std::vector<byte>& publicKey,
+                                          uint32_t initialCounter)
 {
    if (deviceType == MeshDeviceType::HUB) {
-       logerr_ln("HUB cannot send inclusion request");
-       return RM_E_INVALID_DEVICE_TYPE;
+      logerr_ln("HUB cannot send inclusion request");
+      return RM_E_INVALID_DEVICE_TYPE;
    }
    // TODO: Set Inclusion Request payload
    std::vector<byte> emptyData;
-   return sendData(
-       MessageTopic::INCLUDE_REQUEST,
-       emptyData
-   );
+   return sendData(MessageTopic::INCLUDE_REQUEST, emptyData);
 }
 
 int RadioMeshDevice::enableInclusionMode(bool enable)
 {
-    if (deviceType != MeshDeviceType::HUB) {
-        logerr_ln("Only HUB devices can switch to inclusion mode");
-        return RM_E_INVALID_DEVICE_TYPE;
-    }
+   if (deviceType != MeshDeviceType::HUB) {
+      logerr_ln("Only HUB devices can switch to inclusion mode");
+      return RM_E_INVALID_DEVICE_TYPE;
+   }
 
    if (enable) {
       if (hubMode == HubMode::INCLUSION) {
@@ -470,7 +461,6 @@ int RadioMeshDevice::enableInclusionMode(bool enable)
 
 int RadioMeshDevice::initialize()
 {
-
    // TODO: Handle HUB inclusion state. For now we assume the hub is included and in normal mode
    if (deviceType == MeshDeviceType::HUB) {
       hubMode = HubMode::NORMAL;
