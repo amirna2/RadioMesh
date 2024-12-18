@@ -368,3 +368,25 @@ struct SecurityParams
    {
    }
 };
+
+/**
+ * @struct CaptivePortalParams
+ * @brief Configuration parameters for the captive portal
+ */
+struct CaptivePortalParams
+{
+   std::string title;     // Portal page title
+   std::string indexHtml; // Main portal content
+   uint16_t webPort;      // Web server port (usually 80)
+   uint16_t dnsPort;      // DNS server port (usually 53)
+
+   CaptivePortalParams() : title("RadioMesh Portal"), indexHtml(""), webPort(80), dnsPort(53)
+   {
+   }
+
+   CaptivePortalParams(const std::string& title, const std::string& html, uint16_t webPort = 80,
+                       uint16_t dnsPort = 53)
+       : title(title), indexHtml(html), webPort(webPort), dnsPort(dnsPort)
+   {
+   }
+};

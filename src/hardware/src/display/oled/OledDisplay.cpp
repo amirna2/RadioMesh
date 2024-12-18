@@ -1,7 +1,7 @@
 
-#include <common //utils/Utils.h>
 #include <common/inc/Errors.h>
 #include <common/inc/Logger.h>
+#include <common/utils/Utils.h>
 #include <hardware/inc/display/oled/OledDisplay.h>
 
 OledDisplay* OledDisplay::instance = nullptr;
