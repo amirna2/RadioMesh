@@ -3,6 +3,43 @@
 
 AsyncCaptivePortal* AsyncCaptivePortal::instance = nullptr;
 
+#ifdef RM_NO_WIFI
+int AsyncCaptivePortal::setParams(const CaptivePortalParams& params)
+{
+   return RM_E_NOT_SUPPORTED;
+}
+
+int AsyncCaptivePortal::start()
+{
+   return RM_E_NOT_SUPPORTED;
+}
+
+int AsyncCaptivePortal::stop()
+{
+   return RM_E_NOT_SUPPORTED;
+}
+
+int AsyncCaptivePortal::sendToClients(const std::string& type, const std::vector<byte>& data)
+{
+   return RM_E_NOT_SUPPORTED;
+}
+
+int AsyncCaptivePortal::sendToClients(const std::string& type, const std::string& data)
+{
+   return RM_E_NOT_SUPPORTED;
+}
+
+bool AsyncCaptivePortal::isRunning()
+{
+   return false;
+}
+
+size_t AsyncCaptivePortal::getClientCount()
+{
+   return 0;
+}
+
+#else
 int AsyncCaptivePortal::setParams(const CaptivePortalParams& params)
 {
    // Check for valid parameters
@@ -165,3 +202,4 @@ std::string AsyncCaptivePortal::injectWebSocketCode(const std::string& html)
    std::string wsHtml = html + wsCode;
    return html + wsCode;
 }
+#endif // RM_NO_WIFI

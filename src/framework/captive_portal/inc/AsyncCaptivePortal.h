@@ -1,7 +1,9 @@
 #pragma once
 
+#ifndef RM_NO_WIFI
 #include <DNSServer.h>
 #include <ESPAsyncWebServer.h>
+#endif
 #include <common/inc/Definitions.h>
 #include <common/inc/Errors.h>
 #include <common/inc/Logger.h>
@@ -31,14 +33,15 @@ public:
 private:
    AsyncCaptivePortal() = default;
    static AsyncCaptivePortal* instance;
-
-   std::unique_ptr<DNSServer> dnsServer;
-   std::unique_ptr<AsyncWebServer> webServer;
-   std::unique_ptr<AsyncWebSocket> webSocket;
    CaptivePortalParams portalParams;
    bool running = false;
 
+#ifndef RM_NO_WIFI
+   std::unique_ptr<DNSServer> dnsServer;
+   std::unique_ptr<AsyncWebServer> webServer;
+   std::unique_ptr<AsyncWebSocket> webSocket;
    void handleWebSocketEvent(AwsEventType type, AsyncWebSocketClient* client, uint8_t* data,
                              size_t len);
    std::string injectWebSocketCode(const std::string& html);
+#endif
 };
