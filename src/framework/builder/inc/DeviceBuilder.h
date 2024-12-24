@@ -98,6 +98,13 @@ public:
    DeviceBuilder& withCustomDisplay(IDisplay* display);
 
    /**
+    * @brief Add a captive portal to the device with the given parameters
+    * @param params The parameters for the captive portal
+    * @return A reference to the updated builder
+    */
+   DeviceBuilder& withCaptivePortal(const CaptivePortalParams& params);
+
+   /**
     * @brief Build the device
     * @param name The name of the device
     * @param id The ID of the device
@@ -127,6 +134,7 @@ private:
    WifiParams wifiParams = WifiParams();
    WifiAccessPointParams wifiAPParams = WifiAccessPointParams();
    ByteStorageParams storageParams;
+   CaptivePortalParams captivePortalParams;
 
    bool relayEnabled = false;
    PacketReceivedCallback rxCallback = nullptr;

@@ -12,7 +12,8 @@ DeviceBuilder& DeviceBuilder::start()
                 .hasTxCallback = false,
                 .hasWifi = false,
                 .hasWifiAccessPoint = false,
-                .hasStorage = false};
+                .hasStorage = false,
+                .hasCaptivePortal = false};
    relayEnabled = false;
    isBuilderStarted = true;
 
@@ -111,6 +112,14 @@ DeviceBuilder& DeviceBuilder::withStorage(const ByteStorageParams& params)
    loginfo_ln("Setting storage params");
    blueprint.hasStorage = true;
    storageParams = params;
+   return *this;
+}
+
+DeviceBuilder& DeviceBuilder::withCaptivePortal(const CaptivePortalParams& params)
+{
+   loginfo_ln("Setting captive portal params");
+   blueprint.hasCaptivePortal = true;
+   captivePortalParams = params;
    return *this;
 }
 
@@ -231,6 +240,21 @@ IDevice* DeviceBuilder::build(const std::string name, std::array<byte, RM_ID_LEN
          return nullptr;
       }
       logdbg_ln("Storage initialized.");
+   }
+
+   if (blueprint.hasCaptivePortal) {
+      if (!blueprint.hasWifiAccessPoint) {
+         logerr_ln("ERROR: Captive portal requires WiFi access point.");
+         destroyDevice(device);
+         return nullptr;
+      }
+      build_error = device->initializeCaptivePortal(captivePortalParams);
+      if (build_error != RM_E_NONE) {
+         logerr_ln("ERROR: Failed to create captive portal [%d]", build_error);
+         destroyDevice(device);
+         return nullptr;
+      }
+      logdbg_ln("Captive portal initialized.");
    }
    loginfo_ln("Device [%s] built successfully.", device->getDeviceName().c_str());
    isBuilderStarted = false;

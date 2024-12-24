@@ -18,12 +18,11 @@ public:
       return instance;
    }
 
-   int setup() override;
    int start() override;
    int stop() override;
    int sendToClients(const std::string& type, const std::vector<byte>& data) override;
+   int sendToClients(const std::string& type, const std::string& data) override;
 
-   int setDataCallback(PortalDataCallback callback) override;
    bool isRunning() override;
    size_t getClientCount() override;
 
@@ -37,7 +36,6 @@ private:
    std::unique_ptr<AsyncWebServer> webServer;
    std::unique_ptr<AsyncWebSocket> webSocket;
    CaptivePortalParams portalParams;
-   PortalDataCallback dataCallback;
    bool running = false;
 
    void handleWebSocketEvent(AwsEventType type, AsyncWebSocketClient* client, uint8_t* data,

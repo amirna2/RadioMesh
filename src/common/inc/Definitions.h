@@ -6,6 +6,7 @@
 #pragma once
 
 #include <array>
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -50,6 +51,8 @@ typedef struct
    bool hasWifiAccessPoint;
    /// @brief The device has storage
    bool hasStorage;
+   /// @brief The device has a captive portal
+   bool hasCaptivePortal;
 } DeviceBlueprint;
 
 /**
@@ -70,7 +73,7 @@ enum MeshDeviceType
    /**
     * @brief The device is a hub node in the network.
     *
-    * It can route packets to other nodes and to external networks.
+    * It can relay packets to other nodes and to external networks.
     * It can also manage the network and include new devices.
     */
    HUB
@@ -369,24 +372,27 @@ struct SecurityParams
    }
 };
 
+using PortalEventCallback = std::function<void(void*, const std::string&)>;
+
+/**
+ * @struct PortalEventHandler
+ * @brief Structure to hold event handlers for the captive portal
+ */
+struct PortalEventHandler
+{
+   std::string event;
+   PortalEventCallback callback;
+};
+
 /**
  * @struct CaptivePortalParams
  * @brief Configuration parameters for the captive portal
  */
 struct CaptivePortalParams
 {
-   std::string title;     // Portal page title
-   std::string indexHtml; // Main portal content
-   uint16_t webPort;      // Web server port (usually 80)
-   uint16_t dnsPort;      // DNS server port (usually 53)
-
-   CaptivePortalParams() : title("RadioMesh Portal"), indexHtml(""), webPort(80), dnsPort(53)
-   {
-   }
-
-   CaptivePortalParams(const std::string& title, const std::string& html, uint16_t webPort = 80,
-                       uint16_t dnsPort = 53)
-       : title(title), indexHtml(html), webPort(webPort), dnsPort(dnsPort)
-   {
-   }
+   std::string title;
+   std::string indexHtml;
+   uint16_t webPort;
+   uint16_t dnsPort;
+   std::vector<PortalEventHandler> eventHandlers;
 };

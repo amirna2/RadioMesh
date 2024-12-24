@@ -66,6 +66,11 @@ IDisplay* RadioMeshDevice::getDisplay()
    logwarn_ln("The device does not support OLED display.");
    return nullptr;
 }
+int RadioMeshDevice::setCustomDisplay(IDisplay* display)
+{
+   logwarn_ln("The device does not support OLED display.");
+   return RM_E_NONE;
+}
 #else
 
 int RadioMeshDevice::setCustomDisplay(IDisplay* display)
@@ -154,6 +159,16 @@ IWifiAccessPoint* RadioMeshDevice::getWifiAccessPoint()
    logwarn_ln("The device does not support Wifi Access Point.");
    return nullptr;
 }
+int RadioMeshDevice::initializeCaptivePortal(CaptivePortalParams captivePortalParams)
+{
+   logwarn_ln("The device does not support Captive Portal.");
+   return RM_E_NONE;
+}
+ICaptivePortal* RadioMeshDevice::getCaptivePortal()
+{
+   logwarn_ln("The device does not support Captive Portal.");
+   return nullptr;
+}
 #else
 int RadioMeshDevice::initializeWifiAccessPoint(WifiAccessPointParams wifiAPParams)
 {
@@ -177,6 +192,30 @@ IWifiAccessPoint* RadioMeshDevice::getWifiAccessPoint()
 {
    return wifiAccessPoint;
 }
+
+int RadioMeshDevice::initializeCaptivePortal(CaptivePortalParams captivePortalParams)
+{
+   int rc = RM_E_NONE;
+   captivePortal = AsyncCaptivePortal::getInstance();
+
+   if (captivePortal == nullptr) {
+      logerr_ln("Failed to create captive portal");
+      return RM_E_UNKNOWN;
+   }
+
+   rc = captivePortal->setParams(captivePortalParams);
+   if (rc != RM_E_NONE) {
+      logerr_ln("Failed to set captive portal params");
+      captivePortal = nullptr;
+   }
+   return rc;
+}
+
+ICaptivePortal* RadioMeshDevice::getCaptivePortal()
+{
+   return captivePortal;
+}
+
 #endif // RM_NO_WIFI
 
 int RadioMeshDevice::initializeStorage(ByteStorageParams storageParams)

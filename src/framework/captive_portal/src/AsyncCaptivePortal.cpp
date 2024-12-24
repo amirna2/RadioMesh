@@ -1,4 +1,5 @@
-#include <framework/captive_portal/inc/CaptivePortal.h>
+#include <common/inc/Definitions.h>
+#include <framework/captive_portal/inc/AsyncCaptivePortal.h>
 
 AsyncCaptivePortal* AsyncCaptivePortal::instance = nullptr;
 
@@ -11,17 +12,6 @@ int AsyncCaptivePortal::setParams(const CaptivePortalParams& params)
    }
 
    portalParams = params;
-   return RM_E_NONE;
-}
-
-int AsyncCaptivePortal::setup()
-{
-   if (isRunning()) {
-      logerr_ln("Portal already running");
-      return RM_E_INVALID_STATE;
-   }
-
-   portalParams = CaptivePortalParams();
    return RM_E_NONE;
 }
 
@@ -46,7 +36,11 @@ int AsyncCaptivePortal::start()
 
    // Serve main page
    webServer->on("/", HTTP_GET, [this](AsyncWebServerRequest* request) {
+      logdbg_ln("Serving main page");
       std::string html = injectWebSocketCode(portalParams.indexHtml);
+      logdbg_ln("Portal params HTML length: %d", portalParams.indexHtml.length());
+      logtrace_ln("Portal params HTML content: %s", portalParams.indexHtml.c_str());
+
       request->send(200, "text/html", html.c_str());
    });
 
@@ -96,9 +90,13 @@ int AsyncCaptivePortal::sendToClients(const std::string& type, const std::vector
    return RM_E_NONE;
 }
 
-int AsyncCaptivePortal::setDataCallback(PortalDataCallback callback)
+int AsyncCaptivePortal::sendToClients(const std::string& type, const std::string& data)
 {
-   dataCallback = callback;
+   if (!isRunning() || !webSocket) {
+      return RM_E_INVALID_STATE;
+   }
+   std::string msg = "{\"type\":\"" + type + "\",\"data\":\"" + data + "\"}";
+   webSocket->textAll(msg.c_str());
    return RM_E_NONE;
 }
 
@@ -125,23 +123,27 @@ void AsyncCaptivePortal::handleWebSocketEvent(AwsEventType type, AsyncWebSocketC
       break;
 
    case WS_EVT_DATA:
-      if (dataCallback && len > 0) {
-         // Parse JSON message
+      if (len > 0) {
          std::string msg(reinterpret_cast<char*>(data), len);
-         // Basic JSON parsing -  might need to use a proper JSON library
          size_t typeStart = msg.find("\"type\":\"") + 8;
          size_t typeEnd = msg.find("\"", typeStart);
          size_t dataStart = msg.find("\"data\":\"") + 8;
          size_t dataEnd = msg.find("\"}", dataStart);
 
          if (typeStart != std::string::npos && dataStart != std::string::npos) {
-            std::string type = msg.substr(typeStart, typeEnd - typeStart);
+            std::string eventType = msg.substr(typeStart, typeEnd - typeStart);
             std::string dataStr = msg.substr(dataStart, dataEnd - dataStart);
-            std::vector<byte> dataVec(dataStr.begin(), dataStr.end());
 
-            dataCallback(type, dataVec);
+            for (const auto& handler : portalParams.eventHandlers) {
+               if (handler.event == eventType) {
+                  handler.callback(static_cast<void*>(client), dataStr);
+                  break;
+               }
+            }
          }
       }
+      break;
+   default:
       break;
    }
 }
@@ -160,6 +162,6 @@ std::string AsyncCaptivePortal::injectWebSocketCode(const std::string& html)
    if (pos != std::string::npos) {
       return html.substr(0, pos) + wsCode + html.substr(pos);
    }
-
+   std::string wsHtml = html + wsCode;
    return html + wsCode;
 }
