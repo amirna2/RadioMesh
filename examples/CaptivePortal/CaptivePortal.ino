@@ -1,9 +1,12 @@
-#include "device_info.h" // Contains device configuration
+#include "device_info.h"
 #include <Arduino.h>
 #include <RadioMesh.h>
 
 void RxCallback(const RadioMeshPacket* packet, int err);
 bool setupAccessPoint();
+void handleWifiConfig(void* client, const std::string& data);
+void handleProvision(void* client, const std::string& data);
+void handleFirmware(void* client, const std::string& data);
 
 IDevice* device = nullptr;
 IWifiAccessPoint* wifiAP = nullptr;
@@ -258,5 +261,5 @@ void loop()
    if (!setupOk) {
       return;
    }
-   device->run(); // Handle radio events
+   device->run();
 }
