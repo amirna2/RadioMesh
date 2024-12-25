@@ -7,10 +7,10 @@
 
 enum class DataFormat
 {
-   DECIMAL,
-   HEXD,
-   HEXD_SPACED,
-   ASCII
+    DECIMAL,
+    HEXD,
+    HEXD_SPACED,
+    ASCII
 };
 
 namespace RadioMeshUtils
@@ -118,11 +118,11 @@ std::array<byte, RM_ID_LENGTH> uint32ToDeviceId(uint32_t value);
 template <typename T>
 std::vector<byte> numberToBytes(T number)
 {
-   std::vector<byte> bytes(sizeof(T));
-   for (size_t i = 0; i < sizeof(T); ++i) {
-      bytes[i] = static_cast<byte>((number >> (8 * (sizeof(T) - 1 - i))) & 0xFF);
-   }
-   return bytes;
+    std::vector<byte> bytes(sizeof(T));
+    for (size_t i = 0; i < sizeof(T); ++i) {
+        bytes[i] = static_cast<byte>((number >> (8 * (sizeof(T) - 1 - i))) & 0xFF);
+    }
+    return bytes;
 }
 
 /**
@@ -133,12 +133,12 @@ std::vector<byte> numberToBytes(T number)
 template <typename T>
 T bytesToNumber(const std::vector<byte>& bytes)
 {
-   T number = 0;
-   size_t limit = std::min(bytes.size(), sizeof(T));
-   for (size_t i = 0; i < limit; ++i) {
-      number = (number << 8) | bytes[i];
-   }
-   return number;
+    T number = 0;
+    size_t limit = std::min(bytes.size(), sizeof(T));
+    for (size_t i = 0; i < limit; ++i) {
+        number = (number << 8) | bytes[i];
+    }
+    return number;
 }
 
 /**
@@ -150,12 +150,12 @@ T bytesToNumber(const std::vector<byte>& bytes)
 template <std::size_t length>
 std::array<byte, length> getRandomBytesArray()
 {
-   const char* digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-   randomSeed(simpleRNG(4));
-   std::array<byte, length> bytes;
-   for (std::size_t i = 0; i < length; i++) {
-      bytes[i] = digits[random(36)];
-   }
-   return bytes;
+    const char* digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    randomSeed(simpleRNG(4));
+    std::array<byte, length> bytes;
+    for (std::size_t i = 0; i < length; i++) {
+        bytes[i] = digits[random(36)];
+    }
+    return bytes;
 }
 } // namespace RadioMeshUtils

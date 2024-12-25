@@ -15,39 +15,39 @@
 class CustomDisplay : public IDisplay
 {
 public:
-   CustomDisplay()
-   {
-   }
-   virtual ~CustomDisplay()
-   {
-   }
+    CustomDisplay()
+    {
+    }
+    virtual ~CustomDisplay()
+    {
+    }
 
-   int setup() override;
-   int powerSave(bool save) override;
-   int drawString(uint8_t x, uint8_t y, const std::string text) override;
-   int drawString(uint8_t x, uint8_t y, const char* text) override;
-   int setCursor(uint8_t x, uint8_t y) override;
-   int print(const std::string text) override;
-   int clear() override;
-   int flush() override;
-   int showSplashScreen() override;
-   uint8_t getWidth() override;
-   uint8_t getHeight() override;
-   int setFont(uint8_t fontId) override;
-   int drawNumber(uint8_t x, uint8_t y, int number) override;
+    int setup() override;
+    int powerSave(bool save) override;
+    int drawString(uint8_t x, uint8_t y, const std::string text) override;
+    int drawString(uint8_t x, uint8_t y, const char* text) override;
+    int setCursor(uint8_t x, uint8_t y) override;
+    int print(const std::string text) override;
+    int clear() override;
+    int flush() override;
+    int showSplashScreen() override;
+    uint8_t getWidth() override;
+    uint8_t getHeight() override;
+    int setFont(uint8_t fontId) override;
+    int drawNumber(uint8_t x, uint8_t y, int number) override;
 
-   int setBrightness(uint8_t brightness) override;
-   int setRotation(uint8_t rotation) override;
+    int setBrightness(uint8_t brightness) override;
+    int setRotation(uint8_t rotation) override;
 
 private:
-   uint8_t width = CUSTOM_DISPLAY_WIDTH;
-   uint8_t height = CUSTOM_DISPLAY_HEIGHT;
-   uint8_t fontId = CUSTOM_DISPLAY_FONT_MEDIUM;
-   uint8_t brightness = 50;
-   uint8_t rotation = 0;
-   bool inPowerSave = false;
-   bool isSetup = false;
+    uint8_t width = CUSTOM_DISPLAY_WIDTH;
+    uint8_t height = CUSTOM_DISPLAY_HEIGHT;
+    uint8_t fontId = CUSTOM_DISPLAY_FONT_MEDIUM;
+    uint8_t brightness = 50;
+    uint8_t rotation = 0;
+    bool inPowerSave = false;
+    bool isSetup = false;
 
-   uint8_t cursorX = 0;
-   uint8_t cursorY = 0;
+    uint8_t cursorX = 0;
+    uint8_t cursorY = 0;
 };

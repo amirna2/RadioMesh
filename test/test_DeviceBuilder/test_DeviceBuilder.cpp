@@ -29,161 +29,162 @@ IDevice* device = nullptr;
 
 void reset_device()
 {
-   if (device != nullptr) {
-      delete device;
-   }
-   device = nullptr;
+    if (device != nullptr) {
+        delete device;
+    }
+    device = nullptr;
 }
 
 void test_DeviceBuilder_buildDevice_with_no_capabilities(void)
 {
-   reset_device();
-   DeviceBuilder builder;
-   device = builder.start().build("test", device_id);
+    reset_device();
+    DeviceBuilder builder;
+    device = builder.start().build("test", device_id);
 
-   TEST_ASSERT_NOT_NULL(device);
-   TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
-   TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
-   TEST_ASSERT_FALSE(device->isRelayEnabled());
-   TEST_ASSERT_NULL(device->getRadio());
+    TEST_ASSERT_NOT_NULL(device);
+    TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
+    TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
+    TEST_ASSERT_FALSE(device->isRelayEnabled());
+    TEST_ASSERT_NULL(device->getRadio());
 }
 
 void test_DeviceBuilder_buildDevice_without_starting(void)
 {
-   DeviceBuilder builder;
-   reset_device();
-   device = builder.build("test", device_id);
-   TEST_ASSERT_NULL(device);
+    DeviceBuilder builder;
+    reset_device();
+    device = builder.build("test", device_id);
+    TEST_ASSERT_NULL(device);
 }
 
 void test_DeviceBuilder_buildDevice_withRadio(void)
 {
-   DeviceBuilder builder;
-   reset_device();
-   device = builder.start()
-                .withLoraRadio(defaultConfig)
-                .build("test", device_id, MeshDeviceType::STANDARD);
+    DeviceBuilder builder;
+    reset_device();
+    device = builder.start()
+                 .withLoraRadio(defaultConfig)
+                 .build("test", device_id, MeshDeviceType::STANDARD);
 
-   TEST_ASSERT_NOT_NULL(device);
-   TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
-   TEST_ASSERT_NOT_NULL(device->getRadio());
-   TEST_ASSERT_FALSE(device->isRelayEnabled());
-   TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
+    TEST_ASSERT_NOT_NULL(device);
+    TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
+    TEST_ASSERT_NOT_NULL(device->getRadio());
+    TEST_ASSERT_FALSE(device->isRelayEnabled());
+    TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
 }
 
 void test_DeviceBuilder_buildDevice_withRadio_and_withRelay(void)
 {
-   DeviceBuilder builder;
-   reset_device();
-   device = builder.start()
-                .withLoraRadio(defaultConfig)
-                .withRelayEnabled(true)
-                .build("test", device_id, MeshDeviceType::STANDARD);
+    DeviceBuilder builder;
+    reset_device();
+    device = builder.start()
+                 .withLoraRadio(defaultConfig)
+                 .withRelayEnabled(true)
+                 .build("test", device_id, MeshDeviceType::STANDARD);
 
-   TEST_ASSERT_NOT_NULL(device);
-   TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
-   TEST_ASSERT_TRUE(device->isRelayEnabled());
-   TEST_ASSERT_NOT_NULL(device->getRadio());
-   TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
+    TEST_ASSERT_NOT_NULL(device);
+    TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
+    TEST_ASSERT_TRUE(device->isRelayEnabled());
+    TEST_ASSERT_NOT_NULL(device->getRadio());
+    TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
 }
 
 void test_DeviceBuilder_buildDevice_withWifi(void)
 {
-   DeviceBuilder builder;
-   reset_device();
-   device = builder.start().withWifi(wifiParams).build("test", device_id, MeshDeviceType::STANDARD);
+    DeviceBuilder builder;
+    reset_device();
+    device =
+        builder.start().withWifi(wifiParams).build("test", device_id, MeshDeviceType::STANDARD);
 
-   TEST_ASSERT_NOT_NULL(device);
-   TEST_ASSERT_NOT_NULL(device->getWifiConnector());
-   TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
-   TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
+    TEST_ASSERT_NOT_NULL(device);
+    TEST_ASSERT_NOT_NULL(device->getWifiConnector());
+    TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
+    TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
 }
 void test_DeviceBuilder_buildDevice_withWifiAccessPoint(void)
 {
-   DeviceBuilder builder;
-   reset_device();
-   device = builder.start().withWifiAccessPoint(apParams).build("test", device_id,
-                                                                MeshDeviceType::STANDARD);
+    DeviceBuilder builder;
+    reset_device();
+    device = builder.start().withWifiAccessPoint(apParams).build("test", device_id,
+                                                                 MeshDeviceType::STANDARD);
 
-   TEST_ASSERT_NOT_NULL(device);
-   TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
-   TEST_ASSERT_NOT_NULL(device->getWifiAccessPoint());
-   TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
+    TEST_ASSERT_NOT_NULL(device);
+    TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
+    TEST_ASSERT_NOT_NULL(device->getWifiAccessPoint());
+    TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
 }
 
 void test_DeviceBuilder_buildDevice_withRxCallback(void)
 {
-   DeviceBuilder builder;
-   reset_device();
-   device = builder.start()
-                .withRxPacketCallback(RxCallback)
-                .build("test", device_id, MeshDeviceType::STANDARD);
+    DeviceBuilder builder;
+    reset_device();
+    device = builder.start()
+                 .withRxPacketCallback(RxCallback)
+                 .build("test", device_id, MeshDeviceType::STANDARD);
 
-   TEST_ASSERT_NOT_NULL(device);
-   TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
-   TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
+    TEST_ASSERT_NOT_NULL(device);
+    TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
+    TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
 }
 
 void test_DeviceBuilder_buildDevice_withAesCrypto(void)
 {
-   DeviceBuilder builder;
-   reset_device();
-   device =
-       builder.start().withAesCrypto(key, iv).build("test", device_id, MeshDeviceType::STANDARD);
+    DeviceBuilder builder;
+    reset_device();
+    device =
+        builder.start().withAesCrypto(key, iv).build("test", device_id, MeshDeviceType::STANDARD);
 
-   TEST_ASSERT_NOT_NULL(device);
-   TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
-   TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
+    TEST_ASSERT_NOT_NULL(device);
+    TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
+    TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
 }
 void test_DeviceBuilder_buildDevice_withOledDisplay(void)
 {
-   DeviceBuilder builder;
-   reset_device();
-   device = builder.start()
-                .withOledDisplay(displayParams)
-                .build("test", device_id, MeshDeviceType::STANDARD);
+    DeviceBuilder builder;
+    reset_device();
+    device = builder.start()
+                 .withOledDisplay(displayParams)
+                 .build("test", device_id, MeshDeviceType::STANDARD);
 
-   TEST_ASSERT_NOT_NULL(device);
-   TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
-   TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
-   TEST_ASSERT_NOT_NULL(device->getDisplay());
+    TEST_ASSERT_NOT_NULL(device);
+    TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
+    TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
+    TEST_ASSERT_NOT_NULL(device->getDisplay());
 }
 void test_DeviceBuilder_buildDevice_withEverything(void)
 {
-   DeviceBuilder builder;
-   reset_device();
-   device = builder.start()
-                .withLoraRadio(defaultConfig)
-                .withWifi(wifiParams)
-                .withWifiAccessPoint(apParams)
-                .withRelayEnabled(true)
-                .withRxPacketCallback(RxCallback)
-                .withAesCrypto(key, iv)
-                .withOledDisplay(displayParams)
-                .build("test", device_id, MeshDeviceType::STANDARD);
+    DeviceBuilder builder;
+    reset_device();
+    device = builder.start()
+                 .withLoraRadio(defaultConfig)
+                 .withWifi(wifiParams)
+                 .withWifiAccessPoint(apParams)
+                 .withRelayEnabled(true)
+                 .withRxPacketCallback(RxCallback)
+                 .withAesCrypto(key, iv)
+                 .withOledDisplay(displayParams)
+                 .build("test", device_id, MeshDeviceType::STANDARD);
 
-   TEST_ASSERT_NOT_NULL(device);
-   TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
-   TEST_ASSERT_TRUE(device->isRelayEnabled());
-   TEST_ASSERT_NOT_NULL(device->getRadio());
-   TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
+    TEST_ASSERT_NOT_NULL(device);
+    TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
+    TEST_ASSERT_TRUE(device->isRelayEnabled());
+    TEST_ASSERT_NOT_NULL(device->getRadio());
+    TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
 }
 
 void setup()
 {
-   UNITY_BEGIN();
-   RUN_TEST(test_DeviceBuilder_buildDevice_without_starting);
-   RUN_TEST(test_DeviceBuilder_buildDevice_with_no_capabilities);
-   RUN_TEST(test_DeviceBuilder_buildDevice_withRadio);
-   RUN_TEST(test_DeviceBuilder_buildDevice_withWifi);
-   RUN_TEST(test_DeviceBuilder_buildDevice_withWifiAccessPoint);
-   RUN_TEST(test_DeviceBuilder_buildDevice_withRadio_and_withRelay);
-   RUN_TEST(test_DeviceBuilder_buildDevice_withRxCallback);
-   RUN_TEST(test_DeviceBuilder_buildDevice_withAesCrypto);
-   RUN_TEST(test_DeviceBuilder_buildDevice_withOledDisplay);
-   RUN_TEST(test_DeviceBuilder_buildDevice_withEverything);
+    UNITY_BEGIN();
+    RUN_TEST(test_DeviceBuilder_buildDevice_without_starting);
+    RUN_TEST(test_DeviceBuilder_buildDevice_with_no_capabilities);
+    RUN_TEST(test_DeviceBuilder_buildDevice_withRadio);
+    RUN_TEST(test_DeviceBuilder_buildDevice_withWifi);
+    RUN_TEST(test_DeviceBuilder_buildDevice_withWifiAccessPoint);
+    RUN_TEST(test_DeviceBuilder_buildDevice_withRadio_and_withRelay);
+    RUN_TEST(test_DeviceBuilder_buildDevice_withRxCallback);
+    RUN_TEST(test_DeviceBuilder_buildDevice_withAesCrypto);
+    RUN_TEST(test_DeviceBuilder_buildDevice_withOledDisplay);
+    RUN_TEST(test_DeviceBuilder_buildDevice_withEverything);
 
-   UNITY_END();
+    UNITY_END();
 }
 
 void loop()

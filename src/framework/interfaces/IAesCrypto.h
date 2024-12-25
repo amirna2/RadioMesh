@@ -15,5 +15,5 @@
 class IAesCrypto : public ICrypto
 {
 public:
-   virtual ~IAesCrypto() = default;
+    virtual ~IAesCrypto() = default;
 };

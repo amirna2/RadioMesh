@@ -8,122 +8,122 @@ PacketRouter* PacketRouter::instance = nullptr;
 
 int PacketRouter::routePacket(RadioMeshPacket packet, const byte* ourDeviceId)
 {
-   RadioMeshUtils::CRC32 crc32;
-   RadioMeshPacket packetCopy = packet;
-   uint32_t key = RadioMeshUtils::toUint32(packetCopy.packetId.data());
+    RadioMeshUtils::CRC32 crc32;
+    RadioMeshPacket packetCopy = packet;
+    uint32_t key = RadioMeshUtils::toUint32(packetCopy.packetId.data());
 
-   loginfo_ln("Routing packet with ID: 0x%X", key);
+    loginfo_ln("Routing packet with ID: 0x%X", key);
 
-   if (checkMaxHops(packetCopy)) {
-      return RM_E_MAX_HOPS;
-   }
+    if (checkMaxHops(packetCopy)) {
+        return RM_E_MAX_HOPS;
+    }
 
-   updateLastHopId(packetCopy, ourDeviceId);
-   loginfo_ln("Routing packet with ID: 0x%X, hop count: %d", key, packetCopy.hopCount);
+    updateLastHopId(packetCopy, ourDeviceId);
+    loginfo_ln("Routing packet with ID: 0x%X, hop count: %d", key, packetCopy.hopCount);
 
-   routeToNextHop(packetCopy);
+    routeToNextHop(packetCopy);
 
-   packetCopy.reserved.fill(0);
+    packetCopy.reserved.fill(0);
 
-   encryptPacketData(packetCopy);
+    encryptPacketData(packetCopy);
 
-   calculatePacketCrc(packetCopy, crc32, key);
-   int rc = sendPacket(packetCopy);
-   if (rc != RM_E_NONE) {
-      return rc;
-   }
+    calculatePacketCrc(packetCopy, crc32, key);
+    int rc = sendPacket(packetCopy);
+    if (rc != RM_E_NONE) {
+        return rc;
+    }
 
-   trackPacket(packetCopy, key);
+    trackPacket(packetCopy, key);
 
-   return RM_E_NONE;
+    return RM_E_NONE;
 }
 
 bool PacketRouter::checkMaxHops(RadioMeshPacket& packetCopy)
 {
-   if (packetCopy.hopCount >= MAX_HOPS) {
-      loginfo_ln("Max hops reached, dropping packet ID: %s",
-                 RadioMeshUtils::convertToHex(packetCopy.packetId.data(), MSG_ID_LENGTH).c_str());
-      return true;
-   }
-   return false;
+    if (packetCopy.hopCount >= MAX_HOPS) {
+        loginfo_ln("Max hops reached, dropping packet ID: %s",
+                   RadioMeshUtils::convertToHex(packetCopy.packetId.data(), MSG_ID_LENGTH).c_str());
+        return true;
+    }
+    return false;
 }
 
 void PacketRouter::updateLastHopId(RadioMeshPacket& packetCopy, const byte* ourDeviceId)
 {
-   std::copy_n(ourDeviceId, DEV_ID_LENGTH, packetCopy.lastHopId.begin());
-   packetCopy.hopCount++;
+    std::copy_n(ourDeviceId, DEV_ID_LENGTH, packetCopy.lastHopId.begin());
+    packetCopy.hopCount++;
 }
 
 void PacketRouter::routeToNextHop(RadioMeshPacket& packetCopy)
 {
-   if (!RadioMeshUtils::isBroadcastAddress(packetCopy.destDevId)) {
-      byte nextHop[DEV_ID_LENGTH];
-      if (RoutingTable::getInstance()->findNextHop(packetCopy.destDevId.data(), nextHop)) {
-         loginfo_ln(
-             "Found route to %s via %s",
-             RadioMeshUtils::convertToHex(packetCopy.destDevId.data(), DEV_ID_LENGTH).c_str(),
-             RadioMeshUtils::convertToHex(nextHop, DEV_ID_LENGTH).c_str());
-         memcpy(packetCopy.nextHopId.data(), nextHop, DEV_ID_LENGTH);
-      } else {
-         loginfo_ln("No route found, broadcasting");
-         memset(packetCopy.nextHopId.data(), 0, DEV_ID_LENGTH);
-      }
-   }
+    if (!RadioMeshUtils::isBroadcastAddress(packetCopy.destDevId)) {
+        byte nextHop[DEV_ID_LENGTH];
+        if (RoutingTable::getInstance()->findNextHop(packetCopy.destDevId.data(), nextHop)) {
+            loginfo_ln(
+                "Found route to %s via %s",
+                RadioMeshUtils::convertToHex(packetCopy.destDevId.data(), DEV_ID_LENGTH).c_str(),
+                RadioMeshUtils::convertToHex(nextHop, DEV_ID_LENGTH).c_str());
+            memcpy(packetCopy.nextHopId.data(), nextHop, DEV_ID_LENGTH);
+        } else {
+            loginfo_ln("No route found, broadcasting");
+            memset(packetCopy.nextHopId.data(), 0, DEV_ID_LENGTH);
+        }
+    }
 }
 
 void PacketRouter::encryptPacketData(RadioMeshPacket& packetCopy)
 {
-   if (crypto != nullptr) {
-      packetCopy.packetData = crypto->encrypt(packetCopy.packetData);
-   } else {
-      logwarn_ln("No crypto component set. Packet will be sent unencrypted.");
-   }
+    if (crypto != nullptr) {
+        packetCopy.packetData = crypto->encrypt(packetCopy.packetData);
+    } else {
+        logwarn_ln("No crypto component set. Packet will be sent unencrypted.");
+    }
 }
 
 void PacketRouter::calculatePacketCrc(RadioMeshPacket& packetCopy, RadioMeshUtils::CRC32& crc32,
                                       uint32_t key)
 {
-   loginfo_ln("Calculating packet crc for packet ID: 0x%X", key);
-   loginfo_ln("  Frame Counter: %d", packetCopy.fcounter);
-   loginfo_ln("  Data: %s", RadioMeshUtils::convertToHex(packetCopy.packetData.data(),
-                                                         packetCopy.packetData.size())
-                                .c_str());
-   crc32.update(packetCopy.fcounter);
-   crc32.update(packetCopy.packetData.data(), packetCopy.packetData.size());
-   packetCopy.packetCrc = crc32.finalize();
-   std::string pktId =
-       RadioMeshUtils::convertToHex(packetCopy.packetId.data(), packetCopy.packetId.size());
-   loginfo_ln("Routing packet with id: %s crc: 0x%4X", pktId.c_str(), packetCopy.packetCrc);
-   packetCopy.log();
+    loginfo_ln("Calculating packet crc for packet ID: 0x%X", key);
+    loginfo_ln("  Frame Counter: %d", packetCopy.fcounter);
+    loginfo_ln("  Data: %s", RadioMeshUtils::convertToHex(packetCopy.packetData.data(),
+                                                          packetCopy.packetData.size())
+                                 .c_str());
+    crc32.update(packetCopy.fcounter);
+    crc32.update(packetCopy.packetData.data(), packetCopy.packetData.size());
+    packetCopy.packetCrc = crc32.finalize();
+    std::string pktId =
+        RadioMeshUtils::convertToHex(packetCopy.packetId.data(), packetCopy.packetId.size());
+    loginfo_ln("Routing packet with id: %s crc: 0x%4X", pktId.c_str(), packetCopy.packetCrc);
+    packetCopy.log();
 }
 
 int PacketRouter::sendPacket(RadioMeshPacket& packetCopy)
 {
-   std::vector<byte> buffer = packetCopy.toByteBuffer();
-   int rc = LoraRadio::getInstance()->sendPacket(buffer);
-   if (rc != RM_E_NONE) {
-      logerr_ln("Failed to send packet");
-   }
-   return rc;
+    std::vector<byte> buffer = packetCopy.toByteBuffer();
+    int rc = LoraRadio::getInstance()->sendPacket(buffer);
+    if (rc != RM_E_NONE) {
+        logerr_ln("Failed to send packet");
+    }
+    return rc;
 }
 
 void PacketRouter::trackPacket(RadioMeshPacket& packetCopy, uint32_t key)
 {
-   loginfo_ln("Tracking packet with ID: 0x%X, data crc: 0x%X", key, packetCopy.packetCrc);
-   packetTracker.addEntry(key, packetCopy.packetCrc);
+    loginfo_ln("Tracking packet with ID: 0x%X, data crc: 0x%X", key, packetCopy.packetCrc);
+    packetTracker.addEntry(key, packetCopy.packetCrc);
 }
 
 bool PacketRouter::isPacketFoundInTracker(RadioMeshPacket packet)
 {
-   uint32_t key = RadioMeshUtils::toUint32(packet.packetId.data());
-   uint32_t value = packet.packetCrc;
+    uint32_t key = RadioMeshUtils::toUint32(packet.packetId.data());
+    uint32_t value = packet.packetCrc;
 
-   // find the packet ID key in our tracker and compare the data crc.
+    // find the packet ID key in our tracker and compare the data crc.
 
-   uint32_t foundValue = packetTracker.findOrDefault(key, 0);
-   if (foundValue == value) {
-      loginfo_ln("Packet with ID [%s] already seen.", std::to_string(key).c_str());
-      return true;
-   }
-   return false;
+    uint32_t foundValue = packetTracker.findOrDefault(key, 0);
+    if (foundValue == value) {
+        loginfo_ln("Packet with ID [%s] already seen.", std::to_string(key).c_str());
+        return true;
+    }
+    return false;
 }

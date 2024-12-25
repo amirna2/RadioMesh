@@ -1,35 +1,32 @@
 {
     "name": "RadioMesh",
     "keywords": "mesh-network, long-range, low-power, radio, protocol, toolkit, wireless, networking, iot, esp32, arduino",
-    "description": "A library for building wide area mesh networks of embedded devices using long range radios.",
-
-    "authors":
-    {
-        "name":  "Amir Nathoo",
+    "description": "A library for building wireless mesh networks of embedded devices using long range radios.",
+    "authors": {
+        "name": "Amir Nathoo",
         "email": "amir.nth@gmail.com",
         "url": "https://github.com/amirna2/RadioMesh",
         "maintainer": true
     },
     "version": "0.0.8",
-    "repository":
-    {
+    "repository": {
         "type": "git",
         "url": "https://github.com/amirna2/RadioMesh"
     },
     "frameworks": "arduino",
-    "platforms": ["espressif32","heltec-cubecell"],
+    "platforms": [
+        "espressif32",
+        "heltec-cubecell"
+    ],
     "headers": "include/RadioMesh.h",
     "license": "Apache-2.0",
-
     "examples": [
         "[Ee]xamples/*/*.ino"
     ],
-    "build":
-    {
+    "build": {
         "libLDFMode": "chain+"
     },
-    "dependencies":
-    [
+    "dependencies": [
         {
             "owner": "jgromes",
             "name": "RadioLib",
@@ -48,14 +45,18 @@
         {
             "owner": "mathieucarbou",
             "name": "AsyncTCP",
-            "version": "3.2.12",
-            "platforms": ["espressif32"]
+            "version": "3.3.1",
+            "platforms": [
+                "espressif32"
+            ]
         },
         {
             "owner": "mathieucarbou",
             "name": "ESP Async WebServer",
-            "version": "2.10.8",
-            "platforms": ["espressif32"]
+            "version": "https://github.com/mathieucarbou/ESPAsyncWebServer.git#v3.4.5",
+            "platforms": [
+                "espressif32"
+            ]
         },
         {
             "owner": "olikraus",

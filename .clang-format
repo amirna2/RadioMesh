@@ -1,9 +1,9 @@
 ---
 Language: Cpp
 # Use 3 spaces for indentation
-IndentWidth: 3
+IndentWidth: 4
 UseTab: Never
-AccessModifierOffset: -3
+AccessModifierOffset: -4
 
 # Braces configuration
 BreakBeforeBraces: Custom
@@ -18,7 +18,7 @@ BraceWrapping:
   BeforeElse: false
   AfterExternBlock: true
   BeforeLambdaBody: false
-  
+
 # Spacing
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
