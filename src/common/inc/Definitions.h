@@ -372,7 +372,7 @@ struct SecurityParams
     }
 };
 
-using PortalEventCallback = std::function<void(void*, const std::string&)>;
+using PortalEventCallback = std::function<void(void*, const std::vector<byte>&)>;
 
 /**
  * @struct PortalEventHandler

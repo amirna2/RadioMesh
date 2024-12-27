@@ -8,6 +8,7 @@
 #include <common/inc/Errors.h>
 #include <common/inc/Logger.h>
 #include <framework/interfaces/ICaptivePortal.h>
+#include <map>
 
 class AsyncCaptivePortal : public ICaptivePortal
 {
@@ -24,6 +25,9 @@ public:
     int stop() override;
     int sendToClients(const std::string& type, const std::vector<byte>& data) override;
     int sendToClients(const std::string& type, const std::string& data) override;
+    int sendToClient(uint32_t clientId, const std::string& type, const std::string& data) override;
+    int sendToClient(uint32_t clientId, const std::string& type,
+                     const std::vector<byte>& data) override;
 
     bool isRunning() override;
     size_t getClientCount() override;
@@ -44,5 +48,17 @@ private:
                               size_t len);
     std::string injectWebSocketCode(const std::string& html);
     void handleClientMessage(AsyncWebSocketClient* client, uint8_t* data, size_t len);
+
+    static const uint32_t CLIENT_TIMEOUT_MS = 30000; // 30 seconds
+    static const size_t MAX_CLIENTS = 4;             // Conservative limit
+
+    struct ClientInfo
+    {
+        uint32_t id;
+        uint32_t lastActive; // Last activity timestamp
+        uint32_t lastPong;   // Last pong received timestamp
+    };
+    std::map<uint32_t, ClientInfo> clientInfo;
+
 #endif
 };

@@ -110,6 +110,50 @@ int AsyncCaptivePortal::stop()
     return RM_E_NONE;
 }
 
+int AsyncCaptivePortal::sendToClient(uint32_t clientId, const std::string& type,
+                                     const std::string& data)
+{
+    if (!isRunning() || !webSocket) {
+        return RM_E_INVALID_STATE;
+    }
+
+    if (clientInfo.find(clientId) == clientInfo.end()) {
+        logerr_ln("Client #%u not found", clientId);
+        return RM_E_INVALID_PARAM;
+    }
+
+    if (!webSocket->text(clientId, data.c_str())) {
+        logerr_ln("Failed to send message to client #%u", clientId);
+        return RM_E_UNKNOWN; // TODO: Better error code
+    }
+
+    return RM_E_NONE;
+}
+
+int AsyncCaptivePortal::sendToClient(uint32_t clientId, const std::string& type,
+                                     const std::vector<byte>& data)
+{
+    if (!isRunning() || !webSocket) {
+        return RM_E_INVALID_STATE;
+    }
+
+    if (clientInfo.find(clientId) == clientInfo.end()) {
+        logerr_ln("Client #%u not found", clientId);
+        return RM_E_INVALID_PARAM;
+    }
+
+    std::string msg = "{\"type\":\"" + type + "\",\"data\":\"";
+    msg += std::string(data.begin(), data.end());
+    msg += "\"}";
+
+    if (!webSocket->text(clientId, msg.c_str())) {
+        logerr_ln("Failed to send message to client #%u", clientId);
+        return RM_E_UNKNOWN; // TODO: Better error code
+    }
+
+    return RM_E_NONE;
+}
+
 int AsyncCaptivePortal::sendToClients(const std::string& type, const std::vector<byte>& data)
 {
     if (!isRunning() || !webSocket) {
@@ -148,9 +192,19 @@ size_t AsyncCaptivePortal::getClientCount()
 void AsyncCaptivePortal::handleClientMessage(AsyncWebSocketClient* client, uint8_t* data,
                                              size_t len)
 {
-    if (!client || !client->canSend() || !data) {
+    if (!client || !client->canSend()) {
+        logerr_ln("Invalid client or client cannot send");
         return;
     }
+
+    if (!data || len == 0) {
+        logerr_ln("Invalid data");
+        return;
+    }
+
+    // TODO: This  currently assumes data is a JSON string
+    // But we should handle binary data as well
+
     // Convert data to string safely
     std::string msg;
     msg.reserve(len);
@@ -175,9 +229,11 @@ void AsyncCaptivePortal::handleClientMessage(AsyncWebSocketClient* client, uint8
     std::string eventType = msg.substr(typeStart + 8, typeEnd - (typeStart + 8));
     std::string dataStr = msg.substr(dataStart + 8, dataEnd - (dataStart + 8));
 
+    std::vector<byte> dataVec(dataStr.begin(), dataStr.end());
+
     for (const auto& handler : portalParams.eventHandlers) {
         if (handler.event == eventType) {
-            handler.callback(static_cast<void*>(client), dataStr);
+            handler.callback(static_cast<void*>(client), dataVec);
             break;
         }
     }
@@ -186,35 +242,35 @@ void AsyncCaptivePortal::handleClientMessage(AsyncWebSocketClient* client, uint8
 void AsyncCaptivePortal::handleWebSocketEvent(AwsEventType type, AsyncWebSocketClient* client,
                                               uint8_t* data, size_t len)
 {
+    if (!client)
+        return;
+
+    uint32_t clientId = client->id();
+
     switch (type) {
     case WS_EVT_CONNECT:
-        loginfo_ln("Client #%u connected", client->id());
-        client->keepAlivePeriod(10);
+        clientInfo[clientId] = {.id = clientId};
+        client->keepAlivePeriod(20); // Enable built-in keep alive
+        loginfo_ln("Client #%u connected", clientId);
         break;
 
     case WS_EVT_DISCONNECT:
-        loginfo_ln("Client #%u disconnected", client->id());
-        // TODO: Handle client disconnect event
+        clientInfo.erase(clientId);
+        loginfo_ln("Client #%u disconnected", clientId);
         break;
 
     case WS_EVT_DATA:
-        if (len > 0 && data != nullptr) {
-            handleClientMessage(client, data, len);
-        }
-        break;
-    case WS_EVT_PONG:
-        loginfo_ln("Client #%u pong", client->id());
+        handleClientMessage(client, data, len);
         break;
     case WS_EVT_ERROR:
-        if (len >= 2) {
-            uint16_t errorCode = (uint16_t)(data[0] << 8) + data[1];
-            const char* errorMsg = (len > 2) ? (char*)(data + 2) : "";
-            logerr_ln("Client #%u websocket error code=%u, msg=%s", client->id(), errorCode,
-                      errorMsg);
-            client->close();
+        logerr_ln("Client #%u websocket error", clientId);
+        break;
+    case WS_EVT_PONG:
+        loginfo_ln("Client #%u pong received", clientId);
+        if (clientInfo.find(clientId) != clientInfo.end()) {
+            clientInfo[clientId].lastPong = millis();
         }
         break;
-
     default:
         break;
     }
@@ -222,85 +278,51 @@ void AsyncCaptivePortal::handleWebSocketEvent(AwsEventType type, AsyncWebSocketC
 
 std::string AsyncCaptivePortal::injectWebSocketCode(const std::string& html)
 {
+    char formattedBuffer[4096];
     std::string wsCode = R"(
-      <script>
-         let wsRetryCount = 0;
-         const MAX_RETRIES = 3;
+    <script>
+        let wsRetryCount = 0;
+        const MAX_RETRIES = 3;
+        let reconnectTimeout = null;
 
-         function connectWebSocket() {
-            if (window.captivePortalWs && window.captivePortalWs.readyState !== WebSocket.CLOSED) {
-               window.captivePortalWs.close();
+        function connectWebSocket() {
+            if (reconnectTimeout) {
+                clearTimeout(reconnectTimeout);
+                reconnectTimeout = null;
             }
 
-            const ws = new WebSocket('ws://' + window.location.hostname + ':' + )" +
-                         std::to_string(portalParams.webPort) + R"( + '/ws');
+            const ws = new WebSocket('ws://' + window.location.hostname + ':%d/ws');
 
-            ws.onopen = function() {
-               console.log('WebSocket connected');
-               wsRetryCount = 0;
+            ws.onopen = () => window.dispatchEvent(new CustomEvent('WebSocket.open'));
+            ws.onclose = (event) => {
+                window.dispatchEvent(new CustomEvent('WebSocket.close'));
+                if (event.code !== 1000 && wsRetryCount < MAX_RETRIES) {
+                    wsRetryCount++;
+                    reconnectTimeout = setTimeout(connectWebSocket, 2000 * wsRetryCount);
+                }
             };
-
-            ws.onclose = function(event) {
-               console.log('WebSocket disconnected', event.code, event.reason);
-
-               if (wsRetryCount < MAX_RETRIES) {
-                  wsRetryCount++;
-                  setTimeout(connectWebSocket, 2000 * wsRetryCount);
-               } else {
-                  console.log('Max WebSocket reconnection attempts reached');
-               }
+            ws.onerror = () => window.dispatchEvent(new CustomEvent('WebSocket.error'));
+            ws.onmessage = (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+                    if (msg && msg.type && msg.data) {
+                        window.dispatchEvent(new CustomEvent(msg.type, {detail: msg.data}));
+                    }
+                } catch(e) {
+                    console.error('Invalid message format:', e);
+                }
             };
-
-            ws.onerror = function(err) {
-               console.log('WebSocket error occurred');
-            };
-
-            ws.onmessage = function(event) {
-               if (!event || !event.data) return;
-
-               var msg;
-               try {
-                  msg = JSON.parse(event.data);
-               } catch(e) {
-                  console.log('Invalid message format');
-                  return;
-               }
-
-               if (msg && msg.type && msg.data) {
-                  window.dispatchEvent(new CustomEvent(msg.type, {
-                     detail: msg.data
-                  }));
-               }
-            };
-
             window.captivePortalWs = ws;
-         }
+        }
 
-         window.addEventListener('load', function() {
-            connectWebSocket();
-         });
+        window.addEventListener('load', connectWebSocket);
+    </script>)";
 
-         window.addEventListener('beforeunload', function() {
-            if (window.captivePortalWs) {
-               window.captivePortalWs.close(1000, 'Page closing');
-            }
-         });
-
-         document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-               if (window.captivePortalWs) {
-                  window.captivePortalWs.close(1000, 'Page hidden');
-               }
-            } else {
-               connectWebSocket();
-            }
-         });
-      </script>
-   )";
+    snprintf(formattedBuffer, sizeof(formattedBuffer), wsCode.c_str(), portalParams.webPort);
 
     size_t pos = html.find("</body>");
     if (pos != std::string::npos) {
-        return html.substr(0, pos) + wsCode + html.substr(pos);
+        return html.substr(0, pos) + formattedBuffer + html.substr(pos);
     }
     return html + wsCode;
 }
