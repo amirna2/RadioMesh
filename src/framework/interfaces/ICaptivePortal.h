@@ -27,40 +27,19 @@ public:
     virtual int stop() = 0;
 
     /**
-     * @brief Send data to connected portal clients
-     * @param type Message type identifier
-     * @param data Binary data to send
+     * @brief Send a message to a specific client
+     * @param clientId The ID of the client to send the message to
+     * @param message The message to send
      * @return RM_E_NONE if successful, error code otherwise
      */
-    virtual int sendToClients(const std::string& type, const std::vector<byte>& data) = 0;
+    virtual int sendToClient(uint32_t clientId, const PortalMessage& message) = 0;
 
     /**
-     * @brief Check if portal is running
-     * @param type Message type identifier
-     * @param data data to send as string
-     * @return true if running, false otherwise
-     */
-    virtual int sendToClients(const std::string& type, const std::string& data) = 0;
-
-    /**
-     * @brief Send data to a specific client
-     * @param clientId Client identifier
-     * @param type Message type identifier
-     * @param data data to send as string
+     * @brief Send a message to all connected clients
+     * @param message The message to send
      * @return RM_E_NONE if successful, error code otherwise
      */
-    virtual int sendToClient(uint32_t clientId, const std::string& type,
-                             const std::string& data) = 0;
-
-    /**
-     * @brief Send data to a specific client
-     * @param clientId Client identifier
-     * @param type Message type identifier
-     * @param data Binary data to send
-     * @return RM_E_NONE if successful, error code otherwise
-     */
-    virtual int sendToClient(uint32_t clientId, const std::string& type,
-                             const std::vector<byte>& data) = 0;
+    virtual int sendToClients(const PortalMessage& message) = 0;
 
     /**
      * @brief Check if portal is running

@@ -375,12 +375,41 @@ struct SecurityParams
 using PortalEventCallback = std::function<void(void*, const std::vector<byte>&)>;
 
 /**
+ * @class PortalMessage
+ * @brief Base interface for portal message serialization
+ * @note The PortalMessage is used to serialize outgoing portal messages
+ */
+class PortalMessage
+{
+public:
+    virtual ~PortalMessage() = default;
+
+    /**
+     * @brief Serialize the message payload to a string
+     * @return Serialized message string
+     * @note The string can be any format (e.g. JSON, CSV, etc.)
+     */
+    virtual std::string serialize() const = 0;
+    /**
+     * @brief Get message type identifier for client routing
+     * @return String type identifier (e.g. "chat_message", "device_list", "status")
+     */
+    virtual std::string getType() const = 0;
+};
+
+/**
  * @struct PortalEventHandler
- * @brief Structure to hold event handlers for the captive portal
+ * @brief Structure to hold event handlers for incoming portal WebSocket messages
  */
 struct PortalEventHandler
 {
+    /**
+     * @brief WebSocket message type
+     */
     std::string event;
+    /**
+     * @brief Callback function to handle the message
+     */
     PortalEventCallback callback;
 };
 

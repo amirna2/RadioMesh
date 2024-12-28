@@ -1,80 +1,20 @@
+#include "chat.h"
 #include "device_info.h"
-#include "portal_html.h"
 #include <Arduino.h>
 #include <RadioMesh.h>
 
 void RxCallback(const RadioMeshPacket* packet, int err);
 bool setupAccessPoint();
-void handleWifiConfig(void* client, const std::vector<byte>&);
-void handleProvision(void* client, const std::vector<byte>&);
-void handleFirmware(void* client, const std::vector<byte>&);
-void handleMessage(void* client, const std::vector<byte>&);
 
 IDevice* device = nullptr;
 IWifiAccessPoint* wifiAP = nullptr;
 bool setupOk = false;
-
-// Simple message handler
-void handleMessage(void* client, const std::vector<byte>& data)
-{
-    loginfo_ln("Handling Message!");
-    // device->getCaptivePortal()->sendToClients("status", data);
-    auto wsClient = static_cast<AsyncWebSocketClient*>(client);
-    std::string msg(data.begin(), data.end());
-    device->getCaptivePortal()->sendToClient(wsClient->id(), "status", msg);
-}
-
-// Handler for WiFi configuration
-void handleWifiConfig(void* client, const std::vector<byte>& data)
-{
-    // Parse JSON and update WiFi settings
-    // Store in flash/EEPROM
-    loginfo_ln("Handling WiFi config!");
-    device->getCaptivePortal()->sendToClients("status", "WiFi configuration updated");
-}
-
-// Handler for device provisioning
-void handleProvision(void* client, const std::vector<byte>& data)
-{
-    // Parse JSON and provision device
-    // Update mesh network settings
-    loginfo_ln("Handling device provision!");
-    device->getCaptivePortal()->sendToClients("status", "Device provisioned");
-}
-
-// Handler for firmware update
-void handleFirmware(void* client, const std::vector<byte>& data)
-{
-    // Handle firmware update
-    // Verify and flash new firmware
-    loginfo_ln("Handling firmware update!");
-    device->getCaptivePortal()->sendToClients("status", "Firmware updated");
-}
-
-// Portal params with constructor
-CaptivePortalParams portalParams{
-    "RadioMesh Portal", SIMPLE_PORTAL_HTML, 80, 53, {PortalEventHandler{"message", handleMessage}}};
-
-/*
-CaptivePortalParams portalParams{"RadioMesh Portal",
-                                 PORTAL_HTML,
-                                 80,
-                                 53,
-                                 {{"wifi_config", handleWifiConfig},
-                                  {"provision", handleProvision},
-                                  {"firmware", handleFirmware}}};
-*/
 
 void RxCallback(const RadioMeshPacket* packet, int err)
 {
     if (err != RM_E_NONE || packet == nullptr) {
         logerr_ln("RX Error: %d", err);
         return;
-    }
-
-    // Forward mesh packet data to portal
-    if (device && device->getCaptivePortal()) {
-        device->getCaptivePortal()->sendToClients("status", packet->packetData);
     }
 }
 

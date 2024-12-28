@@ -23,11 +23,9 @@ public:
 
     int start() override;
     int stop() override;
-    int sendToClients(const std::string& type, const std::vector<byte>& data) override;
-    int sendToClients(const std::string& type, const std::string& data) override;
-    int sendToClient(uint32_t clientId, const std::string& type, const std::string& data) override;
-    int sendToClient(uint32_t clientId, const std::string& type,
-                     const std::vector<byte>& data) override;
+
+    int sendToClient(uint32_t clientId, const PortalMessage& message) override;
+    int sendToClients(const PortalMessage& message) override;
 
     bool isRunning() override;
     size_t getClientCount() override;

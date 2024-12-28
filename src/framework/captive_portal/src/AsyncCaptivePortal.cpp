@@ -110,8 +110,7 @@ int AsyncCaptivePortal::stop()
     return RM_E_NONE;
 }
 
-int AsyncCaptivePortal::sendToClient(uint32_t clientId, const std::string& type,
-                                     const std::string& data)
+int AsyncCaptivePortal::sendToClient(uint32_t clientId, const PortalMessage& message)
 {
     if (!isRunning() || !webSocket) {
         return RM_E_INVALID_STATE;
@@ -122,29 +121,9 @@ int AsyncCaptivePortal::sendToClient(uint32_t clientId, const std::string& type,
         return RM_E_INVALID_PARAM;
     }
 
-    if (!webSocket->text(clientId, data.c_str())) {
-        logerr_ln("Failed to send message to client #%u", clientId);
-        return RM_E_UNKNOWN; // TODO: Better error code
-    }
-
-    return RM_E_NONE;
-}
-
-int AsyncCaptivePortal::sendToClient(uint32_t clientId, const std::string& type,
-                                     const std::vector<byte>& data)
-{
-    if (!isRunning() || !webSocket) {
-        return RM_E_INVALID_STATE;
-    }
-
-    if (clientInfo.find(clientId) == clientInfo.end()) {
-        logerr_ln("Client #%u not found", clientId);
-        return RM_E_INVALID_PARAM;
-    }
-
-    std::string msg = "{\"type\":\"" + type + "\",\"data\":\"";
-    msg += std::string(data.begin(), data.end());
-    msg += "\"}";
+    std::string msg =
+        "{\"type\":\"" + message.getType() + "\",\"data\":\"" + message.serialize() + "\"}";
+    webSocket->textAll(msg.c_str());
 
     if (!webSocket->text(clientId, msg.c_str())) {
         logerr_ln("Failed to send message to client #%u", clientId);
@@ -154,27 +133,13 @@ int AsyncCaptivePortal::sendToClient(uint32_t clientId, const std::string& type,
     return RM_E_NONE;
 }
 
-int AsyncCaptivePortal::sendToClients(const std::string& type, const std::vector<byte>& data)
+int AsyncCaptivePortal::sendToClients(const PortalMessage& message)
 {
-    if (!isRunning() || !webSocket) {
+    if (!isRunning() || !webSocket)
         return RM_E_INVALID_STATE;
-    }
 
-    // Create JSON message
-    std::string msg = "{\"type\":\"" + type + "\",\"data\":\"";
-    msg += std::string(data.begin(), data.end());
-    msg += "\"}";
-
-    webSocket->textAll(msg.c_str());
-    return RM_E_NONE;
-}
-
-int AsyncCaptivePortal::sendToClients(const std::string& type, const std::string& data)
-{
-    if (!isRunning() || !webSocket) {
-        return RM_E_INVALID_STATE;
-    }
-    std::string msg = "{\"type\":\"" + type + "\",\"data\":\"" + data + "\"}";
+    std::string msg =
+        "{\"type\":\"" + message.getType() + "\",\"data\":\"" + message.serialize() + "\"}";
     webSocket->textAll(msg.c_str());
     return RM_E_NONE;
 }
