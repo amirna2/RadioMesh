@@ -1,6 +1,6 @@
 
 #include <Arduino.h>
-#include  <core/protocol/inc/routing/RoutingTable.h>
+#include <core/protocol/inc/routing/RoutingTable.h>
 
 RoutingTable* RoutingTable::instance = nullptr;
 
@@ -12,7 +12,8 @@ RoutingTable* RoutingTable::getInstance()
     return instance;
 }
 
-RoutingTable::RoutingTable() {
+RoutingTable::RoutingTable()
+{
     for (int i = 0; i < MAX_ROUTES; i++) {
         routes[i].active = false;
     }
@@ -39,16 +40,14 @@ void RoutingTable::updateRoute(const RadioMeshPacket& packet, int8_t rssi)
         // Update existing route if new route is better
         if (isBetterRoute(newRoute, routes[index])) {
             routes[index] = newRoute;
-            loginfo_ln("Updated route via better relay: RSSI=%d, hops=%d",
-                rssi, packet.hopCount);
+            loginfo_ln("Updated route via better relay: RSSI=%d, hops=%d", rssi, packet.hopCount);
         }
     } else {
         // Add new route
         index = findEmptySlot();
         if (index != NOT_FOUND) {
             routes[index] = newRoute;
-            loginfo_ln("Added new route via relay: RSSI=%d, hops=%d",
-                rssi, packet.hopCount);
+            loginfo_ln("Added new route via relay: RSSI=%d, hops=%d", rssi, packet.hopCount);
         } else {
             // This should not happen since findEmptySlot() checks for oldest route as last resort
             // but we log it just in case
@@ -66,7 +65,9 @@ bool RoutingTable::findNextHop(const byte* destId, byte* nextHop)
             return true;
         } else {
             routes[index].active = false;
-            loginfo_ln("Route to %s expired", RadioMeshUtils::convertToHex(routes[index].destId.data(), DEV_ID_LENGTH).c_str());
+            loginfo_ln(
+                "Route to %s expired",
+                RadioMeshUtils::convertToHex(routes[index].destId.data(), DEV_ID_LENGTH).c_str());
         }
     }
     return false;
@@ -123,15 +124,13 @@ void RoutingTable::printRoutes()
     loginfo_ln("Current Routes:");
     for (int i = 0; i < MAX_ROUTES; i++) {
         if (routes[i].active) {
-            std::string destId = RadioMeshUtils::convertToHex(routes[i].destId.data(), DEV_ID_LENGTH);
-            std::string nextHopId = RadioMeshUtils::convertToHex(routes[i].nextHopId.data(), DEV_ID_LENGTH);
-            loginfo_ln("Route %d: Dest=%s NextHop=%s Hops=%d RSSI=%d Age=%lums",
-                i,
-                destId.c_str(),
-                nextHopId.c_str(),
-                routes[i].hops,
-                routes[i].rssi,
-                millis() - routes[i].lastSeen);
+            std::string destId =
+                RadioMeshUtils::convertToHex(routes[i].destId.data(), DEV_ID_LENGTH);
+            std::string nextHopId =
+                RadioMeshUtils::convertToHex(routes[i].nextHopId.data(), DEV_ID_LENGTH);
+            loginfo_ln("Route %d: Dest=%s NextHop=%s Hops=%d RSSI=%d Age=%lums", i, destId.c_str(),
+                       nextHopId.c_str(), routes[i].hops, routes[i].rssi,
+                       millis() - routes[i].lastSeen);
         }
     }
 }

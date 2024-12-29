@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include <common/inc/Options.h>
+#include <vector>
 
 /**
  * @class IByteStorage
@@ -10,7 +10,8 @@
  * It provides the structure for reading, writing, and managing byte storage.
  * Use this interface to storage data on the device in storage such as EEPROM.
  */
-class IByteStorage {
+class IByteStorage
+{
 public:
     virtual ~IByteStorage() = default;
 
@@ -35,13 +36,15 @@ public:
      * @brief Write data to storage and commit the write operation.
      * @param key The key to write data to.
      * @param data The data to write to storage.
-     * @returns RM_E_NONE if the data was successfully written and committed, an error code otherwise.
+     * @returns RM_E_NONE if the data was successfully written and committed, an error code
+     * otherwise.
      */
     virtual int writeAndCommit(const std::string& key, const std::vector<byte>& data) = 0;
 
     /**
      * @brief Commit the write operation.
-     * @returns RM_E_NONE if the write operation was successfully committed, an error code otherwise.
+     * @returns RM_E_NONE if the write operation was successfully committed, an error code
+     * otherwise.
      */
     virtual int commit() = 0;
     /**
@@ -80,7 +83,8 @@ public:
 
     /**
      * @brief Clear all data from storage.
-     * @attention the clear operation is irreversible and will immediately remove all data from storage.
+     * @attention the clear operation is irreversible and will immediately remove all data from
+     * storage.
      * @returns RM_E_NONE if the storage was successfully cleared, an error code otherwise.
      */
     virtual int clear() = 0;

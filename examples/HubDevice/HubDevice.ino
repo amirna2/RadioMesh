@@ -1,13 +1,13 @@
+#include "device_info.h"
 #include <Arduino.h>
 #include <RadioMesh.h>
-#include <string>
 #include <arduino-timer.h>
-#include "device_info.h"
+#include <string>
 #include <vector>
 
-std::string toHex(const byte *data, int size);
-void RxCallback(const RadioMeshPacket *packet, int err);
-void TxCallback(const RadioMeshPacket *packet, int err);
+std::string toHex(const byte* data, int size);
+void RxCallback(const RadioMeshPacket* packet, int err);
+void TxCallback(const RadioMeshPacket* packet, int err);
 
 void displaySetupMsg(std::string message, int x, int y, bool clear, int delayMs);
 std::string getWifiSignal();
@@ -17,72 +17,75 @@ bool setupRadio();
 bool setupWifiConnector();
 bool broadcastInclusion(void*);
 
-IDevice *device = nullptr;
-IRadio *radio = nullptr;
-IDisplay *display = nullptr;
-IWifiConnector *wifiConnector = nullptr;
-IWifiAccessPoint *wifiAP = nullptr;
-ICrypto *crypto = nullptr;
+IDevice* device = nullptr;
+IRadio* radio = nullptr;
+IDisplay* display = nullptr;
+IWifiConnector* wifiConnector = nullptr;
+IWifiAccessPoint* wifiAP = nullptr;
+ICrypto* crypto = nullptr;
 
 DeviceBuilder builder;
 bool setupOk = false;
 
 auto timer = timer_create_default();
-const int INCLUSION_BROADCAST_INTERVAL = (15 * 1000);  // 15 seconds
+const int INCLUSION_BROADCAST_INTERVAL = (15 * 1000); // 15 seconds
 bool inclusionMode = false;
 
 int counter = 1;
-bool txComplete = true;  // Flag to track if previous TX is done
+bool txComplete = true; // Flag to track if previous TX is done
 
 SecurityParams securityParams(key, iv, SecurityMethod::AES);
 
 // convert a vector of bytes to a hex string
-std::string toHex(const byte *data, int size)
+std::string toHex(const byte* data, int size)
 {
-    std::string buf;
-    buf.reserve(size * 2); // Each byte will become two characters
-    static const char hex[] = "0123456789ABCDEF";
+   std::string buf;
+   buf.reserve(size * 2); // Each byte will become two characters
+   static const char hex[] = "0123456789ABCDEF";
 
-    for (int i = 0; i < size; i++) {
-        buf.push_back(hex[(data[i] >> 4) & 0xF]);
-        buf.push_back(hex[data[i] & 0xF]);
-    }
+   for (int i = 0; i < size; i++) {
+      buf.push_back(hex[(data[i] >> 4) & 0xF]);
+      buf.push_back(hex[data[i] & 0xF]);
+   }
 
-    return buf;
+   return buf;
 }
 
-
-bool broadcastInclusion(void*) {
-    if (device) {
-        loginfo_ln("Broadcasting inclusion open message");
-        int rc = device->sendInclusionOpen();
-        if (rc != RM_E_NONE) {
-            logerr_ln("Failed to send inclusion open message [%d]", rc);
-        }
-    }
-    return true;  // Keep timer running
-}
-
-void TxCallback(const RadioMeshPacket *packet, int err)
+bool broadcastInclusion(void*)
 {
-      if (err != RM_E_NONE) {
-         logerr_ln("TX Failed [%d]", err);
-         display->setFont(RM_FONT_TINY);
-         display->clear();
-         display->drawString(0, 30, "TX failed"); display->drawString(45, 30, "Error: " + std::to_string(err));
-      } else {
-         loginfo_ln("TX Success. Packet Topic: %s", MessageTopicUtils::topicToString(packet->topic).c_str());
+   if (device) {
+      loginfo_ln("Broadcasting inclusion open message");
+      int rc = device->sendInclusionOpen();
+      if (rc != RM_E_NONE) {
+         logerr_ln("Failed to send inclusion open message [%d]", rc);
       }
+   }
+   return true; // Keep timer running
+}
+
+void TxCallback(const RadioMeshPacket* packet, int err)
+{
+   if (err != RM_E_NONE) {
+      logerr_ln("TX Failed [%d]", err);
+      display->setFont(RM_FONT_TINY);
+      display->clear();
+      display->drawString(0, 30, "TX failed");
+      display->drawString(45, 30, "Error: " + std::to_string(err));
+   } else {
+      loginfo_ln("TX Success. Packet Topic: %s",
+                 MessageTopicUtils::topicToString(packet->topic).c_str());
+   }
 }
 
 // Callback function for received packets
-void RxCallback(const RadioMeshPacket *packet, int err)
+void RxCallback(const RadioMeshPacket* packet, int err)
 {
    if (packet == nullptr) {
       logerr_ln("RX Failed [%d]", err);
       display->setFont(RM_FONT_TINY);
       display->clear();
-      display->drawString(0, 30, "RX failed"); display->drawString(45, 30, "Error: " + std::to_string(err));
+      display->drawString(0, 30, "RX failed");
+      display->drawString(45, 30, "Error: " + std::to_string(err));
       return;
    }
 
@@ -95,13 +98,15 @@ void RxCallback(const RadioMeshPacket *packet, int err)
       logerr_ln("RX Failed [%d], from:%s, to:%s", err, source.c_str(), destination.c_str());
       display->setFont(RM_FONT_TINY);
       display->clear();
-      display->drawString(0, 30, "RX failed"); display->drawString(45, 30, "Error: " + std::to_string(err));
+      display->drawString(0, 30, "RX failed");
+      display->drawString(45, 30, "Error: " + std::to_string(err));
       return;
    }
 
    loginfo_ln("---------------------------------------------");
    loginfo_ln("Received packet ID: 0x%s [ RSSI: %ddBm, SNR: %.2fdB ]",
-              toHex(packet->packetId.data(), packet->packetId.size()).c_str(), radio->getRSSI(), radio->getSNR());
+              toHex(packet->packetId.data(), packet->packetId.size()).c_str(), radio->getRSSI(),
+              radio->getSNR());
    loginfo_ln("  Topic: 0x%02X", packet->topic);
    loginfo_ln("  Source: %s ", source.c_str());
    loginfo_ln("  Destination: %s", destination.c_str());
@@ -115,16 +120,20 @@ void RxCallback(const RadioMeshPacket *packet, int err)
    display->setFont(RM_FONT_TINY);
    display->clear();
    if (wifiConnector != nullptr) {
-         display->drawString(90,10, getWifiSignal());
+      display->drawString(90, 10, getWifiSignal());
    }
-   display->drawString(0, 30, "pkt id: "); display->drawString(45, 30, toHex(packet->packetId.data(), packet->packetId.size()));
-   display->drawString(0, 40, "from:"); display->drawString(30, 40, source);
-   display->drawString(0, 50, "to:"); display->drawString(30, 50, destination);
+   display->drawString(0, 30, "pkt id: ");
+   display->drawString(45, 30, toHex(packet->packetId.data(), packet->packetId.size()));
+   display->drawString(0, 40, "from:");
+   display->drawString(30, 40, source);
+   display->drawString(0, 50, "to:");
+   display->drawString(30, 50, destination);
    display->drawNumber(0, 60, data);
 }
 
 // Display a message on the OLED display
-void displaySetupMsg(std::string message, int x=10, int y=40, bool clear=true, int delayMs=1000)
+void displaySetupMsg(std::string message, int x = 10, int y = 40, bool clear = true,
+                     int delayMs = 1000)
 {
    if (clear) {
       display->clear();
@@ -230,14 +239,14 @@ void setup()
    // The HUB device has wifi capabilities so it can connect to a wifi network to send data
    // and also create an access point to allow other devices to connect to it
    device = builder.start()
-                   .withLoraRadio(radioParams)
-                   .withWifi(wifiParams)
-                   .withWifiAccessPoint(apParams)
-                   .withRxPacketCallback(RxCallback)
-                   .withTxPacketCallback(TxCallback)
-                   .withSecureMessaging(securityParams)
-                   .withOledDisplay(displayParams)
-                   .build(DEVICE_NAME, DEVICE_ID, MeshDeviceType::HUB);
+                .withLoraRadio(radioParams)
+                .withWifi(wifiParams)
+                .withWifiAccessPoint(apParams)
+                .withRxPacketCallback(RxCallback)
+                .withTxPacketCallback(TxCallback)
+                .withSecureMessaging(securityParams)
+                .withOledDisplay(displayParams)
+                .build(DEVICE_NAME, DEVICE_ID, MeshDeviceType::HUB);
 
    if (device == nullptr) {
       logerr_ln("ERROR  device is null");
@@ -297,11 +306,11 @@ void setup()
    displaySetupMsg("Setup OK!");
 }
 
-void loop() {
+void loop()
+{
    if (!setupOk) {
       return;
    }
    device->run();
    timer.tick(); // Run the inclusion broadcast timer
 }
-

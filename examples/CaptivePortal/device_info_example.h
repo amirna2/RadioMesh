@@ -28,9 +28,9 @@ std::vector<byte> iv = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
                         0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
 
 // Default device configuration
-const std::array<byte, RM_ID_LENGTH> DEVICE_ID = {0x88, 0x88, 0x88, 0x88};
-const std::string DEVICE_NAME = "Portal";
-const std::string WIFI_AP_SSID = "PortalAP";
+const std::array<byte, RM_ID_LENGTH> DEVICE_ID = {0x99, 0x99, 0x99, 0x99};
+const std::string DEVICE_NAME = "PortalHub";
+const std::string WIFI_AP_SSID = "HubPortalAP";
 const std::string WIFI_AP_PASSWORD = "your_wifi_ap_password";
 const std::string WIFI_AP_IP_ADDRESS = "192.168.20.1";
 
@@ -54,11 +54,9 @@ OledDisplayParams displayParams = OledDisplayParams(SCL_OLED, SDA_OLED, RST_OLED
 #endif
 
 #ifdef USE_WIFI
-// Default wifi configuration
 WifiParams wifiParams = {WIFI_SSID, WIFI_PASSWORD};
 #endif
 
 #ifdef USE_WIFI_AP
-// Default access point configuration
 WifiAccessPointParams apParams = {WIFI_AP_SSID, WIFI_AP_PASSWORD, WIFI_AP_IP_ADDRESS};
 #endif

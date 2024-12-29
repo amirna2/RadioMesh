@@ -1,9 +1,8 @@
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <core/protocol/inc/routing/PacketRouter.h>
 #include <hardware/inc/radio/LoraRadio.h>
-
 
 PacketRouter* PacketRouter::instance = nullptr;
 
@@ -43,7 +42,7 @@ bool PacketRouter::checkMaxHops(RadioMeshPacket& packetCopy)
 {
     if (packetCopy.hopCount >= MAX_HOPS) {
         loginfo_ln("Max hops reached, dropping packet ID: %s",
-            RadioMeshUtils::convertToHex(packetCopy.packetId.data(), MSG_ID_LENGTH).c_str());
+                   RadioMeshUtils::convertToHex(packetCopy.packetId.data(), MSG_ID_LENGTH).c_str());
         return true;
     }
     return false;
@@ -60,7 +59,8 @@ void PacketRouter::routeToNextHop(RadioMeshPacket& packetCopy)
     if (!RadioMeshUtils::isBroadcastAddress(packetCopy.destDevId)) {
         byte nextHop[DEV_ID_LENGTH];
         if (RoutingTable::getInstance()->findNextHop(packetCopy.destDevId.data(), nextHop)) {
-            loginfo_ln("Found route to %s via %s",
+            loginfo_ln(
+                "Found route to %s via %s",
                 RadioMeshUtils::convertToHex(packetCopy.destDevId.data(), DEV_ID_LENGTH).c_str(),
                 RadioMeshUtils::convertToHex(nextHop, DEV_ID_LENGTH).c_str());
             memcpy(packetCopy.nextHopId.data(), nextHop, DEV_ID_LENGTH);
@@ -80,16 +80,19 @@ void PacketRouter::encryptPacketData(RadioMeshPacket& packetCopy)
     }
 }
 
-void PacketRouter::calculatePacketCrc(RadioMeshPacket& packetCopy, RadioMeshUtils::CRC32& crc32, uint32_t key)
+void PacketRouter::calculatePacketCrc(RadioMeshPacket& packetCopy, RadioMeshUtils::CRC32& crc32,
+                                      uint32_t key)
 {
     loginfo_ln("Calculating packet crc for packet ID: 0x%X", key);
     loginfo_ln("  Frame Counter: %d", packetCopy.fcounter);
     loginfo_ln("  Data: %s", RadioMeshUtils::convertToHex(packetCopy.packetData.data(),
-        packetCopy.packetData.size()).c_str());
+                                                          packetCopy.packetData.size())
+                                 .c_str());
     crc32.update(packetCopy.fcounter);
     crc32.update(packetCopy.packetData.data(), packetCopy.packetData.size());
     packetCopy.packetCrc = crc32.finalize();
-    std::string pktId = RadioMeshUtils::convertToHex(packetCopy.packetId.data(), packetCopy.packetId.size());
+    std::string pktId =
+        RadioMeshUtils::convertToHex(packetCopy.packetId.data(), packetCopy.packetId.size());
     loginfo_ln("Routing packet with id: %s crc: 0x%4X", pktId.c_str(), packetCopy.packetCrc);
     packetCopy.log();
 }
@@ -110,17 +113,17 @@ void PacketRouter::trackPacket(RadioMeshPacket& packetCopy, uint32_t key)
     packetTracker.addEntry(key, packetCopy.packetCrc);
 }
 
-bool PacketRouter::isPacketFoundInTracker(RadioMeshPacket packet) {
+bool PacketRouter::isPacketFoundInTracker(RadioMeshPacket packet)
+{
+    uint32_t key = RadioMeshUtils::toUint32(packet.packetId.data());
+    uint32_t value = packet.packetCrc;
 
-   uint32_t key = RadioMeshUtils::toUint32(packet.packetId.data());
-   uint32_t value = packet.packetCrc;
+    // find the packet ID key in our tracker and compare the data crc.
 
-   // find the packet ID key in our tracker and compare the data crc.
-
-   uint32_t foundValue = packetTracker.findOrDefault(key,0);
-   if (foundValue == value) {
-      loginfo_ln("Packet with ID [%s] already seen.", std::to_string(key).c_str());
-      return true;
-   }
-   return false;
+    uint32_t foundValue = packetTracker.findOrDefault(key, 0);
+    if (foundValue == value) {
+        loginfo_ln("Packet with ID [%s] already seen.", std::to_string(key).c_str());
+        return true;
+    }
+    return false;
 }

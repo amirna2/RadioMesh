@@ -1,8 +1,8 @@
 #pragma once
 
 #include "RoutingTypes.h"
-#include <core/protocol/inc/packet/Packet.h>
 #include <common/inc/Logger.h>
+#include <core/protocol/inc/packet/Packet.h>
 
 class RoutingTable
 {
@@ -17,8 +17,8 @@ public:
         Very Poor: Below -120 dBm
     */
     //  RSSI typically changes in steps of about 6dB for meaningful signal strength changes
-    static const int8_t RSSI_UPPER_THRESHOLD = 12;  // Clear improvement needed to switch
-    static const int8_t RSSI_LOWER_THRESHOLD = 6;   // More tolerant of existing route degradation
+    static const int8_t RSSI_UPPER_THRESHOLD = 12; // Clear improvement needed to switch
+    static const int8_t RSSI_LOWER_THRESHOLD = 6;  // More tolerant of existing route degradation
 
     static RoutingTable* getInstance();
 

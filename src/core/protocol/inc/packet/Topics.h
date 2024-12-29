@@ -2,7 +2,8 @@
 
 #include <common/inc/Options.h>
 
-namespace radiomesh {
+namespace radiomesh
+{
 /**
  * @enum Topic
  * @brief Protocol control topics used by the RadioMesh protocol
@@ -10,7 +11,8 @@ namespace radiomesh {
  * Topics 0x00-0x0F are reserved for protocol control
  * Application topics should start from 0x10
  */
-enum Topic : uint8_t {
+enum Topic : uint8_t
+{
     UNUSED = 0x00,
     PING = 0x01,
     PONG = 0x02,
@@ -25,8 +27,8 @@ enum Topic : uint8_t {
 };
 
 // Helper to check if topic is a protocol topic
-constexpr bool isProtocolTopic(uint8_t topic) {
+constexpr bool isProtocolTopic(uint8_t topic)
+{
     return topic <= Topic::MAX_RESERVED;
 }
 } // namespace radiomesh
-

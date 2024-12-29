@@ -2,7 +2,6 @@
 
 #include <framework/interfaces/IByteStorage.h>
 
-
 /*
 EEPROM Memory Layout
 --------------------------------------------------
@@ -25,7 +24,6 @@ Offset  | Size    | Description
         |         | (Same structure repeats)
 --------------------------------------------------
 */
-
 
 /*
 EXAMPLE EEPROM CONTENTS: (1 entry) - "test" -> [1,2,3,4]
@@ -52,8 +50,8 @@ public:
     /**
      * @brief Get the instance of the EEPROMStorage.
      * @returns A pointer to the instance of the EEPROMStorage.
-    **/
-    static EEPROMStorage *getInstance()
+     **/
+    static EEPROMStorage* getInstance()
     {
         if (!instance) {
             instance = new EEPROMStorage();
@@ -71,7 +69,6 @@ public:
     int writeAndCommit(const std::string& key, const std::vector<byte>& data) override;
     int commit() override;
 
-
     int begin() override;
     int end() override;
     int clear() override;
@@ -82,12 +79,11 @@ public:
     int setParams(const ByteStorageParams& params);
     int getEntryCount();
 
-
 private:
-    static EEPROMStorage *instance;
+    static EEPROMStorage* instance;
     EEPROMStorage();
-    EEPROMStorage(const EEPROMStorage &) = delete;
-    void operator=(const EEPROMStorage &) = delete;
+    EEPROMStorage(const EEPROMStorage&) = delete;
+    void operator=(const EEPROMStorage&) = delete;
     bool initialized = false;
     ByteStorageParams storageParams;
 
@@ -106,9 +102,9 @@ private:
     // Entry header - precedes each key-value pair
     struct EntryHeader
     {
-        uint16_t keyLength;   // Length of the key string
-        uint16_t dataLength;  // Length of data
-        uint8_t flags;        // Bit flags (bit 0: valid/deleted)
+        uint16_t keyLength;  // Length of the key string
+        uint16_t dataLength; // Length of data
+        uint8_t flags;       // Bit flags (bit 0: valid/deleted)
     };
 
     // Add helper method declarations

@@ -8,11 +8,12 @@
 
 /***
  * @class IAesCrypto class
- * @brief This class provides AES encryption and decryption functionality by extending the ICrypto interface.
+ * @brief This class provides AES encryption and decryption functionality by extending the ICrypto
+ * interface.
  *
-*/
+ */
 class IAesCrypto : public ICrypto
 {
 public:
-   virtual ~IAesCrypto() = default;
+    virtual ~IAesCrypto() = default;
 };
