@@ -19,12 +19,12 @@ int AsyncCaptivePortal::stop()
     return RM_E_NOT_SUPPORTED;
 }
 
-int AsyncCaptivePortal::sendToClients(const std::string& type, const std::vector<byte>& data)
+int AsyncCaptivePortal::sendToClients(const PortalMessage& message)
 {
     return RM_E_NOT_SUPPORTED;
 }
 
-int AsyncCaptivePortal::sendToClients(const std::string& type, const std::string& data)
+int AsyncCaptivePortal::sendToClient(uint32_t clientId, const PortalMessage& message)
 {
     return RM_E_NOT_SUPPORTED;
 }
