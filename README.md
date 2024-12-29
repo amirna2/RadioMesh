@@ -7,8 +7,8 @@
 </p>
 
 # RadioMesh
-A library for building wide area mesh networks of embedded devices using long range radios.
-Perfect for sensor networks, IoT applications, and remote control/monitoring systems.
+A library for building wireless, low power mesh networks using long range radios.
+Perfect for sensor networks, IoT devices, and remote control/monitoring systems.
 
 RadioMesh combines an adaptive wireless mesh protocol design with an easy to use and flexible device development kit.
 It leverages [LoRa](https://www.semtech.com/lora) radios and the Arduino framework.
