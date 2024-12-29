@@ -89,8 +89,8 @@ $(document).ready(function(){initNavTree('_routing_table_8h_source.html',''); in
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;RoutingTypes.h&quot;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;core/protocol/inc/packet/Packet.h&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;common/inc/Logger.h&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;common/inc/Logger.h&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;core/protocol/inc/packet/Packet.h&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno"><a class="line" href="class_routing_table.html">    7</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_routing_table.html">RoutingTable</a></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;{</div>
@@ -105,8 +105,8 @@ $(document).ready(function(){initNavTree('_routing_table_8h_source.html',''); in
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment">        Very Poor: Below -120 dBm</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">    */</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="comment">//  RSSI typically changes in steps of about 6dB for meaningful signal strength changes</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> int8_t RSSI_UPPER_THRESHOLD = 12;  <span class="comment">// Clear improvement needed to switch</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> int8_t RSSI_LOWER_THRESHOLD = 6;   <span class="comment">// More tolerant of existing route degradation</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> int8_t RSSI_UPPER_THRESHOLD = 12; <span class="comment">// Clear improvement needed to switch</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> int8_t RSSI_LOWER_THRESHOLD = 6;  <span class="comment">// More tolerant of existing route degradation</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">static</span> <a class="code" href="class_routing_table.html">RoutingTable</a>* getInstance();</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
@@ -128,9 +128,9 @@ $(document).ready(function(){initNavTree('_routing_table_8h_source.html',''); in
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">int</span> findEmptySlot();</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">bool</span> isBetterRoute(<span class="keyword">const</span> <a class="code" href="struct_route_entry.html">RouteEntry</a>&amp; newRoute, <span class="keyword">const</span> <a class="code" href="struct_route_entry.html">RouteEntry</a>&amp; existingRoute);</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;};</div>
-<div class="ttc" id="aclass_radio_mesh_packet_html"><div class="ttname"><a href="class_radio_mesh_packet.html">RadioMeshPacket</a></div><div class="ttdoc">Optimized packet structure for the mesh protocol.</div><div class="ttdef"><b>Definition:</b> Packet.h:74</div></div>
+<div class="ttc" id="aclass_radio_mesh_packet_html"><div class="ttname"><a href="class_radio_mesh_packet.html">RadioMeshPacket</a></div><div class="ttdoc">Optimized packet structure for the mesh protocol.</div><div class="ttdef"><b>Definition:</b> Packet.h:71</div></div>
 <div class="ttc" id="aclass_routing_table_html"><div class="ttname"><a href="class_routing_table.html">RoutingTable</a></div><div class="ttdef"><b>Definition:</b> RoutingTable.h:8</div></div>
-<div class="ttc" id="astruct_route_entry_html"><div class="ttname"><a href="struct_route_entry.html">RouteEntry</a></div><div class="ttdef"><b>Definition:</b> RoutingTypes.h:14</div></div>
+<div class="ttc" id="astruct_route_entry_html"><div class="ttname"><a href="struct_route_entry.html">RouteEntry</a></div><div class="ttdef"><b>Definition:</b> RoutingTypes.h:15</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

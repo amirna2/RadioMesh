@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['usescrypto_427',['usesCrypto',['../struct_device_blueprint.html#ae48cc3c64e8d6f81ba0e9cb9be94e38d',1,'DeviceBlueprint']]]
+  ['txpower_460',['txPower',['../class_lora_radio_params.html#aea296158b4bab56858d7de5a9ca2e92e',1,'LoraRadioParams']]]
 ];

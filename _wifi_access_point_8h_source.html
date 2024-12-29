@@ -88,8 +88,8 @@ $(document).ready(function(){initNavTree('_wifi_access_point_8h_source.html','')
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="_definitions_8h.html">common/inc/Definitions.h</a>&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;framework/interfaces/IWifiAccessPoint.h&gt;</span></div>
@@ -97,51 +97,52 @@ $(document).ready(function(){initNavTree('_wifi_access_point_8h_source.html','')
 <div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="class_wifi_access_point.html">    9</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a> : <span class="keyword">public</span> <a class="code" href="class_i_wifi_access_point.html">IWifiAccessPoint</a></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;{</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="class_wifi_access_point.html#ac2a86ca9588fd1fc0323f0676439530f">   17</a></span>&#160;   <span class="keyword">static</span> <a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a>* <a class="code" href="class_wifi_access_point.html#ac2a86ca9588fd1fc0323f0676439530f">getInstance</a>() {</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">   #ifdef RM_NO_WIFI</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;      <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">   #endif</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;      <span class="keywordflow">if</span> (!instance) {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;         instance = <span class="keyword">new</span> <a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a>();</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;      }</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;      <span class="keywordflow">return</span> instance;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;   }</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="class_wifi_access_point.html#ac2a86ca9588fd1fc0323f0676439530f">   16</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a>* <a class="code" href="class_wifi_access_point.html#ac2a86ca9588fd1fc0323f0676439530f">getInstance</a>()</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    {</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#ifdef RM_NO_WIFI</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keywordflow">if</span> (!instance) {</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            instance = <span class="keyword">new</span> <a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a>();</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        }</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keywordflow">return</span> instance;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    }</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;   <span class="keyword">virtual</span> ~<a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a>() {}</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;   <span class="comment">// IWifiAccessPoint interface</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;   <span class="keywordtype">int</span> <a class="code" href="class_wifi_access_point.html#a5b255961aa35255444e83c89847f6338">setup</a>(<a class="code" href="struct_wifi_access_point_params.html">WifiAccessPointParams</a>&amp; params) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;   <span class="keywordtype">int</span> <a class="code" href="class_wifi_access_point.html#a5b255961aa35255444e83c89847f6338">setup</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;   <span class="keywordtype">int</span> <a class="code" href="class_wifi_access_point.html#a1b25d858b41e7ab773fb1c4be0e843d3">start</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;   <span class="keywordtype">int</span> <a class="code" href="class_wifi_access_point.html#ac90e2cb725f85ab37a9815a6a5f709b5">stop</a>(<span class="keywordtype">bool</span> wifiOff) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;   <span class="comment">// WifiAccessPoint specific</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment"></span>   <span class="keywordtype">int</span> <a class="code" href="class_wifi_access_point.html#a362e688a446be5d43bc67004ef76efd0">setParams</a>(<span class="keyword">const</span> <a class="code" href="struct_wifi_access_point_params.html">WifiAccessPointParams</a>&amp; params);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;   <span class="keywordtype">bool</span> <a class="code" href="class_wifi_access_point.html#a08f2e3092fffdc8a58552a8731e333c7">isStarted</a>();</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;   <a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a>() {};</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;   <a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a>(<a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a> <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;   <a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a>&amp; operator=(<a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a> <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;   <span class="keyword">static</span> <a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a>* instance;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a>()</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    {</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    }</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="comment">// IWifiAccessPoint interface</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_wifi_access_point.html#a5b255961aa35255444e83c89847f6338">setup</a>(<a class="code" href="struct_wifi_access_point_params.html">WifiAccessPointParams</a>&amp; params) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_wifi_access_point.html#a5b255961aa35255444e83c89847f6338">setup</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_wifi_access_point.html#a1b25d858b41e7ab773fb1c4be0e843d3">start</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_wifi_access_point.html#ac90e2cb725f85ab37a9815a6a5f709b5">stop</a>(<span class="keywordtype">bool</span> wifiOff) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="comment">// WifiAccessPoint specific</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment"></span>    <span class="keywordtype">int</span> <a class="code" href="class_wifi_access_point.html#a362e688a446be5d43bc67004ef76efd0">setParams</a>(<span class="keyword">const</span> <a class="code" href="struct_wifi_access_point_params.html">WifiAccessPointParams</a>&amp; params);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_wifi_access_point.html#a08f2e3092fffdc8a58552a8731e333c7">isStarted</a>();</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a>() {};</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a>(<a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a> <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a>&amp; operator=(<a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a> <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;   <a class="code" href="struct_wifi_access_point_params.html">WifiAccessPointParams</a> params = {<span class="stringliteral">&quot;&quot;</span>,<span class="stringliteral">&quot;&quot;</span>, {0,0,0,0}};</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;   <span class="keywordtype">bool</span> started = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;};</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keyword">static</span> <a class="code" href="class_wifi_access_point.html">WifiAccessPoint</a>* instance;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <a class="code" href="struct_wifi_access_point_params.html">WifiAccessPointParams</a> params = {<span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>, {0, 0, 0, 0}};</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordtype">bool</span> started = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
 <div class="ttc" id="a_definitions_8h_html"><div class="ttname"><a href="_definitions_8h.html">Definitions.h</a></div><div class="ttdoc">This file contains type definitions used in the RadioMesh project.</div></div>
 <div class="ttc" id="aclass_i_wifi_access_point_html"><div class="ttname"><a href="class_i_wifi_access_point.html">IWifiAccessPoint</a></div><div class="ttdoc">This class is an interface for a WiFi access point.</div><div class="ttdef"><b>Definition:</b> IWifiAccessPoint.h:12</div></div>
 <div class="ttc" id="aclass_wifi_access_point_html"><div class="ttname"><a href="class_wifi_access_point.html">WifiAccessPoint</a></div><div class="ttdef"><b>Definition:</b> WifiAccessPoint.h:10</div></div>
-<div class="ttc" id="aclass_wifi_access_point_html_a08f2e3092fffdc8a58552a8731e333c7"><div class="ttname"><a href="class_wifi_access_point.html#a08f2e3092fffdc8a58552a8731e333c7">WifiAccessPoint::isStarted</a></div><div class="ttdeci">bool isStarted()</div><div class="ttdoc">Get the access point status.</div><div class="ttdef"><b>Definition:</b> WifiAccessPoint.cpp:58</div></div>
-<div class="ttc" id="aclass_wifi_access_point_html_a1b25d858b41e7ab773fb1c4be0e843d3"><div class="ttname"><a href="class_wifi_access_point.html#a1b25d858b41e7ab773fb1c4be0e843d3">WifiAccessPoint::start</a></div><div class="ttdeci">int start() override</div><div class="ttdoc">Start the WiFi access point.</div><div class="ttdef"><b>Definition:</b> WifiAccessPoint.cpp:103</div></div>
-<div class="ttc" id="aclass_wifi_access_point_html_a362e688a446be5d43bc67004ef76efd0"><div class="ttname"><a href="class_wifi_access_point.html#a362e688a446be5d43bc67004ef76efd0">WifiAccessPoint::setParams</a></div><div class="ttdeci">int setParams(const WifiAccessPointParams &amp;params)</div><div class="ttdoc">Set the parameters of the WiFi access point.</div><div class="ttdef"><b>Definition:</b> WifiAccessPoint.cpp:27</div></div>
-<div class="ttc" id="aclass_wifi_access_point_html_a5b255961aa35255444e83c89847f6338"><div class="ttname"><a href="class_wifi_access_point.html#a5b255961aa35255444e83c89847f6338">WifiAccessPoint::setup</a></div><div class="ttdeci">int setup() override</div><div class="ttdoc">Setup the WiFi access point with the currently stored parameters.</div><div class="ttdef"><b>Definition:</b> WifiAccessPoint.cpp:99</div></div>
-<div class="ttc" id="aclass_wifi_access_point_html_ac2a86ca9588fd1fc0323f0676439530f"><div class="ttname"><a href="class_wifi_access_point.html#ac2a86ca9588fd1fc0323f0676439530f">WifiAccessPoint::getInstance</a></div><div class="ttdeci">static WifiAccessPoint * getInstance()</div><div class="ttdoc">Get the instance of the WifiAccessPoint.</div><div class="ttdef"><b>Definition:</b> WifiAccessPoint.h:17</div></div>
-<div class="ttc" id="aclass_wifi_access_point_html_ac90e2cb725f85ab37a9815a6a5f709b5"><div class="ttname"><a href="class_wifi_access_point.html#ac90e2cb725f85ab37a9815a6a5f709b5">WifiAccessPoint::stop</a></div><div class="ttdeci">int stop(bool wifiOff) override</div><div class="ttdoc">Stop the WiFi access point.</div><div class="ttdef"><b>Definition:</b> WifiAccessPoint.cpp:144</div></div>
-<div class="ttc" id="astruct_wifi_access_point_params_html"><div class="ttname"><a href="struct_wifi_access_point_params.html">WifiAccessPointParams</a></div><div class="ttdef"><b>Definition:</b> Definitions.h:148</div></div>
+<div class="ttc" id="aclass_wifi_access_point_html_a08f2e3092fffdc8a58552a8731e333c7"><div class="ttname"><a href="class_wifi_access_point.html#a08f2e3092fffdc8a58552a8731e333c7">WifiAccessPoint::isStarted</a></div><div class="ttdeci">bool isStarted()</div><div class="ttdoc">Get the access point status.</div><div class="ttdef"><b>Definition:</b> WifiAccessPoint.cpp:75</div></div>
+<div class="ttc" id="aclass_wifi_access_point_html_a1b25d858b41e7ab773fb1c4be0e843d3"><div class="ttname"><a href="class_wifi_access_point.html#a1b25d858b41e7ab773fb1c4be0e843d3">WifiAccessPoint::start</a></div><div class="ttdeci">int start() override</div><div class="ttdoc">Start the WiFi access point.</div><div class="ttdef"><b>Definition:</b> WifiAccessPoint.cpp:121</div></div>
+<div class="ttc" id="aclass_wifi_access_point_html_a362e688a446be5d43bc67004ef76efd0"><div class="ttname"><a href="class_wifi_access_point.html#a362e688a446be5d43bc67004ef76efd0">WifiAccessPoint::setParams</a></div><div class="ttdeci">int setParams(const WifiAccessPointParams &amp;params)</div><div class="ttdoc">Set the parameters of the WiFi access point.</div><div class="ttdef"><b>Definition:</b> WifiAccessPoint.cpp:44</div></div>
+<div class="ttc" id="aclass_wifi_access_point_html_a5b255961aa35255444e83c89847f6338"><div class="ttname"><a href="class_wifi_access_point.html#a5b255961aa35255444e83c89847f6338">WifiAccessPoint::setup</a></div><div class="ttdeci">int setup() override</div><div class="ttdoc">Setup the WiFi access point with the currently stored parameters.</div><div class="ttdef"><b>Definition:</b> WifiAccessPoint.cpp:116</div></div>
+<div class="ttc" id="aclass_wifi_access_point_html_ac2a86ca9588fd1fc0323f0676439530f"><div class="ttname"><a href="class_wifi_access_point.html#ac2a86ca9588fd1fc0323f0676439530f">WifiAccessPoint::getInstance</a></div><div class="ttdeci">static WifiAccessPoint * getInstance()</div><div class="ttdoc">Get the instance of the WifiAccessPoint.</div><div class="ttdef"><b>Definition:</b> WifiAccessPoint.h:16</div></div>
+<div class="ttc" id="aclass_wifi_access_point_html_ac90e2cb725f85ab37a9815a6a5f709b5"><div class="ttname"><a href="class_wifi_access_point.html#ac90e2cb725f85ab37a9815a6a5f709b5">WifiAccessPoint::stop</a></div><div class="ttdeci">int stop(bool wifiOff) override</div><div class="ttdoc">Stop the WiFi access point.</div><div class="ttdef"><b>Definition:</b> WifiAccessPoint.cpp:161</div></div>
+<div class="ttc" id="astruct_wifi_access_point_params_html"><div class="ttname"><a href="struct_wifi_access_point_params.html">WifiAccessPointParams</a></div><div class="ttdef"><b>Definition:</b> Definitions.h:154</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

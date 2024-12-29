@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['gain_408',['gain',['../class_lora_radio_params.html#af8589ae410744ebbe8e4633d83a3778f',1,'LoraRadioParams']]]
+  ['event_440',['event',['../struct_portal_event_handler.html#a71d405a0a4811de94d58be365437cb53',1,'PortalEventHandler']]]
 ];

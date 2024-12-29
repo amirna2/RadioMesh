@@ -89,26 +89,27 @@ $(document).ready(function(){initNavTree('_routing_types_8h_source.html',''); in
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;array&gt;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;core/protocol/inc/packet/Packet.h&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="_definitions_8h.html">common/inc/Definitions.h</a>&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="_definitions_8h.html">common/inc/Definitions.h</a>&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;core/protocol/inc/packet/Packet.h&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">// Maximum number of routes to store</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#define MAX_ROUTES 10</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment">// Route timeout in milliseconds</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define ROUTE_TIMEOUT 300000  </span><span class="comment">// 5 minutes</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define ROUTE_TIMEOUT 300000 </span><span class="comment">// 5 minutes</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">// Return value for not found</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#define NOT_FOUND -1</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="struct_route_entry.html">   14</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_route_entry.html">RouteEntry</a> {</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    std::array&lt;byte, DEV_ID_LENGTH&gt; destId;    <span class="comment">// 8 bytes for device ID</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    std::array&lt;byte, DEV_ID_LENGTH&gt; nextHopId; <span class="comment">// 8 bytes for next hop</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    uint8_t hops;                   <span class="comment">// 1 byte for hop count</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    int8_t rssi;                    <span class="comment">// 1 byte for RSSI</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    uint32_t lastSeen;              <span class="comment">// 4 bytes for timestamp</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">bool</span> active;                    <span class="comment">// 1 byte for active flag</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;};</div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="struct_route_entry.html">   14</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_route_entry.html">RouteEntry</a></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    std::array&lt;byte, DEV_ID_LENGTH&gt; destId;    <span class="comment">// 8 bytes for device ID</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    std::array&lt;byte, DEV_ID_LENGTH&gt; nextHopId; <span class="comment">// 8 bytes for next hop</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    uint8_t hops;                              <span class="comment">// 1 byte for hop count</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    int8_t rssi;                               <span class="comment">// 1 byte for RSSI</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    uint32_t lastSeen;                         <span class="comment">// 4 bytes for timestamp</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordtype">bool</span> active;                               <span class="comment">// 1 byte for active flag</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;};</div>
 <div class="ttc" id="a_definitions_8h_html"><div class="ttname"><a href="_definitions_8h.html">Definitions.h</a></div><div class="ttdoc">This file contains type definitions used in the RadioMesh project.</div></div>
-<div class="ttc" id="astruct_route_entry_html"><div class="ttname"><a href="struct_route_entry.html">RouteEntry</a></div><div class="ttdef"><b>Definition:</b> RoutingTypes.h:14</div></div>
+<div class="ttc" id="astruct_route_entry_html"><div class="ttname"><a href="struct_route_entry.html">RouteEntry</a></div><div class="ttdef"><b>Definition:</b> RoutingTypes.h:15</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

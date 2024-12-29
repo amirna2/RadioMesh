@@ -1,10 +1,11 @@
 var searchData=
 [
-  ['pin_5fdefault_5fdi0_416',['PIN_DEFAULT_DI0',['../class_pin_config.html#a717aaad59e073d2874c3392bb2c4a033',1,'PinConfig']]],
-  ['pin_5fdefault_5fdi1_417',['PIN_DEFAULT_DI1',['../class_pin_config.html#a085548894338d17bd65eaa2e418a84a2',1,'PinConfig']]],
-  ['pin_5fdefault_5frst_418',['PIN_DEFAULT_RST',['../class_pin_config.html#ae1205fb28155ae914784446b73efdac4',1,'PinConfig']]],
-  ['pin_5fdefault_5fss_419',['PIN_DEFAULT_SS',['../class_pin_config.html#ac6f533dc250a1d5397dae334258cad8f',1,'PinConfig']]],
-  ['pin_5fundefined_420',['PIN_UNDEFINED',['../class_pin_config.html#a91df88cfddd51e7ee16411890af1e7d0',1,'PinConfig']]],
-  ['pinconfig_421',['pinConfig',['../class_lora_radio_params.html#a2229bc86e77d4e815720870a7f5bcf55',1,'LoraRadioParams']]],
-  ['privatenetwork_422',['privateNetwork',['../class_lora_radio_params.html#a4be8764f1bb9215e68e38673d83b7637',1,'LoraRadioParams']]]
+  ['hascaptiveportal_442',['hasCaptivePortal',['../struct_device_blueprint.html#aeba82df14ea30fb93cd14b7e192321bb',1,'DeviceBlueprint']]],
+  ['hasdisplay_443',['hasDisplay',['../struct_device_blueprint.html#affbb2bf2b33a194d564d55ed46a20c3d',1,'DeviceBlueprint']]],
+  ['hasradio_444',['hasRadio',['../struct_device_blueprint.html#ac969802dba5cd1263fea51e35656797b',1,'DeviceBlueprint']]],
+  ['hasrxcallback_445',['hasRxCallback',['../struct_device_blueprint.html#a6af97486d263f1ea8dda3a75c3aba1c4',1,'DeviceBlueprint']]],
+  ['hasstorage_446',['hasStorage',['../struct_device_blueprint.html#a68d30a18337645e99a4d0dbe05afaafd',1,'DeviceBlueprint']]],
+  ['hastxcallback_447',['hasTxCallback',['../struct_device_blueprint.html#ad4893e6d65a44df346f1508776e7f32a',1,'DeviceBlueprint']]],
+  ['haswifi_448',['hasWifi',['../struct_device_blueprint.html#a555bbcb335eb62ceffb95869155664f5',1,'DeviceBlueprint']]],
+  ['haswifiaccesspoint_449',['hasWifiAccessPoint',['../struct_device_blueprint.html#ae82959589474467b08bb8ab4ba0f6ffd',1,'DeviceBlueprint']]]
 ];

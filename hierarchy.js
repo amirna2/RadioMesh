@@ -1,11 +1,15 @@
 var hierarchy =
 [
     [ "ByteStorageParams", "struct_byte_storage_params.html", null ],
+    [ "CaptivePortalParams", "struct_captive_portal_params.html", null ],
     [ "RadioMeshUtils::CRC32", "class_radio_mesh_utils_1_1_c_r_c32.html", null ],
     [ "DeviceBlueprint", "struct_device_blueprint.html", null ],
     [ "DeviceBuilder", "class_device_builder.html", null ],
     [ "IByteStorage", "class_i_byte_storage.html", [
       [ "EEPROMStorage", "class_e_e_p_r_o_m_storage.html", null ]
+    ] ],
+    [ "ICaptivePortal", "class_i_captive_portal.html", [
+      [ "AsyncCaptivePortal", "class_async_captive_portal.html", null ]
     ] ],
     [ "ICrypto", "class_i_crypto.html", [
       [ "IAesCrypto", "class_i_aes_crypto.html", [
@@ -32,6 +36,8 @@ var hierarchy =
     [ "PacketRouter", "class_packet_router.html", null ],
     [ "PacketTracker", "class_packet_tracker.html", null ],
     [ "PinConfig", "class_pin_config.html", null ],
+    [ "PortalEventHandler", "struct_portal_event_handler.html", null ],
+    [ "PortalMessage", "class_portal_message.html", null ],
     [ "RadioMeshPacket", "class_radio_mesh_packet.html", null ],
     [ "RouteEntry", "struct_route_entry.html", null ],
     [ "RoutingTable", "class_routing_table.html", null ],

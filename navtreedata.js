@@ -32,7 +32,7 @@ var NAVTREE =
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
-        [ "Functions", "functions_func.html", null ],
+        [ "Functions", "functions_func.html", "functions_func" ],
         [ "Variables", "functions_vars.html", null ]
       ] ]
     ] ],
@@ -51,8 +51,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_aes_crypto_8h_source.html",
-"class_oled_display.html#acbd7483a43bcbcc33d88b67999c65dd0",
-"group__error__codes.html#gab3d25ce0f7b2ea77c76489b5ceeb0b80"
+"class_lora_radio_params.html#ae7549d8c5ca24b6511682bd0f410833d",
+"group__error__codes.html#ga4fd8f634cd23dab708572e2493c08f40"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

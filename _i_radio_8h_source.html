@@ -88,8 +88,8 @@ $(document).ready(function(){initNavTree('_i_radio_8h_source.html',''); initResi
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;common/inc/Options.h&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;common/inc/RadioConfigs.h&gt;</span></div>
@@ -98,21 +98,22 @@ $(document).ready(function(){initNavTree('_i_radio_8h_source.html',''); initResi
 <div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="class_i_radio.html">   16</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_i_radio.html">IRadio</a></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;   <span class="keyword">virtual</span> ~<a class="code" href="class_i_radio.html">IRadio</a>() {}</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="class_i_radio.html#a28d1247e802871ddcb6a535534f7f93e">   27</a></span>&#160;   <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="class_i_radio.html#a28d1247e802871ddcb6a535534f7f93e">setup</a>(<span class="keyword">const</span> <a class="code" href="class_lora_radio_params.html">LoraRadioParams</a>&amp; params) = 0;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="class_i_radio.html#af8d20658605f3d928ae31d13df9e640f">   34</a></span>&#160;   <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="class_i_radio.html#af8d20658605f3d928ae31d13df9e640f">setup</a>() = 0;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="class_i_radio.html#a2106440a5f923f437b1a3483c4f90274">   41</a></span>&#160;   <span class="keyword">virtual</span> <span class="keywordtype">float</span> <a class="code" href="class_i_radio.html#a2106440a5f923f437b1a3483c4f90274">getSNR</a>() = 0;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="class_i_radio.html#a96657213eb5cc1f10a12e0991934c77f">   48</a></span>&#160;   <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="class_i_radio.html#a96657213eb5cc1f10a12e0991934c77f">getRSSI</a>() = 0;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="class_i_radio.html#aa4d683c43b097ea261f223eb1437dc2b">   55</a></span>&#160;   <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="class_i_radio.html#aa4d683c43b097ea261f223eb1437dc2b">standBy</a>() = 0;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="class_i_radio.html#a0487db45af14072a054f833221d7f68c">   62</a></span>&#160;   <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="class_i_radio.html#a0487db45af14072a054f833221d7f68c">sleep</a>() = 0;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;};</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="class_i_radio.html">IRadio</a>()</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    {</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    }</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="class_i_radio.html#a28d1247e802871ddcb6a535534f7f93e">   29</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="class_i_radio.html#a28d1247e802871ddcb6a535534f7f93e">setup</a>(<span class="keyword">const</span> <a class="code" href="class_lora_radio_params.html">LoraRadioParams</a>&amp; params) = 0;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="class_i_radio.html#af8d20658605f3d928ae31d13df9e640f">   36</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="class_i_radio.html#af8d20658605f3d928ae31d13df9e640f">setup</a>() = 0;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="class_i_radio.html#a2106440a5f923f437b1a3483c4f90274">   43</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">float</span> <a class="code" href="class_i_radio.html#a2106440a5f923f437b1a3483c4f90274">getSNR</a>() = 0;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="class_i_radio.html#a96657213eb5cc1f10a12e0991934c77f">   50</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="class_i_radio.html#a96657213eb5cc1f10a12e0991934c77f">getRSSI</a>() = 0;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="class_i_radio.html#aa4d683c43b097ea261f223eb1437dc2b">   57</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="class_i_radio.html#aa4d683c43b097ea261f223eb1437dc2b">standBy</a>() = 0;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="class_i_radio.html#a0487db45af14072a054f833221d7f68c">   64</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="class_i_radio.html#a0487db45af14072a054f833221d7f68c">sleep</a>() = 0;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;};</div>
 <div class="ttc" id="aclass_i_radio_html"><div class="ttname"><a href="class_i_radio.html">IRadio</a></div><div class="ttdoc">This class is an interface for a radio.</div><div class="ttdef"><b>Definition:</b> IRadio.h:17</div></div>
 <div class="ttc" id="aclass_i_radio_html_a0487db45af14072a054f833221d7f68c"><div class="ttname"><a href="class_i_radio.html#a0487db45af14072a054f833221d7f68c">IRadio::sleep</a></div><div class="ttdeci">virtual int sleep()=0</div><div class="ttdoc">Set the radio into sleep mode.</div></div>
 <div class="ttc" id="aclass_i_radio_html_a2106440a5f923f437b1a3483c4f90274"><div class="ttname"><a href="class_i_radio.html#a2106440a5f923f437b1a3483c4f90274">IRadio::getSNR</a></div><div class="ttdeci">virtual float getSNR()=0</div><div class="ttdoc">Get the current SNR value.</div></div>

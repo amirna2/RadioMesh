@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['sf_424',['sf',['../class_lora_radio_params.html#ad8d808e5109a08498756d737f171253c',1,'LoraRadioParams']]],
-  ['ss_425',['ss',['../class_pin_config.html#acb4009c0fba032d8d62656af0ed029a3',1,'PinConfig']]]
+  ['rst_457',['rst',['../class_pin_config.html#a96f4f7e49b259f9ca81358dcedfb35fb',1,'PinConfig']]]
 ];
