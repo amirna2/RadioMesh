@@ -1,11 +1,24 @@
 #include <string>
 #include <vector>
 
+#include <common/utils/RadioMeshCrc32.h>
+#include <core/protocol/inc/routing/RoutingTable.h>
 #include <framework/device/inc/Device.h>
 
-#include <core/protocol/inc/routing/RoutingTable.h>
+RadioMeshDevice::RadioMeshDevice(const std::string& name, const std::array<byte, RM_ID_LENGTH>& id)
+    : name(name), id(id)
+{
+    inclusionController = std::make_unique<InclusionController>(*this);
+}
+bool RadioMeshDevice::isIncluded() const
+{
+    return inclusionController->getState() == DeviceInclusionState::INCLUDED;
+}
 
-#include <common/utils/RadioMeshCrc32.h>
+bool RadioMeshDevice::canSendMessage(uint8_t topic) const
+{
+    return inclusionController->canSendMessage(topic);
+}
 
 std::array<byte, RM_ID_LENGTH> RadioMeshDevice::getDeviceId()
 {
@@ -252,31 +265,10 @@ IByteStorage* RadioMeshDevice::getByteStorage()
 int RadioMeshDevice::sendData(const uint8_t topic, const std::vector<byte> data,
                               std::array<byte, RM_ID_LENGTH> target)
 {
-#if TESTING_INCLUSION
-    // For Hub devices
-    if (deviceType == MeshDeviceType::HUB) {
-        // If it's an inclusion message, hub must be in inclusion mode
-        if (RadioMeshPacket::isInclusionTopic(topic) && hubMode != HubMode::INCLUSION) {
-            logerr_ln("Hub must be in inclusion mode to send inclusion messages");
-            return RM_E_INVALID_STATE;
-        }
+    if (!canSendMessage(topic)) {
+        logerr_ln("Device not authorized to send messages");
+        return RM_E_DEVICE_NOT_INCLUDED;
     }
-
-    // For non-Hub devices
-    else {
-        if (this->isIncluded()) {
-            if (RadioMeshPacket::isInclusionTopic(topic)) {
-                logerr_ln("Included device cannot send inclusion messages");
-                return RM_E_INVALID_STATE;
-            }
-        } else {
-            if (!RadioMeshPacket::isInclusionTopic(topic)) {
-                logerr_ln("Device not included in the network");
-                return RM_E_DEVICE_NOT_INCLUDED;
-            }
-        }
-    }
-#endif
 
     if (target.size() != DEV_ID_LENGTH) {
         logerr_ln("Invalid target device ID length: %d, expected: %d", target.size(),
@@ -368,17 +360,6 @@ int RadioMeshDevice::handleReceivedData()
         onPacketReceived(&receivedPacket, RM_E_NONE);
     }
 
-#if TESTING_INCLUSION
-    // Temporary Hack to handle inclusion messages
-    // we include ourselves in the network if we receive an inclusion open message
-    if (deviceType != MeshDeviceType::HUB &&
-        MessageTopicUtils::isIncludeOpen(receivedPacket.topic) && !deviceIncluded) {
-        loginfo_ln("Received inclusion open message. Including device...");
-        deviceIncluded = true;
-        return RM_E_NONE;
-    }
-#endif
-
     // The hub is a final destination for all packets and also if the packet is for this device
     if (this->deviceType == MeshDeviceType::HUB || receivedPacket.destDevId == this->id) {
         logtrace_ln("handleReceivedPacket() DONE!");
@@ -448,66 +429,41 @@ int RadioMeshDevice::run()
 
 int RadioMeshDevice::sendInclusionOpen()
 {
-    if (deviceType != MeshDeviceType::HUB) {
-        logerr_ln("Only HUB devices can send inclusion open");
-        return RM_E_INVALID_DEVICE_TYPE;
-    }
-
-    if (hubMode != HubMode::INCLUSION) {
-        logerr_ln("Hub must be in inclusion mode to send open message");
-        return RM_E_INVALID_STATE;
-    }
-
-    // Send empty broadcast
-    std::vector<byte> emptyData;
-    return sendData(MessageTopic::INCLUDE_OPEN, emptyData);
+    return inclusionController->sendInclusionOpen();
 }
 
 int RadioMeshDevice::sendInclusionRequest(const std::vector<byte>& publicKey,
-                                          uint32_t initialCounter)
+                                          uint32_t messageCounter)
 {
-    if (deviceType == MeshDeviceType::HUB) {
-        logerr_ln("HUB cannot send inclusion request");
-        return RM_E_INVALID_DEVICE_TYPE;
-    }
-    // TODO: Set Inclusion Request payload
-    std::vector<byte> emptyData;
-    return sendData(MessageTopic::INCLUDE_REQUEST, emptyData);
+    return inclusionController->sendInclusionRequest(publicKey, messageCounter);
+}
+
+int RadioMeshDevice::sendInclusionResponse(const std::vector<byte>& publicKey,
+                                           const std::vector<byte>& nonce, uint32_t messageCounter)
+{
+    return inclusionController->sendInclusionResponse(publicKey, nonce, messageCounter);
+}
+
+int RadioMeshDevice::sendInclusionConfirm(const std::vector<byte>& nonce)
+{
+    return inclusionController->sendInclusionConfirm(nonce);
+}
+
+int RadioMeshDevice::sendInclusionSuccess()
+{
+    return inclusionController->sendInclusionSuccess();
 }
 
 int RadioMeshDevice::enableInclusionMode(bool enable)
 {
-    if (deviceType != MeshDeviceType::HUB) {
-        logerr_ln("Only HUB devices can switch to inclusion mode");
-        return RM_E_INVALID_DEVICE_TYPE;
-    }
-
     if (enable) {
-        if (hubMode == HubMode::INCLUSION) {
-            logerr_ln("Hub is already in inclusion mode");
-            return RM_E_INVALID_STATE;
-        }
-        hubMode = HubMode::INCLUSION;
-        loginfo_ln("Hub switched to inclusion mode");
+        return inclusionController->enterInclusionMode();
     } else {
-        if (hubMode == HubMode::NORMAL) {
-            logerr_ln("Hub is already in normal mode");
-            return RM_E_INVALID_STATE;
-        }
-        hubMode = HubMode::NORMAL;
-        loginfo_ln("Hub switched to normal mode");
+        return inclusionController->exitInclusionMode();
     }
-    return RM_E_NONE;
 }
 
 int RadioMeshDevice::initialize()
 {
-    // TODO: Handle HUB inclusion state. For now we assume the hub is included and in normal mode
-    if (deviceType == MeshDeviceType::HUB) {
-        hubMode = HubMode::NORMAL;
-        deviceIncluded = true;
-    } else {
-        deviceIncluded = false;
-    }
     return RM_E_NONE;
 }

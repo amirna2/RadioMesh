@@ -212,7 +212,7 @@ public:
                   RadioMeshUtils::convertToHex(destDevId.data(), destDevId.size()).c_str());
         logdbg_ln("  Packet ID: 0x%s",
                   RadioMeshUtils::convertToHex(packetId.data(), packetId.size()).c_str());
-        logdbg_ln("  Topic: %s", MessageTopicUtils::topicToString(topic).c_str());
+        logdbg_ln("  Topic: %s", TopicUtils::topicToString(topic).c_str());
         logdbg_ln("  Device Type: %d", deviceType);
         logdbg_ln("  Hop Count: %d", hopCount);
         logdbg_ln("  CRC: 0x%04X", packetCrc);

@@ -23,13 +23,12 @@
 #include <hardware/inc/display/oled/OledDisplay.h>
 #endif
 
+#include "InclusionController.h"
+
 class RadioMeshDevice : public IDevice
 {
 public:
-    RadioMeshDevice(const std::string& name, const std::array<byte, RM_ID_LENGTH>& id)
-        : name(name), id(id)
-    {
-    }
+    RadioMeshDevice(const std::string& name, const std::array<byte, RM_ID_LENGTH>& id);
 
     virtual ~RadioMeshDevice()
     {
@@ -66,7 +65,13 @@ public:
 
     int enableInclusionMode(bool enable) override;
     int sendInclusionOpen() override;
-    int sendInclusionRequest(const std::vector<byte>& publicKey, uint32_t initialCounter) override;
+    int sendInclusionRequest(const std::vector<byte>& publicKey, uint32_t messageCounter) override;
+    int sendInclusionConfirm(const std::vector<byte>& nonce) override;
+    int sendInclusionResponse(const std::vector<byte>& publicKey, const std::vector<byte>& nonce,
+                              uint32_t messageCounter) override;
+    int sendInclusionSuccess() override;
+
+    bool isIncluded() const override;
 
     // Device specific methods
 
@@ -198,6 +203,8 @@ private:
     DeviceBlueprint blueprint;
     uint32_t packetCounter = 0;
 
+    std::unique_ptr<InclusionController> inclusionController; // Ownership
+
     LoraRadio* radio = nullptr;
     AesCrypto* crypto = nullptr;
     EEPROMStorage* eepromStorage = nullptr;
@@ -224,23 +231,8 @@ private:
     PacketSentCallback onPacketSent = nullptr;
     PacketRouter* router = PacketRouter::getInstance();
 
-    bool isReceivedDataCrcValid(RadioMeshPacket& receivedPacket);
-
-    // Inclusion mode
-    enum class HubMode
-    {
-        NORMAL,
-        INCLUSION // Hub is accepting new devices
-    };
-
-    HubMode hubMode = HubMode::NORMAL;
-
-    bool deviceIncluded = false;
-
     RadioMeshPacket txPacket = RadioMeshPacket();
 
-    bool isIncluded()
-    {
-        return deviceIncluded;
-    }
+    bool isReceivedDataCrcValid(RadioMeshPacket& receivedPacket);
+    bool canSendMessage(uint8_t topic) const;
 };

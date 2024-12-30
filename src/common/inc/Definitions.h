@@ -96,6 +96,7 @@ enum MessageTopic : uint8_t
     INCLUDE_RESPONSE = 0x07,
     INCLUDE_OPEN = 0x08,
     INCLUDE_CONFIRM = 0x09,
+    INCLUDE_SUCCESS = 0x0A,
     MAX_RESERVED = 0x0F
 };
 
@@ -175,7 +176,7 @@ typedef enum SignalIndicator
     EXCELLENT
 } SignalStrength;
 
-namespace MessageTopicUtils
+namespace TopicUtils
 {
 
 /**
@@ -279,6 +280,17 @@ inline bool isIncludeConfirm(uint8_t topic)
 }
 
 /**
+ * @brief Check if a topic is an inclusion topic
+ * @param topic Topic value
+ * @return true if the topic is an inclusion topic, false otherwise
+ */
+inline bool isInclusionTopic(uint8_t topic)
+{
+    return isIncludeRequest(topic) || isIncludeResponse(topic) || isIncludeOpen(topic) ||
+           isIncludeConfirm(topic);
+}
+
+/**
  * @brief Convert topic value to string representation
  * @param topic Topic value
  * @return String describing the topic. If the topic is unknown, "UNKNOWN" is returned.
@@ -306,7 +318,7 @@ inline std::string topicToString(uint8_t topic)
         return "0x" + std::to_string(topic);
     }
 }
-} // namespace MessageTopicUtils
+} // namespace TopicUtils
 
 /**
  * @struct ByteStorageParams
@@ -424,4 +436,21 @@ struct CaptivePortalParams
     uint16_t webPort;
     uint16_t dnsPort;
     std::vector<PortalEventHandler> eventHandlers;
+};
+
+enum class DeviceInclusionState
+{
+    /// Device is not included in the network and can only send inclusion messages
+    NOT_INCLUDED,
+    /// Device inclusion is in progress
+    INCLUSION_PENDING,
+    /// Device is included in the network
+    INCLUDED
+};
+
+// Inclusion mode
+enum class HubMode
+{
+    NORMAL,
+    INCLUSION // Hub is accepting new devices
 };
