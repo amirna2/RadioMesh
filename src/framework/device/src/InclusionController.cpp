@@ -10,6 +10,7 @@ InclusionController::InclusionController(RadioMeshDevice& device) : device(devic
     } else {
         state = DeviceInclusionState::NOT_INCLUDED;
     }
+    logdbg_ln("InclusionController created %d", deviceType);
 }
 
 DeviceInclusionState InclusionController::getState() const
@@ -19,6 +20,12 @@ DeviceInclusionState InclusionController::getState() const
 
 bool InclusionController::canSendMessage(uint8_t topic) const
 {
+    // Allow all messages from HUB devices
+    if (deviceType == MeshDeviceType::HUB) {
+        logdbg_ln("Hub device can send any message");
+        return true;
+    }
+
     // Inclusion messages are allowed during inclusion process
     if (TopicUtils::isInclusionTopic(topic)) {
         return true;

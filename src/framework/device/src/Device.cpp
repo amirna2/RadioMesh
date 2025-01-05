@@ -5,11 +5,13 @@
 #include <core/protocol/inc/routing/RoutingTable.h>
 #include <framework/device/inc/Device.h>
 
-RadioMeshDevice::RadioMeshDevice(const std::string& name, const std::array<byte, RM_ID_LENGTH>& id)
-    : name(name), id(id)
+RadioMeshDevice::RadioMeshDevice(const std::string& name, const std::array<byte, RM_ID_LENGTH>& id,
+                                 MeshDeviceType type)
+    : name(name), id(id), deviceType(type)
 {
     inclusionController = std::make_unique<InclusionController>(*this);
 }
+
 bool RadioMeshDevice::isIncluded() const
 {
     return inclusionController->getState() == DeviceInclusionState::INCLUDED;

@@ -75,7 +75,7 @@ DeviceBuilder& DeviceBuilder::withOledDisplay(const OledDisplayParams& params)
     loginfo_ln("Setting OLED display params");
     blueprint.hasDisplay = true;
     oledDisplayParams = params;
-    useCustomDisplay = true;
+    useCustomDisplay = false;
 
     return *this;
 }
@@ -134,7 +134,7 @@ IDevice* DeviceBuilder::build(const std::string name, std::array<byte, RM_ID_LEN
     }
 
     // Create the Device object using setters as needed as per the blueprint
-    RadioMeshDevice* device = new RadioMeshDevice(name, id);
+    RadioMeshDevice* device = new RadioMeshDevice(name, id, deviceType);
 
     build_error = device->initialize();
     if (build_error != RM_E_NONE) {

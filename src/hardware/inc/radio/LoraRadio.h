@@ -149,6 +149,7 @@ private:
 
     void resetRadioState(int flag = RX_TX_STATE)
     {
+
         if (flag == RX_TX_STATE) {
             rxDone = false;
             txDone = false;

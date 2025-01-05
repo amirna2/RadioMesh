@@ -28,8 +28,8 @@
 class RadioMeshDevice : public IDevice
 {
 public:
-    RadioMeshDevice(const std::string& name, const std::array<byte, RM_ID_LENGTH>& id);
-
+    RadioMeshDevice(const std::string& name, const std::array<byte, RM_ID_LENGTH>& id,
+                    MeshDeviceType type);
     virtual ~RadioMeshDevice()
     {
         radio = nullptr;
