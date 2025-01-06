@@ -6,25 +6,67 @@ InclusionController::InclusionController(RadioMeshDevice& device) : device(devic
 {
     deviceType = device.getDeviceType();
 
-    initStorage();
+    storage = std::make_unique<DeviceStorage>(storage);
+    keyManager = std::make_unique<KeyManager>(*storage);
 
     if (deviceType == MeshDeviceType::HUB) {
         state = DeviceInclusionState::INCLUDED;
     } else {
-        // Standard device - try to load state
-        DeviceInclusionState loadedState;
-        int rc = storage->loadState(loadedState);
-
-        if (rc == RM_E_NONE) {
-            state = loadedState;
-            loginfo_ln("Loaded inclusion state: %d", static_cast<int>(state));
+        int rc = initializeKeys();
+        if (rc != RM_E_NONE) {
+            logerr_ln("Failed to initialize device keys");
+            // TODO: We should probably handle this failure case better
+            // Maybe set device to a failed state?
         } else {
-            state = DeviceInclusionState::NOT_INCLUDED;
-            loginfo_ln("No stored state found, starting as NOT_INCLUDED");
+            // Standard device - try to load state
+            DeviceInclusionState loadedState;
+            int rc = storage->loadState(loadedState);
+
+            if (rc == RM_E_NONE) {
+                state = loadedState;
+                loginfo_ln("Loaded inclusion state: %d", static_cast<int>(state));
+            } else {
+                state = DeviceInclusionState::NOT_INCLUDED;
+                loginfo_ln("No stored state found, starting as NOT_INCLUDED");
+            }
         }
     }
 
     logdbg_ln("InclusionController created for device type %d", deviceType);
+}
+
+int InclusionController::initializeKeys()
+{
+    std::vector<byte> privateKey;
+
+    // Try to load existing private key
+    int rc = keyManager->loadPrivateKey(privateKey);
+
+    if (rc == RM_E_STORAGE_KEY_NOT_FOUND) {
+        loginfo_ln("No existing private key found, generating new key pair");
+
+        std::vector<byte> publicKey;
+        rc = keyManager->generateKeyPair(publicKey, privateKey);
+        if (rc != RM_E_NONE) {
+            logerr_ln("Failed to generate key pair: %d", rc);
+            return rc;
+        }
+
+        rc = keyManager->persistPrivateKey(privateKey);
+        if (rc != RM_E_NONE) {
+            logerr_ln("Failed to persist private key: %d", rc);
+            return rc;
+        }
+
+        loginfo_ln("Generated and stored new key pair");
+    } else if (rc != RM_E_NONE) {
+        logerr_ln("Error loading private key: %d", rc);
+        return rc;
+    } else {
+        loginfo_ln("Loaded existing private key");
+    }
+
+    return RM_E_NONE;
 }
 
 DeviceInclusionState InclusionController::getState() const

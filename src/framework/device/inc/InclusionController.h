@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DeviceStorage.h"
+#include "KeyManager.h"
 #include <common/inc/Definitions.h>
 #include <vector>
 
@@ -112,9 +113,7 @@ private:
     bool inclusionModeEnabled{false};
 
     std::unique_ptr<DeviceStorage> storage;
+    std::unique_ptr<KeyManager> keyManager;
 
-    void initStorage()
-    {
-        storage = std::make_unique<DeviceStorage>(storage);
-    }
+    int initializeKeys();
 };
