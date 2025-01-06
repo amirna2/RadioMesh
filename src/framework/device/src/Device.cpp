@@ -467,5 +467,16 @@ int RadioMeshDevice::enableInclusionMode(bool enable)
 
 int RadioMeshDevice::initialize()
 {
+    eepromStorage = EEPROMStorage::getInstance();
+
+    ByteStorageParams defaultParams(EEPROM_STORAGE_MAX_SIZE);
+    eepromStorage->setParams(defaultParams);
+    int rc = eepromStorage->begin();
+
+    if (rc != RM_E_NONE) {
+        logerr_ln("Failed to initialize storage");
+        return rc;
+    }
+
     return RM_E_NONE;
 }

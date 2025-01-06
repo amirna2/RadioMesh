@@ -50,8 +50,6 @@ typedef struct
     /// @brief The device has a WiFi access point
     bool hasWifiAccessPoint;
     /// @brief The device has storage
-    bool hasStorage;
-    /// @brief The device has a captive portal
     bool hasCaptivePortal;
 } DeviceBlueprint;
 
@@ -314,6 +312,10 @@ inline std::string topicToString(uint8_t topic)
         return "INCLUDE_RESPONSE";
     case MessageTopic::INCLUDE_OPEN:
         return "INCLUDE_OPEN";
+    case MessageTopic::INCLUDE_CONFIRM:
+        return "INCLUDE_CONFIRM";
+    case MessageTopic::INCLUDE_SUCCESS:
+        return "INCLUDE_SUCCESS";
     default:
         return "0x" + std::to_string(topic);
     }
@@ -326,11 +328,9 @@ inline std::string topicToString(uint8_t topic)
  */
 struct ByteStorageParams
 {
-    size_t size;            // Total storage size in bytes
-    bool persist;           // Whether to persist across reboots
-    std::string mountPoint; // For filesystem implementations
+    const size_t size; // Total storage size in bytes
 
-    ByteStorageParams() : size(0), persist(true), mountPoint("")
+    ByteStorageParams() : size(0)
     {
     }
 
@@ -338,13 +338,23 @@ struct ByteStorageParams
      * @brief Construct a new Storage Params object
      *
      * @param size Total storage size in bytes
-     * @param persist Whether to persist across reboots
-     * @param mountPoint Mount point for filesystem implementations
      * @return A new ByteStorageParams object
      */
-    ByteStorageParams(size_t size, bool persist = true, const std::string& mountPoint = "")
-        : size(size), persist(persist), mountPoint(mountPoint)
+    ByteStorageParams(const size_t size) : size(size)
     {
+    }
+
+    /**
+     * @brief Copy constructor
+     * @param other The ByteStorageParams object to copy
+     * @return A new ByteStorageParams object
+     */
+    ByteStorageParams& operator=(const ByteStorageParams& other)
+    {
+        if (this != &other) {
+            const_cast<size_t&>(size) = other.size;
+        }
+        return *this;
     }
 };
 
@@ -441,11 +451,11 @@ struct CaptivePortalParams
 enum class DeviceInclusionState
 {
     /// Device is not included in the network and can only send inclusion messages
-    NOT_INCLUDED,
+    NOT_INCLUDED = 0x01,
     /// Device inclusion is in progress
-    INCLUSION_PENDING,
+    INCLUSION_PENDING = 0x02,
     /// Device is included in the network
-    INCLUDED
+    INCLUDED = 0x03
 };
 
 // Inclusion mode

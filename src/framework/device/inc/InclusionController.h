@@ -1,5 +1,6 @@
-// InclusionController.h
 #pragma once
+
+#include "DeviceStorage.h"
 #include <common/inc/Definitions.h>
 #include <vector>
 
@@ -99,8 +100,21 @@ public:
     int sendInclusionSuccess();
 
 private:
+    const std::string STATE_KEY = "is"; // inclusion state
+    const std::string CTR_KEY = "mc";   // message counter
+    const std::string SKEY = "sk";      // session key
+    const std::string PRIV_KEY = "pk";  // device private key
+    const std::string HUB_KEY = "hk";   // hub public key
+
     RadioMeshDevice& device;
     DeviceInclusionState state;
     MeshDeviceType deviceType;
     bool inclusionModeEnabled{false};
+
+    std::unique_ptr<DeviceStorage> storage;
+
+    void initStorage()
+    {
+        storage = std::make_unique<DeviceStorage>(storage);
+    }
 };

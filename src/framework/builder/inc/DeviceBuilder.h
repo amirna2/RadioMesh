@@ -81,7 +81,7 @@ public:
      * @param params The parameters for the storage
      * @return A reference to the updated builder
      */
-    DeviceBuilder& withStorage(const ByteStorageParams& params);
+    DeviceBuilder& withFileStorage(const ByteStorageParams& params);
 
     /**
      * @brief Add secure messaging to the device with the given parameters

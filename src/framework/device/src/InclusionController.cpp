@@ -5,12 +5,26 @@
 InclusionController::InclusionController(RadioMeshDevice& device) : device(device)
 {
     deviceType = device.getDeviceType();
+
+    initStorage();
+
     if (deviceType == MeshDeviceType::HUB) {
         state = DeviceInclusionState::INCLUDED;
     } else {
-        state = DeviceInclusionState::NOT_INCLUDED;
+        // Standard device - try to load state
+        DeviceInclusionState loadedState;
+        int rc = storage->loadState(loadedState);
+
+        if (rc == RM_E_NONE) {
+            state = loadedState;
+            loginfo_ln("Loaded inclusion state: %d", static_cast<int>(state));
+        } else {
+            state = DeviceInclusionState::NOT_INCLUDED;
+            loginfo_ln("No stored state found, starting as NOT_INCLUDED");
+        }
     }
-    logdbg_ln("InclusionController created %d", deviceType);
+
+    logdbg_ln("InclusionController created for device type %d", deviceType);
 }
 
 DeviceInclusionState InclusionController::getState() const
@@ -82,9 +96,12 @@ int InclusionController::sendInclusionRequest(const std::vector<byte>& publicKey
         logerr_ln("HUB cannot send inclusion request");
         return RM_E_INVALID_DEVICE_TYPE;
     }
-    // TODO: Set Inclusion Request payload
-    std::vector<byte> emptyData;
-    return device.sendData(MessageTopic::INCLUDE_REQUEST, emptyData);
+    std::vector<byte> payload;
+    payload.insert(payload.end(), publicKey.begin(), publicKey.end());
+    payload.insert(payload.end(), (byte*)&messageCounter,
+                   (byte*)&messageCounter + sizeof(uint32_t));
+
+    return device.sendData(MessageTopic::INCLUDE_REQUEST, payload);
 }
 
 int InclusionController::sendInclusionResponse(const std::vector<byte>& publicKey,
@@ -96,9 +113,13 @@ int InclusionController::sendInclusionResponse(const std::vector<byte>& publicKe
         return RM_E_INVALID_DEVICE_TYPE;
     }
 
-    // TODO: Set Inclusion Response payload
-    std::vector<byte> emptyData;
-    return device.sendData(MessageTopic::INCLUDE_RESPONSE, emptyData);
+    std::vector<byte> payload;
+    payload.insert(payload.end(), publicKey.begin(), publicKey.end());
+    payload.insert(payload.end(), nonce.begin(), nonce.end());
+    payload.insert(payload.end(), (byte*)&messageCounter,
+                   (byte*)&messageCounter + sizeof(uint32_t));
+
+    return device.sendData(MessageTopic::INCLUDE_RESPONSE, payload);
 }
 
 int InclusionController::sendInclusionConfirm(const std::vector<byte>& nonce)
@@ -107,10 +128,9 @@ int InclusionController::sendInclusionConfirm(const std::vector<byte>& nonce)
         logerr_ln("HUB cannot send inclusion confirm");
         return RM_E_INVALID_DEVICE_TYPE;
     }
-
-    // TODO: Set Inclusion Confirm payload
-    std::vector<byte> emptyData;
-    return device.sendData(MessageTopic::INCLUDE_CONFIRM, emptyData);
+    std::vector<byte> payload;
+    payload.insert(payload.end(), nonce.begin(), nonce.end());
+    return device.sendData(MessageTopic::INCLUDE_CONFIRM, payload);
 }
 
 int InclusionController::sendInclusionSuccess()
@@ -121,6 +141,6 @@ int InclusionController::sendInclusionSuccess()
     }
 
     // TODO: Set Inclusion Success payload
-    std::vector<byte> emptyData;
-    return device.sendData(MessageTopic::INCLUDE_SUCCESS, emptyData);
+    std::vector<byte> payload;
+    return device.sendData(MessageTopic::INCLUDE_SUCCESS, payload);
 }

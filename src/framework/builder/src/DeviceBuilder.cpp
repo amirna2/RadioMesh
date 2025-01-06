@@ -12,7 +12,6 @@ DeviceBuilder& DeviceBuilder::start()
                  .hasTxCallback = false,
                  .hasWifi = false,
                  .hasWifiAccessPoint = false,
-                 .hasStorage = false,
                  .hasCaptivePortal = false};
     relayEnabled = false;
     isBuilderStarted = true;
@@ -104,14 +103,6 @@ DeviceBuilder& DeviceBuilder::withWifiAccessPoint(const WifiAccessPointParams& p
     wifiAPParams.password = params.password;
     wifiAPParams.ssid = params.ssid;
     wifiAPParams.ipAddress = params.ipAddress;
-    return *this;
-}
-
-DeviceBuilder& DeviceBuilder::withStorage(const ByteStorageParams& params)
-{
-    loginfo_ln("Setting storage params");
-    blueprint.hasStorage = true;
-    storageParams = params;
     return *this;
 }
 
@@ -230,16 +221,6 @@ IDevice* DeviceBuilder::build(const std::string name, std::array<byte, RM_ID_LEN
             return nullptr;
         }
         logdbg_ln("Wifi access point initialized.");
-    }
-
-    if (blueprint.hasStorage) {
-        build_error = device->initializeStorage(storageParams);
-        if (build_error != RM_E_NONE) {
-            logerr_ln("ERROR: Failed to create storage [%d]", build_error);
-            destroyDevice(device);
-            return nullptr;
-        }
-        logdbg_ln("Storage initialized.");
     }
 
     if (blueprint.hasCaptivePortal) {
