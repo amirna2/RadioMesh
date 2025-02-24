@@ -8,6 +8,10 @@
 class KeyManager
 {
 public:
+    static constexpr size_t PUBLIC_KEY_SIZE = 32; // Example size, adjust based on chosen curve
+    static constexpr size_t PRIVATE_KEY_SIZE = 32;
+    static constexpr size_t SESSION_KEY_SIZE = 32;
+
     explicit KeyManager(DeviceStorage& storage) : storage(storage)
     {
     }
@@ -38,7 +42,4 @@ public:
 
 private:
     DeviceStorage& storage;
-    static constexpr size_t PUBLIC_KEY_SIZE = 32; // Example size, adjust based on chosen curve
-    static constexpr size_t PRIVATE_KEY_SIZE = 32;
-    static constexpr size_t SESSION_KEY_SIZE = 32;
 };

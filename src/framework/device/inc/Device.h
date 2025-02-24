@@ -65,10 +65,9 @@ public:
 
     int enableInclusionMode(bool enable) override;
     int sendInclusionOpen() override;
-    int sendInclusionRequest(const std::vector<byte>& publicKey, uint32_t messageCounter) override;
-    int sendInclusionConfirm(const std::vector<byte>& nonce) override;
-    int sendInclusionResponse(const std::vector<byte>& publicKey, const std::vector<byte>& nonce,
-                              uint32_t messageCounter) override;
+    int sendInclusionRequest() override;
+    int sendInclusionConfirm() override;
+    int sendInclusionResponse(const RadioMeshPacket& packet) override;
     int sendInclusionSuccess() override;
 
     bool isIncluded() const override;

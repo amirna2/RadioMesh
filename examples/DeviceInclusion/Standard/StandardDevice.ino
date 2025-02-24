@@ -56,7 +56,7 @@ void setup()
     inclusionState = InclusionState::IDLE;
 }
 
-void handleIncludeOpen()
+void onIncludeOpen()
 {
     // Only handle INCLUDE_OPEN if in IDLE state
     if (inclusionState == InclusionState::IDLE && !device->isIncluded()) {
@@ -68,7 +68,7 @@ void handleIncludeOpen()
     }
 }
 
-void handleIncludeResponse()
+void onIncludeResponse()
 {
     if (inclusionState == InclusionState::WAITING_RESPONSE) {
         std::vector<byte> nonce{5, 6, 7, 8}; // Mock nonce
@@ -78,7 +78,7 @@ void handleIncludeResponse()
     }
 }
 
-void handleTimeout()
+void onTimeout()
 {
     if (inclusionState == InclusionState::WAITING_RESPONSE) {
         if (millis() - stateTimer >= RESPONSE_TIMEOUT) {
@@ -95,17 +95,17 @@ void loop()
         return;
     }
 
-    handleTimeout();
+    onTimeout();
     device->run();
 
     if (messageReceived) {
         switch (lastMessageTopic) {
         case MessageTopic::INCLUDE_OPEN:
-            handleIncludeOpen();
+            onIncludeOpen();
             break;
 
         case MessageTopic::INCLUDE_RESPONSE:
-            handleIncludeResponse();
+            onIncludeResponse();
             break;
 
         case MessageTopic::INCLUDE_SUCCESS:

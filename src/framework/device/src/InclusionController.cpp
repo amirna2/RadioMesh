@@ -69,6 +69,44 @@ int InclusionController::initializeKeys()
     return RM_E_NONE;
 }
 
+int InclusionController::getPublicKey(std::vector<byte>& publicKey)
+{
+    std::vector<byte> privateKey;
+    int rc = keyManager->loadPrivateKey(privateKey);
+    if (rc != RM_E_NONE) {
+        return rc;
+    }
+
+    // Re-derive public key from private key
+    // TODO: This could be cached to avoid re-derivation
+    std::vector<byte> newPublicKey;
+    rc = keyManager->generateKeyPair(publicKey, privateKey);
+    return rc;
+}
+
+int InclusionController::handleHubKey(const std::vector<byte>& hubKey)
+{
+    loginfo_ln("Storing hub public key");
+    return keyManager->persistHubKey(hubKey);
+}
+
+int InclusionController::handleSessionKey(const std::vector<byte>& encryptedKey)
+{
+    std::vector<byte> privateKey;
+    int rc = keyManager->loadPrivateKey(privateKey);
+    if (rc != RM_E_NONE) {
+        return rc;
+    }
+
+    std::vector<byte> sessionKey;
+    rc = keyManager->decryptSessionKey(encryptedKey, privateKey, sessionKey);
+    if (rc != RM_E_NONE) {
+        return rc;
+    }
+
+    return keyManager->persistSessionKey(sessionKey);
+}
+
 DeviceInclusionState InclusionController::getState() const
 {
     return state;
@@ -131,46 +169,81 @@ int InclusionController::sendInclusionOpen()
     return device.sendData(MessageTopic::INCLUDE_OPEN, emptyData);
 }
 
-int InclusionController::sendInclusionRequest(const std::vector<byte>& publicKey,
-                                              uint32_t messageCounter)
+int InclusionController::sendInclusionRequest()
 {
     if (deviceType == MeshDeviceType::HUB) {
         logerr_ln("HUB cannot send inclusion request");
         return RM_E_INVALID_DEVICE_TYPE;
     }
+
+    std::vector<byte> publicKey;
+    int rc = getPublicKey(publicKey);
+    if (rc != RM_E_NONE) {
+        return rc;
+    }
+
+    // Build payload as before but now with real public key
     std::vector<byte> payload;
     payload.insert(payload.end(), publicKey.begin(), publicKey.end());
-    payload.insert(payload.end(), (byte*)&messageCounter,
-                   (byte*)&messageCounter + sizeof(uint32_t));
-
     return device.sendData(MessageTopic::INCLUDE_REQUEST, payload);
 }
 
-int InclusionController::sendInclusionResponse(const std::vector<byte>& publicKey,
-                                               const std::vector<byte>& nonce,
-                                               uint32_t messageCounter)
+int InclusionController::sendInclusionResponse(const RadioMeshPacket& packet)
 {
     if (deviceType != MeshDeviceType::HUB) {
-        logerr_ln("Only HUB devices can send inclusion response");
         return RM_E_INVALID_DEVICE_TYPE;
     }
 
+    // 1. Generate new session key
+    std::vector<byte> sessionKey;
+    int rc = keyManager->generateSessionKey(sessionKey);
+    if (rc != RM_E_NONE)
+        return rc;
+
+    // 2. Encrypt session key with device's public key
+
+    // Get device public key from the packet
+    std::vector<byte> devicePublicKey;
+    devicePublicKey = packet.packetData;
+    if (devicePublicKey.size() != KeyManager::PUBLIC_KEY_SIZE) {
+        logerr_ln("Invalid public key size: %d", devicePublicKey.size());
+        return RM_E_INVALID_LENGTH;
+    }
+    std::vector<byte> encryptedKey;
+    rc = keyManager->encryptSessionKey(sessionKey, devicePublicKey, encryptedKey);
+    if (rc != RM_E_NONE)
+        return rc;
+
+    // 3. Build response payload
     std::vector<byte> payload;
-    payload.insert(payload.end(), publicKey.begin(), publicKey.end());
+
+    // Add hub public key
+    std::vector<byte> hubKey;
+    rc = getPublicKey(hubKey);
+    if (rc != RM_E_NONE)
+        return rc;
+
+    payload.insert(payload.end(), hubKey.begin(), hubKey.end());
+    payload.insert(payload.end(), encryptedKey.begin(), encryptedKey.end());
+
+    // TODO: Generate new random nonce
+    std::vector<byte> nonce = {0, 0, 0, 0};
     payload.insert(payload.end(), nonce.begin(), nonce.end());
-    payload.insert(payload.end(), (byte*)&messageCounter,
-                   (byte*)&messageCounter + sizeof(uint32_t));
 
     return device.sendData(MessageTopic::INCLUDE_RESPONSE, payload);
 }
 
-int InclusionController::sendInclusionConfirm(const std::vector<byte>& nonce)
+int InclusionController::sendInclusionConfirm()
 {
     if (deviceType == MeshDeviceType::HUB) {
         logerr_ln("HUB cannot send inclusion confirm");
         return RM_E_INVALID_DEVICE_TYPE;
     }
     std::vector<byte> payload;
+    // inrement nonce from response
+    // TODO: Actually use the nonce from the response
+    std::vector<byte> nonce = {0, 0, 0, 1};
+
     payload.insert(payload.end(), nonce.begin(), nonce.end());
     return device.sendData(MessageTopic::INCLUDE_CONFIRM, payload);
 }

@@ -67,30 +67,24 @@ public:
     /**
      * @brief Send inclusion request (Device only)
      * Sent after receiving INCLUDE_OPEN
-     * @param publicKey Device's public key
-     * @param messageCounter Initial message counter
      * @return RM_E_NONE on success, error code otherwise
      */
-    int sendInclusionRequest(const std::vector<byte>& publicKey, uint32_t messageCounter);
+    int sendInclusionRequest();
 
     /**
      * @brief Send inclusion response (Hub only)
      * Sent after validating INCLUDE_REQUEST
-     * @param publicKey Hub's public key
-     * @param nonce Random nonce for session
-     * @param messageCounter Hub's initial counter
+     * @param packet The request packet received from the device
      * @return RM_E_NONE on success, error code otherwise
      */
-    int sendInclusionResponse(const std::vector<byte>& publicKey, const std::vector<byte>& nonce,
-                              uint32_t messageCounter);
+    int sendInclusionResponse(const RadioMeshPacket& packet);
 
     /**
      * @brief Send inclusion confirm (Device only)
      * Sent after processing INCLUDE_RESPONSE successfully
-     * @param nonce Encrypted nonce value
      * @return RM_E_NONE on success, error code otherwise
      */
-    int sendInclusionConfirm(const std::vector<byte>& nonce);
+    int sendInclusionConfirm();
 
     /**
      * @brief Send inclusion success (Hub only)
@@ -106,6 +100,7 @@ private:
     const std::string SKEY = "sk";      // session key
     const std::string PRIV_KEY = "pk";  // device private key
     const std::string HUB_KEY = "hk";   // hub public key
+    const size_t NONCE_SIZE = 4;
 
     RadioMeshDevice& device;
     DeviceInclusionState state;
@@ -116,4 +111,32 @@ private:
     std::unique_ptr<KeyManager> keyManager;
 
     int initializeKeys();
+
+    // Used when sending INCLUDE_REQUEST
+    int getPublicKey(std::vector<byte>& publicKey);
+    // Used when processing INCLUDE_RESPONSE
+    int handleHubKey(const std::vector<byte>& hubKey);
+    // Used when processing INCLUDE_RESPONSE
+    int handleSessionKey(const std::vector<byte>& encryptedKey);
+
+    std::vector<byte> currentNonce; // Store current session nonce
+
+    std::vector<byte> generateNonce()
+    {
+        std::vector<byte> nonce(NONCE_SIZE);
+        // Use RadioMeshUtils::simpleRNG for entropy
+        for (size_t i = 0; i < NONCE_SIZE; i++) {
+            nonce[i] = RadioMeshUtils::simpleRNG(1);
+        }
+        return nonce;
+    }
+
+    bool verifyNonce(const std::vector<byte>& receivedNonce)
+    {
+        // Verify the received nonce matches our expected nonce
+        if (receivedNonce.size() != currentNonce.size()) {
+            return false;
+        }
+        return std::equal(receivedNonce.begin(), receivedNonce.end(), currentNonce.begin());
+    }
 };

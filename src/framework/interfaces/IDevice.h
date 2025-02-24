@@ -145,36 +145,22 @@ public:
 
     /**
      * @brief Send inclusion request message
-     *
-     * Device must not be included to send this request.
-     * Message contains:
-     * - Device ID (already in packet header)
-     * - Device's public key
-     * - Last stored message counter value or 0 if the device is new or resetiudefr
-     *
-     * @param publicKey Device's public key
-     * @param messageCounter  Last stored message counter value
      * @return RM_E_NONE on success or an error code otherwise
      */
-    virtual int sendInclusionRequest(const std::vector<byte>& publicKey,
-                                     uint32_t messageCounter) = 0;
+    virtual int sendInclusionRequest() = 0;
 
     /**
      * @brief Send inclusion response message (HUB only)
-     * @param publicKey Device's public key
-     * @param nonce Random nonce value
-     * @param messageCounter Last stored message counter value
+     * @param packet The request packet received from the device
      * @return RM_E_NONE on success or an error code otherwise
      */
-    virtual int sendInclusionResponse(const std::vector<byte>& publicKey,
-                                      const std::vector<byte>& nonce, uint32_t messageCounter) = 0;
+    virtual int sendInclusionResponse(const RadioMeshPacket& packet) = 0;
 
     /**
      * @brief Send inclusion confirm message
-     * @param nonce Incremented nonce value
      * @return RM_E_NONE on success or an error code otherwise
      */
-    virtual int sendInclusionConfirm(const std::vector<byte>& nonce) = 0;
+    virtual int sendInclusionConfirm() = 0;
 
     /**
      * @brief Send inclusion success message

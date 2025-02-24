@@ -434,21 +434,19 @@ int RadioMeshDevice::sendInclusionOpen()
     return inclusionController->sendInclusionOpen();
 }
 
-int RadioMeshDevice::sendInclusionRequest(const std::vector<byte>& publicKey,
-                                          uint32_t messageCounter)
+int RadioMeshDevice::sendInclusionRequest()
 {
-    return inclusionController->sendInclusionRequest(publicKey, messageCounter);
+    return inclusionController->sendInclusionRequest();
 }
 
-int RadioMeshDevice::sendInclusionResponse(const std::vector<byte>& publicKey,
-                                           const std::vector<byte>& nonce, uint32_t messageCounter)
+int RadioMeshDevice::sendInclusionResponse(const RadioMeshPacket& packet)
 {
-    return inclusionController->sendInclusionResponse(publicKey, nonce, messageCounter);
+    return inclusionController->sendInclusionResponse();
 }
 
-int RadioMeshDevice::sendInclusionConfirm(const std::vector<byte>& nonce)
+int RadioMeshDevice::sendInclusionConfirm()
 {
-    return inclusionController->sendInclusionConfirm(nonce);
+    return inclusionController->sendInclusionConfirm();
 }
 
 int RadioMeshDevice::sendInclusionSuccess()

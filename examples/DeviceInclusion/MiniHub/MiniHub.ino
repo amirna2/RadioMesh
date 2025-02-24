@@ -83,7 +83,6 @@ void handleInclusionState()
 {
     unsigned long now = millis();
 
-    // Declare any variables needed by multiple states here
     std::vector<byte> hubKey;
     std::vector<byte> nonce;
 

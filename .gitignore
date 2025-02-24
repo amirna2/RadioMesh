@@ -6,3 +6,5 @@ wifiConfig.h
 *workspace
 
 .vscode/**
+.aider*
+context/**
