@@ -22,6 +22,11 @@ bool RadioMeshDevice::canSendMessage(uint8_t topic) const
     return inclusionController->canSendMessage(topic);
 }
 
+bool RadioMeshDevice::isInclusionMessage(uint8_t topic) const
+{
+    return (topic >= INCLUDE_REQUEST && topic <= INCLUDE_SUCCESS);
+}
+
 std::array<byte, RM_ID_LENGTH> RadioMeshDevice::getDeviceId()
 {
     return id;
@@ -356,6 +361,26 @@ int RadioMeshDevice::handleReceivedData()
         RadioMeshUtils::convertToHex(receivedPacket.lastHopId.data(), DEV_ID_LENGTH).c_str(),
         lastRssi);
 
+    // Check if this is an inclusion message and handle it automatically
+    if (isInclusionMessage(receivedPacket.topic)) {
+        logdbg_ln("Received inclusion message with topic: 0x%02X", receivedPacket.topic);
+        
+        // Let the InclusionController handle it automatically
+        int result = inclusionController->handleInclusionMessage(receivedPacket);
+        if (result != RM_E_NONE) {
+            logerr_ln("Failed to handle inclusion message: %d", result);
+        }
+        
+        // Still notify application for monitoring if callback is set
+        if (onPacketReceived != nullptr) {
+            logdbg_ln("Notifying application about inclusion message");
+            onPacketReceived(&receivedPacket, RM_E_NONE);
+        }
+        
+        // Don't forward inclusion messages
+        return result;
+    }
+
     // Packet has reached its destination or the device is a HUB, let the application handle it
     if (onPacketReceived != nullptr) {
         logdbg_ln("Calling onPacketReceived callback");
@@ -441,7 +466,7 @@ int RadioMeshDevice::sendInclusionRequest()
 
 int RadioMeshDevice::sendInclusionResponse(const RadioMeshPacket& packet)
 {
-    return inclusionController->sendInclusionResponse();
+    return inclusionController->sendInclusionResponse(packet);
 }
 
 int RadioMeshDevice::sendInclusionConfirm()

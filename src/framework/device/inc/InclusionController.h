@@ -94,6 +94,14 @@ public:
      */
     int sendInclusionSuccess();
 
+    /**
+     * @brief Handle received inclusion message automatically
+     * Routes to appropriate handler based on device type and message type
+     * @param packet The received inclusion message packet
+     * @return RM_E_NONE on success, error code otherwise
+     */
+    int handleInclusionMessage(const RadioMeshPacket& packet);
+
 private:
     const std::string STATE_KEY = "is"; // inclusion state
     const std::string CTR_KEY = "mc";   // message counter

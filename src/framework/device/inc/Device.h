@@ -234,4 +234,5 @@ private:
 
     bool isReceivedDataCrcValid(RadioMeshPacket& receivedPacket);
     bool canSendMessage(uint8_t topic) const;
+    bool isInclusionMessage(uint8_t topic) const;
 };

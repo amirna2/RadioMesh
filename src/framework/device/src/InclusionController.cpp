@@ -6,8 +6,15 @@ InclusionController::InclusionController(RadioMeshDevice& device) : device(devic
 {
     deviceType = device.getDeviceType();
 
-    storage = std::make_unique<DeviceStorage>(storage);
-    keyManager = std::make_unique<KeyManager>(*storage);
+    // Get the byte storage from the device
+    auto* byteStorage = device.getByteStorage();
+    if (byteStorage) {
+        storage = std::make_unique<DeviceStorage>(byteStorage);
+        keyManager = std::make_unique<KeyManager>(*storage);
+    } else {
+        logerr_ln("No byte storage available for InclusionController");
+        // TODO: Handle this error case properly
+    }
 
     if (deviceType == MeshDeviceType::HUB) {
         state = DeviceInclusionState::INCLUDED;
@@ -258,4 +265,82 @@ int InclusionController::sendInclusionSuccess()
     // TODO: Set Inclusion Success payload
     std::vector<byte> payload;
     return device.sendData(MessageTopic::INCLUDE_SUCCESS, payload);
+}
+
+int InclusionController::handleInclusionMessage(const RadioMeshPacket& packet)
+{
+    logdbg_ln("Handling inclusion message, topic: 0x%02X, device type: %d", 
+              packet.topic, static_cast<int>(deviceType));
+
+    // Handle messages based on device type
+    if (deviceType == MeshDeviceType::HUB) {
+        // Hub handles requests from devices
+        switch (packet.topic) {
+            case MessageTopic::INCLUDE_REQUEST:
+                if (isInclusionModeEnabled()) {
+                    loginfo_ln("Hub received INCLUDE_REQUEST from device");
+                    // TODO: Process the request and send response
+                    return sendInclusionResponse(packet);
+                } else {
+                    logwarn_ln("Hub received INCLUDE_REQUEST but not in inclusion mode");
+                    return RM_E_INVALID_STATE;
+                }
+                break;
+
+            case MessageTopic::INCLUDE_CONFIRM:
+                loginfo_ln("Hub received INCLUDE_CONFIRM from device");
+                // TODO: Verify the confirmation and complete inclusion
+                // For now, just send success
+                return sendInclusionSuccess();
+                break;
+
+            default:
+                logwarn_ln("Hub received unexpected inclusion message: 0x%02X", packet.topic);
+                break;
+        }
+    } else {
+        // Standard device handles messages from hub
+        switch (packet.topic) {
+            case MessageTopic::INCLUDE_OPEN:
+                if (state == DeviceInclusionState::NOT_INCLUDED) {
+                    loginfo_ln("Device received INCLUDE_OPEN, starting inclusion");
+                    state = DeviceInclusionState::INCLUSION_PENDING;
+                    storage->persistState(state);
+                    return sendInclusionRequest();
+                } else {
+                    logdbg_ln("Device received INCLUDE_OPEN but already included/pending");
+                }
+                break;
+
+            case MessageTopic::INCLUDE_RESPONSE:
+                if (state == DeviceInclusionState::INCLUSION_PENDING) {
+                    loginfo_ln("Device received INCLUDE_RESPONSE from hub");
+                    // TODO: Process hub key and session key
+                    // For now, just send confirmation
+                    return sendInclusionConfirm();
+                } else {
+                    logwarn_ln("Device received INCLUDE_RESPONSE in wrong state: %d", 
+                              static_cast<int>(state));
+                }
+                break;
+
+            case MessageTopic::INCLUDE_SUCCESS:
+                if (state == DeviceInclusionState::INCLUSION_PENDING) {
+                    loginfo_ln("Device received INCLUDE_SUCCESS, inclusion complete!");
+                    state = DeviceInclusionState::INCLUDED;
+                    storage->persistState(state);
+                    // TODO: Save session key and hub public key
+                } else {
+                    logwarn_ln("Device received INCLUDE_SUCCESS in wrong state: %d", 
+                              static_cast<int>(state));
+                }
+                break;
+
+            default:
+                logwarn_ln("Device received unexpected inclusion message: 0x%02X", packet.topic);
+                break;
+        }
+    }
+
+    return RM_E_NONE;
 }
