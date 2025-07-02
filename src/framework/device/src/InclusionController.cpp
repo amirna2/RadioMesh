@@ -171,6 +171,9 @@ int InclusionController::sendInclusionOpen()
         return RM_E_INVALID_STATE;
     }
 
+    // Start the protocol state machine
+    transitionToState(WAITING_FOR_REQUEST);
+    
     // Send empty broadcast
     std::vector<byte> emptyData;
     return device.sendData(MessageTopic::INCLUDE_OPEN, emptyData);
@@ -277,21 +280,31 @@ int InclusionController::handleInclusionMessage(const RadioMeshPacket& packet)
         // Hub handles requests from devices
         switch (packet.topic) {
             case MessageTopic::INCLUDE_REQUEST:
-                if (isInclusionModeEnabled()) {
+                if (isInclusionModeEnabled() && protocolState == WAITING_FOR_REQUEST) {
                     loginfo_ln("Hub received INCLUDE_REQUEST from device");
+                    transitionToState(WAITING_FOR_CONFIRMATION);
                     // TODO: Process the request and send response
                     return sendInclusionResponse(packet);
                 } else {
-                    logwarn_ln("Hub received INCLUDE_REQUEST but not in inclusion mode");
+                    logwarn_ln("Hub received INCLUDE_REQUEST but not ready (mode: %s, state: %s)", 
+                              isInclusionModeEnabled() ? "enabled" : "disabled",
+                              getProtocolStateString(protocolState));
                     return RM_E_INVALID_STATE;
                 }
                 break;
 
             case MessageTopic::INCLUDE_CONFIRM:
-                loginfo_ln("Hub received INCLUDE_CONFIRM from device");
-                // TODO: Verify the confirmation and complete inclusion
-                // For now, just send success
-                return sendInclusionSuccess();
+                if (protocolState == WAITING_FOR_CONFIRMATION) {
+                    loginfo_ln("Hub received INCLUDE_CONFIRM from device");
+                    transitionToState(PROTOCOL_IDLE);
+                    // TODO: Verify the confirmation and complete inclusion
+                    // For now, just send success
+                    return sendInclusionSuccess();
+                } else {
+                    logwarn_ln("Hub received INCLUDE_CONFIRM in wrong state: %s", 
+                              getProtocolStateString(protocolState));
+                    return RM_E_INVALID_STATE;
+                }
                 break;
 
             default:
@@ -302,37 +315,42 @@ int InclusionController::handleInclusionMessage(const RadioMeshPacket& packet)
         // Standard device handles messages from hub
         switch (packet.topic) {
             case MessageTopic::INCLUDE_OPEN:
-                if (state == DeviceInclusionState::NOT_INCLUDED) {
+                if (state == DeviceInclusionState::NOT_INCLUDED && protocolState == PROTOCOL_IDLE) {
                     loginfo_ln("Device received INCLUDE_OPEN, starting inclusion");
                     state = DeviceInclusionState::INCLUSION_PENDING;
                     storage->persistState(state);
+                    transitionToState(WAITING_FOR_RESPONSE);
                     return sendInclusionRequest();
                 } else {
-                    logdbg_ln("Device received INCLUDE_OPEN but already included/pending");
+                    logdbg_ln("Device received INCLUDE_OPEN but not ready (state: %s, protocol: %s)", 
+                             state == DeviceInclusionState::INCLUDED ? "INCLUDED" : "PENDING",
+                             getProtocolStateString(protocolState));
                 }
                 break;
 
             case MessageTopic::INCLUDE_RESPONSE:
-                if (state == DeviceInclusionState::INCLUSION_PENDING) {
+                if (state == DeviceInclusionState::INCLUSION_PENDING && protocolState == WAITING_FOR_RESPONSE) {
                     loginfo_ln("Device received INCLUDE_RESPONSE from hub");
+                    transitionToState(WAITING_FOR_SUCCESS);
                     // TODO: Process hub key and session key
                     // For now, just send confirmation
                     return sendInclusionConfirm();
                 } else {
-                    logwarn_ln("Device received INCLUDE_RESPONSE in wrong state: %d", 
-                              static_cast<int>(state));
+                    logwarn_ln("Device received INCLUDE_RESPONSE in wrong state (device: %d, protocol: %s)", 
+                              static_cast<int>(state), getProtocolStateString(protocolState));
                 }
                 break;
 
             case MessageTopic::INCLUDE_SUCCESS:
-                if (state == DeviceInclusionState::INCLUSION_PENDING) {
+                if (state == DeviceInclusionState::INCLUSION_PENDING && protocolState == WAITING_FOR_SUCCESS) {
                     loginfo_ln("Device received INCLUDE_SUCCESS, inclusion complete!");
                     state = DeviceInclusionState::INCLUDED;
                     storage->persistState(state);
+                    transitionToState(PROTOCOL_IDLE);
                     // TODO: Save session key and hub public key
                 } else {
-                    logwarn_ln("Device received INCLUDE_SUCCESS in wrong state: %d", 
-                              static_cast<int>(state));
+                    logwarn_ln("Device received INCLUDE_SUCCESS in wrong state (device: %d, protocol: %s)", 
+                              static_cast<int>(state), getProtocolStateString(protocolState));
                 }
                 break;
 
@@ -343,4 +361,110 @@ int InclusionController::handleInclusionMessage(const RadioMeshPacket& packet)
     }
 
     return RM_E_NONE;
+}
+
+void InclusionController::transitionToState(InclusionProtocolState newState)
+{
+    if (protocolState != newState) {
+        loginfo_ln("Inclusion protocol: %s -> %s", 
+                   getProtocolStateString(protocolState), 
+                   getProtocolStateString(newState));
+        
+        protocolState = newState;
+        stateStartTime = millis();
+        retryCount = 0;
+    }
+}
+
+bool InclusionController::isStateTimedOut() const
+{
+    if (protocolState == PROTOCOL_IDLE) {
+        return false;
+    }
+    
+    uint32_t elapsed = millis() - stateStartTime;
+    return elapsed > getStateTimeoutMs();
+}
+
+uint32_t InclusionController::getStateTimeoutMs() const
+{
+    // Exponential backoff: 5s, 10s, 20s
+    uint32_t timeout = BASE_TIMEOUT_MS << retryCount;
+    return timeout > MAX_TOTAL_TIMEOUT_MS ? MAX_TOTAL_TIMEOUT_MS : timeout;
+}
+
+void InclusionController::handleStateTimeout()
+{
+    logwarn_ln("Inclusion protocol timeout in state: %s (retry %d/%d)", 
+               getProtocolStateString(protocolState), retryCount + 1, MAX_RETRIES);
+    
+    if (retryCount < MAX_RETRIES) {
+        retryCount++;
+        stateStartTime = millis();
+        
+        // Retry the last action based on current state
+        switch (protocolState) {
+            case WAITING_FOR_REQUEST:
+                if (deviceType == MeshDeviceType::HUB) {
+                    sendInclusionOpen();
+                }
+                break;
+                
+            case WAITING_FOR_RESPONSE:
+                if (deviceType == MeshDeviceType::STANDARD) {
+                    sendInclusionRequest();
+                }
+                break;
+                
+            case WAITING_FOR_CONFIRMATION:
+                // Hub already sent response, can't retry without new request
+                resetProtocolState();
+                break;
+                
+            case WAITING_FOR_SUCCESS:
+                if (deviceType == MeshDeviceType::STANDARD) {
+                    sendInclusionConfirm();
+                }
+                break;
+                
+            default:
+                break;
+        }
+    } else {
+        logerr_ln("Max retries exceeded, resetting inclusion protocol");
+        resetProtocolState();
+    }
+}
+
+void InclusionController::resetProtocolState()
+{
+    loginfo_ln("Resetting inclusion protocol state");
+    transitionToState(PROTOCOL_IDLE);
+    retryCount = 0;
+    
+    // If this was a device trying to join, reset to NOT_INCLUDED
+    if (deviceType == MeshDeviceType::STANDARD && state == DeviceInclusionState::INCLUSION_PENDING) {
+        state = DeviceInclusionState::NOT_INCLUDED;
+        storage->persistState(state);
+    }
+}
+
+int InclusionController::checkProtocolTimeouts()
+{
+    if (isStateTimedOut()) {
+        handleStateTimeout();
+    }
+    return RM_E_NONE;
+}
+
+const char* InclusionController::getProtocolStateString(InclusionProtocolState state) const
+{
+    switch (state) {
+        case PROTOCOL_IDLE: return "IDLE";
+        case WAITING_FOR_REQUEST: return "WAITING_FOR_REQUEST";
+        case WAITING_FOR_RESPONSE: return "WAITING_FOR_RESPONSE";
+        case WAITING_FOR_CONFIRMATION: return "WAITING_FOR_CONFIRMATION";
+        case WAITING_FOR_SUCCESS: return "WAITING_FOR_SUCCESS";
+        default: return "UNKNOWN";
+    }
 }

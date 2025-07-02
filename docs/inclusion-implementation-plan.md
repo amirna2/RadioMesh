@@ -44,7 +44,7 @@ This document outlines the step-by-step implementation plan for making the devic
 
 Verified that current implementation already allows inclusion messages from non-included devices - no changes needed.
 
-### Phase 2: InclusionController State Machine (Priority: High)
+### Phase 2: InclusionController State Machine (Priority: High) ✅ COMPLETED
 
 #### Step 2.1: Add Basic Message Handler ✅ COMPLETED
 **Files Modified**:
@@ -58,65 +58,49 @@ Verified that current implementation already allows inclusion messages from non-
 - State transitions for device: NOT_INCLUDED → INCLUSION_PENDING → INCLUDED
 - State persistence using DeviceStorage
 
-**Differences from original plan**:
-- Used existing `DeviceInclusionState` enum instead of creating new state machine enum
-- Implemented simpler direct state transitions rather than intermediate waiting states
-- Leveraged existing `isInclusionModeEnabled()` check for hub
+#### Step 2.2: Add Advanced State Machine Infrastructure ✅ COMPLETED
+**Files Modified**:
+- `src/framework/device/inc/InclusionController.h` - Added protocol state machine enum and infrastructure
+- `src/framework/device/src/InclusionController.cpp` - Implemented state machine logic
 
-#### Step 2.2: TODO - Add Advanced State Machine Infrastructure
-**File**: `src/framework/device/inc/InclusionController.h`
-
-**Still needed for proper state machine**:
+**What was implemented**:
 ```cpp
-private:
-    enum InclusionProtocolState {
-        IDLE,
-        WAITING_FOR_REQUEST,      // Hub waiting for device request
-        WAITING_FOR_RESPONSE,     // Device waiting for hub response
-        WAITING_FOR_CONFIRMATION, // Hub waiting for device confirmation
-        WAITING_FOR_SUCCESS,      // Device waiting for success message
-    };
-    
-    InclusionProtocolState protocolState = IDLE;
-    uint32_t stateTimeout = 0;
-    uint8_t retryCount = 0;
+enum InclusionProtocolState {
+    PROTOCOL_IDLE = 0,                  // Ready to start inclusion
+    WAITING_FOR_REQUEST,                // Hub: Sent INCLUDE_OPEN, waiting for device request
+    WAITING_FOR_RESPONSE,               // Device: Sent INCLUDE_REQUEST, waiting for hub response
+    WAITING_FOR_CONFIRMATION,           // Hub: Sent INCLUDE_RESPONSE, waiting for confirmation
+    WAITING_FOR_SUCCESS                 // Device: Sent INCLUDE_CONFIRM, waiting for success
+};
 ```
 
-#### Step 2.3: TODO - Implement Advanced State Transitions
-**Files**: Enhance existing methods in `InclusionController.cpp`
+#### Step 2.3: Implement Advanced State Transitions ✅ COMPLETED
+**Files Enhanced**: `src/framework/device/src/InclusionController.cpp`
 
-**Current limitations that need fixing**:
-- No timeout handling between message exchanges
-- No retry logic for failed transmissions
-- No proper validation of received messages (TODOs in current implementation)
-- No state machine for tracking protocol progress within inclusion sequence
-- Need to replace TODOs with actual key exchange and nonce validation logic
+**What was implemented**:
+- Protocol state transitions with proper timing tracking
+- Enhanced message validation based on current protocol state
+- Proper state logging with `getProtocolStateString()` helper
+- Integration with existing inclusion message flow
 
-### Phase 3: Timing and Reliability (Priority: Medium)
+### Phase 3: Timing and Reliability (Priority: Medium) ✅ COMPLETED
 
-#### Step 3.1: Add Timeout Handling
+#### Step 3.1: Add Timeout Handling ✅ COMPLETED
 **File**: `src/framework/device/src/InclusionController.cpp`
 
-```cpp
-void InclusionController::checkTimeouts() {
-    if (currentState != IDLE && millis() > stateTimeout) {
-        if (retryCount < MAX_RETRIES) {
-            // Retry last action
-            retryLastAction();
-            retryCount++;
-        } else {
-            // Reset to idle state
-            resetInclusionState();
-        }
-    }
-}
-```
+**What was implemented**:
+- `checkProtocolTimeouts()` method with exponential backoff (5s, 10s, 20s)
+- `handleStateTimeout()` with automatic retry logic (max 3 attempts)
+- `resetProtocolState()` for clean failure recovery
+- Configurable timeouts: 5s base, 3 retries max, 35s total timeout
 
-#### Step 3.2: Integrate Timeout Checks
+#### Step 3.2: Integrate Timeout Checks ✅ COMPLETED
 **File**: `src/framework/device/src/Device.cpp`
 **Method**: `RadioMeshDevice::run()`
 
-Add periodic timeout checks for inclusion state.
+**What was implemented**:
+- Added `inclusionController->checkProtocolTimeouts()` call at start of run() method
+- Periodic timeout checking integrated into main device loop
 
 ### Phase 4: Enhanced Security (Priority: Medium)
 
@@ -156,23 +140,24 @@ Create example demonstrating automatic inclusion.
    - ✅ Added isInclusionMessage() helper
    - ✅ Tested basic message interception - builds successfully
 
-2. **⚠️ PARTIALLY COMPLETE**: State Machine Core (Steps 2.1-2.3)
+2. **✅ COMPLETED**: State Machine Core (Steps 2.1-2.3)
    - ✅ Added basic message handler infrastructure
    - ✅ Implemented message routing by device type
    - ✅ Connected to existing inclusion methods with basic state transitions
-   - ❌ Still needed: Advanced state machine with timeouts and retry logic
+   - ✅ Advanced state machine with protocol states implemented
+   - ✅ Timeout and retry logic with exponential backoff
 
-3. **NEXT PRIORITY**: Create Integration Test for MVP (Step 5.2)
+3. **✅ COMPLETED**: Timeout and Reliability (Steps 3.1-3.2)
+   - ✅ Timeout handling integrated into Device::run()
+   - ✅ Automatic retry logic with exponential backoff
+   - ✅ Protocol state machine with timing tracking
+   - ✅ Clean failure recovery and state reset
+
+4. **NEXT PRIORITY**: Create Integration Test for MVP (Step 5.2)
    - Create basic integration example demonstrating current automatic inclusion
-   - Test the basic flow: Hub broadcasts INCLUDE_OPEN → Device responds → Basic state transitions
-   - Verify that protocol layer integration works end-to-end
+   - Test the basic flow: Hub broadcasts INCLUDE_OPEN → Device responds → State machine transitions
+   - Verify that protocol layer integration works end-to-end with timeout handling
    - Identify gaps and issues with current implementation
-
-4. **THEN**: Enhanced State Machine (Steps 2.2-2.3, 3.1, 5.1)
-   - Add advanced state machine with protocol states
-   - Add timeout handling between message exchanges
-   - Replace TODO placeholders with actual key exchange logic
-   - Create comprehensive unit tests for enhanced features
 
 5. **FINALLY**: Security and Polish (Steps 4.1-4.2)
    - Implement real crypto (currently using XOR placeholders)

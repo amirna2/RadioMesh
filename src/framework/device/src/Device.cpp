@@ -418,6 +418,9 @@ bool RadioMeshDevice::isRelayEnabled()
 
 int RadioMeshDevice::run()
 {
+    // Check for inclusion protocol timeouts
+    inclusionController->checkProtocolTimeouts();
+    
     // handle radio Rx/Tx events
     if (radio->checkAndClearRxFlag()) {
         logtrace_ln("Packet RX done");

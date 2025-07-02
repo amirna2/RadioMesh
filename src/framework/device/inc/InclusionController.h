@@ -102,6 +102,13 @@ public:
      */
     int handleInclusionMessage(const RadioMeshPacket& packet);
 
+    /**
+     * @brief Check for protocol timeouts and handle them
+     * Should be called periodically from Device::run()
+     * @return RM_E_NONE on success, error code otherwise
+     */
+    int checkProtocolTimeouts();
+
 private:
     const std::string STATE_KEY = "is"; // inclusion state
     const std::string CTR_KEY = "mc";   // message counter
@@ -118,7 +125,33 @@ private:
     std::unique_ptr<DeviceStorage> storage;
     std::unique_ptr<KeyManager> keyManager;
 
+    // Protocol state machine
+    enum InclusionProtocolState {
+        PROTOCOL_IDLE = 0,                  // Ready to start inclusion
+        WAITING_FOR_REQUEST,                // Hub: Sent INCLUDE_OPEN, waiting for device request
+        WAITING_FOR_RESPONSE,               // Device: Sent INCLUDE_REQUEST, waiting for hub response
+        WAITING_FOR_CONFIRMATION,           // Hub: Sent INCLUDE_RESPONSE, waiting for confirmation
+        WAITING_FOR_SUCCESS                 // Device: Sent INCLUDE_CONFIRM, waiting for success
+    };
+    
+    InclusionProtocolState protocolState = PROTOCOL_IDLE;
+    uint32_t stateStartTime = 0;            // When current state was entered
+    uint8_t retryCount = 0;                 // Number of retries for current state
+    
+    // State machine configuration
+    static const uint32_t BASE_TIMEOUT_MS = 5000;     // 5 seconds base timeout
+    static const uint8_t MAX_RETRIES = 3;              // Maximum retry attempts
+    static const uint32_t MAX_TOTAL_TIMEOUT_MS = 35000; // 35 seconds total timeout
+
     int initializeKeys();
+
+    // State machine management
+    void transitionToState(InclusionProtocolState newState);
+    bool isStateTimedOut() const;
+    uint32_t getStateTimeoutMs() const;
+    void handleStateTimeout();
+    void resetProtocolState();
+    const char* getProtocolStateString(InclusionProtocolState state) const;
 
     // Used when sending INCLUDE_REQUEST
     int getPublicKey(std::vector<byte>& publicKey);
