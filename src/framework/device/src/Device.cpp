@@ -238,21 +238,6 @@ ICaptivePortal* RadioMeshDevice::getCaptivePortal()
 
 #endif // RM_NO_WIFI
 
-int RadioMeshDevice::initializeStorage(ByteStorageParams storageParams)
-{
-    eepromStorage = EEPROMStorage::getInstance();
-    if (eepromStorage == nullptr) {
-        logerr_ln("Failed to create storage");
-        return RM_E_UNKNOWN;
-    }
-
-    int rc = eepromStorage->setParams(storageParams);
-    if (rc != RM_E_NONE) {
-        logerr_ln("Failed to set storage params");
-        eepromStorage = nullptr;
-    }
-    return rc;
-}
 
 IRadio* RadioMeshDevice::getRadio()
 {
@@ -501,6 +486,7 @@ int RadioMeshDevice::initialize()
 
     if (rc != RM_E_NONE) {
         logerr_ln("Failed to initialize storage");
+        eepromStorage = nullptr;  // Clear storage pointer on failure
         return rc;
     }
 

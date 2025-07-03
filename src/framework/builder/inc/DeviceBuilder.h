@@ -76,12 +76,6 @@ public:
      */
     DeviceBuilder& withWifiAccessPoint(const WifiAccessPointParams& params);
 
-    /**
-     * @brief Add storage to the device with the given parameters
-     * @param params The parameters for the storage
-     * @return A reference to the updated builder
-     */
-    DeviceBuilder& withFileStorage(const ByteStorageParams& params);
 
     /**
      * @brief Add secure messaging to the device with the given parameters
@@ -133,7 +127,6 @@ private:
     OledDisplayParams oledDisplayParams;
     WifiParams wifiParams = WifiParams();
     WifiAccessPointParams wifiAPParams = WifiAccessPointParams();
-    ByteStorageParams storageParams;
     CaptivePortalParams captivePortalParams;
 
     bool relayEnabled = false;

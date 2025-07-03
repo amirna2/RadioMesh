@@ -171,14 +171,6 @@ public:
      */
     int initializeWifiAccessPoint(WifiAccessPointParams wifiAPParams);
 
-    /**
-     * @brief Initialize the storage component with the given parameters
-     *
-     * @param storageParams ByteStorageParams object containing the storage parameters
-     * @return int RM_E_NONE if the storage component was successfully initialized, an error code
-     * otherwise.
-     */
-    int initializeStorage(ByteStorageParams storageParams);
 
     /**
      * @brief Initialize the captive portal with the given parameters
