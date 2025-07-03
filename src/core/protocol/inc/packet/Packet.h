@@ -10,7 +10,7 @@
 #include <common/utils/Utils.h>
 
 // Protocol version
-#define RM_PROTOCOL_VERSION 2
+#define RM_PROTOCOL_VERSION 3
 #define PROTOCOL_VERSION_LENGTH 1
 
 // Packet size constants
