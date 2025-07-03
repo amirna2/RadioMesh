@@ -78,13 +78,12 @@ void onPacketReceived(const RadioMeshPacket* packet, int err) {
             loginfo_ln("Received inclusion request from device (total: %d)", totalInclusionRequests);
             break;
             
-        case MessageTopic::INCLUDE_SUCCESS:
-            successfulInclusions++;
-            loginfo_ln("Device inclusion completed successfully (total: %d)", successfulInclusions);
-            break;
-            
         case MessageTopic::INCLUDE_CONFIRM:
-            loginfo_ln("Received inclusion confirmation from device");
+            // When hub receives INCLUDE_CONFIRM, it sends INCLUDE_SUCCESS to complete the protocol
+            successfulInclusions++;
+            loginfo_ln("Received inclusion confirmation - inclusion completed successfully (total: %d)", successfulInclusions);
+            // Exit inclusion mode after successful inclusion
+            stopInclusionMode();
             break;
             
         default:
@@ -185,10 +184,6 @@ void handleInclusionModeTimeout() {
 }
 
 void setup() {
-    Serial.begin(115200);
-    while (!Serial) delay(100);
-    
-    loginfo_ln("=== RadioMesh Hub Device - Automatic Inclusion Example ===");
     
     if (!initializeHardware()) {
         logerr_ln("Hardware initialization failed");

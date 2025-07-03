@@ -173,4 +173,14 @@ public:
      * @return true if the device is included, false otherwise.
      */
     virtual bool isIncluded() const = 0;
+
+    /**
+     * @brief Factory reset the device.
+     *
+     * This will clear all stored state including inclusion status, keys, and message counters.
+     * The device will return to NOT_INCLUDED state after this operation.
+     * 
+     * @return RM_E_NONE if the factory reset was successful, an error code otherwise.
+     */
+    virtual int factoryReset() = 0;
 };

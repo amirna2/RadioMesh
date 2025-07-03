@@ -16,15 +16,18 @@ InclusionController::InclusionController(RadioMeshDevice& device) : device(devic
         // TODO: Handle this error case properly
     }
 
+    // All devices need keys for inclusion protocol
+    int rc = initializeKeys();
+    if (rc != RM_E_NONE) {
+        logerr_ln("Failed to initialize device keys");
+        // TODO: We should probably handle this failure case better
+        // Maybe set device to a failed state?
+    }
+    
     if (deviceType == MeshDeviceType::HUB) {
         state = DeviceInclusionState::INCLUDED;
     } else {
-        int rc = initializeKeys();
-        if (rc != RM_E_NONE) {
-            logerr_ln("Failed to initialize device keys");
-            // TODO: We should probably handle this failure case better
-            // Maybe set device to a failed state?
-        } else {
+        if (rc == RM_E_NONE) {
             // Standard device - try to load state
             DeviceInclusionState loadedState;
             int rc = storage->loadState(loadedState);

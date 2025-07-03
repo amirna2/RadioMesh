@@ -9,7 +9,7 @@ RadioMeshDevice::RadioMeshDevice(const std::string& name, const std::array<byte,
                                  MeshDeviceType type)
     : name(name), id(id), deviceType(type)
 {
-    inclusionController = std::make_unique<InclusionController>(*this);
+    // InclusionController will be created in initialize() after storage is set up
 }
 
 bool RadioMeshDevice::isIncluded() const
@@ -478,17 +478,52 @@ int RadioMeshDevice::enableInclusionMode(bool enable)
 
 int RadioMeshDevice::initialize()
 {
+    int rc = RM_E_NONE;
     eepromStorage = EEPROMStorage::getInstance();
+
+    if (eepromStorage == nullptr) {
+        logerr_ln("Failed to get storage instance");
+        return RM_E_DEVICE_INITIALIZATION_FAILED;
+    }
 
     ByteStorageParams defaultParams(EEPROM_STORAGE_MAX_SIZE);
     eepromStorage->setParams(defaultParams);
-    int rc = eepromStorage->begin();
+    rc = eepromStorage->begin();
 
     if (rc != RM_E_NONE) {
         logerr_ln("Failed to initialize storage");
-        eepromStorage = nullptr;  // Clear storage pointer on failure
+        eepromStorage = nullptr;
         return rc;
     }
 
+    inclusionController = std::make_unique<InclusionController>(*this);
+    return RM_E_NONE;
+}
+
+int RadioMeshDevice::factoryReset()
+{
+    if (eepromStorage == nullptr) {
+        logerr_ln("No storage available for factory reset");
+        return RM_E_UNKNOWN;
+    }
+    
+    loginfo_ln("Performing factory reset - clearing all stored state");
+    
+    // Clear all storage
+    int rc = eepromStorage->clear();
+    if (rc != RM_E_NONE) {
+        logerr_ln("Failed to clear storage: %d", rc);
+        return rc;
+    }
+    
+    // Reset frame counter
+    packetCounter = 0;
+    
+    // Recreate inclusion controller to reset its state
+    if (inclusionController != nullptr) {
+        inclusionController = std::make_unique<InclusionController>(*this);
+    }
+    
+    loginfo_ln("Factory reset complete");
     return RM_E_NONE;
 }

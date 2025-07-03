@@ -71,6 +71,7 @@ public:
     int sendInclusionSuccess() override;
 
     bool isIncluded() const override;
+    int factoryReset() override;
 
     // Device specific methods
 
