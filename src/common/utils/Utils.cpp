@@ -71,6 +71,9 @@ std::string convertToHex(const byte* data, int size)
 {
     // Note: This function is not thread safe
     std::string buf = ""; // static to avoid memory leak
+    if (size == 0) {
+        return buf;
+    }
     buf.clear();
     buf.reserve(size * 2); // 2 digit hex
     const char* hex = "0123456789ABCDEF";

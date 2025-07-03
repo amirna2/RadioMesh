@@ -50,8 +50,6 @@ typedef struct
     /// @brief The device has a WiFi access point
     bool hasWifiAccessPoint;
     /// @brief The device has storage
-    bool hasStorage;
-    /// @brief The device has a captive portal
     bool hasCaptivePortal;
 } DeviceBlueprint;
 
@@ -96,6 +94,7 @@ enum MessageTopic : uint8_t
     INCLUDE_RESPONSE = 0x07,
     INCLUDE_OPEN = 0x08,
     INCLUDE_CONFIRM = 0x09,
+    INCLUDE_SUCCESS = 0x0A,
     MAX_RESERVED = 0x0F
 };
 
@@ -175,7 +174,7 @@ typedef enum SignalIndicator
     EXCELLENT
 } SignalStrength;
 
-namespace MessageTopicUtils
+namespace TopicUtils
 {
 
 /**
@@ -279,6 +278,17 @@ inline bool isIncludeConfirm(uint8_t topic)
 }
 
 /**
+ * @brief Check if a topic is an inclusion topic
+ * @param topic Topic value
+ * @return true if the topic is an inclusion topic, false otherwise
+ */
+inline bool isInclusionTopic(uint8_t topic)
+{
+    return isIncludeRequest(topic) || isIncludeResponse(topic) || isIncludeOpen(topic) ||
+           isIncludeConfirm(topic);
+}
+
+/**
  * @brief Convert topic value to string representation
  * @param topic Topic value
  * @return String describing the topic. If the topic is unknown, "UNKNOWN" is returned.
@@ -302,11 +312,15 @@ inline std::string topicToString(uint8_t topic)
         return "INCLUDE_RESPONSE";
     case MessageTopic::INCLUDE_OPEN:
         return "INCLUDE_OPEN";
+    case MessageTopic::INCLUDE_CONFIRM:
+        return "INCLUDE_CONFIRM";
+    case MessageTopic::INCLUDE_SUCCESS:
+        return "INCLUDE_SUCCESS";
     default:
         return "0x" + std::to_string(topic);
     }
 }
-} // namespace MessageTopicUtils
+} // namespace TopicUtils
 
 /**
  * @struct ByteStorageParams
@@ -314,11 +328,9 @@ inline std::string topicToString(uint8_t topic)
  */
 struct ByteStorageParams
 {
-    size_t size;            // Total storage size in bytes
-    bool persist;           // Whether to persist across reboots
-    std::string mountPoint; // For filesystem implementations
+    const size_t size; // Total storage size in bytes
 
-    ByteStorageParams() : size(0), persist(true), mountPoint("")
+    ByteStorageParams() : size(0)
     {
     }
 
@@ -326,13 +338,23 @@ struct ByteStorageParams
      * @brief Construct a new Storage Params object
      *
      * @param size Total storage size in bytes
-     * @param persist Whether to persist across reboots
-     * @param mountPoint Mount point for filesystem implementations
      * @return A new ByteStorageParams object
      */
-    ByteStorageParams(size_t size, bool persist = true, const std::string& mountPoint = "")
-        : size(size), persist(persist), mountPoint(mountPoint)
+    ByteStorageParams(const size_t size) : size(size)
     {
+    }
+
+    /**
+     * @brief Copy constructor
+     * @param other The ByteStorageParams object to copy
+     * @return A new ByteStorageParams object
+     */
+    ByteStorageParams& operator=(const ByteStorageParams& other)
+    {
+        if (this != &other) {
+            const_cast<size_t&>(size) = other.size;
+        }
+        return *this;
     }
 };
 
@@ -424,4 +446,21 @@ struct CaptivePortalParams
     uint16_t webPort;
     uint16_t dnsPort;
     std::vector<PortalEventHandler> eventHandlers;
+};
+
+enum class DeviceInclusionState
+{
+    /// Device is not included in the network and can only send inclusion messages
+    NOT_INCLUDED = 0x01,
+    /// Device inclusion is in progress
+    INCLUSION_PENDING = 0x02,
+    /// Device is included in the network
+    INCLUDED = 0x03
+};
+
+// Inclusion mode
+enum class HubMode
+{
+    NORMAL,
+    INCLUSION // Hub is accepting new devices
 };

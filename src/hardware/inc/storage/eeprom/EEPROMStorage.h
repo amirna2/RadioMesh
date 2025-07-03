@@ -42,7 +42,8 @@ Address | Content             | Description
 --------+---------------------+-------------
 */
 
-#define EEPROM_STORAGE_MAX_SIZE 1024
+/// @brief EEPROM Maximum size
+const uint32_t EEPROM_STORAGE_MAX_SIZE = 1024;
 
 class EEPROMStorage : public IByteStorage
 {
@@ -112,4 +113,7 @@ private:
     int readStorageHeader(StorageHeader& header);
     int writeStorageHeader(const StorageHeader& header);
     bool isStorageValid();
+
+    // list of reserved keys (used internally)
+    const std::vector<std::string> reservedKeys = {"is", "mc", "sk"};
 };

@@ -69,6 +69,12 @@
 #define RM_E_INVALID_DEVICE_TYPE (-9)
 
 /**
+ * @brief Device initialization failed.
+ *        This error is returned when the device fails to initialize properly.
+ */
+#define RM_E_DEVICE_INITIALIZATION_FAILED (-10)
+
+/**
  * @brief The radio setup failed.
  */
 #define RM_E_RADIO_SETUP (-101)

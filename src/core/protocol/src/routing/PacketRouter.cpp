@@ -73,7 +73,7 @@ void PacketRouter::routeToNextHop(RadioMeshPacket& packetCopy)
 
 void PacketRouter::encryptPacketData(RadioMeshPacket& packetCopy)
 {
-    if (crypto != nullptr) {
+    if (crypto != nullptr && packetCopy.packetData.size() > 0) {
         packetCopy.packetData = crypto->encrypt(packetCopy.packetData);
     } else {
         logwarn_ln("No crypto component set. Packet will be sent unencrypted.");
@@ -89,7 +89,9 @@ void PacketRouter::calculatePacketCrc(RadioMeshPacket& packetCopy, RadioMeshUtil
                                                           packetCopy.packetData.size())
                                  .c_str());
     crc32.update(packetCopy.fcounter);
-    crc32.update(packetCopy.packetData.data(), packetCopy.packetData.size());
+    if (packetCopy.packetData.size() > 0) {
+        crc32.update(packetCopy.packetData.data(), packetCopy.packetData.size());
+    }
     packetCopy.packetCrc = crc32.finalize();
     std::string pktId =
         RadioMeshUtils::convertToHex(packetCopy.packetId.data(), packetCopy.packetId.size());

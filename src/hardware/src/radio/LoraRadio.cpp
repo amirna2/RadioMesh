@@ -136,13 +136,13 @@ int LoraRadio::setup(const LoraRadioParams& params)
     // set the interrupt handler to execute when packet tx or rx is done.
     radio->setDio1Action(LoraRadio::onInterrupt);
 
-    rc = radio->startReceive();
-    if (rc != RADIOLIB_ERR_NONE) {
-        logerr_ln("ERROR Failed to start receive");
-        return RM_E_RADIO_SETUP;
-    }
-    loginfo_ln("LoRa radio setup complete");
     isSetup = true;
+
+    rc = startReceive();
+    if (rc != RM_E_NONE) {
+        logerr_ln("ERROR Failed to start receive");
+        return rc;
+    }
     radioParams = params;
 
     return RM_E_NONE;
@@ -186,8 +186,8 @@ int LoraRadio::startTransmitPacket(byte* data, int length)
     resetRadioState(TX_STATE);
 
     [[maybe_unused]] long t1 = millis();
-    // TODO: Request RadioLib to use a const byte* instead of byte*
     tx_err = radio->startTransmit(data, length);
+    logdbg_ln("Radio sent packet...");
     switch (tx_err) {
     case RADIOLIB_ERR_NONE:
         logdbg_ln("TX data done in : %d ms", (millis() - t1));

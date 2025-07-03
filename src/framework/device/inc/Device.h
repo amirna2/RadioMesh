@@ -23,14 +23,13 @@
 #include <hardware/inc/display/oled/OledDisplay.h>
 #endif
 
+#include "InclusionController.h"
+
 class RadioMeshDevice : public IDevice
 {
 public:
-    RadioMeshDevice(const std::string& name, const std::array<byte, RM_ID_LENGTH>& id)
-        : name(name), id(id)
-    {
-    }
-
+    RadioMeshDevice(const std::string& name, const std::array<byte, RM_ID_LENGTH>& id,
+                    MeshDeviceType type);
     virtual ~RadioMeshDevice()
     {
         radio = nullptr;
@@ -66,7 +65,13 @@ public:
 
     int enableInclusionMode(bool enable) override;
     int sendInclusionOpen() override;
-    int sendInclusionRequest(const std::vector<byte>& publicKey, uint32_t initialCounter) override;
+    int sendInclusionRequest() override;
+    int sendInclusionConfirm() override;
+    int sendInclusionResponse(const RadioMeshPacket& packet) override;
+    int sendInclusionSuccess() override;
+
+    bool isIncluded() const override;
+    int factoryReset() override;
 
     // Device specific methods
 
@@ -167,14 +172,6 @@ public:
      */
     int initializeWifiAccessPoint(WifiAccessPointParams wifiAPParams);
 
-    /**
-     * @brief Initialize the storage component with the given parameters
-     *
-     * @param storageParams ByteStorageParams object containing the storage parameters
-     * @return int RM_E_NONE if the storage component was successfully initialized, an error code
-     * otherwise.
-     */
-    int initializeStorage(ByteStorageParams storageParams);
 
     /**
      * @brief Initialize the captive portal with the given parameters
@@ -197,6 +194,8 @@ private:
     std::array<byte, RM_ID_LENGTH> id;
     DeviceBlueprint blueprint;
     uint32_t packetCounter = 0;
+
+    std::unique_ptr<InclusionController> inclusionController; // Ownership
 
     LoraRadio* radio = nullptr;
     AesCrypto* crypto = nullptr;
@@ -224,23 +223,9 @@ private:
     PacketSentCallback onPacketSent = nullptr;
     PacketRouter* router = PacketRouter::getInstance();
 
-    bool isReceivedDataCrcValid(RadioMeshPacket& receivedPacket);
-
-    // Inclusion mode
-    enum class HubMode
-    {
-        NORMAL,
-        INCLUSION // Hub is accepting new devices
-    };
-
-    HubMode hubMode = HubMode::NORMAL;
-
-    bool deviceIncluded = false;
-
     RadioMeshPacket txPacket = RadioMeshPacket();
 
-    bool isIncluded()
-    {
-        return deviceIncluded;
-    }
+    bool isReceivedDataCrcValid(RadioMeshPacket& receivedPacket);
+    bool canSendMessage(uint8_t topic) const;
+    bool isInclusionMessage(uint8_t topic) const;
 };

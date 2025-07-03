@@ -139,27 +139,48 @@ public:
      * Hub only feature. Sends an empty broadcast message to notify devices that hub accepts new
      * devices Hub must be in inclusion mode.
      *
-     * @return RM_E_NONE on success
-     * @return RM_E_INVALID_STATE if not in inclusion mode
-     * @return RM_E_INVALID_DEVICE_TYPE if not a hub
+     * @return RM_E_NONE on success or an error code otherwise
      */
     virtual int sendInclusionOpen() = 0;
 
     /**
      * @brief Send inclusion request message
-     *
-     * Device must not be included to send this request.
-     * Message contains:
-     * - Device ID (already in packet header)
-     * - Device's public key
-     * - Initial message counter value
-     *
-     * @param publicKey Device's public key
-     * @param initialCounter Initial message counter value
-     * @return RM_E_NONE on success
-     * @return RM_E_INVALID_STATE if device already included
-     * @return RM_E_INVALID_DEVICE_TYPE if device is a HUB
+     * @return RM_E_NONE on success or an error code otherwise
      */
-    virtual int sendInclusionRequest(const std::vector<byte>& publicKey,
-                                     uint32_t initialCounter) = 0;
+    virtual int sendInclusionRequest() = 0;
+
+    /**
+     * @brief Send inclusion response message (HUB only)
+     * @param packet The request packet received from the device
+     * @return RM_E_NONE on success or an error code otherwise
+     */
+    virtual int sendInclusionResponse(const RadioMeshPacket& packet) = 0;
+
+    /**
+     * @brief Send inclusion confirm message
+     * @return RM_E_NONE on success or an error code otherwise
+     */
+    virtual int sendInclusionConfirm() = 0;
+
+    /**
+     * @brief Send inclusion success message
+     * @return true if the inclusion is successful, false otherwise.
+     */
+    virtual int sendInclusionSuccess() = 0;
+
+    /**
+     * @brief Check if the device is included in the network.
+     * @return true if the device is included, false otherwise.
+     */
+    virtual bool isIncluded() const = 0;
+
+    /**
+     * @brief Factory reset the device.
+     *
+     * This will clear all stored state including inclusion status, keys, and message counters.
+     * The device will return to NOT_INCLUDED state after this operation.
+     * 
+     * @return RM_E_NONE if the factory reset was successful, an error code otherwise.
+     */
+    virtual int factoryReset() = 0;
 };

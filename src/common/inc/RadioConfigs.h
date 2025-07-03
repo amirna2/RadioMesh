@@ -176,7 +176,7 @@ namespace LoraRadioPresets
 {
 const LoraRadioParams HELTEC_WIFI_LORA_32_V3(PinConfig(8, 12, 13, 14), 915.0, 20, 125.0, 8, 0,
                                              true);
-const LoraRadioParams HELTEC_CUBECELL(PinConfig(35, 47, 39, 38), 915.0, 20, 125.0, 7, 0, true);
-const LoraRadioParams XIAO_ESP32S3_WIO_SX1262(PinConfig(41, 42, 40, 39), 915.0, 20, 125.0, 7, 0,
+const LoraRadioParams HELTEC_CUBECELL(PinConfig(35, 47, 39, 38), 915.0, 20, 125.0, 8, 0, true);
+const LoraRadioParams XIAO_ESP32S3_WIO_SX1262(PinConfig(41, 42, 40, 39), 915.0, 20, 125.0, 8, 0,
                                               true);
 } // namespace LoraRadioPresets

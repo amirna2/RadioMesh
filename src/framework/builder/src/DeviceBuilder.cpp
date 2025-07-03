@@ -12,7 +12,6 @@ DeviceBuilder& DeviceBuilder::start()
                  .hasTxCallback = false,
                  .hasWifi = false,
                  .hasWifiAccessPoint = false,
-                 .hasStorage = false,
                  .hasCaptivePortal = false};
     relayEnabled = false;
     isBuilderStarted = true;
@@ -75,7 +74,7 @@ DeviceBuilder& DeviceBuilder::withOledDisplay(const OledDisplayParams& params)
     loginfo_ln("Setting OLED display params");
     blueprint.hasDisplay = true;
     oledDisplayParams = params;
-    useCustomDisplay = true;
+    useCustomDisplay = false;
 
     return *this;
 }
@@ -107,14 +106,6 @@ DeviceBuilder& DeviceBuilder::withWifiAccessPoint(const WifiAccessPointParams& p
     return *this;
 }
 
-DeviceBuilder& DeviceBuilder::withStorage(const ByteStorageParams& params)
-{
-    loginfo_ln("Setting storage params");
-    blueprint.hasStorage = true;
-    storageParams = params;
-    return *this;
-}
-
 DeviceBuilder& DeviceBuilder::withCaptivePortal(const CaptivePortalParams& params)
 {
     loginfo_ln("Setting captive portal params");
@@ -134,7 +125,7 @@ IDevice* DeviceBuilder::build(const std::string name, std::array<byte, RM_ID_LEN
     }
 
     // Create the Device object using setters as needed as per the blueprint
-    RadioMeshDevice* device = new RadioMeshDevice(name, id);
+    RadioMeshDevice* device = new RadioMeshDevice(name, id, deviceType);
 
     build_error = device->initialize();
     if (build_error != RM_E_NONE) {
@@ -230,16 +221,6 @@ IDevice* DeviceBuilder::build(const std::string name, std::array<byte, RM_ID_LEN
             return nullptr;
         }
         logdbg_ln("Wifi access point initialized.");
-    }
-
-    if (blueprint.hasStorage) {
-        build_error = device->initializeStorage(storageParams);
-        if (build_error != RM_E_NONE) {
-            logerr_ln("ERROR: Failed to create storage [%d]", build_error);
-            destroyDevice(device);
-            return nullptr;
-        }
-        logdbg_ln("Storage initialized.");
     }
 
     if (blueprint.hasCaptivePortal) {
