@@ -1,6 +1,5 @@
 var class_i_byte_storage =
 [
-    [ "~IByteStorage", "class_i_byte_storage.html#a9fc22ceb6708c3f2e0ede3bdd873ccd8", null ],
     [ "available", "class_i_byte_storage.html#ac20005e26c4674b0b88100af26e05e1a", null ],
     [ "begin", "class_i_byte_storage.html#abedb93623df42665c978c89b11b1fdac", null ],
     [ "clear", "class_i_byte_storage.html#a7e66cc2fa192eaa6965c1d2fd5a4b264", null ],

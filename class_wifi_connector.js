@@ -1,6 +1,5 @@
 var class_wifi_connector =
 [
-    [ "~WifiConnector", "class_wifi_connector.html#af17d4a2b3cba576507cfd38b37d39900", null ],
     [ "connect", "class_wifi_connector.html#a3496673f0f1b35cc39682e3bf47891a5", null ],
     [ "disconnect", "class_wifi_connector.html#a5bade5201498df9f9dbb4ec3cbbee322", null ],
     [ "getAvailableNetworks", "class_wifi_connector.html#af2a2eec50bc11e130dcbccf1f5330192", null ],

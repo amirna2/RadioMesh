@@ -24,7 +24,7 @@
 */
 var menudata={children:[
 {text:"Main Page",url:"index.html"},
-{text:"Modules",url:"modules.html"},
+{text:"Topics",url:"topics.html"},
 {text:"Classes",url:"annotated.html",children:[
 {text:"Class List",url:"annotated.html"},
 {text:"Class Index",url:"classes.html"},
@@ -72,6 +72,7 @@ var menudata={children:[
 {text:"File List",url:"files.html"},
 {text:"File Members",url:"globals.html",children:[
 {text:"All",url:"globals.html",children:[
+{text:"d",url:"globals.html#index_d"},
 {text:"h",url:"globals.html#index_h"},
 {text:"m",url:"globals.html#index_m"},
 {text:"r",url:"globals.html#index_r"},

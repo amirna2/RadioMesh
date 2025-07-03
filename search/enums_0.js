@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['meshdevicetype_462',['MeshDeviceType',['../_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7f',1,'Definitions.h']]],
-  ['messagetopic_463',['MessageTopic',['../_definitions_8h.html#a16002a54ff94e67b3e7b1ea618d5ca19',1,'Definitions.h']]]
+  ['deviceinclusionstate_0',['DeviceInclusionState',['../_definitions_8h.html#aadab43cd4209cf2dd62a0dff6e1e5192',1,'Definitions.h']]]
 ];

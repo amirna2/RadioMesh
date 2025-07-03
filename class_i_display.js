@@ -1,6 +1,5 @@
 var class_i_display =
 [
-    [ "~IDisplay", "class_i_display.html#a1565628adf40731374c6ea2c76afb1fb", null ],
     [ "clear", "class_i_display.html#a18d6fbd4f1e1eae404fcd9bdda9d1ead", null ],
     [ "drawNumber", "class_i_display.html#adf261d2a2c4dc03af6ebbe7a210c6df0", null ],
     [ "drawString", "class_i_display.html#a0ed2344fbefa9aefc05b662b0b185d29", null ],

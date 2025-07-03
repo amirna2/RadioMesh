@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['loraradio_278',['LoraRadio',['../class_lora_radio.html',1,'']]],
-  ['loraradioparams_279',['LoraRadioParams',['../class_lora_radio_params.html',1,'']]]
+  ['keymanager_0',['KeyManager',['../class_key_manager.html',1,'']]]
 ];

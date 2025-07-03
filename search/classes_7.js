@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['oleddisplay_280',['OledDisplay',['../class_oled_display.html',1,'']]],
-  ['oleddisplayparams_281',['OledDisplayParams',['../class_oled_display_params.html',1,'']]]
+  ['loraradio_0',['LoraRadio',['../class_lora_radio.html',1,'']]],
+  ['loraradioparams_1',['LoraRadioParams',['../class_lora_radio_params.html',1,'']]]
 ];

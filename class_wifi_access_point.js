@@ -1,6 +1,5 @@
 var class_wifi_access_point =
 [
-    [ "~WifiAccessPoint", "class_wifi_access_point.html#ad664698e7fc23dd9b2681dd2e299a458", null ],
     [ "isStarted", "class_wifi_access_point.html#a08f2e3092fffdc8a58552a8731e333c7", null ],
     [ "setParams", "class_wifi_access_point.html#a362e688a446be5d43bc67004ef76efd0", null ],
     [ "setup", "class_wifi_access_point.html#a5b255961aa35255444e83c89847f6338", null ],

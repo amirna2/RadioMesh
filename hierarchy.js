@@ -5,6 +5,7 @@ var hierarchy =
     [ "RadioMeshUtils::CRC32", "class_radio_mesh_utils_1_1_c_r_c32.html", null ],
     [ "DeviceBlueprint", "struct_device_blueprint.html", null ],
     [ "DeviceBuilder", "class_device_builder.html", null ],
+    [ "DeviceStorage", "class_device_storage.html", null ],
     [ "IByteStorage", "class_i_byte_storage.html", [
       [ "EEPROMStorage", "class_e_e_p_r_o_m_storage.html", null ]
     ] ],
@@ -22,6 +23,7 @@ var hierarchy =
     [ "IDisplay", "class_i_display.html", [
       [ "OledDisplay", "class_oled_display.html", null ]
     ] ],
+    [ "InclusionController", "class_inclusion_controller.html", null ],
     [ "IRadio", "class_i_radio.html", [
       [ "LoraRadio", "class_lora_radio.html", null ]
     ] ],
@@ -31,6 +33,7 @@ var hierarchy =
     [ "IWifiConnector", "class_i_wifi_connector.html", [
       [ "WifiConnector", "class_wifi_connector.html", null ]
     ] ],
+    [ "KeyManager", "class_key_manager.html", null ],
     [ "LoraRadioParams", "class_lora_radio_params.html", null ],
     [ "OledDisplayParams", "class_oled_display_params.html", null ],
     [ "PacketRouter", "class_packet_router.html", null ],

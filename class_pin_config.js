@@ -1,6 +1,5 @@
 var class_pin_config =
 [
-    [ "PinConfig", "class_pin_config.html#a625ad2c4b2642bb946001ee747305315", null ],
     [ "di0", "class_pin_config.html#a8260aba2613f80783eb08d49e89d6eba", null ],
     [ "di1", "class_pin_config.html#a139ae592233ba99bccd6cb6308c9139a", null ],
     [ "rst", "class_pin_config.html#a96f4f7e49b259f9ca81358dcedfb35fb", null ],

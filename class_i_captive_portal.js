@@ -1,6 +1,5 @@
 var class_i_captive_portal =
 [
-    [ "~ICaptivePortal", "class_i_captive_portal.html#a67e213e65dce838dd0c1793c56335dc2", null ],
     [ "getClientCount", "class_i_captive_portal.html#a11c9056c255920179f1bffe52dcf0878", null ],
     [ "isRunning", "class_i_captive_portal.html#a24329014400dd758222bc0f16f44ab35", null ],
     [ "sendToClient", "class_i_captive_portal.html#a71d3c50ee5227943569271b1d755f046", null ],

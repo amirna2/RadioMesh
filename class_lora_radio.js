@@ -1,6 +1,5 @@
 var class_lora_radio =
 [
-    [ "~LoraRadio", "class_lora_radio.html#a8af5d8423d94969ee2b1e94244cca7b1", null ],
     [ "checkAndClearRxFlag", "class_lora_radio.html#a533807b171e5d7caf225a88afd89254b", null ],
     [ "checkAndClearTxFlag", "class_lora_radio.html#a0f74c01663d4d297f3db2545057cdb6e", null ],
     [ "getParams", "class_lora_radio.html#a5b60d0d4b242df6d193826d519d0a13b", null ],

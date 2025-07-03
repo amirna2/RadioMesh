@@ -1,24 +1,27 @@
 var annotated_dup =
 [
     [ "RadioMeshUtils", null, [
-      [ "CRC32", "class_radio_mesh_utils_1_1_c_r_c32.html", "class_radio_mesh_utils_1_1_c_r_c32" ]
+      [ "CRC32", "class_radio_mesh_utils_1_1_c_r_c32.html", null ]
     ] ],
     [ "AesCrypto", "class_aes_crypto.html", "class_aes_crypto" ],
     [ "AsyncCaptivePortal", "class_async_captive_portal.html", "class_async_captive_portal" ],
     [ "ByteStorageParams", "struct_byte_storage_params.html", "struct_byte_storage_params" ],
-    [ "CaptivePortalParams", "struct_captive_portal_params.html", "struct_captive_portal_params" ],
+    [ "CaptivePortalParams", "struct_captive_portal_params.html", null ],
     [ "DeviceBlueprint", "struct_device_blueprint.html", "struct_device_blueprint" ],
     [ "DeviceBuilder", "class_device_builder.html", "class_device_builder" ],
+    [ "DeviceStorage", "class_device_storage.html", null ],
     [ "EEPROMStorage", "class_e_e_p_r_o_m_storage.html", "class_e_e_p_r_o_m_storage" ],
-    [ "IAesCrypto", "class_i_aes_crypto.html", "class_i_aes_crypto" ],
+    [ "IAesCrypto", "class_i_aes_crypto.html", null ],
     [ "IByteStorage", "class_i_byte_storage.html", "class_i_byte_storage" ],
     [ "ICaptivePortal", "class_i_captive_portal.html", "class_i_captive_portal" ],
     [ "ICrypto", "class_i_crypto.html", "class_i_crypto" ],
     [ "IDevice", "class_i_device.html", "class_i_device" ],
     [ "IDisplay", "class_i_display.html", "class_i_display" ],
+    [ "InclusionController", "class_inclusion_controller.html", "class_inclusion_controller" ],
     [ "IRadio", "class_i_radio.html", "class_i_radio" ],
     [ "IWifiAccessPoint", "class_i_wifi_access_point.html", "class_i_wifi_access_point" ],
     [ "IWifiConnector", "class_i_wifi_connector.html", "class_i_wifi_connector" ],
+    [ "KeyManager", "class_key_manager.html", null ],
     [ "LoraRadio", "class_lora_radio.html", "class_lora_radio" ],
     [ "LoraRadioParams", "class_lora_radio_params.html", "class_lora_radio_params" ],
     [ "OledDisplay", "class_oled_display.html", "class_oled_display" ],
@@ -30,11 +33,11 @@ var annotated_dup =
     [ "PortalMessage", "class_portal_message.html", "class_portal_message" ],
     [ "RadioMeshDevice", "class_radio_mesh_device.html", "class_radio_mesh_device" ],
     [ "RadioMeshPacket", "class_radio_mesh_packet.html", "class_radio_mesh_packet" ],
-    [ "RouteEntry", "struct_route_entry.html", "struct_route_entry" ],
-    [ "RoutingTable", "class_routing_table.html", "class_routing_table" ],
+    [ "RouteEntry", "struct_route_entry.html", null ],
+    [ "RoutingTable", "class_routing_table.html", null ],
     [ "SecurityParams", "struct_security_params.html", "struct_security_params" ],
     [ "WifiAccessPoint", "class_wifi_access_point.html", "class_wifi_access_point" ],
-    [ "WifiAccessPointParams", "struct_wifi_access_point_params.html", "struct_wifi_access_point_params" ],
+    [ "WifiAccessPointParams", "struct_wifi_access_point_params.html", null ],
     [ "WifiConnector", "class_wifi_connector.html", "class_wifi_connector" ],
-    [ "WifiParams", "struct_wifi_params.html", "struct_wifi_params" ]
+    [ "WifiParams", "struct_wifi_params.html", null ]
 ];

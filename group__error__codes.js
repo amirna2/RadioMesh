@@ -1,6 +1,7 @@
 var group__error__codes =
 [
     [ "RM_E_CRYPTO_SETUP", "group__error__codes.html#ga8a50d2e67a43654b06ba5e1b1321c8bd", null ],
+    [ "RM_E_DEVICE_INITIALIZATION_FAILED", "group__error__codes.html#ga97c2f36345a1b739712d016dfd420025", null ],
     [ "RM_E_DEVICE_NOT_INCLUDED", "group__error__codes.html#ga9550a629f5f5657498b8565db0c75f0a", null ],
     [ "RM_E_DISPLAY_DRAW_NUMBER", "group__error__codes.html#ga1e0c6991d54e9942bf7ed7c9f5b2cf38", null ],
     [ "RM_E_DISPLAY_DRAW_STRING", "group__error__codes.html#ga540528b63aeb44e5699d68cf0013c6b6", null ],

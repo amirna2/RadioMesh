@@ -1,9 +1,8 @@
 var class_radio_mesh_device =
 [
-    [ "RadioMeshDevice", "class_radio_mesh_device.html#a567f7932dff0a2fa258b51d7014dfaf2", null ],
-    [ "~RadioMeshDevice", "class_radio_mesh_device.html#aa69ff78ee9056f11e3503f59f12e9273", null ],
     [ "enableInclusionMode", "class_radio_mesh_device.html#ab91d568cdc8f11b02e4098c0f91b5048", null ],
     [ "enableRelay", "class_radio_mesh_device.html#a5dec9d369e64e01a46c082ef8382bcec", null ],
+    [ "factoryReset", "class_radio_mesh_device.html#a348120a77df1b7f520a25138f9f92641", null ],
     [ "getByteStorage", "class_radio_mesh_device.html#aa214a0338d32997be77bb7b3d38d48cb", null ],
     [ "getCaptivePortal", "class_radio_mesh_device.html#afb4be5af1f51a51fc99e35e08047b471", null ],
     [ "getCrypto", "class_radio_mesh_device.html#a984ccae3f110bc8d075dac87379c4529", null ],
@@ -21,16 +20,19 @@ var class_radio_mesh_device =
     [ "initializeCaptivePortal", "class_radio_mesh_device.html#a35d66ebb17a3d9b501ee0e33784fcbc3", null ],
     [ "initializeOledDisplay", "class_radio_mesh_device.html#a2c0acfde48c00a73f5307253448e6b89", null ],
     [ "initializeRadio", "class_radio_mesh_device.html#a10fe82940e90810c468f9c9afbdbd882", null ],
-    [ "initializeStorage", "class_radio_mesh_device.html#a82bafa32a004b67ff9de8c4fe27970ce", null ],
     [ "initializeWifi", "class_radio_mesh_device.html#ac3dcb1e73644873148d3519610c4f917", null ],
     [ "initializeWifiAccessPoint", "class_radio_mesh_device.html#aa95ca0b4a9e35f459a934cb86e5c2c52", null ],
+    [ "isIncluded", "class_radio_mesh_device.html#a491c233c554ea42968db4a038bab2f73", null ],
     [ "isRelayEnabled", "class_radio_mesh_device.html#a081a3c798f52fed684251ec84d7a86d7", null ],
     [ "registerCallback", "class_radio_mesh_device.html#ab41ee73a1a550f80ab120866752d0121", null ],
     [ "registerTxCallback", "class_radio_mesh_device.html#ac40c705982fd661bb4d0c792d9866198", null ],
     [ "run", "class_radio_mesh_device.html#a92fd50c70ef482b2e0074ffa9393ef86", null ],
     [ "sendData", "class_radio_mesh_device.html#a5f316931f893f1320c39727b6f379c78", null ],
+    [ "sendInclusionConfirm", "class_radio_mesh_device.html#ae392e8ea842a636424b29dcad7303d7e", null ],
     [ "sendInclusionOpen", "class_radio_mesh_device.html#a20d0f7edf24604272a218baca05b0c89", null ],
-    [ "sendInclusionRequest", "class_radio_mesh_device.html#aa4d4fb680f749143e6ab2d2fb10238bb", null ],
+    [ "sendInclusionRequest", "class_radio_mesh_device.html#a7f04a9ece0c05eb6fb07b3d0966daa43", null ],
+    [ "sendInclusionResponse", "class_radio_mesh_device.html#adaa1e703851800cce51c6d88d0ef8e49", null ],
+    [ "sendInclusionSuccess", "class_radio_mesh_device.html#a500f5ffa7437da3fcbe1d79c8a0ec733", null ],
     [ "setCustomDisplay", "class_radio_mesh_device.html#a1aa74113031cd886d047c95491766b3a", null ],
     [ "setDeviceType", "class_radio_mesh_device.html#ab586ea6da9e70b01081d7e95b046fdf7", null ]
 ];
