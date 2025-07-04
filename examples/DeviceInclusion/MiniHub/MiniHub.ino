@@ -142,8 +142,8 @@ void onPacketReceived(const RadioMeshPacket* packet, int err)
 
     // Convert device ID to string for tracking
     char deviceIdStr[16];
-    snprintf(deviceIdStr, sizeof(deviceIdStr), "%02X%02X%02X%02X", 
-             packet->sourceDevId[0], packet->sourceDevId[1], 
+    snprintf(deviceIdStr, sizeof(deviceIdStr), "%02X%02X%02X%02X",
+             packet->sourceDevId[0], packet->sourceDevId[1],
              packet->sourceDevId[2], packet->sourceDevId[3]);
     std::string deviceId(deviceIdStr);
 
@@ -160,7 +160,7 @@ void onPacketReceived(const RadioMeshPacket* packet, int err)
         successfulInclusions++;
         loginfo_ln("Received inclusion confirmation from device %s - inclusion completed successfully (total: %d)",
                    deviceId.c_str(), successfulInclusions);
-        
+
         // Add device to tracking
         DeviceInfo newDevice;
         newDevice.id = deviceId;
@@ -168,13 +168,13 @@ void onPacketReceived(const RadioMeshPacket* packet, int err)
         newDevice.lastSeen = millis();
         newDevice.rssi = radio ? radio->getRSSI() : -100;
         connectedDevicesMap[deviceId] = newDevice;
-        
+
         sendInclusionEvent("success", deviceId);
-        
+
         // Send updated device list to web clients
         std::vector<byte> emptyData;
         handleGetDevices(nullptr, emptyData);
-        
+
         // Exit inclusion mode after successful inclusion
         stopInclusionMode();
         break;
@@ -275,7 +275,7 @@ void startInclusionMode()
     successfulInclusions = 0;
 
     loginfo_ln("Inclusion mode active - devices can now join the network");
-    
+
     // Send status update to web clients
     if (device && device->getCaptivePortal() && device->getCaptivePortal()->isRunning()) {
         std::vector<byte> emptyData;
@@ -295,7 +295,7 @@ void stopInclusionMode()
 
     loginfo_ln("Inclusion session summary: %d requests, %d successful", totalInclusionRequests,
                successfulInclusions);
-    
+
     // Send status update to web clients
     if (device && device->getCaptivePortal() && device->getCaptivePortal()->isRunning()) {
         std::vector<byte> emptyData;
@@ -324,11 +324,6 @@ void setup()
 
     appState = AppState::READY;
     displayStatus();
-
-    // Automatically start inclusion mode for demonstration
-    // In real applications, this would be triggered by user input (button press, web UI, etc.)
-    // delay(2000);
-    // startInclusionMode();
 }
 
 void loop()
@@ -348,18 +343,14 @@ void loop()
         if (inclusionModeActive) {
             displayStatus();
         }
-        
+
         // Send status update to web clients if captive portal is active
         if (device && device->getCaptivePortal() && device->getCaptivePortal()->isRunning()) {
             std::vector<byte> emptyData;
             handleGetStatus(nullptr, emptyData);
         }
-        
+
         lastStatusUpdate = millis();
     }
-
-    // In a real application, you would handle user input here
-    // For example: button press to start/stop inclusion mode
-
     delay(10);
 }

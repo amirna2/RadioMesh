@@ -8,6 +8,7 @@
 extern IDevice* device;
 extern bool inclusionModeActive;
 extern unsigned long inclusionModeStartTime;
+extern AppState appState;
 
 // Device info structure
 struct DeviceInfo {
@@ -24,11 +25,11 @@ class StatusMessage : public PortalMessage {
     std::string jsonData;
 public:
     StatusMessage(const std::string& data) : jsonData(data) {}
-    
+
     std::string getType() const override {
         return "status_update";
     }
-    
+
     std::string serialize() const override {
         return jsonData;
     }
@@ -39,11 +40,11 @@ class DeviceListMessage : public PortalMessage {
     std::string jsonData;
 public:
     DeviceListMessage(const std::string& data) : jsonData(data) {}
-    
+
     std::string getType() const override {
         return "device_list";
     }
-    
+
     std::string serialize() const override {
         return jsonData;
     }
@@ -54,11 +55,11 @@ class LogMessage : public PortalMessage {
     std::string jsonData;
 public:
     LogMessage(const std::string& data) : jsonData(data) {}
-    
+
     std::string getType() const override {
         return "log_entry";
     }
-    
+
     std::string serialize() const override {
         return jsonData;
     }
@@ -69,11 +70,11 @@ class InclusionEventMessage : public PortalMessage {
     std::string jsonData;
 public:
     InclusionEventMessage(const std::string& data) : jsonData(data) {}
-    
+
     std::string getType() const override {
         return "inclusion_event";
     }
-    
+
     std::string serialize() const override {
         return jsonData;
     }
@@ -82,30 +83,30 @@ public:
 // Handler: Get current status
 void handleGetStatus(void* client, const std::vector<byte>& data) {
     if (!device) return;
-    
+
     JsonDocument doc;
     JsonObject root = doc.to<JsonObject>();
-    
+
     // Get hub ID
     auto hubId = device->getDeviceId();
     char hubIdStr[16];
-    snprintf(hubIdStr, sizeof(hubIdStr), "%02X%02X%02X%02X", 
+    snprintf(hubIdStr, sizeof(hubIdStr), "%02X%02X%02X%02X",
              hubId[0], hubId[1], hubId[2], hubId[3]);
-    
+
     root["hubId"] = hubIdStr;
     root["inclusionMode"] = inclusionModeActive;
     root["deviceCount"] = connectedDevicesMap.size();
-    
+
     // Calculate time remaining if inclusion mode is active
     if (inclusionModeActive) {
         unsigned long elapsed = millis() - inclusionModeStartTime;
         unsigned long remaining = (60000 - elapsed) / 1000; // 60 second timeout
         root["inclusionTimeRemaining"] = remaining;
     }
-    
+
     std::string jsonStr;
     serializeJson(doc, jsonStr);
-    
+
     auto msg = StatusMessage(jsonStr);
     device->getCaptivePortal()->sendToClients(msg);
 }
@@ -113,41 +114,20 @@ void handleGetStatus(void* client, const std::vector<byte>& data) {
 // Handler: Set inclusion mode
 void handleSetInclusionMode(void* client, const std::vector<byte>& data) {
     if (!device) return;
-    
+
     // Convert to string like chat does
     std::string command(data.begin(), data.end());
-    
+
     bool enable = (command == "enable");
-    
-    // Enable or disable inclusion mode
-    int rc = device->enableInclusionMode(enable);
-    if (rc == RM_E_NONE) {
-        inclusionModeActive = enable;
-        if (enable) {
-            inclusionModeStartTime = millis();
-            // Send inclusion open broadcast
-            device->sendInclusionOpen();
-            
-            // Log the action
-            JsonDocument logDoc;
-            logDoc["message"] = "Inclusion mode enabled";
-            logDoc["level"] = "info";
-            std::string logStr;
-            serializeJson(logDoc, logStr);
-            auto logMsg = LogMessage(logStr);
-            device->getCaptivePortal()->sendToClients(logMsg);
-        } else {
-            // Log the action
-            JsonDocument logDoc;
-            logDoc["message"] = "Inclusion mode disabled";
-            logDoc["level"] = "info";
-            std::string logStr;
-            serializeJson(logDoc, logStr);
-            auto logMsg = LogMessage(logStr);
-            device->getCaptivePortal()->sendToClients(logMsg);
-        }
+
+    if (enable) {
+        // Start inclusion mode using the existing function
+        startInclusionMode();
+    } else {
+        // Stop inclusion mode using the existing function
+        stopInclusionMode();
     }
-    
+
     // Send updated status
     handleGetStatus(client, data);
 }
@@ -155,10 +135,10 @@ void handleSetInclusionMode(void* client, const std::vector<byte>& data) {
 // Handler: Get device list
 void handleGetDevices(void* client, const std::vector<byte>& data) {
     if (!device) return;
-    
+
     JsonDocument doc;
     JsonArray devices = doc["devices"].to<JsonArray>();
-    
+
     for (const auto& pair : connectedDevicesMap) {
         JsonObject dev = devices.add<JsonObject>();
         dev["id"] = pair.second.id;
@@ -166,10 +146,10 @@ void handleGetDevices(void* client, const std::vector<byte>& data) {
         dev["lastSeen"] = pair.second.lastSeen;
         dev["rssi"] = pair.second.rssi;
     }
-    
+
     std::string jsonStr;
     serializeJson(doc, jsonStr);
-    
+
     auto msg = DeviceListMessage(jsonStr);
     device->getCaptivePortal()->sendToClients(msg);
 }
@@ -177,15 +157,15 @@ void handleGetDevices(void* client, const std::vector<byte>& data) {
 // Helper function to send inclusion events
 void sendInclusionEvent(const std::string& event, const std::string& deviceId) {
     if (!device || !device->getCaptivePortal()) return;
-    
+
     JsonDocument doc;
     doc["event"] = event;
     doc["deviceId"] = deviceId;
     doc["timestamp"] = millis();
-    
+
     std::string jsonStr;
     serializeJson(doc, jsonStr);
-    
+
     auto msg = InclusionEventMessage(jsonStr);
     device->getCaptivePortal()->sendToClients(msg);
 }
@@ -334,7 +314,7 @@ const char* ADMIN_PANEL_HTML = R"=====(
     <div class="container">
         <h1>MiniHub Admin Panel</h1>
         <div class="hub-id">Hub ID: <span id="hubId">Loading...</span></div>
-        
+
         <div class="section">
             <h2>Inclusion Control</h2>
             <div class="inclusion-control">
@@ -345,7 +325,7 @@ const char* ADMIN_PANEL_HTML = R"=====(
                 <span id="countdown" class="countdown" style="display: none;"></span>
             </div>
         </div>
-        
+
         <div class="section">
             <h2>Connected Devices</h2>
             <div id="deviceTableContainer">
@@ -363,7 +343,7 @@ const char* ADMIN_PANEL_HTML = R"=====(
                 <div id="noDevices" class="no-devices">No devices connected</div>
             </div>
         </div>
-        
+
         <div class="section">
             <h2>Activity Log</h2>
             <div id="activityLog" class="activity-log"></div>
@@ -375,13 +355,13 @@ const char* ADMIN_PANEL_HTML = R"=====(
         let inclusionActive = false;
         let countdownInterval = null;
         let devices = new Map();
-        
+
         // Format time for log entries
         function formatTime(timestamp) {
             const date = new Date(timestamp);
             return date.toLocaleTimeString();
         }
-        
+
         // Add log entry
         function addLogEntry(message, type = 'info') {
             const log = document.getElementById('activityLog');
@@ -391,20 +371,20 @@ const char* ADMIN_PANEL_HTML = R"=====(
             log.appendChild(entry);
             log.scrollTop = log.scrollHeight;
         }
-        
+
         // Update device table
         function updateDeviceTable() {
             const table = document.getElementById('deviceTable');
             const noDevices = document.getElementById('noDevices');
             const tbody = document.getElementById('deviceList');
-            
+
             if (devices.size === 0) {
                 table.style.display = 'none';
                 noDevices.style.display = 'block';
             } else {
                 table.style.display = 'table';
                 noDevices.style.display = 'none';
-                
+
                 tbody.innerHTML = '';
                 devices.forEach((device, id) => {
                     const row = tbody.insertRow();
@@ -417,14 +397,14 @@ const char* ADMIN_PANEL_HTML = R"=====(
                 });
             }
         }
-        
+
         // Get RSSI signal strength class
         function getRssiClass(rssi) {
             if (rssi > -60) return 'good';
             if (rssi > -80) return 'fair';
             return 'poor';
         }
-        
+
         // Toggle inclusion mode
         function toggleInclusionMode() {
             if (ws && ws.readyState === WebSocket.OPEN) {
@@ -434,20 +414,20 @@ const char* ADMIN_PANEL_HTML = R"=====(
                 }));
             }
         }
-        
+
         // Update inclusion status UI
         function updateInclusionStatus(active, timeRemaining = 0) {
             inclusionActive = active;
             const button = document.getElementById('toggleInclusion');
             const status = document.getElementById('inclusionStatus');
             const countdown = document.getElementById('countdown');
-            
+
             if (active) {
                 button.textContent = 'Disable Inclusion Mode';
                 button.className = 'toggle-button disable';
                 status.textContent = 'Active';
                 status.className = 'status-indicator status-active';
-                
+
                 if (timeRemaining > 0) {
                     countdown.textContent = `${timeRemaining}s remaining`;
                     countdown.style.display = 'inline';
@@ -458,35 +438,35 @@ const char* ADMIN_PANEL_HTML = R"=====(
                 status.textContent = 'Inactive';
                 status.className = 'status-indicator status-inactive';
                 countdown.style.display = 'none';
-                
+
                 if (countdownInterval) {
                     clearInterval(countdownInterval);
                     countdownInterval = null;
                 }
             }
         }
-        
+
         // Connect WebSocket like the working chat example
         function connectWebSocket() {
             ws = new WebSocket('ws://' + location.hostname + '/ws');
-            
+
             ws.onopen = () => {
                 addLogEntry('Connected to hub', 'success');
                 // Request initial status
                 ws.send(JSON.stringify({ type: 'get_status', data: 'request' }));
                 ws.send(JSON.stringify({ type: 'get_devices', data: 'request' }));
             };
-            
+
             ws.onmessage = (event) => {
                 const msg = JSON.parse(event.data);
-                
+
                 switch(msg.type) {
                     case 'status_update':
                         const statusData = JSON.parse(msg.data);
                         updateInclusionStatus(statusData.inclusionMode, statusData.inclusionTimeRemaining);
                         document.getElementById('hubId').textContent = statusData.hubId || 'Unknown';
                         break;
-                        
+
                     case 'device_list':
                         const deviceData = JSON.parse(msg.data);
                         devices.clear();
@@ -495,38 +475,38 @@ const char* ADMIN_PANEL_HTML = R"=====(
                         });
                         updateDeviceTable();
                         break;
-                        
+
                     case 'inclusion_event':
                         const eventData = JSON.parse(msg.data);
-                        addLogEntry(`Inclusion: ${eventData.event} from device ${eventData.deviceId}`, 
+                        addLogEntry(`Inclusion: ${eventData.event} from device ${eventData.deviceId}`,
                                    eventData.event.includes('success') ? 'success' : 'info');
                         break;
-                        
+
                     case 'device_added':
                         const addedData = JSON.parse(msg.data);
                         devices.set(addedData.id, addedData);
                         updateDeviceTable();
                         addLogEntry(`Device ${addedData.id} added to network`, 'success');
                         break;
-                        
+
                     case 'log_entry':
                         const logData = JSON.parse(msg.data);
                         addLogEntry(logData.message, logData.level);
                         break;
                 }
             };
-            
+
             ws.onclose = () => {
                 addLogEntry('Disconnected from hub', 'error');
                 updateInclusionStatus(false);
                 setTimeout(connectWebSocket, 2000);
             };
-            
+
             ws.onerror = () => {
                 addLogEntry('Connection error', 'error');
             };
         }
-        
+
         // Initialize
         connectWebSocket();
         addLogEntry('Admin panel initialized', 'info');
