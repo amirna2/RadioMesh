@@ -6,10 +6,12 @@
  * InclusionController handles all inclusion logic automatically. The application
  * simply enables inclusion mode and monitors the process.
  */
-#include "chat.h"
+#include "admin_panel.h"
 #include "device_info.h"
 #include <Arduino.h>
 #include <RadioMesh.h>
+#include <ArduinoJson.h>
+#include <map>
 
 // Application states (much simpler than before)
 enum class AppState
@@ -39,6 +41,9 @@ bool inclusionModeActive = false;
 // Counters for monitoring
 int totalInclusionRequests = 0;
 int successfulInclusions = 0;
+
+// Device tracking for admin panel
+std::map<std::string, DeviceInfo> connectedDevicesMap;
 
 bool setupWifiConnector()
 {
@@ -108,7 +113,7 @@ void displayStatus()
         break;
 
     case AppState::READY:
-        loginfo_ln("Status: Hub Ready - waiting for inclusion request");
+        loginfo_ln("Status: Hub Ready - inclusion mode INACTIVE (use web panel to enable)");
         break;
 
     case AppState::INCLUSION_MODE_ACTIVE: {
@@ -126,8 +131,7 @@ void displayStatus()
 }
 
 /**
- * Callback for monitoring inclusion messages (optional)
- * The inclusion protocol works automatically, but we can monitor it for UI updates
+ * Callback for monitoring inclusion messages and tracking devices
  */
 void onPacketReceived(const RadioMeshPacket* packet, int err)
 {
@@ -136,25 +140,53 @@ void onPacketReceived(const RadioMeshPacket* packet, int err)
         return;
     }
 
-    // Monitor inclusion messages for statistics
+    // Convert device ID to string for tracking
+    char deviceIdStr[16];
+    snprintf(deviceIdStr, sizeof(deviceIdStr), "%02X%02X%02X%02X", 
+             packet->sourceDevId[0], packet->sourceDevId[1], 
+             packet->sourceDevId[2], packet->sourceDevId[3]);
+    std::string deviceId(deviceIdStr);
+
+    // Monitor inclusion messages for statistics and web UI
     switch (packet->topic) {
     case MessageTopic::INCLUDE_REQUEST:
         totalInclusionRequests++;
-        loginfo_ln("Received inclusion request from device (total: %d)", totalInclusionRequests);
+        loginfo_ln("Received inclusion request from device %s (total: %d)", deviceId.c_str(), totalInclusionRequests);
+        sendInclusionEvent("request_received", deviceId);
         break;
 
-    case MessageTopic::INCLUDE_CONFIRM:
+    case MessageTopic::INCLUDE_CONFIRM: {
         // When hub receives INCLUDE_CONFIRM, it sends INCLUDE_SUCCESS to complete the protocol
         successfulInclusions++;
-        loginfo_ln("Received inclusion confirmation - inclusion completed successfully (total: %d)",
-                   successfulInclusions);
+        loginfo_ln("Received inclusion confirmation from device %s - inclusion completed successfully (total: %d)",
+                   deviceId.c_str(), successfulInclusions);
+        
+        // Add device to tracking
+        DeviceInfo newDevice;
+        newDevice.id = deviceId;
+        newDevice.name = "Device_" + deviceId.substr(4, 4); // Use last 4 chars for short name
+        newDevice.lastSeen = millis();
+        newDevice.rssi = radio ? radio->getRSSI() : -100;
+        connectedDevicesMap[deviceId] = newDevice;
+        
+        sendInclusionEvent("success", deviceId);
+        
+        // Send updated device list to web clients
+        std::vector<byte> emptyData;
+        handleGetDevices(nullptr, emptyData);
+        
         // Exit inclusion mode after successful inclusion
         stopInclusionMode();
         break;
+    }
 
     default:
-        // Handle other application messages here
-        loginfo_ln("Received application message, topic: 0x%02X", packet->topic);
+        // Handle other application messages and update device last seen
+        if (connectedDevicesMap.find(deviceId) != connectedDevicesMap.end()) {
+            connectedDevicesMap[deviceId].lastSeen = millis();
+            connectedDevicesMap[deviceId].rssi = radio ? radio->getRSSI() : -100;
+        }
+        loginfo_ln("Received application message from %s, topic: 0x%02X", deviceId.c_str(), packet->topic);
         break;
     }
 }
@@ -166,7 +198,6 @@ bool initializeHardware()
     device = DeviceBuilder()
                  .start()
                  .withLoraRadio(LoraRadioPresets::XIAO_ESP32S3_WIO_SX1262)
-                 .withWifi(wifiParams)
                  .withWifiAccessPoint(apParams)
                  .withCaptivePortal(portalParams)
                  .withRxPacketCallback(onPacketReceived)
@@ -244,6 +275,12 @@ void startInclusionMode()
     successfulInclusions = 0;
 
     loginfo_ln("Inclusion mode active - devices can now join the network");
+    
+    // Send status update to web clients
+    if (device && device->getCaptivePortal() && device->getCaptivePortal()->isRunning()) {
+        std::vector<byte> emptyData;
+        handleGetStatus(nullptr, emptyData);
+    }
 }
 
 void stopInclusionMode()
@@ -258,6 +295,12 @@ void stopInclusionMode()
 
     loginfo_ln("Inclusion session summary: %d requests, %d successful", totalInclusionRequests,
                successfulInclusions);
+    
+    // Send status update to web clients
+    if (device && device->getCaptivePortal() && device->getCaptivePortal()->isRunning()) {
+        std::vector<byte> emptyData;
+        handleGetStatus(nullptr, emptyData);
+    }
 }
 
 void handleInclusionModeTimeout()
@@ -284,8 +327,8 @@ void setup()
 
     // Automatically start inclusion mode for demonstration
     // In real applications, this would be triggered by user input (button press, web UI, etc.)
-    delay(2000);
-    startInclusionMode();
+    // delay(2000);
+    // startInclusionMode();
 }
 
 void loop()
@@ -299,9 +342,19 @@ void loop()
     // Handle inclusion mode timeout
     handleInclusionModeTimeout();
 
-    // Update display periodically
+    // Update display and web clients periodically
     if (millis() - lastStatusUpdate >= STATUS_UPDATE_INTERVAL) {
-        displayStatus();
+        // Only display status if inclusion mode is active (to avoid spam)
+        if (inclusionModeActive) {
+            displayStatus();
+        }
+        
+        // Send status update to web clients if captive portal is active
+        if (device && device->getCaptivePortal() && device->getCaptivePortal()->isRunning()) {
+            std::vector<byte> emptyData;
+            handleGetStatus(nullptr, emptyData);
+        }
+        
         lastStatusUpdate = millis();
     }
 
