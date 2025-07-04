@@ -134,7 +134,7 @@ int WifiAccessPoint::start()
         return RM_E_WIFI_AP_START_FAILED;
     }
 
-    success = WiFi.mode(WIFI_AP);
+    success = WiFi.mode(WIFI_AP_STA);
     if (!success) {
         logerr_ln("ERROR: setting WiFi mode to AP");
         return RM_E_WIFI_AP_START_FAILED;

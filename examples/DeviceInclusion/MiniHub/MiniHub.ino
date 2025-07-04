@@ -1,18 +1,19 @@
 /**
  * @file MiniHub.ino
  * @brief Hub Device Automatic Inclusion Example
- * 
+ *
  * This example demonstrates the automatic inclusion protocol where the
  * InclusionController handles all inclusion logic automatically. The application
  * simply enables inclusion mode and monitors the process.
  */
-
+#include "chat.h"
 #include "device_info.h"
 #include <Arduino.h>
 #include <RadioMesh.h>
 
 // Application states (much simpler than before)
-enum class AppState {
+enum class AppState
+{
     INITIALIZING,
     READY,
     INCLUSION_MODE_ACTIVE,
@@ -27,6 +28,8 @@ const unsigned long STATUS_UPDATE_INTERVAL = 2000;   // Update display every 2 s
 IDevice* device = nullptr;
 IDisplay* display = nullptr;
 IRadio* radio = nullptr;
+IWifiConnector* wifiConnector = nullptr;
+IWifiAccessPoint* wifiAP = nullptr;
 
 AppState appState = AppState::INITIALIZING;
 unsigned long inclusionModeStartTime = 0;
@@ -37,27 +40,88 @@ bool inclusionModeActive = false;
 int totalInclusionRequests = 0;
 int successfulInclusions = 0;
 
-void displayStatus() {
+bool setupWifiConnector()
+{
+    wifiConnector = device->getWifiConnector();
+    if (wifiConnector == nullptr) {
+        logerr_ln("ERROR  wifiConnector is null");
+        return false;
+    } else {
+        // Setup the wifi connector with the built-in configuration
+        int retries = 0;
+        while (wifiConnector->connect() != RM_E_NONE) {
+            logerr_ln("ERROR: WifiConnector setup failed.");
+            retries++;
+            if (retries > 3) {
+                return false;
+            }
+        }
+    }
+    std::string ip = wifiConnector->getIpAddress();
+    loginfo_ln("IP Address: %s", ip.c_str());
+    return true;
+}
+
+bool setupAccessPoint()
+{
+    wifiAP = device->getWifiAccessPoint();
+    if (wifiAP == nullptr) {
+        logerr_ln("ERROR  wifiAP is null");
+        return false;
+    } else {
+        // Setup the wifi access point with the built-in configuration
+        if (wifiAP->setup() != RM_E_NONE) {
+            logerr_ln("ERROR: WifiAP setup failed.");
+            return false;
+        }
+        if (wifiAP->start() != RM_E_NONE) {
+            logerr_ln("ERROR: WifiAP start failed.");
+            return false;
+        }
+    }
+    return true;
+}
+
+bool setupCaptivePortal()
+{
+    ICaptivePortal* captivePortal = device->getCaptivePortal();
+    if (captivePortal == nullptr) {
+        logerr_ln("ERROR captivePortal is null");
+        return false;
+    } else {
+        // Start the captive portal web server
+        if (captivePortal->start() != RM_E_NONE) {
+            logerr_ln("ERROR: CaptivePortal start failed.");
+            return false;
+        }
+        loginfo_ln("Captive portal started on AP IP: %s", WiFi.softAPIP().toString().c_str());
+    }
+    return true;
+}
+
+void displayStatus()
+{
     // Status shown via serial log on Xiao board (no display)
     switch (appState) {
-        case AppState::INITIALIZING:
-            loginfo_ln("Status: Initializing...");
-            break;
-            
-        case AppState::READY:
-            loginfo_ln("Status: Hub Ready - waiting for inclusion request");
-            break;
-            
-        case AppState::INCLUSION_MODE_ACTIVE: {
-            unsigned long remaining = (INCLUSION_MODE_DURATION - (millis() - inclusionModeStartTime)) / 1000;
-            loginfo_ln("Status: Inclusion Active - Time: %lus, Requests: %d, Success: %d", 
-                      remaining, totalInclusionRequests, successfulInclusions);
-            break;
-        }
-            
-        case AppState::ERROR:
-            loginfo_ln("Status: ERROR - Check logs");
-            break;
+    case AppState::INITIALIZING:
+        loginfo_ln("Status: Initializing...");
+        break;
+
+    case AppState::READY:
+        loginfo_ln("Status: Hub Ready - waiting for inclusion request");
+        break;
+
+    case AppState::INCLUSION_MODE_ACTIVE: {
+        unsigned long remaining =
+            (INCLUSION_MODE_DURATION - (millis() - inclusionModeStartTime)) / 1000;
+        loginfo_ln("Status: Inclusion Active - Time: %lus, Requests: %d, Success: %d", remaining,
+                   totalInclusionRequests, successfulInclusions);
+        break;
+    }
+
+    case AppState::ERROR:
+        loginfo_ln("Status: ERROR - Check logs");
+        break;
     }
 }
 
@@ -65,42 +129,48 @@ void displayStatus() {
  * Callback for monitoring inclusion messages (optional)
  * The inclusion protocol works automatically, but we can monitor it for UI updates
  */
-void onPacketReceived(const RadioMeshPacket* packet, int err) {
+void onPacketReceived(const RadioMeshPacket* packet, int err)
+{
     if (err != RM_E_NONE || packet == nullptr) {
         logerr_ln("RX Failed [%d]", err);
         return;
     }
-    
+
     // Monitor inclusion messages for statistics
     switch (packet->topic) {
-        case MessageTopic::INCLUDE_REQUEST:
-            totalInclusionRequests++;
-            loginfo_ln("Received inclusion request from device (total: %d)", totalInclusionRequests);
-            break;
-            
-        case MessageTopic::INCLUDE_CONFIRM:
-            // When hub receives INCLUDE_CONFIRM, it sends INCLUDE_SUCCESS to complete the protocol
-            successfulInclusions++;
-            loginfo_ln("Received inclusion confirmation - inclusion completed successfully (total: %d)", successfulInclusions);
-            // Exit inclusion mode after successful inclusion
-            stopInclusionMode();
-            break;
-            
-        default:
-            // Handle other application messages here
-            loginfo_ln("Received application message, topic: 0x%02X", packet->topic);
-            break;
+    case MessageTopic::INCLUDE_REQUEST:
+        totalInclusionRequests++;
+        loginfo_ln("Received inclusion request from device (total: %d)", totalInclusionRequests);
+        break;
+
+    case MessageTopic::INCLUDE_CONFIRM:
+        // When hub receives INCLUDE_CONFIRM, it sends INCLUDE_SUCCESS to complete the protocol
+        successfulInclusions++;
+        loginfo_ln("Received inclusion confirmation - inclusion completed successfully (total: %d)",
+                   successfulInclusions);
+        // Exit inclusion mode after successful inclusion
+        stopInclusionMode();
+        break;
+
+    default:
+        // Handle other application messages here
+        loginfo_ln("Received application message, topic: 0x%02X", packet->topic);
+        break;
     }
 }
 
-bool initializeHardware() {
+bool initializeHardware()
+{
     loginfo_ln("Initializing hub device...");
-    
+
     device = DeviceBuilder()
-                .start()
-                .withLoraRadio(LoraRadioPresets::XIAO_ESP32S3_WIO_SX1262)
-                .withRxPacketCallback(onPacketReceived)
-                .build(DEVICE_NAME, DEVICE_ID, MeshDeviceType::HUB);
+                 .start()
+                 .withLoraRadio(LoraRadioPresets::XIAO_ESP32S3_WIO_SX1262)
+                 .withWifi(wifiParams)
+                 .withWifiAccessPoint(apParams)
+                 .withCaptivePortal(portalParams)
+                 .withRxPacketCallback(onPacketReceived)
+                 .build(DEVICE_NAME, DEVICE_ID, MeshDeviceType::HUB);
 
     if (!device) {
         logerr_ln("Failed to create device");
@@ -121,21 +191,35 @@ bool initializeHardware() {
         logerr_ln("Radio setup failed: %d", rc);
         return false;
     }
-    
-    // No display on Xiao board
+
+    //    if (!setupWifiConnector()) {
+    //        logerr_ln("ERROR  wifi setup failed");
+    //        return false;
+    //    }
+
+    if (!setupAccessPoint()) {
+        logerr_ln("ERROR  wifiAP setup failed");
+        return false;
+    }
+
+    if (!setupCaptivePortal()) {
+        logerr_ln("ERROR  captivePortal setup failed");
+        return false;
+    }
 
     loginfo_ln("Hub device initialized successfully");
     return true;
 }
 
-void startInclusionMode() {
+void startInclusionMode()
+{
     if (appState != AppState::READY) {
         logwarn_ln("Cannot start inclusion mode in current state");
         return;
     }
-    
+
     loginfo_ln("Starting inclusion mode for %lu seconds", INCLUSION_MODE_DURATION / 1000);
-    
+
     // Enable inclusion mode
     int rc = device->enableInclusionMode(true);
     if (rc != RM_E_NONE) {
@@ -143,7 +227,7 @@ void startInclusionMode() {
         appState = AppState::ERROR;
         return;
     }
-    
+
     // Start broadcasting inclusion open messages
     rc = device->sendInclusionOpen();
     if (rc != RM_E_NONE) {
@@ -152,71 +236,77 @@ void startInclusionMode() {
         appState = AppState::ERROR;
         return;
     }
-    
+
     inclusionModeStartTime = millis();
     inclusionModeActive = true;
     appState = AppState::INCLUSION_MODE_ACTIVE;
     totalInclusionRequests = 0;
     successfulInclusions = 0;
-    
+
     loginfo_ln("Inclusion mode active - devices can now join the network");
 }
 
-void stopInclusionMode() {
-    if (!inclusionModeActive) return;
-    
+void stopInclusionMode()
+{
+    if (!inclusionModeActive)
+        return;
+
     loginfo_ln("Stopping inclusion mode");
     device->enableInclusionMode(false);
     inclusionModeActive = false;
     appState = AppState::READY;
-    
-    loginfo_ln("Inclusion session summary: %d requests, %d successful", 
-              totalInclusionRequests, successfulInclusions);
+
+    loginfo_ln("Inclusion session summary: %d requests, %d successful", totalInclusionRequests,
+               successfulInclusions);
 }
 
-void handleInclusionModeTimeout() {
-    if (!inclusionModeActive) return;
-    
+void handleInclusionModeTimeout()
+{
+    if (!inclusionModeActive)
+        return;
+
     if (millis() - inclusionModeStartTime >= INCLUSION_MODE_DURATION) {
         loginfo_ln("Inclusion mode timeout reached");
         stopInclusionMode();
     }
 }
 
-void setup() {
-    
+void setup()
+{
     if (!initializeHardware()) {
         logerr_ln("Hardware initialization failed");
         appState = AppState::ERROR;
         return;
     }
-    
+
     appState = AppState::READY;
     displayStatus();
-    
+
     // Automatically start inclusion mode for demonstration
     // In real applications, this would be triggered by user input (button press, web UI, etc.)
     delay(2000);
     startInclusionMode();
 }
 
-void loop() {
-    if (!device) return;
-    
+void loop()
+{
+    if (!device)
+        return;
+
     // Run the device
     device->run();
-    
+
     // Handle inclusion mode timeout
     handleInclusionModeTimeout();
-    
+
     // Update display periodically
     if (millis() - lastStatusUpdate >= STATUS_UPDATE_INTERVAL) {
         displayStatus();
         lastStatusUpdate = millis();
     }
-    
+
     // In a real application, you would handle user input here
     // For example: button press to start/stop inclusion mode
-    
+
     delay(10);
 }
