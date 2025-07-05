@@ -178,6 +178,9 @@ void onPacketReceived(const RadioMeshPacket* packet, int err)
         // Send updated device list to web clients
         std::vector<byte> emptyData;
         handleGetDevices(nullptr, emptyData);
+
+        // Stop inclusion mode after successful inclusion
+        stopInclusionMode();
         break;
     }
 

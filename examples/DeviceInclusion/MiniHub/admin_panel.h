@@ -23,6 +23,44 @@ struct DeviceInfo
 
 extern std::map<std::string, DeviceInfo> connectedDevicesMap;
 
+/**
+ * @brief Escape JSON strings for embedding in CaptivePortal WebSocket messages
+ * 
+ * The CaptivePortal framework creates WebSocket messages in the format:
+ * {"type":"message_type","data":"serialized_content"}
+ * 
+ * When serialize() returns JSON (e.g., {"key":"value"}), it gets embedded as:
+ * {"type":"status","data":"{"key":"value"}"}  // Invalid JSON - unescaped quotes
+ * 
+ * This function escapes the JSON so the final message becomes:
+ * {"type":"status","data":"{\"key\":\"value\"}"}  // Valid JSON - escaped quotes
+ * 
+ * JavaScript can then parse it in two steps:
+ * 1. const msg = JSON.parse(event.data);        // Parse wrapper
+ * 2. const data = JSON.parse(msg.data);         // Parse actual JSON content
+ * 
+ * Alternative approaches for custom portals:
+ * - Modify the framework to detect JSON and handle it automatically
+ * - Use a different message format that doesn't embed JSON in strings
+ * - Send binary data instead of JSON strings
+ * 
+ * @param jsonData Raw JSON string to be escaped
+ * @return Escaped JSON string safe for embedding in WebSocket data field
+ */
+std::string escapeJsonString(const std::string& jsonData)
+{
+    std::string escaped;
+    for (char c : jsonData) {
+        if (c == '"') escaped += "\\\"";
+        else if (c == '\\') escaped += "\\\\";
+        else if (c == '\n') escaped += "\\n";
+        else if (c == '\r') escaped += "\\r";
+        else if (c == '\t') escaped += "\\t";
+        else escaped += c;
+    }
+    return escaped;
+}
+
 // Status message for WebSocket
 class StatusMessage : public PortalMessage
 {
@@ -40,17 +78,7 @@ public:
 
     std::string serialize() const override
     {
-        // Escape the JSON string for embedding in the data field
-        std::string escaped;
-        for (char c : jsonData) {
-            if (c == '"') escaped += "\\\"";
-            else if (c == '\\') escaped += "\\\\";
-            else if (c == '\n') escaped += "\\n";
-            else if (c == '\r') escaped += "\\r";
-            else if (c == '\t') escaped += "\\t";
-            else escaped += c;
-        }
-        return escaped;
+        return escapeJsonString(jsonData);
     }
 };
 
@@ -71,7 +99,7 @@ public:
 
     std::string serialize() const override
     {
-        return jsonData;
+        return escapeJsonString(jsonData);
     }
 };
 
@@ -92,7 +120,7 @@ public:
 
     std::string serialize() const override
     {
-        return jsonData;
+        return escapeJsonString(jsonData);
     }
 };
 
@@ -113,7 +141,7 @@ public:
 
     std::string serialize() const override
     {
-        return jsonData;
+        return escapeJsonString(jsonData);
     }
 };
 
