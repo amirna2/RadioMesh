@@ -12,7 +12,7 @@ DeviceBuilder& DeviceBuilder::start()
                  .hasTxCallback = false,
                  .hasWifi = false,
                  .hasWifiAccessPoint = false,
-                 .hasCaptivePortal = false};
+                 .hasDevicePortal = false};
     relayEnabled = false;
     isBuilderStarted = true;
 
@@ -106,11 +106,11 @@ DeviceBuilder& DeviceBuilder::withWifiAccessPoint(const WifiAccessPointParams& p
     return *this;
 }
 
-DeviceBuilder& DeviceBuilder::withCaptivePortal(const CaptivePortalParams& params)
+DeviceBuilder& DeviceBuilder::withDevicePortal(const DevicePortalParams& params)
 {
-    loginfo_ln("Setting captive portal params");
-    blueprint.hasCaptivePortal = true;
-    captivePortalParams = params;
+    loginfo_ln("Setting device portal params");
+    blueprint.hasDevicePortal = true;
+    devicePortalParams = params;
     return *this;
 }
 
@@ -223,19 +223,19 @@ IDevice* DeviceBuilder::build(const std::string name, std::array<byte, RM_ID_LEN
         logdbg_ln("Wifi access point initialized.");
     }
 
-    if (blueprint.hasCaptivePortal) {
+    if (blueprint.hasDevicePortal) {
         if (!blueprint.hasWifiAccessPoint) {
-            logerr_ln("ERROR: Captive portal requires WiFi access point.");
+            logerr_ln("ERROR: Device portal requires WiFi access point.");
             destroyDevice(device);
             return nullptr;
         }
-        build_error = device->initializeCaptivePortal(captivePortalParams);
+        build_error = device->initializeDevicePortal(devicePortalParams);
         if (build_error != RM_E_NONE) {
-            logerr_ln("ERROR: Failed to create captive portal [%d]", build_error);
+            logerr_ln("ERROR: Failed to create device portal [%d]", build_error);
             destroyDevice(device);
             return nullptr;
         }
-        logdbg_ln("Captive portal initialized.");
+        logdbg_ln("Device portal initialized.");
     }
     loginfo_ln("Device [%s] built successfully.", device->getDeviceName().c_str());
     isBuilderStarted = false;

@@ -6,13 +6,13 @@
 #include <vector>
 
 /**
- * @class ICaptivePortal
- * @brief Interface for captive portal functionality
+ * @class IDevicePortal
+ * @brief Interface for device portal functionality
  */
-class ICaptivePortal
+class IDevicePortal
 {
 public:
-    virtual ~ICaptivePortal() = default;
+    virtual ~IDevicePortal() = default;
 
     /**
      * @brief Start the portal services

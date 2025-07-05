@@ -41,7 +41,7 @@ bool setupAccessPoint()
     }
 
     // Proper portal setup and start
-    auto portal = device->getCaptivePortal();
+    auto portal = device->getDevicePortal();
     if (!portal) {
         logerr_ln("ERROR: portal is null");
         return false;
@@ -66,7 +66,7 @@ void setup()
                  .start()
                  .withLoraRadio(radioParams)
                  .withWifiAccessPoint(apParams)
-                 .withCaptivePortal(portalParams)
+                 .withDevicePortal(portalParams)
                  .withRxPacketCallback(RxCallback)
                  .build(DEVICE_NAME, DEVICE_ID, MeshDeviceType::HUB);
 

@@ -23,7 +23,7 @@ enum class AppState
 };
 
 // Constants
-const unsigned long STATUS_UPDATE_INTERVAL = 2000;   // Update display every 2 seconds
+const unsigned long STATUS_UPDATE_INTERVAL = 2000; // Update display every 2 seconds
 
 // Global variables
 IDevice* device = nullptr;
@@ -86,19 +86,19 @@ bool setupAccessPoint()
     return true;
 }
 
-bool setupCaptivePortal()
+bool setupDevicePortal()
 {
-    ICaptivePortal* captivePortal = device->getCaptivePortal();
-    if (captivePortal == nullptr) {
-        logerr_ln("ERROR captivePortal is null");
+    IDevicePortal* devicePortal = device->getDevicePortal();
+    if (devicePortal == nullptr) {
+        logerr_ln("ERROR devicePortal is null");
         return false;
     } else {
-        // Start the captive portal web server
-        if (captivePortal->start() != RM_E_NONE) {
-            logerr_ln("ERROR: CaptivePortal start failed.");
+        // Start the device portal web server
+        if (devicePortal->start() != RM_E_NONE) {
+            logerr_ln("ERROR: DevicePortal start failed.");
             return false;
         }
-        loginfo_ln("setupCaptivePortal: Portal started on AP IP: %s",
+        loginfo_ln("setupDevicePortal: Portal started on AP IP: %s",
                    WiFi.softAPIP().toString().c_str());
     }
     return true;
@@ -115,16 +115,16 @@ void displayStatus()
     case AppState::READY: {
         auto deviceId = device->getDeviceId();
         char deviceIdStr[16];
-        snprintf(deviceIdStr, sizeof(deviceIdStr), "%02X%02X%02X%02X", 
-                 deviceId[0], deviceId[1], deviceId[2], deviceId[3]);
-        loginfo_ln("Status: Hub Ready - Device ID: %s, Connected Devices: %d",
-                   deviceIdStr, connectedDevicesMap.size());
+        snprintf(deviceIdStr, sizeof(deviceIdStr), "%02X%02X%02X%02X", deviceId[0], deviceId[1],
+                 deviceId[2], deviceId[3]);
+        loginfo_ln("Status: Hub Ready - Device ID: %s, Connected Devices: %d", deviceIdStr,
+                   connectedDevicesMap.size());
         break;
     }
 
     case AppState::INCLUSION_MODE_ACTIVE:
-        loginfo_ln("Status: Inclusion Active - Requests: %d, Success: %d",
-                   totalInclusionRequests, successfulInclusions);
+        loginfo_ln("Status: Inclusion Active - Requests: %d, Success: %d", totalInclusionRequests,
+                   successfulInclusions);
         break;
 
     case AppState::ERROR:
@@ -204,7 +204,7 @@ bool initializeHardware()
                  .start()
                  .withLoraRadio(LoraRadioPresets::XIAO_ESP32S3_WIO_SX1262)
                  .withWifiAccessPoint(apParams)
-                 .withCaptivePortal(portalParams)
+                 .withDevicePortal(portalParams)
                  .withRxPacketCallback(onPacketReceived)
                  .build(DEVICE_NAME, DEVICE_ID, MeshDeviceType::HUB);
 
@@ -238,8 +238,8 @@ bool initializeHardware()
         return false;
     }
 
-    if (!setupCaptivePortal()) {
-        logerr_ln("ERROR  captivePortal setup failed");
+    if (!setupDevicePortal()) {
+        logerr_ln("ERROR  devicePortal setup failed");
         return false;
     }
 
@@ -281,7 +281,7 @@ void startInclusionMode()
     loginfo_ln("Inclusion mode active - devices can now join the network");
 
     // Send status update to web clients
-    if (device && device->getCaptivePortal() && device->getCaptivePortal()->isRunning()) {
+    if (device && device->getDevicePortal() && device->getDevicePortal()->isRunning()) {
         std::vector<byte> emptyData;
         handleGetStatus(nullptr, emptyData);
     }
@@ -301,7 +301,7 @@ void stopInclusionMode()
                successfulInclusions);
 
     // Send status update to web clients
-    if (device && device->getCaptivePortal() && device->getCaptivePortal()->isRunning()) {
+    if (device && device->getDevicePortal() && device->getDevicePortal()->isRunning()) {
         std::vector<byte> emptyData;
         handleGetStatus(nullptr, emptyData);
     }
@@ -352,8 +352,8 @@ void loop()
             displayStatus();
         }
 
-        // Send status update to web clients if captive portal is active
-        if (device && device->getCaptivePortal() && device->getCaptivePortal()->isRunning()) {
+        // Send status update to web clients if device portal is active
+        if (device && device->getDevicePortal() && device->getDevicePortal()->isRunning()) {
             std::vector<byte> emptyData;
             handleGetStatus(nullptr, emptyData);
         }

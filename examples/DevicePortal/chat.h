@@ -33,7 +33,7 @@ void handleSendMessage(void* client, const std::vector<byte>& data)
     }
 
     auto msg = ChatMessage(data);
-    device->getCaptivePortal()->sendToClients(msg);
+    device->getDevicePortal()->sendToClients(msg);
 }
 
 class StatusMessage : public PortalMessage
@@ -67,7 +67,7 @@ void handleJoinEvent(void* client, const std::vector<byte>& data)
     std::string jsonStr(data.begin(), data.end());
     loginfo_ln("Join event: %s", jsonStr.c_str());
     auto msg = StatusMessage(jsonStr);
-    device->getCaptivePortal()->sendToClients(msg);
+    device->getDevicePortal()->sendToClients(msg);
 }
 
 void handleLeaveEvent(void* client, const std::vector<byte>& data)
@@ -81,7 +81,7 @@ void handleLeaveEvent(void* client, const std::vector<byte>& data)
     std::string jsonStr(data.begin(), data.end());
     loginfo_ln("Leave event: %s", jsonStr.c_str());
     auto msg = StatusMessage(jsonStr);
-    device->getCaptivePortal()->sendToClients(msg);
+    device->getDevicePortal()->sendToClients(msg);
 }
 
 const char* CHAT_PORTAL_HTML = R"=====(
@@ -312,7 +312,7 @@ const char* CHAT_PORTAL_HTML = R"=====(
 </html>
 )=====";
 
-CaptivePortalParams portalParams{
+DevicePortalParams portalParams{
     "RadioMesh Chat",
     CHAT_PORTAL_HTML,
     80,

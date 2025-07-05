@@ -14,7 +14,7 @@
 #include <hardware/inc/storage/eeprom/EEPROMStorage.h>
 
 #ifndef RM_NO_WIFI
-#include <framework/captive_portal/inc/AsyncCaptivePortal.h>
+#include <framework/device_portal/inc/AsyncDevicePortal.h>
 #include <hardware/inc/wifi/WifiAccessPoint.h>
 #include <hardware/inc/wifi/WifiConnector.h>
 #endif
@@ -52,7 +52,7 @@ public:
     IWifiConnector* getWifiConnector() override;
     IWifiAccessPoint* getWifiAccessPoint() override;
     IByteStorage* getByteStorage() override;
-    ICaptivePortal* getCaptivePortal() override;
+    IDevicePortal* getDevicePortal() override;
 
     int sendData(const uint8_t topic, const std::vector<byte> data,
                  std::array<byte, RM_ID_LENGTH> target = BROADCAST_ADDR) override;
@@ -174,13 +174,13 @@ public:
     int initializeWifiAccessPoint(WifiAccessPointParams wifiAPParams);
 
     /**
-     * @brief Initialize the captive portal with the given parameters
-     * @param captivePortalParams CaptivePortalParams object containing the captive portal
+     * @brief Initialize the device portal with the given parameters
+     * @param devicePortalParams DevicePortalParams object containing the device portal
      * parameters
-     * @return int RM_E_NONE if the captive portal was successfully initialized, an error code
+     * @return int RM_E_NONE if the device portal was successfully initialized, an error code
      * otherwise.
      */
-    int initializeCaptivePortal(CaptivePortalParams captivePortalParams);
+    int initializeDevicePortal(DevicePortalParams devicePortalParams);
 
     /**
      * @brief Handle received data
@@ -209,7 +209,7 @@ private:
 #ifndef RM_NO_WIFI
     WifiConnector* wifiConnector = nullptr;
     WifiAccessPoint* wifiAccessPoint = nullptr;
-    AsyncCaptivePortal* captivePortal = nullptr;
+    AsyncDevicePortal* devicePortal = nullptr;
 #endif
 
     LoraRadioParams radioParams = LoraRadioParams();

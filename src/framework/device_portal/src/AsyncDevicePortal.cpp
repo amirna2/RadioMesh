@@ -1,45 +1,45 @@
 #include <common/inc/Definitions.h>
-#include <framework/captive_portal/inc/AsyncCaptivePortal.h>
+#include <framework/device_portal/inc/AsyncDevicePortal.h>
 
-AsyncCaptivePortal* AsyncCaptivePortal::instance = nullptr;
+AsyncDevicePortal* AsyncDevicePortal::instance = nullptr;
 
 #ifdef RM_NO_WIFI
-int AsyncCaptivePortal::setParams(const CaptivePortalParams& params)
+int AsyncDevicePortal::setParams(const DevicePortalParams& params)
 {
     return RM_E_NOT_SUPPORTED;
 }
 
-int AsyncCaptivePortal::start()
+int AsyncDevicePortal::start()
 {
     return RM_E_NOT_SUPPORTED;
 }
 
-int AsyncCaptivePortal::stop()
+int AsyncDevicePortal::stop()
 {
     return RM_E_NOT_SUPPORTED;
 }
 
-int AsyncCaptivePortal::sendToClients(const PortalMessage& message)
+int AsyncDevicePortal::sendToClients(const PortalMessage& message)
 {
     return RM_E_NOT_SUPPORTED;
 }
 
-int AsyncCaptivePortal::sendToClient(uint32_t clientId, const PortalMessage& message)
+int AsyncDevicePortal::sendToClient(uint32_t clientId, const PortalMessage& message)
 {
     return RM_E_NOT_SUPPORTED;
 }
 
-bool AsyncCaptivePortal::isRunning()
+bool AsyncDevicePortal::isRunning()
 {
     return false;
 }
 
-size_t AsyncCaptivePortal::getClientCount()
+size_t AsyncDevicePortal::getClientCount()
 {
     return 0;
 }
 #else
-int AsyncCaptivePortal::setParams(const CaptivePortalParams& params)
+int AsyncDevicePortal::setParams(const DevicePortalParams& params)
 {
     // Check for valid parameters
     if (params.webPort == 0 || params.dnsPort == 0 || params.indexHtml.empty()) {
@@ -51,7 +51,7 @@ int AsyncCaptivePortal::setParams(const CaptivePortalParams& params)
     return RM_E_NONE;
 }
 
-int AsyncCaptivePortal::start()
+int AsyncDevicePortal::start()
 {
     if (isRunning()) {
         return RM_E_NONE;
@@ -79,7 +79,7 @@ int AsyncCaptivePortal::start()
         request->send(200, "text/html", html.c_str());
     });
 
-    // Handle captive portal detection
+    // Handle device portal detection
     webServer->onNotFound([](AsyncWebServerRequest* request) { request->redirect("/"); });
 
     // Start servers
@@ -87,11 +87,11 @@ int AsyncCaptivePortal::start()
     webServer->begin();
 
     running = true;
-    loginfo_ln("Captive portal started");
+    loginfo_ln("Device portal started");
     return RM_E_NONE;
 }
 
-int AsyncCaptivePortal::stop()
+int AsyncDevicePortal::stop()
 {
     if (!isRunning()) {
         return RM_E_INVALID_STATE;
@@ -106,11 +106,11 @@ int AsyncCaptivePortal::stop()
     webSocket.reset();
 
     running = false;
-    loginfo_ln("Captive portal stopped");
+    loginfo_ln("Device portal stopped");
     return RM_E_NONE;
 }
 
-int AsyncCaptivePortal::sendToClient(uint32_t clientId, const PortalMessage& message)
+int AsyncDevicePortal::sendToClient(uint32_t clientId, const PortalMessage& message)
 {
     if (!isRunning() || !webSocket) {
         return RM_E_INVALID_STATE;
@@ -133,7 +133,7 @@ int AsyncCaptivePortal::sendToClient(uint32_t clientId, const PortalMessage& mes
     return RM_E_NONE;
 }
 
-int AsyncCaptivePortal::sendToClients(const PortalMessage& message)
+int AsyncDevicePortal::sendToClients(const PortalMessage& message)
 {
     if (!isRunning() || !webSocket)
         return RM_E_INVALID_STATE;
@@ -144,18 +144,17 @@ int AsyncCaptivePortal::sendToClients(const PortalMessage& message)
     return RM_E_NONE;
 }
 
-bool AsyncCaptivePortal::isRunning()
+bool AsyncDevicePortal::isRunning()
 {
     return running;
 }
 
-size_t AsyncCaptivePortal::getClientCount()
+size_t AsyncDevicePortal::getClientCount()
 {
     return webSocket ? webSocket->count() : 0;
 }
 
-void AsyncCaptivePortal::handleClientMessage(AsyncWebSocketClient* client, uint8_t* data,
-                                             size_t len)
+void AsyncDevicePortal::handleClientMessage(AsyncWebSocketClient* client, uint8_t* data, size_t len)
 {
     if (!client || !client->canSend()) {
         logerr_ln("Invalid client or client cannot send");
@@ -204,8 +203,8 @@ void AsyncCaptivePortal::handleClientMessage(AsyncWebSocketClient* client, uint8
     }
 }
 
-void AsyncCaptivePortal::handleWebSocketEvent(AwsEventType type, AsyncWebSocketClient* client,
-                                              uint8_t* data, size_t len)
+void AsyncDevicePortal::handleWebSocketEvent(AwsEventType type, AsyncWebSocketClient* client,
+                                             uint8_t* data, size_t len)
 {
     if (!client)
         return;
@@ -241,7 +240,7 @@ void AsyncCaptivePortal::handleWebSocketEvent(AwsEventType type, AsyncWebSocketC
     }
 }
 
-std::string AsyncCaptivePortal::injectWebSocketCode(const std::string& html)
+std::string AsyncDevicePortal::injectWebSocketCode(const std::string& html)
 {
     char formattedBuffer[4096];
     std::string wsCode = R"(
@@ -277,7 +276,7 @@ std::string AsyncCaptivePortal::injectWebSocketCode(const std::string& html)
                     console.error('Invalid message format:', e);
                 }
             };
-            window.captivePortalWs = ws;
+            window.devicePortalWs = ws;
         }
 
         window.addEventListener('load', connectWebSocket);
