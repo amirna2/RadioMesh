@@ -1,17 +1,20 @@
 #pragma once
 #include <Arduino.h>
-#include <RadioMesh.h>
 #include <ArduinoJson.h>
-#include <vector>
+#include <RadioMesh.h>
 #include <map>
+#include <vector>
 
 extern IDevice* device;
 extern bool inclusionModeActive;
-extern unsigned long inclusionModeStartTime;
-extern AppState appState;
+
+// Function declarations from MiniHub.ino
+void webStartInclusionMode();
+void webStopInclusionMode();
 
 // Device info structure
-struct DeviceInfo {
+struct DeviceInfo
+{
     std::string id;
     std::string name;
     unsigned long lastSeen;
@@ -21,68 +24,104 @@ struct DeviceInfo {
 extern std::map<std::string, DeviceInfo> connectedDevicesMap;
 
 // Status message for WebSocket
-class StatusMessage : public PortalMessage {
+class StatusMessage : public PortalMessage
+{
     std::string jsonData;
-public:
-    StatusMessage(const std::string& data) : jsonData(data) {}
 
-    std::string getType() const override {
+public:
+    StatusMessage(const std::string& data) : jsonData(data)
+    {
+    }
+
+    std::string getType() const override
+    {
         return "status_update";
     }
 
-    std::string serialize() const override {
-        return jsonData;
+    std::string serialize() const override
+    {
+        // Escape the JSON string for embedding in the data field
+        std::string escaped;
+        for (char c : jsonData) {
+            if (c == '"') escaped += "\\\"";
+            else if (c == '\\') escaped += "\\\\";
+            else if (c == '\n') escaped += "\\n";
+            else if (c == '\r') escaped += "\\r";
+            else if (c == '\t') escaped += "\\t";
+            else escaped += c;
+        }
+        return escaped;
     }
 };
 
 // Device list message
-class DeviceListMessage : public PortalMessage {
+class DeviceListMessage : public PortalMessage
+{
     std::string jsonData;
-public:
-    DeviceListMessage(const std::string& data) : jsonData(data) {}
 
-    std::string getType() const override {
+public:
+    DeviceListMessage(const std::string& data) : jsonData(data)
+    {
+    }
+
+    std::string getType() const override
+    {
         return "device_list";
     }
 
-    std::string serialize() const override {
+    std::string serialize() const override
+    {
         return jsonData;
     }
 };
 
 // Log entry message
-class LogMessage : public PortalMessage {
+class LogMessage : public PortalMessage
+{
     std::string jsonData;
-public:
-    LogMessage(const std::string& data) : jsonData(data) {}
 
-    std::string getType() const override {
+public:
+    LogMessage(const std::string& data) : jsonData(data)
+    {
+    }
+
+    std::string getType() const override
+    {
         return "log_entry";
     }
 
-    std::string serialize() const override {
+    std::string serialize() const override
+    {
         return jsonData;
     }
 };
 
 // Inclusion event message
-class InclusionEventMessage : public PortalMessage {
+class InclusionEventMessage : public PortalMessage
+{
     std::string jsonData;
-public:
-    InclusionEventMessage(const std::string& data) : jsonData(data) {}
 
-    std::string getType() const override {
+public:
+    InclusionEventMessage(const std::string& data) : jsonData(data)
+    {
+    }
+
+    std::string getType() const override
+    {
         return "inclusion_event";
     }
 
-    std::string serialize() const override {
+    std::string serialize() const override
+    {
         return jsonData;
     }
 };
 
 // Handler: Get current status
-void handleGetStatus(void* client, const std::vector<byte>& data) {
-    if (!device) return;
+void handleGetStatus(void* client, const std::vector<byte>& data)
+{
+    if (!device)
+        return;
 
     JsonDocument doc;
     JsonObject root = doc.to<JsonObject>();
@@ -90,18 +129,17 @@ void handleGetStatus(void* client, const std::vector<byte>& data) {
     // Get hub ID
     auto hubId = device->getDeviceId();
     char hubIdStr[16];
-    snprintf(hubIdStr, sizeof(hubIdStr), "%02X%02X%02X%02X",
-             hubId[0], hubId[1], hubId[2], hubId[3]);
+    snprintf(hubIdStr, sizeof(hubIdStr), "%02X%02X%02X%02X", hubId[0], hubId[1], hubId[2],
+             hubId[3]);
 
     root["hubId"] = hubIdStr;
-    root["inclusionMode"] = inclusionModeActive;
+    // Check if inclusion mode is actually enabled on the device
+    bool inclusionMode = device->isInclusionModeEnabled();
+    root["inclusionMode"] = inclusionMode;
     root["deviceCount"] = connectedDevicesMap.size();
 
-    // Calculate time remaining if inclusion mode is active
-    if (inclusionModeActive) {
-        unsigned long elapsed = millis() - inclusionModeStartTime;
-        unsigned long remaining = (60000 - elapsed) / 1000; // 60 second timeout
-        root["inclusionTimeRemaining"] = remaining;
+    if (inclusionMode) {
+        root["inclusionTimeRemaining"] = 0;
     }
 
     std::string jsonStr;
@@ -112,20 +150,21 @@ void handleGetStatus(void* client, const std::vector<byte>& data) {
 }
 
 // Handler: Set inclusion mode
-void handleSetInclusionMode(void* client, const std::vector<byte>& data) {
-    if (!device) return;
+void handleSetInclusionMode(void* client, const std::vector<byte>& data)
+{
+    if (!device)
+        return;
 
     // Convert to string like chat does
     std::string command(data.begin(), data.end());
 
     bool enable = (command == "enable");
 
+    // Call proper functions that update app state correctly
     if (enable) {
-        // Start inclusion mode using the existing function
-        startInclusionMode();
+        webStartInclusionMode();
     } else {
-        // Stop inclusion mode using the existing function
-        stopInclusionMode();
+        webStopInclusionMode();
     }
 
     // Send updated status
@@ -133,8 +172,10 @@ void handleSetInclusionMode(void* client, const std::vector<byte>& data) {
 }
 
 // Handler: Get device list
-void handleGetDevices(void* client, const std::vector<byte>& data) {
-    if (!device) return;
+void handleGetDevices(void* client, const std::vector<byte>& data)
+{
+    if (!device)
+        return;
 
     JsonDocument doc;
     JsonArray devices = doc["devices"].to<JsonArray>();
@@ -155,8 +196,10 @@ void handleGetDevices(void* client, const std::vector<byte>& data) {
 }
 
 // Helper function to send inclusion events
-void sendInclusionEvent(const std::string& event, const std::string& deviceId) {
-    if (!device || !device->getCaptivePortal()) return;
+void sendInclusionEvent(const std::string& event, const std::string& deviceId)
+{
+    if (!device || !device->getCaptivePortal())
+        return;
 
     JsonDocument doc;
     doc["event"] = event;
@@ -407,7 +450,9 @@ const char* ADMIN_PANEL_HTML = R"=====(
 
         // Toggle inclusion mode
         function toggleInclusionMode() {
+            console.log('Toggling inclusion mode to', !inclusionActive);
             if (ws && ws.readyState === WebSocket.OPEN) {
+                console.log('Sending inclusion mode toggle with data:', !inclusionActive);
                 ws.send(JSON.stringify({
                     type: 'set_inclusion_mode',
                     data: !inclusionActive ? 'enable' : 'disable'
@@ -428,10 +473,7 @@ const char* ADMIN_PANEL_HTML = R"=====(
                 status.textContent = 'Active';
                 status.className = 'status-indicator status-active';
 
-                if (timeRemaining > 0) {
-                    countdown.textContent = `${timeRemaining}s remaining`;
-                    countdown.style.display = 'inline';
-                }
+                countdown.style.display = 'none';
             } else {
                 button.textContent = 'Enable Inclusion Mode';
                 button.className = 'toggle-button enable';
@@ -453,7 +495,7 @@ const char* ADMIN_PANEL_HTML = R"=====(
             ws.onopen = () => {
                 addLogEntry('Connected to hub', 'success');
                 // Request initial status
-                ws.send(JSON.stringify({ type: 'get_status', data: 'request' }));
+                ws.send(JSON.stringify({ type: 'get_status', data: {} }));
                 ws.send(JSON.stringify({ type: 'get_devices', data: 'request' }));
             };
 
@@ -516,14 +558,10 @@ const char* ADMIN_PANEL_HTML = R"=====(
 )=====";
 
 // Configure captive portal with admin panel
-CaptivePortalParams portalParams{
-    "MiniHub Admin",
-    ADMIN_PANEL_HTML,
-    80,
-    53,
-    {
-        {"get_status", handleGetStatus},
-        {"set_inclusion_mode", handleSetInclusionMode},
-        {"get_devices", handleGetDevices}
-    }
-};
+CaptivePortalParams portalParams{"MiniHub Admin",
+                                 ADMIN_PANEL_HTML,
+                                 80,
+                                 53,
+                                 {{"get_status", handleGetStatus},
+                                  {"set_inclusion_mode", handleSetInclusionMode},
+                                  {"get_devices", handleGetDevices}}};

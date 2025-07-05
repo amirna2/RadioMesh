@@ -238,7 +238,6 @@ ICaptivePortal* RadioMeshDevice::getCaptivePortal()
 
 #endif // RM_NO_WIFI
 
-
 IRadio* RadioMeshDevice::getRadio()
 {
     return radio;
@@ -349,19 +348,19 @@ int RadioMeshDevice::handleReceivedData()
     // Check if this is an inclusion message and handle it automatically
     if (isInclusionMessage(receivedPacket.topic)) {
         logdbg_ln("Received inclusion message with topic: 0x%02X", receivedPacket.topic);
-        
+
         // Let the InclusionController handle it automatically
         int result = inclusionController->handleInclusionMessage(receivedPacket);
         if (result != RM_E_NONE) {
             logerr_ln("Failed to handle inclusion message: %d", result);
         }
-        
+
         // Still notify application for monitoring if callback is set
         if (onPacketReceived != nullptr) {
             logdbg_ln("Notifying application about inclusion message");
             onPacketReceived(&receivedPacket, RM_E_NONE);
         }
-        
+
         // Don't forward inclusion messages
         return result;
     }
@@ -403,9 +402,8 @@ bool RadioMeshDevice::isRelayEnabled()
 
 int RadioMeshDevice::run()
 {
-    // Check for inclusion protocol timeouts
     inclusionController->checkProtocolTimeouts();
-    
+
     // handle radio Rx/Tx events
     if (radio->checkAndClearRxFlag()) {
         logtrace_ln("Packet RX done");
@@ -476,6 +474,11 @@ int RadioMeshDevice::enableInclusionMode(bool enable)
     }
 }
 
+bool RadioMeshDevice::isInclusionModeEnabled() const
+{
+    return inclusionController->isInclusionModeEnabled();
+}
+
 int RadioMeshDevice::initialize()
 {
     int rc = RM_E_NONE;
@@ -506,24 +509,24 @@ int RadioMeshDevice::factoryReset()
         logerr_ln("No storage available for factory reset");
         return RM_E_UNKNOWN;
     }
-    
+
     loginfo_ln("Performing factory reset - clearing all stored state");
-    
+
     // Clear all storage
     int rc = eepromStorage->clear();
     if (rc != RM_E_NONE) {
         logerr_ln("Failed to clear storage: %d", rc);
         return rc;
     }
-    
+
     // Reset frame counter
     packetCounter = 0;
-    
+
     // Recreate inclusion controller to reset its state
     if (inclusionController != nullptr) {
         inclusionController = std::make_unique<InclusionController>(*this);
     }
-    
+
     loginfo_ln("Factory reset complete");
     return RM_E_NONE;
 }

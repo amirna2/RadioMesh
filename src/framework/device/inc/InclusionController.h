@@ -133,11 +133,11 @@ private:
         WAITING_FOR_CONFIRMATION,           // Hub: Sent INCLUDE_RESPONSE, waiting for confirmation
         WAITING_FOR_SUCCESS                 // Device: Sent INCLUDE_CONFIRM, waiting for success
     };
-    
+
     InclusionProtocolState protocolState = PROTOCOL_IDLE;
     uint32_t stateStartTime = 0;            // When current state was entered
     uint8_t retryCount = 0;                 // Number of retries for current state
-    
+
     // State machine configuration
     static const uint32_t BASE_TIMEOUT_MS = 5000;     // 5 seconds base timeout
     static const uint8_t MAX_RETRIES = 3;              // Maximum retry attempts
