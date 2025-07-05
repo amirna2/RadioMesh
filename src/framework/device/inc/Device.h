@@ -64,6 +64,7 @@ public:
     void setDeviceType(MeshDeviceType type) override;
 
     int enableInclusionMode(bool enable) override;
+    bool isInclusionModeEnabled() const override;
     int sendInclusionOpen() override;
     int sendInclusionRequest() override;
     int sendInclusionConfirm() override;
@@ -171,7 +172,6 @@ public:
      * otherwise.
      */
     int initializeWifiAccessPoint(WifiAccessPointParams wifiAPParams);
-
 
     /**
      * @brief Initialize the captive portal with the given parameters

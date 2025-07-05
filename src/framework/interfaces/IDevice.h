@@ -134,6 +134,16 @@ public:
     virtual int enableInclusionMode(bool enable) = 0;
 
     /**
+     * @brief Check if the device is in inclusion mode.
+     *
+     * HUB only feature. Returns true if the hub is currently accepting new devices to join the
+     * network.
+     *
+     * @return true if inclusion mode is enabled, false otherwise.
+     */
+    virtual bool isInclusionModeEnabled() const = 0;
+
+    /**
      * @brief Send inclusion open broadcast message.
      *
      * Hub only feature. Sends an empty broadcast message to notify devices that hub accepts new
@@ -179,7 +189,7 @@ public:
      *
      * This will clear all stored state including inclusion status, keys, and message counters.
      * The device will return to NOT_INCLUDED state after this operation.
-     * 
+     *
      * @return RM_E_NONE if the factory reset was successful, an error code otherwise.
      */
     virtual int factoryReset() = 0;
