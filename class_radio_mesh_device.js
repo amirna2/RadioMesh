@@ -23,6 +23,7 @@ var class_radio_mesh_device =
     [ "initializeWifi", "class_radio_mesh_device.html#ac3dcb1e73644873148d3519610c4f917", null ],
     [ "initializeWifiAccessPoint", "class_radio_mesh_device.html#aa95ca0b4a9e35f459a934cb86e5c2c52", null ],
     [ "isIncluded", "class_radio_mesh_device.html#a491c233c554ea42968db4a038bab2f73", null ],
+    [ "isInclusionModeEnabled", "class_radio_mesh_device.html#a9c651bd6c35f81d6129828ad79ad1cfe", null ],
     [ "isRelayEnabled", "class_radio_mesh_device.html#a081a3c798f52fed684251ec84d7a86d7", null ],
     [ "registerCallback", "class_radio_mesh_device.html#ab41ee73a1a550f80ab120866752d0121", null ],
     [ "registerTxCallback", "class_radio_mesh_device.html#ac40c705982fd661bb4d0c792d9866198", null ],

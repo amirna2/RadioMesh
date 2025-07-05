@@ -26,7 +26,7 @@ var searchData=
   ['isincludeopen_23',['isIncludeOpen',['../_definitions_8h.html#a35f1cba6cf06e2ae6e57d7b7f7ff6e9a',1,'TopicUtils']]],
   ['isincluderequest_24',['isIncludeRequest',['../_definitions_8h.html#a86bae3409cc4d45ca8d07ba9ce0d932b',1,'TopicUtils']]],
   ['isincluderesponse_25',['isIncludeResponse',['../_definitions_8h.html#a117aeec26b95781ec8627b625f124897',1,'TopicUtils']]],
-  ['isinclusionmodeenabled_26',['isInclusionModeEnabled',['../class_inclusion_controller.html#a46a068579a99a5304a286d60172f05c7',1,'InclusionController']]],
+  ['isinclusionmodeenabled_26',['isinclusionmodeenabled',['../class_inclusion_controller.html#a46a068579a99a5304a286d60172f05c7',1,'InclusionController::isInclusionModeEnabled()'],['../class_i_device.html#adc4dfd0c550aa0c6cd98148ee566160f',1,'IDevice::isInclusionModeEnabled()'],['../class_radio_mesh_device.html#a9c651bd6c35f81d6129828ad79ad1cfe',1,'RadioMeshDevice::isInclusionModeEnabled()']]],
   ['isinclusiontopic_27',['isInclusionTopic',['../_definitions_8h.html#a04569aca817f267ab812f851e0aa71f5',1,'TopicUtils']]],
   ['ispacketfoundintracker_28',['isPacketFoundInTracker',['../class_packet_router.html#a5f7a37cb9d0f21e0db8a74075e371dbd',1,'PacketRouter']]],
   ['isping_29',['isPing',['../_definitions_8h.html#af3c2e9eef00182d8f2fd2419ffafea49',1,'TopicUtils']]],

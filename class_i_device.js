@@ -13,6 +13,7 @@ var class_i_device =
     [ "getWifiAccessPoint", "class_i_device.html#a047f3d3affb2c72d037eba8b900515e1", null ],
     [ "getWifiConnector", "class_i_device.html#a44952bc3c5645a994f309db853338e07", null ],
     [ "isIncluded", "class_i_device.html#a07d8140044b7ae8b26777c69ba787baa", null ],
+    [ "isInclusionModeEnabled", "class_i_device.html#adc4dfd0c550aa0c6cd98148ee566160f", null ],
     [ "isRelayEnabled", "class_i_device.html#a09ad913904923de9aa27ef7b5e3bfdbf", null ],
     [ "run", "class_i_device.html#a2d8a9c19fff70c19dd165d79fa22cd7a", null ],
     [ "sendData", "class_i_device.html#a2e9e2d652e940864901a93e3ef84b10e", null ],

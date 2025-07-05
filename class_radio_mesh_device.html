@@ -156,6 +156,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab91d568cdc8f11b02e4098c0f91b5048" id="r_ab91d568cdc8f11b02e4098c0f91b5048"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_radio_mesh_device.html#ab91d568cdc8f11b02e4098c0f91b5048">enableInclusionMode</a> (bool enable) override</td></tr>
 <tr class="memdesc:ab91d568cdc8f11b02e4098c0f91b5048"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or disable inclusion mode.  <br /></td></tr>
 <tr class="separator:ab91d568cdc8f11b02e4098c0f91b5048"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c651bd6c35f81d6129828ad79ad1cfe" id="r_a9c651bd6c35f81d6129828ad79ad1cfe"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_radio_mesh_device.html#a9c651bd6c35f81d6129828ad79ad1cfe">isInclusionModeEnabled</a> () const override</td></tr>
+<tr class="memdesc:a9c651bd6c35f81d6129828ad79ad1cfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the device is in inclusion mode.  <br /></td></tr>
+<tr class="separator:a9c651bd6c35f81d6129828ad79ad1cfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20d0f7edf24604272a218baca05b0c89" id="r_a20d0f7edf24604272a218baca05b0c89"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_radio_mesh_device.html#a20d0f7edf24604272a218baca05b0c89">sendInclusionOpen</a> () override</td></tr>
 <tr class="memdesc:a20d0f7edf24604272a218baca05b0c89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send inclusion open broadcast message.  <br /></td></tr>
 <tr class="separator:a20d0f7edf24604272a218baca05b0c89"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -871,6 +874,37 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>true if the device is included, false otherwise. </dd></dl>
 
 <p>Implements <a class="el" href="class_i_device.html#a07d8140044b7ae8b26777c69ba787baa">IDevice</a>.</p>
+
+</div>
+</div>
+<a id="a9c651bd6c35f81d6129828ad79ad1cfe" name="a9c651bd6c35f81d6129828ad79ad1cfe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c651bd6c35f81d6129828ad79ad1cfe">&#9670;&#160;</a></span>isInclusionModeEnabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool RadioMeshDevice::isInclusionModeEnabled </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Check if the device is in inclusion mode. </p>
+<p>HUB only feature. Returns true if the hub is currently accepting new devices to join the network.</p>
+<dl class="section return"><dt>Returns</dt><dd>true if inclusion mode is enabled, false otherwise. </dd></dl>
+
+<p>Implements <a class="el" href="class_i_device.html#adc4dfd0c550aa0c6cd98148ee566160f">IDevice</a>.</p>
 
 </div>
 </div>
