@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['withcaptiveportal_0',['withCaptivePortal',['../class_device_builder.html#a7f9604e7d51ce0f9de4d4955d445fb14',1,'DeviceBuilder']]],
-  ['withcustomdisplay_1',['withCustomDisplay',['../class_device_builder.html#aff75a57ab4bd434f2ead9f7ab2c1e19c',1,'DeviceBuilder']]],
+  ['withcustomdisplay_0',['withCustomDisplay',['../class_device_builder.html#aff75a57ab4bd434f2ead9f7ab2c1e19c',1,'DeviceBuilder']]],
+  ['withdeviceportal_1',['withDevicePortal',['../class_device_builder.html#a40d1057f34d926a55b81df28239577b8',1,'DeviceBuilder']]],
   ['withloraradio_2',['withLoraRadio',['../class_device_builder.html#aaa9f0ea443a483b4ceb5e870fd6c5a0e',1,'DeviceBuilder']]],
   ['witholeddisplay_3',['withOledDisplay',['../class_device_builder.html#a0802dfd7344dd25df0726d190adddbb0',1,'DeviceBuilder']]],
   ['withrelayenabled_4',['withRelayEnabled',['../class_device_builder.html#a1b17544efa3c840d7a04105cc2ebd773',1,'DeviceBuilder']]],

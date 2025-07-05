@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RadioMesh: ICaptivePortal Class Reference</title>
+<title>RadioMesh: IDevicePortal Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -64,7 +64,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('class_i_captive_portal.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('class_i_device_portal.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -92,51 +92,51 @@ $(document).ready(function(){initNavTree('class_i_captive_portal.html',''); init
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="class_i_captive_portal-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">ICaptivePortal Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
+<a href="class_i_device_portal-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">IDevicePortal Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>Interface for captive portal functionality.  
- <a href="class_i_captive_portal.html#details">More...</a></p>
+<p>Interface for device portal functionality.  
+ <a href="class_i_device_portal.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="_i_captive_portal_8h_source.html">ICaptivePortal.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="_i_device_portal_8h_source.html">IDevicePortal.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for ICaptivePortal:</div>
+Inheritance diagram for IDevicePortal:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="class_i_captive_portal.png" usemap="#ICaptivePortal_map" alt=""/>
-  <map id="ICaptivePortal_map" name="ICaptivePortal_map">
-<area href="class_async_captive_portal.html" alt="AsyncCaptivePortal" shape="rect" coords="0,56,124,80"/>
+  <img src="class_i_device_portal.png" usemap="#IDevicePortal_map" alt=""/>
+  <map id="IDevicePortal_map" name="IDevicePortal_map">
+<area href="class_async_device_portal.html" alt="AsyncDevicePortal" shape="rect" coords="0,56,121,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a4a2a2b60eb1c63ce35fa003b5fb98004" id="r_a4a2a2b60eb1c63ce35fa003b5fb98004"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_captive_portal.html#a4a2a2b60eb1c63ce35fa003b5fb98004">start</a> ()=0</td></tr>
-<tr class="memdesc:a4a2a2b60eb1c63ce35fa003b5fb98004"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start the portal services.  <br /></td></tr>
-<tr class="separator:a4a2a2b60eb1c63ce35fa003b5fb98004"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6776a46a963b15b2264749fce90cecc2" id="r_a6776a46a963b15b2264749fce90cecc2"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_captive_portal.html#a6776a46a963b15b2264749fce90cecc2">stop</a> ()=0</td></tr>
-<tr class="memdesc:a6776a46a963b15b2264749fce90cecc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop the portal services.  <br /></td></tr>
-<tr class="separator:a6776a46a963b15b2264749fce90cecc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71d3c50ee5227943569271b1d755f046" id="r_a71d3c50ee5227943569271b1d755f046"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_captive_portal.html#a71d3c50ee5227943569271b1d755f046">sendToClient</a> (uint32_t clientId, const <a class="el" href="class_portal_message.html">PortalMessage</a> &amp;message)=0</td></tr>
-<tr class="memdesc:a71d3c50ee5227943569271b1d755f046"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a message to a specific client.  <br /></td></tr>
-<tr class="separator:a71d3c50ee5227943569271b1d755f046"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afcb05173434de4e557e67394afd17355" id="r_afcb05173434de4e557e67394afd17355"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_captive_portal.html#afcb05173434de4e557e67394afd17355">sendToClients</a> (const <a class="el" href="class_portal_message.html">PortalMessage</a> &amp;message)=0</td></tr>
-<tr class="memdesc:afcb05173434de4e557e67394afd17355"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a message to all connected clients.  <br /></td></tr>
-<tr class="separator:afcb05173434de4e557e67394afd17355"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24329014400dd758222bc0f16f44ab35" id="r_a24329014400dd758222bc0f16f44ab35"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_captive_portal.html#a24329014400dd758222bc0f16f44ab35">isRunning</a> ()=0</td></tr>
-<tr class="memdesc:a24329014400dd758222bc0f16f44ab35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if portal is running.  <br /></td></tr>
-<tr class="separator:a24329014400dd758222bc0f16f44ab35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11c9056c255920179f1bffe52dcf0878" id="r_a11c9056c255920179f1bffe52dcf0878"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_captive_portal.html#a11c9056c255920179f1bffe52dcf0878">getClientCount</a> ()=0</td></tr>
-<tr class="memdesc:a11c9056c255920179f1bffe52dcf0878"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get number of connected clients.  <br /></td></tr>
-<tr class="separator:a11c9056c255920179f1bffe52dcf0878"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb935576273ad036b91e91926e8fa58a" id="r_afb935576273ad036b91e91926e8fa58a"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_device_portal.html#afb935576273ad036b91e91926e8fa58a">start</a> ()=0</td></tr>
+<tr class="memdesc:afb935576273ad036b91e91926e8fa58a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start the portal services.  <br /></td></tr>
+<tr class="separator:afb935576273ad036b91e91926e8fa58a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a198f92ec6cbc51b070420387494bb1d1" id="r_a198f92ec6cbc51b070420387494bb1d1"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_device_portal.html#a198f92ec6cbc51b070420387494bb1d1">stop</a> ()=0</td></tr>
+<tr class="memdesc:a198f92ec6cbc51b070420387494bb1d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop the portal services.  <br /></td></tr>
+<tr class="separator:a198f92ec6cbc51b070420387494bb1d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7db36373ef74992e2799fa9cb75c441" id="r_ab7db36373ef74992e2799fa9cb75c441"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_device_portal.html#ab7db36373ef74992e2799fa9cb75c441">sendToClient</a> (uint32_t clientId, const <a class="el" href="class_portal_message.html">PortalMessage</a> &amp;message)=0</td></tr>
+<tr class="memdesc:ab7db36373ef74992e2799fa9cb75c441"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a message to a specific client.  <br /></td></tr>
+<tr class="separator:ab7db36373ef74992e2799fa9cb75c441"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3da65055c034b59d829dfadb0a64de60" id="r_a3da65055c034b59d829dfadb0a64de60"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_device_portal.html#a3da65055c034b59d829dfadb0a64de60">sendToClients</a> (const <a class="el" href="class_portal_message.html">PortalMessage</a> &amp;message)=0</td></tr>
+<tr class="memdesc:a3da65055c034b59d829dfadb0a64de60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a message to all connected clients.  <br /></td></tr>
+<tr class="separator:a3da65055c034b59d829dfadb0a64de60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4bdce2d526475f4d2b1f9044a5ab8e8" id="r_af4bdce2d526475f4d2b1f9044a5ab8e8"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_device_portal.html#af4bdce2d526475f4d2b1f9044a5ab8e8">isRunning</a> ()=0</td></tr>
+<tr class="memdesc:af4bdce2d526475f4d2b1f9044a5ab8e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if portal is running.  <br /></td></tr>
+<tr class="separator:af4bdce2d526475f4d2b1f9044a5ab8e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5912fd1bdc76e4f4b45d10c1ee326655" id="r_a5912fd1bdc76e4f4b45d10c1ee326655"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_device_portal.html#a5912fd1bdc76e4f4b45d10c1ee326655">getClientCount</a> ()=0</td></tr>
+<tr class="memdesc:a5912fd1bdc76e4f4b45d10c1ee326655"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get number of connected clients.  <br /></td></tr>
+<tr class="separator:a5912fd1bdc76e4f4b45d10c1ee326655"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Interface for captive portal functionality. </p>
+<div class="textblock"><p>Interface for device portal functionality. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a11c9056c255920179f1bffe52dcf0878" name="a11c9056c255920179f1bffe52dcf0878"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11c9056c255920179f1bffe52dcf0878">&#9670;&#160;</a></span>getClientCount()</h2>
+<a id="a5912fd1bdc76e4f4b45d10c1ee326655" name="a5912fd1bdc76e4f4b45d10c1ee326655"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5912fd1bdc76e4f4b45d10c1ee326655">&#9670;&#160;</a></span>getClientCount()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -145,7 +145,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual size_t ICaptivePortal::getClientCount </td>
+          <td class="memname">virtual size_t IDevicePortal::getClientCount </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -161,12 +161,12 @@ Public Member Functions</h2></td></tr>
 <p>Get number of connected clients. </p>
 <dl class="section return"><dt>Returns</dt><dd>Number of active connections </dd></dl>
 
-<p>Implemented in <a class="el" href="class_async_captive_portal.html#a6b900d7ffeb8f22f5033672273213aaa">AsyncCaptivePortal</a>.</p>
+<p>Implemented in <a class="el" href="class_async_device_portal.html#aaa3498139924b6a5cb02bb369bc6a1ca">AsyncDevicePortal</a>.</p>
 
 </div>
 </div>
-<a id="a24329014400dd758222bc0f16f44ab35" name="a24329014400dd758222bc0f16f44ab35"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a24329014400dd758222bc0f16f44ab35">&#9670;&#160;</a></span>isRunning()</h2>
+<a id="af4bdce2d526475f4d2b1f9044a5ab8e8" name="af4bdce2d526475f4d2b1f9044a5ab8e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4bdce2d526475f4d2b1f9044a5ab8e8">&#9670;&#160;</a></span>isRunning()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -175,7 +175,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual bool ICaptivePortal::isRunning </td>
+          <td class="memname">virtual bool IDevicePortal::isRunning </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -191,12 +191,12 @@ Public Member Functions</h2></td></tr>
 <p>Check if portal is running. </p>
 <dl class="section return"><dt>Returns</dt><dd>true if running, false otherwise </dd></dl>
 
-<p>Implemented in <a class="el" href="class_async_captive_portal.html#a1f9a8c77f9b7ffe72d546e80f46b7819">AsyncCaptivePortal</a>.</p>
+<p>Implemented in <a class="el" href="class_async_device_portal.html#aa15d3018aff5d5ec6a79a38645317e75">AsyncDevicePortal</a>.</p>
 
 </div>
 </div>
-<a id="a71d3c50ee5227943569271b1d755f046" name="a71d3c50ee5227943569271b1d755f046"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a71d3c50ee5227943569271b1d755f046">&#9670;&#160;</a></span>sendToClient()</h2>
+<a id="ab7db36373ef74992e2799fa9cb75c441" name="ab7db36373ef74992e2799fa9cb75c441"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7db36373ef74992e2799fa9cb75c441">&#9670;&#160;</a></span>sendToClient()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -205,7 +205,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual int ICaptivePortal::sendToClient </td>
+          <td class="memname">virtual int IDevicePortal::sendToClient </td>
           <td>(</td>
           <td class="paramtype">uint32_t&#160;</td>
           <td class="paramname"><em>clientId</em>, </td>
@@ -239,12 +239,12 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if successful, error code otherwise </dd></dl>
 
-<p>Implemented in <a class="el" href="class_async_captive_portal.html#a8e66a05ec767d5bfb6a0f9d45b6c424d">AsyncCaptivePortal</a>.</p>
+<p>Implemented in <a class="el" href="class_async_device_portal.html#a2261c287db270158f33370bc06f9af74">AsyncDevicePortal</a>.</p>
 
 </div>
 </div>
-<a id="afcb05173434de4e557e67394afd17355" name="afcb05173434de4e557e67394afd17355"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afcb05173434de4e557e67394afd17355">&#9670;&#160;</a></span>sendToClients()</h2>
+<a id="a3da65055c034b59d829dfadb0a64de60" name="a3da65055c034b59d829dfadb0a64de60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3da65055c034b59d829dfadb0a64de60">&#9670;&#160;</a></span>sendToClients()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -253,7 +253,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual int ICaptivePortal::sendToClients </td>
+          <td class="memname">virtual int IDevicePortal::sendToClients </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="class_portal_message.html">PortalMessage</a> &amp;&#160;</td>
           <td class="paramname"><em>message</em></td><td>)</td>
@@ -276,12 +276,12 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if successful, error code otherwise </dd></dl>
 
-<p>Implemented in <a class="el" href="class_async_captive_portal.html#a96b5d48fc6f9c9d97313e4649e135db5">AsyncCaptivePortal</a>.</p>
+<p>Implemented in <a class="el" href="class_async_device_portal.html#a3d21bcbcd5b840aad1a26474d01bc77c">AsyncDevicePortal</a>.</p>
 
 </div>
 </div>
-<a id="a4a2a2b60eb1c63ce35fa003b5fb98004" name="a4a2a2b60eb1c63ce35fa003b5fb98004"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4a2a2b60eb1c63ce35fa003b5fb98004">&#9670;&#160;</a></span>start()</h2>
+<a id="afb935576273ad036b91e91926e8fa58a" name="afb935576273ad036b91e91926e8fa58a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb935576273ad036b91e91926e8fa58a">&#9670;&#160;</a></span>start()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -290,7 +290,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual int ICaptivePortal::start </td>
+          <td class="memname">virtual int IDevicePortal::start </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -306,12 +306,12 @@ Public Member Functions</h2></td></tr>
 <p>Start the portal services. </p>
 <dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if successful, error code otherwise </dd></dl>
 
-<p>Implemented in <a class="el" href="class_async_captive_portal.html#ac5a04209d5ec08959743c83af7083841">AsyncCaptivePortal</a>.</p>
+<p>Implemented in <a class="el" href="class_async_device_portal.html#a25a2b14fbd8902d07fcaa9ede4ae2f34">AsyncDevicePortal</a>.</p>
 
 </div>
 </div>
-<a id="a6776a46a963b15b2264749fce90cecc2" name="a6776a46a963b15b2264749fce90cecc2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6776a46a963b15b2264749fce90cecc2">&#9670;&#160;</a></span>stop()</h2>
+<a id="a198f92ec6cbc51b070420387494bb1d1" name="a198f92ec6cbc51b070420387494bb1d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a198f92ec6cbc51b070420387494bb1d1">&#9670;&#160;</a></span>stop()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -320,7 +320,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual int ICaptivePortal::stop </td>
+          <td class="memname">virtual int IDevicePortal::stop </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -336,19 +336,19 @@ Public Member Functions</h2></td></tr>
 <p>Stop the portal services. </p>
 <dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if successful, error code otherwise </dd></dl>
 
-<p>Implemented in <a class="el" href="class_async_captive_portal.html#a62dfc28d425f2e374619f9e350f48d99">AsyncCaptivePortal</a>.</p>
+<p>Implemented in <a class="el" href="class_async_device_portal.html#a25f21f5dd56a3e17135524e5e6a3a42d">AsyncDevicePortal</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/framework/interfaces/<a class="el" href="_i_captive_portal_8h_source.html">ICaptivePortal.h</a></li>
+<li>src/framework/interfaces/<a class="el" href="_i_device_portal_8h_source.html">IDevicePortal.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="class_i_captive_portal.html">ICaptivePortal</a></li>
+    <li class="navelem"><a class="el" href="class_i_device_portal.html">IDevicePortal</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

@@ -8,7 +8,7 @@ var _definitions_8h =
     [ "SecurityParams", "struct_security_params.html", "struct_security_params" ],
     [ "PortalMessage", "class_portal_message.html", "class_portal_message" ],
     [ "PortalEventHandler", "struct_portal_event_handler.html", "struct_portal_event_handler" ],
-    [ "CaptivePortalParams", "struct_captive_portal_params.html", null ],
+    [ "DevicePortalParams", "struct_device_portal_params.html", null ],
     [ "RM_FONT_BATTERY", "_definitions_8h.html#a7bdbb985f9fa6d4a7adecb64362f204e", null ],
     [ "RM_FONT_LARGE", "_definitions_8h.html#aecce8ab90e4dc7faa440b0e6be38070c", null ],
     [ "RM_FONT_MEDIUM", "_definitions_8h.html#ae5be18dba4ab1bf9b6f4b53b77556981", null ],

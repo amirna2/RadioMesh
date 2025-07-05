@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['hascaptiveportal_0',['hasCaptivePortal',['../struct_device_blueprint.html#aeba82df14ea30fb93cd14b7e192321bb',1,'DeviceBlueprint']]],
+  ['hasdeviceportal_0',['hasDevicePortal',['../struct_device_blueprint.html#a66b184127b6eaafb65d91cbd5343934d',1,'DeviceBlueprint']]],
   ['hasdisplay_1',['hasDisplay',['../struct_device_blueprint.html#affbb2bf2b33a194d564d55ed46a20c3d',1,'DeviceBlueprint']]],
   ['hasradio_2',['hasRadio',['../struct_device_blueprint.html#ac969802dba5cd1263fea51e35656797b',1,'DeviceBlueprint']]],
   ['hasrxcallback_3',['hasRxCallback',['../struct_device_blueprint.html#a6af97486d263f1ea8dda3a75c3aba1c4',1,'DeviceBlueprint']]],

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RadioMesh: src/framework/interfaces/ICaptivePortal.h Source File</title>
+<title>RadioMesh: src/framework/interfaces/IDevicePortal.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -69,7 +69,7 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('_i_captive_portal_8h_source.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('_i_device_portal_8h_source.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -95,7 +95,7 @@ $(document).ready(function(){initNavTree('_i_captive_portal_8h_source.html','');
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">ICaptivePortal.h</div></div>
+  <div class="headertitle"><div class="title">IDevicePortal.h</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
@@ -106,39 +106,39 @@ $(document).ready(function(){initNavTree('_i_captive_portal_8h_source.html','');
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
 <div class="foldopen" id="foldopen00012" data-start="{" data-end="};">
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="class_i_captive_portal.html">   12</a></span><span class="keyword">class </span><a class="code hl_class" href="class_i_captive_portal.html">ICaptivePortal</a></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="class_i_device_portal.html">   12</a></span><span class="keyword">class </span><a class="code hl_class" href="class_i_device_portal.html">IDevicePortal</a></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>{</div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keyword">virtual</span> <a class="code hl_class" href="class_i_captive_portal.html">~ICaptivePortal</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keyword">virtual</span> <a class="code hl_class" href="class_i_device_portal.html">~IDevicePortal</a>() = <span class="keywordflow">default</span>;</div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="class_i_captive_portal.html#a4a2a2b60eb1c63ce35fa003b5fb98004">   21</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code hl_function" href="class_i_captive_portal.html#a4a2a2b60eb1c63ce35fa003b5fb98004">start</a>() = 0;</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="class_i_device_portal.html#afb935576273ad036b91e91926e8fa58a">   21</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code hl_function" href="class_i_device_portal.html#afb935576273ad036b91e91926e8fa58a">start</a>() = 0;</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="class_i_captive_portal.html#a6776a46a963b15b2264749fce90cecc2">   27</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code hl_function" href="class_i_captive_portal.html#a6776a46a963b15b2264749fce90cecc2">stop</a>() = 0;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="class_i_device_portal.html#a198f92ec6cbc51b070420387494bb1d1">   27</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code hl_function" href="class_i_device_portal.html#a198f92ec6cbc51b070420387494bb1d1">stop</a>() = 0;</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="class_i_captive_portal.html#a71d3c50ee5227943569271b1d755f046">   35</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code hl_function" href="class_i_captive_portal.html#a71d3c50ee5227943569271b1d755f046">sendToClient</a>(uint32_t clientId, <span class="keyword">const</span> <a class="code hl_class" href="class_portal_message.html">PortalMessage</a>&amp; message) = 0;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="class_i_device_portal.html#ab7db36373ef74992e2799fa9cb75c441">   35</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code hl_function" href="class_i_device_portal.html#ab7db36373ef74992e2799fa9cb75c441">sendToClient</a>(uint32_t clientId, <span class="keyword">const</span> <a class="code hl_class" href="class_portal_message.html">PortalMessage</a>&amp; message) = 0;</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="class_i_captive_portal.html#afcb05173434de4e557e67394afd17355">   42</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code hl_function" href="class_i_captive_portal.html#afcb05173434de4e557e67394afd17355">sendToClients</a>(<span class="keyword">const</span> <a class="code hl_class" href="class_portal_message.html">PortalMessage</a>&amp; message) = 0;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="class_i_device_portal.html#a3da65055c034b59d829dfadb0a64de60">   42</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code hl_function" href="class_i_device_portal.html#a3da65055c034b59d829dfadb0a64de60">sendToClients</a>(<span class="keyword">const</span> <a class="code hl_class" href="class_portal_message.html">PortalMessage</a>&amp; message) = 0;</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="class_i_captive_portal.html#a24329014400dd758222bc0f16f44ab35">   48</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="class_i_captive_portal.html#a24329014400dd758222bc0f16f44ab35">isRunning</a>() = 0;</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="class_i_device_portal.html#af4bdce2d526475f4d2b1f9044a5ab8e8">   48</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="class_i_device_portal.html#af4bdce2d526475f4d2b1f9044a5ab8e8">isRunning</a>() = 0;</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="class_i_captive_portal.html#a11c9056c255920179f1bffe52dcf0878">   54</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">size_t</span> <a class="code hl_function" href="class_i_captive_portal.html#a11c9056c255920179f1bffe52dcf0878">getClientCount</a>() = 0;</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="class_i_device_portal.html#a5912fd1bdc76e4f4b45d10c1ee326655">   54</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">size_t</span> <a class="code hl_function" href="class_i_device_portal.html#a5912fd1bdc76e4f4b45d10c1ee326655">getClientCount</a>() = 0;</div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>};</div>
 </div>
 <div class="ttc" id="a_definitions_8h_html"><div class="ttname"><a href="_definitions_8h.html">Definitions.h</a></div><div class="ttdoc">This file contains type definitions used in the RadioMesh project.</div></div>
-<div class="ttc" id="aclass_i_captive_portal_html"><div class="ttname"><a href="class_i_captive_portal.html">ICaptivePortal</a></div><div class="ttdoc">Interface for captive portal functionality.</div><div class="ttdef"><b>Definition</b> ICaptivePortal.h:13</div></div>
-<div class="ttc" id="aclass_i_captive_portal_html_a11c9056c255920179f1bffe52dcf0878"><div class="ttname"><a href="class_i_captive_portal.html#a11c9056c255920179f1bffe52dcf0878">ICaptivePortal::getClientCount</a></div><div class="ttdeci">virtual size_t getClientCount()=0</div><div class="ttdoc">Get number of connected clients.</div></div>
-<div class="ttc" id="aclass_i_captive_portal_html_a24329014400dd758222bc0f16f44ab35"><div class="ttname"><a href="class_i_captive_portal.html#a24329014400dd758222bc0f16f44ab35">ICaptivePortal::isRunning</a></div><div class="ttdeci">virtual bool isRunning()=0</div><div class="ttdoc">Check if portal is running.</div></div>
-<div class="ttc" id="aclass_i_captive_portal_html_a4a2a2b60eb1c63ce35fa003b5fb98004"><div class="ttname"><a href="class_i_captive_portal.html#a4a2a2b60eb1c63ce35fa003b5fb98004">ICaptivePortal::start</a></div><div class="ttdeci">virtual int start()=0</div><div class="ttdoc">Start the portal services.</div></div>
-<div class="ttc" id="aclass_i_captive_portal_html_a6776a46a963b15b2264749fce90cecc2"><div class="ttname"><a href="class_i_captive_portal.html#a6776a46a963b15b2264749fce90cecc2">ICaptivePortal::stop</a></div><div class="ttdeci">virtual int stop()=0</div><div class="ttdoc">Stop the portal services.</div></div>
-<div class="ttc" id="aclass_i_captive_portal_html_a71d3c50ee5227943569271b1d755f046"><div class="ttname"><a href="class_i_captive_portal.html#a71d3c50ee5227943569271b1d755f046">ICaptivePortal::sendToClient</a></div><div class="ttdeci">virtual int sendToClient(uint32_t clientId, const PortalMessage &amp;message)=0</div><div class="ttdoc">Send a message to a specific client.</div></div>
-<div class="ttc" id="aclass_i_captive_portal_html_afcb05173434de4e557e67394afd17355"><div class="ttname"><a href="class_i_captive_portal.html#afcb05173434de4e557e67394afd17355">ICaptivePortal::sendToClients</a></div><div class="ttdeci">virtual int sendToClients(const PortalMessage &amp;message)=0</div><div class="ttdoc">Send a message to all connected clients.</div></div>
+<div class="ttc" id="aclass_i_device_portal_html"><div class="ttname"><a href="class_i_device_portal.html">IDevicePortal</a></div><div class="ttdoc">Interface for device portal functionality.</div><div class="ttdef"><b>Definition</b> IDevicePortal.h:13</div></div>
+<div class="ttc" id="aclass_i_device_portal_html_a198f92ec6cbc51b070420387494bb1d1"><div class="ttname"><a href="class_i_device_portal.html#a198f92ec6cbc51b070420387494bb1d1">IDevicePortal::stop</a></div><div class="ttdeci">virtual int stop()=0</div><div class="ttdoc">Stop the portal services.</div></div>
+<div class="ttc" id="aclass_i_device_portal_html_a3da65055c034b59d829dfadb0a64de60"><div class="ttname"><a href="class_i_device_portal.html#a3da65055c034b59d829dfadb0a64de60">IDevicePortal::sendToClients</a></div><div class="ttdeci">virtual int sendToClients(const PortalMessage &amp;message)=0</div><div class="ttdoc">Send a message to all connected clients.</div></div>
+<div class="ttc" id="aclass_i_device_portal_html_a5912fd1bdc76e4f4b45d10c1ee326655"><div class="ttname"><a href="class_i_device_portal.html#a5912fd1bdc76e4f4b45d10c1ee326655">IDevicePortal::getClientCount</a></div><div class="ttdeci">virtual size_t getClientCount()=0</div><div class="ttdoc">Get number of connected clients.</div></div>
+<div class="ttc" id="aclass_i_device_portal_html_ab7db36373ef74992e2799fa9cb75c441"><div class="ttname"><a href="class_i_device_portal.html#ab7db36373ef74992e2799fa9cb75c441">IDevicePortal::sendToClient</a></div><div class="ttdeci">virtual int sendToClient(uint32_t clientId, const PortalMessage &amp;message)=0</div><div class="ttdoc">Send a message to a specific client.</div></div>
+<div class="ttc" id="aclass_i_device_portal_html_af4bdce2d526475f4d2b1f9044a5ab8e8"><div class="ttname"><a href="class_i_device_portal.html#af4bdce2d526475f4d2b1f9044a5ab8e8">IDevicePortal::isRunning</a></div><div class="ttdeci">virtual bool isRunning()=0</div><div class="ttdoc">Check if portal is running.</div></div>
+<div class="ttc" id="aclass_i_device_portal_html_afb935576273ad036b91e91926e8fa58a"><div class="ttname"><a href="class_i_device_portal.html#afb935576273ad036b91e91926e8fa58a">IDevicePortal::start</a></div><div class="ttdeci">virtual int start()=0</div><div class="ttdoc">Start the portal services.</div></div>
 <div class="ttc" id="aclass_portal_message_html"><div class="ttname"><a href="class_portal_message.html">PortalMessage</a></div><div class="ttdoc">Base interface for portal message serialization.</div><div class="ttdef"><b>Definition</b> Definitions.h:405</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_5752cadd8276ecfd63d9b924f2a4d4b5.html">framework</a></li><li class="navelem"><a class="el" href="dir_ef46d9eb4e59d8dc8c4475263bdcbae9.html">interfaces</a></li><li class="navelem"><b>ICaptivePortal.h</b></li>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_5752cadd8276ecfd63d9b924f2a4d4b5.html">framework</a></li><li class="navelem"><a class="el" href="dir_ef46d9eb4e59d8dc8c4475263bdcbae9.html">interfaces</a></li><li class="navelem"><b>IDevicePortal.h</b></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

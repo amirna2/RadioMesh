@@ -2,7 +2,7 @@ var searchData=
 [
   ['handleinclusionmessage_0',['handleInclusionMessage',['../class_inclusion_controller.html#ab77b3199a4c70f1ae11f4192492ea181',1,'InclusionController']]],
   ['handlereceiveddata_1',['handleReceivedData',['../class_radio_mesh_device.html#a9e4550ec5dbfc8727011a7a65e0bbb01',1,'RadioMeshDevice']]],
-  ['hascaptiveportal_2',['hasCaptivePortal',['../struct_device_blueprint.html#aeba82df14ea30fb93cd14b7e192321bb',1,'DeviceBlueprint']]],
+  ['hasdeviceportal_2',['hasDevicePortal',['../struct_device_blueprint.html#a66b184127b6eaafb65d91cbd5343934d',1,'DeviceBlueprint']]],
   ['hasdisplay_3',['hasDisplay',['../struct_device_blueprint.html#affbb2bf2b33a194d564d55ed46a20c3d',1,'DeviceBlueprint']]],
   ['hasradio_4',['hasRadio',['../struct_device_blueprint.html#ac969802dba5cd1263fea51e35656797b',1,'DeviceBlueprint']]],
   ['hasrxcallback_5',['hasRxCallback',['../struct_device_blueprint.html#a6af97486d263f1ea8dda3a75c3aba1c4',1,'DeviceBlueprint']]],

@@ -2,7 +2,7 @@ var searchData=
 [
   ['initialize_0',['initialize',['../class_radio_mesh_device.html#a13bdc631dc9133b19becfbbdfc2228a5',1,'RadioMeshDevice']]],
   ['initializeaescrypto_1',['initializeAesCrypto',['../class_radio_mesh_device.html#ab2b8e17bc24488a15ada3dbb83bef739',1,'RadioMeshDevice']]],
-  ['initializecaptiveportal_2',['initializeCaptivePortal',['../class_radio_mesh_device.html#a35d66ebb17a3d9b501ee0e33784fcbc3',1,'RadioMeshDevice']]],
+  ['initializedeviceportal_2',['initializeDevicePortal',['../class_radio_mesh_device.html#a7b9574d3ec5d658ef7543175eb5c5cb7',1,'RadioMeshDevice']]],
   ['initializeoleddisplay_3',['initializeOledDisplay',['../class_radio_mesh_device.html#a2c0acfde48c00a73f5307253448e6b89',1,'RadioMeshDevice']]],
   ['initializeradio_4',['initializeRadio',['../class_radio_mesh_device.html#a10fe82940e90810c468f9c9afbdbd882',1,'RadioMeshDevice']]],
   ['initializewifi_5',['initializeWifi',['../class_radio_mesh_device.html#ac3dcb1e73644873148d3519610c4f917',1,'RadioMeshDevice']]],
@@ -23,7 +23,7 @@ var searchData=
   ['ispong_20',['isPong',['../_definitions_8h.html#a46c76596e4ee41893a7acecfffdb5bce',1,'TopicUtils']]],
   ['isradiosetup_21',['isRadioSetup',['../class_lora_radio.html#a4f17df77062afb88cd5914fa3d43d372',1,'LoraRadio']]],
   ['isrelayenabled_22',['isrelayenabled',['../class_radio_mesh_device.html#a081a3c798f52fed684251ec84d7a86d7',1,'RadioMeshDevice::isRelayEnabled()'],['../class_i_device.html#a09ad913904923de9aa27ef7b5e3bfdbf',1,'IDevice::isRelayEnabled()']]],
-  ['isrunning_23',['isrunning',['../class_i_captive_portal.html#a24329014400dd758222bc0f16f44ab35',1,'ICaptivePortal::isRunning()'],['../class_async_captive_portal.html#a1f9a8c77f9b7ffe72d546e80f46b7819',1,'AsyncCaptivePortal::isRunning()']]],
+  ['isrunning_23',['isrunning',['../class_i_device_portal.html#af4bdce2d526475f4d2b1f9044a5ab8e8',1,'IDevicePortal::isRunning()'],['../class_async_device_portal.html#aa15d3018aff5d5ec6a79a38645317e75',1,'AsyncDevicePortal::isRunning()']]],
   ['isstarted_24',['isStarted',['../class_wifi_access_point.html#a08f2e3092fffdc8a58552a8731e333c7',1,'WifiAccessPoint']]],
   ['istopicreverved_25',['isTopicReverved',['../_definitions_8h.html#ae81eee294ee5c84c6deded434406695a',1,'TopicUtils']]]
 ];
