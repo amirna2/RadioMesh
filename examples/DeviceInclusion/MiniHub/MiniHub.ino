@@ -335,6 +335,13 @@ void loop()
     // Run the device
     device->run();
 
+    // Check if inclusion mode was disabled by timeout
+    if (appState == AppState::INCLUSION_MODE_ACTIVE && !device->isInclusionModeEnabled()) {
+        loginfo_ln("Inclusion mode disabled, returning to ready state");
+        appState = AppState::READY;
+        inclusionModeActive = false;
+    }
+
     // Update display and web clients periodically
     if (millis() - lastStatusUpdate >= STATUS_UPDATE_INTERVAL) {
         // Only display status if inclusion mode is active (to avoid spam)

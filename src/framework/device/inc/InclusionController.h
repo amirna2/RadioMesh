@@ -139,9 +139,9 @@ private:
     uint8_t retryCount = 0;                 // Number of retries for current state
 
     // State machine configuration
-    static const uint32_t BASE_TIMEOUT_MS = 5000;     // 5 seconds base timeout
-    static const uint8_t MAX_RETRIES = 3;              // Maximum retry attempts
-    static const uint32_t MAX_TOTAL_TIMEOUT_MS = 35000; // 35 seconds total timeout
+    static const uint32_t BASE_TIMEOUT_MS = 60000;    // 60 seconds inclusion session timeout
+    static const uint8_t MAX_RETRIES = 3;              // Maximum retry attempts (unused)
+    static const uint32_t MAX_TOTAL_TIMEOUT_MS = 60000; // 60 seconds total timeout
 
     int initializeKeys();
 

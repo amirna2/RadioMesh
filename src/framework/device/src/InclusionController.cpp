@@ -163,6 +163,7 @@ int InclusionController::exitInclusionMode()
     }
 
     inclusionModeEnabled = false;
+    resetProtocolState();
 
     return RM_E_NONE;
 }
@@ -391,52 +392,14 @@ bool InclusionController::isStateTimedOut() const
 
 uint32_t InclusionController::getStateTimeoutMs() const
 {
-    // Exponential backoff: 5s, 10s, 20s
-    uint32_t timeout = BASE_TIMEOUT_MS << retryCount;
-    return timeout > MAX_TOTAL_TIMEOUT_MS ? MAX_TOTAL_TIMEOUT_MS : timeout;
+    return BASE_TIMEOUT_MS;
 }
 
 void InclusionController::handleStateTimeout()
 {
-    logwarn_ln("Inclusion protocol timeout in state: %s (retry %d/%d)", 
-               getProtocolStateString(protocolState), retryCount + 1, MAX_RETRIES);
-    
-    if (retryCount < MAX_RETRIES) {
-        retryCount++;
-        stateStartTime = millis();
-        
-        // Retry the last action based on current state
-        switch (protocolState) {
-            case WAITING_FOR_REQUEST:
-                if (deviceType == MeshDeviceType::HUB) {
-                    sendInclusionOpen();
-                }
-                break;
-                
-            case WAITING_FOR_RESPONSE:
-                if (deviceType == MeshDeviceType::STANDARD) {
-                    sendInclusionRequest();
-                }
-                break;
-                
-            case WAITING_FOR_CONFIRMATION:
-                // Hub already sent response, can't retry without new request
-                resetProtocolState();
-                break;
-                
-            case WAITING_FOR_SUCCESS:
-                if (deviceType == MeshDeviceType::STANDARD) {
-                    sendInclusionConfirm();
-                }
-                break;
-                
-            default:
-                break;
-        }
-    } else {
-        logerr_ln("Max retries exceeded, resetting inclusion protocol");
-        resetProtocolState();
-    }
+    loginfo_ln("Inclusion session timeout (60s), stopping inclusion mode");
+    inclusionModeEnabled = false;
+    resetProtocolState();
 }
 
 void InclusionController::resetProtocolState()
