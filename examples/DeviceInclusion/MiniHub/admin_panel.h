@@ -24,26 +24,26 @@ struct DeviceInfo
 extern std::map<std::string, DeviceInfo> connectedDevicesMap;
 
 /**
- * @brief Escape JSON strings for embedding in CaptivePortal WebSocket messages
- * 
- * The CaptivePortal framework creates WebSocket messages in the format:
+ * @brief Escape JSON strings for embedding in DevicePortal WebSocket messages
+ *
+ * The DevicePortal framework creates WebSocket messages in the format:
  * {"type":"message_type","data":"serialized_content"}
- * 
+ *
  * When serialize() returns JSON (e.g., {"key":"value"}), it gets embedded as:
  * {"type":"status","data":"{"key":"value"}"}  // Invalid JSON - unescaped quotes
- * 
+ *
  * This function escapes the JSON so the final message becomes:
  * {"type":"status","data":"{\"key\":\"value\"}"}  // Valid JSON - escaped quotes
- * 
+ *
  * JavaScript can then parse it in two steps:
  * 1. const msg = JSON.parse(event.data);        // Parse wrapper
  * 2. const data = JSON.parse(msg.data);         // Parse actual JSON content
- * 
+ *
  * Alternative approaches for custom portals:
  * - Modify the framework to detect JSON and handle it automatically
  * - Use a different message format that doesn't embed JSON in strings
  * - Send binary data instead of JSON strings
- * 
+ *
  * @param jsonData Raw JSON string to be escaped
  * @return Escaped JSON string safe for embedding in WebSocket data field
  */
@@ -51,12 +51,18 @@ std::string escapeJsonString(const std::string& jsonData)
 {
     std::string escaped;
     for (char c : jsonData) {
-        if (c == '"') escaped += "\\\"";
-        else if (c == '\\') escaped += "\\\\";
-        else if (c == '\n') escaped += "\\n";
-        else if (c == '\r') escaped += "\\r";
-        else if (c == '\t') escaped += "\\t";
-        else escaped += c;
+        if (c == '"')
+            escaped += "\\\"";
+        else if (c == '\\')
+            escaped += "\\\\";
+        else if (c == '\n')
+            escaped += "\\n";
+        else if (c == '\r')
+            escaped += "\\r";
+        else if (c == '\t')
+            escaped += "\\t";
+        else
+            escaped += c;
     }
     return escaped;
 }
@@ -174,7 +180,7 @@ void handleGetStatus(void* client, const std::vector<byte>& data)
     serializeJson(doc, jsonStr);
 
     auto msg = StatusMessage(jsonStr);
-    device->getCaptivePortal()->sendToClients(msg);
+    device->getDevicePortal()->sendToClients(msg);
 }
 
 // Handler: Set inclusion mode
@@ -220,13 +226,13 @@ void handleGetDevices(void* client, const std::vector<byte>& data)
     serializeJson(doc, jsonStr);
 
     auto msg = DeviceListMessage(jsonStr);
-    device->getCaptivePortal()->sendToClients(msg);
+    device->getDevicePortal()->sendToClients(msg);
 }
 
 // Helper function to send inclusion events
 void sendInclusionEvent(const std::string& event, const std::string& deviceId)
 {
-    if (!device || !device->getCaptivePortal())
+    if (!device || !device->getDevicePortal())
         return;
 
     JsonDocument doc;
@@ -238,7 +244,7 @@ void sendInclusionEvent(const std::string& event, const std::string& deviceId)
     serializeJson(doc, jsonStr);
 
     auto msg = InclusionEventMessage(jsonStr);
-    device->getCaptivePortal()->sendToClients(msg);
+    device->getDevicePortal()->sendToClients(msg);
 }
 
 // HTML for the admin panel
@@ -585,11 +591,11 @@ const char* ADMIN_PANEL_HTML = R"=====(
 </html>
 )=====";
 
-// Configure captive portal with admin panel
-CaptivePortalParams portalParams{"MiniHub Admin",
-                                 ADMIN_PANEL_HTML,
-                                 80,
-                                 53,
-                                 {{"get_status", handleGetStatus},
-                                  {"set_inclusion_mode", handleSetInclusionMode},
-                                  {"get_devices", handleGetDevices}}};
+// Configure device portal with admin panel
+DevicePortalParams portalParams{"MiniHub Admin",
+                                ADMIN_PANEL_HTML,
+                                80,
+                                53,
+                                {{"get_status", handleGetStatus},
+                                 {"set_inclusion_mode", handleSetInclusionMode},
+                                 {"get_devices", handleGetDevices}}};

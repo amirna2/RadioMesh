@@ -50,7 +50,7 @@ typedef struct
     /// @brief The device has a WiFi access point
     bool hasWifiAccessPoint;
     /// @brief The device has storage
-    bool hasCaptivePortal;
+    bool hasDevicePortal;
 } DeviceBlueprint;
 
 /**
@@ -436,10 +436,10 @@ struct PortalEventHandler
 };
 
 /**
- * @struct CaptivePortalParams
- * @brief Configuration parameters for the captive portal
+ * @struct DevicePortalParams
+ * @brief Configuration parameters for the device portal
  */
-struct CaptivePortalParams
+struct DevicePortalParams
 {
     std::string title;
     std::string indexHtml;

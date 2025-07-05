@@ -7,16 +7,16 @@
 #include <common/inc/Definitions.h>
 #include <common/inc/Errors.h>
 #include <common/inc/Logger.h>
-#include <framework/interfaces/ICaptivePortal.h>
+#include <framework/interfaces/IDevicePortal.h>
 #include <map>
 
-class AsyncCaptivePortal : public ICaptivePortal
+class AsyncDevicePortal : public IDevicePortal
 {
 public:
-    static AsyncCaptivePortal* getInstance()
+    static AsyncDevicePortal* getInstance()
     {
         if (!instance) {
-            instance = new AsyncCaptivePortal();
+            instance = new AsyncDevicePortal();
         }
         return instance;
     }
@@ -30,12 +30,12 @@ public:
     bool isRunning() override;
     size_t getClientCount() override;
 
-    int setParams(const CaptivePortalParams& params);
+    int setParams(const DevicePortalParams& params);
 
 private:
-    AsyncCaptivePortal() = default;
-    static AsyncCaptivePortal* instance;
-    CaptivePortalParams portalParams;
+    AsyncDevicePortal() = default;
+    static AsyncDevicePortal* instance;
+    DevicePortalParams portalParams;
     bool running = false;
 
 #ifndef RM_NO_WIFI

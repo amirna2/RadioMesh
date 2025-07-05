@@ -179,14 +179,14 @@ IWifiAccessPoint* RadioMeshDevice::getWifiAccessPoint()
     logwarn_ln("The device does not support Wifi Access Point.");
     return nullptr;
 }
-int RadioMeshDevice::initializeCaptivePortal(CaptivePortalParams captivePortalParams)
+int RadioMeshDevice::initializeDevicePortal(DevicePortalParams devicePortalParams)
 {
-    logwarn_ln("The device does not support Captive Portal.");
+    logwarn_ln("The device does not support Device Portal.");
     return RM_E_NONE;
 }
-ICaptivePortal* RadioMeshDevice::getCaptivePortal()
+IDevicePortal* RadioMeshDevice::getDevicePortal()
 {
-    logwarn_ln("The device does not support Captive Portal.");
+    logwarn_ln("The device does not support Device Portal.");
     return nullptr;
 }
 #else
@@ -213,27 +213,27 @@ IWifiAccessPoint* RadioMeshDevice::getWifiAccessPoint()
     return wifiAccessPoint;
 }
 
-int RadioMeshDevice::initializeCaptivePortal(CaptivePortalParams captivePortalParams)
+int RadioMeshDevice::initializeDevicePortal(DevicePortalParams devicePortalParams)
 {
     int rc = RM_E_NONE;
-    captivePortal = AsyncCaptivePortal::getInstance();
+    devicePortal = AsyncDevicePortal::getInstance();
 
-    if (captivePortal == nullptr) {
-        logerr_ln("Failed to create captive portal");
+    if (devicePortal == nullptr) {
+        logerr_ln("Failed to create device portal");
         return RM_E_UNKNOWN;
     }
 
-    rc = captivePortal->setParams(captivePortalParams);
+    rc = devicePortal->setParams(devicePortalParams);
     if (rc != RM_E_NONE) {
-        logerr_ln("Failed to set captive portal params");
-        captivePortal = nullptr;
+        logerr_ln("Failed to set device portal params");
+        devicePortal = nullptr;
     }
     return rc;
 }
 
-ICaptivePortal* RadioMeshDevice::getCaptivePortal()
+IDevicePortal* RadioMeshDevice::getDevicePortal()
 {
-    return captivePortal;
+    return devicePortal;
 }
 
 #endif // RM_NO_WIFI

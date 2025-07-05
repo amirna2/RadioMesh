@@ -76,7 +76,6 @@ public:
      */
     DeviceBuilder& withWifiAccessPoint(const WifiAccessPointParams& params);
 
-
     /**
      * @brief Add secure messaging to the device with the given parameters
      * @param params The parameters for the secure messaging
@@ -92,11 +91,11 @@ public:
     DeviceBuilder& withCustomDisplay(IDisplay* display);
 
     /**
-     * @brief Add a captive portal to the device with the given parameters
-     * @param params The parameters for the captive portal
+     * @brief Add a device portal to the device with the given parameters
+     * @param params The parameters for the device portal
      * @return A reference to the updated builder
      */
-    DeviceBuilder& withCaptivePortal(const CaptivePortalParams& params);
+    DeviceBuilder& withDevicePortal(const DevicePortalParams& params);
 
     /**
      * @brief Build the device
@@ -127,7 +126,7 @@ private:
     OledDisplayParams oledDisplayParams;
     WifiParams wifiParams = WifiParams();
     WifiAccessPointParams wifiAPParams = WifiAccessPointParams();
-    CaptivePortalParams captivePortalParams;
+    DevicePortalParams devicePortalParams;
 
     bool relayEnabled = false;
     PacketReceivedCallback rxCallback = nullptr;

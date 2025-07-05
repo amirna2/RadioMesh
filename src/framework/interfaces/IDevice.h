@@ -4,7 +4,7 @@
 #include <common/inc/Options.h>
 #include <framework/interfaces/IAesCrypto.h>
 #include <framework/interfaces/IByteStorage.h>
-#include <framework/interfaces/ICaptivePortal.h>
+#include <framework/interfaces/IDevicePortal.h>
 #include <framework/interfaces/IDisplay.h>
 #include <framework/interfaces/IRadio.h>
 #include <framework/interfaces/IWifiAccessPoint.h>
@@ -63,10 +63,10 @@ public:
     virtual IByteStorage* getByteStorage() = 0;
 
     /**
-     * @brief Get the captive portal object interface associated with the device.
-     * @return ICaptivePortal* pointer to the captive portal object implementing the interface.
+     * @brief Get the device portal object interface associated with the device.
+     * @return IDevicePortal* pointer to the device portal object implementing the interface.
      */
-    virtual ICaptivePortal* getCaptivePortal() = 0;
+    virtual IDevicePortal* getDevicePortal() = 0;
 
     /**
      * @brief Send data to the mesh network.
