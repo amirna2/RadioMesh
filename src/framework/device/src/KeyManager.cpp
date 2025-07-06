@@ -70,6 +70,42 @@ int KeyManager::decryptSessionKey(const std::vector<byte>& encryptedKey,
     return RM_E_NONE;
 }
 
+int KeyManager::encryptNetworkKey(const std::vector<byte>& networkKey,
+                                  const std::vector<byte>& recipientPubKey,
+                                  std::vector<byte>& encryptedKey)
+{
+    // TODO: Implement ECIES encryption
+    // For now just XOR with recipient public key as placeholder
+    if (!validatePublicKey(recipientPubKey) || !validateNetworkKey(networkKey)) {
+        return RM_E_INVALID_PARAM;
+    }
+
+    encryptedKey.resize(networkKey.size());
+    for (size_t i = 0; i < networkKey.size(); i++) {
+        encryptedKey[i] = networkKey[i] ^ recipientPubKey[i % PUBLIC_KEY_SIZE];
+    }
+
+    return RM_E_NONE;
+}
+
+int KeyManager::decryptNetworkKey(const std::vector<byte>& encryptedKey,
+                                  const std::vector<byte>& privateKey,
+                                  std::vector<byte>& networkKey)
+{
+    // TODO: Implement ECIES decryption
+    // For now just XOR with private key as placeholder
+    if (!validatePrivateKey(privateKey)) {
+        return RM_E_INVALID_PARAM;
+    }
+
+    networkKey.resize(encryptedKey.size());
+    for (size_t i = 0; i < encryptedKey.size(); i++) {
+        networkKey[i] = encryptedKey[i] ^ privateKey[i % PRIVATE_KEY_SIZE];
+    }
+
+    return RM_E_NONE;
+}
+
 // Storage operations simply delegate to DeviceStorage
 int KeyManager::loadPrivateKey(std::vector<byte>& privateKey)
 {
@@ -110,6 +146,29 @@ int KeyManager::persistSessionKey(const std::vector<byte>& sessionKey)
     return storage.persistSessionKey(sessionKey);
 }
 
+int KeyManager::loadNetworkKey(std::vector<byte>& networkKey)
+{
+    return storage.loadNetworkKey(networkKey);
+}
+
+int KeyManager::persistNetworkKey(const std::vector<byte>& networkKey)
+{
+    if (!validateNetworkKey(networkKey)) {
+        return RM_E_INVALID_PARAM;
+    }
+    return storage.persistNetworkKey(networkKey);
+}
+
+int KeyManager::loadNetworkKeyVersion(uint32_t& version)
+{
+    return storage.loadNetworkKeyVersion(version);
+}
+
+int KeyManager::persistNetworkKeyVersion(uint32_t version)
+{
+    return storage.persistNetworkKeyVersion(version);
+}
+
 bool KeyManager::validatePublicKey(const std::vector<byte>& publicKey)
 {
     return publicKey.size() == PUBLIC_KEY_SIZE;
@@ -123,4 +182,9 @@ bool KeyManager::validatePrivateKey(const std::vector<byte>& privateKey)
 bool KeyManager::validateSessionKey(const std::vector<byte>& sessionKey)
 {
     return sessionKey.size() == SESSION_KEY_SIZE;
+}
+
+bool KeyManager::validateNetworkKey(const std::vector<byte>& networkKey)
+{
+    return networkKey.size() == NETWORK_KEY_SIZE;
 }

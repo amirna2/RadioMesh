@@ -191,14 +191,15 @@ void test_updateSecurityParams_without_crypto(void)
     RadioMeshDevice device = createDevice();
 
     // Don't call device.initialize() - it fails in test environment
-    // Try to update security params without initializing crypto
+    // Try to update security params without initializing crypto first
+    // This now creates crypto on-demand for network key support
     SecurityParams newParams;
     newParams.method = SecurityMethod::AES;
     newParams.key = key;
     newParams.iv = iv;
 
     int rc = device.updateSecurityParams(newParams);
-    TEST_ASSERT_EQUAL(RM_E_INVALID_STATE, rc);
+    TEST_ASSERT_EQUAL(RM_E_NONE, rc);  // Now succeeds with dynamic crypto creation
 }
 
 void setup()

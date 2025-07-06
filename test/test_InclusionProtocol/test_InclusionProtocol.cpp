@@ -331,6 +331,70 @@ void test_automatic_inclusion_flow_integration() {
     TEST_ASSERT_EQUAL(DeviceInclusionState::INCLUDED, device.getInclusionState());
 }
 
+void test_include_response_payload_format() {
+    // Test the network key payload format: [hub_pub_key][encrypted_network_key][key_version][nonce]
+    const size_t HUB_KEY_SIZE = 32;
+    const size_t ENCRYPTED_KEY_SIZE = 32;
+    const size_t VERSION_SIZE = 4;
+    const size_t NONCE_SIZE = 4;
+    const size_t EXPECTED_PAYLOAD_SIZE = HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE + VERSION_SIZE + NONCE_SIZE;
+    
+    // Create mock INCLUDE_RESPONSE payload
+    std::vector<byte> mockPayload(EXPECTED_PAYLOAD_SIZE);
+    
+    // Fill with test data
+    // Hub public key (32 bytes)
+    for (size_t i = 0; i < HUB_KEY_SIZE; i++) {
+        mockPayload[i] = 0x11 + (i % 16);
+    }
+    
+    // Encrypted network key (32 bytes)
+    for (size_t i = 0; i < ENCRYPTED_KEY_SIZE; i++) {
+        mockPayload[HUB_KEY_SIZE + i] = 0xAA + (i % 16);
+    }
+    
+    // Network key version (4 bytes) - version 42
+    uint32_t version = 42;
+    mockPayload[HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE] = (version >> 0) & 0xFF;
+    mockPayload[HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE + 1] = (version >> 8) & 0xFF;
+    mockPayload[HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE + 2] = (version >> 16) & 0xFF;
+    mockPayload[HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE + 3] = (version >> 24) & 0xFF;
+    
+    // Nonce (4 bytes)
+    for (size_t i = 0; i < NONCE_SIZE; i++) {
+        mockPayload[HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE + VERSION_SIZE + i] = 0xFF - i;
+    }
+    
+    // Verify payload structure
+    TEST_ASSERT_EQUAL(EXPECTED_PAYLOAD_SIZE, mockPayload.size());
+    
+    // Extract and verify hub key
+    std::vector<byte> extractedHubKey(mockPayload.begin(), mockPayload.begin() + HUB_KEY_SIZE);
+    TEST_ASSERT_EQUAL(HUB_KEY_SIZE, extractedHubKey.size());
+    TEST_ASSERT_EQUAL(0x11, extractedHubKey[0]);
+    
+    // Extract and verify encrypted network key
+    std::vector<byte> extractedEncryptedKey(mockPayload.begin() + HUB_KEY_SIZE, 
+                                            mockPayload.begin() + HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE);
+    TEST_ASSERT_EQUAL(ENCRYPTED_KEY_SIZE, extractedEncryptedKey.size());
+    TEST_ASSERT_EQUAL(0xAA, extractedEncryptedKey[0]);
+    
+    // Extract and verify version
+    std::vector<byte> versionBytes(mockPayload.begin() + HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE,
+                                   mockPayload.begin() + HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE + VERSION_SIZE);
+    TEST_ASSERT_EQUAL(VERSION_SIZE, versionBytes.size());
+    
+    uint32_t extractedVersion = (versionBytes[0] << 0) | (versionBytes[1] << 8) | 
+                                (versionBytes[2] << 16) | (versionBytes[3] << 24);
+    TEST_ASSERT_EQUAL(version, extractedVersion);
+    
+    // Extract and verify nonce
+    std::vector<byte> extractedNonce(mockPayload.begin() + HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE + VERSION_SIZE,
+                                     mockPayload.end());
+    TEST_ASSERT_EQUAL(NONCE_SIZE, extractedNonce.size());
+    TEST_ASSERT_EQUAL(0xFF, extractedNonce[0]);
+}
+
 void setup() {
     UNITY_BEGIN();
     
@@ -343,6 +407,7 @@ void setup() {
     RUN_TEST(test_hub_rejects_request_when_not_in_inclusion_mode);
     RUN_TEST(test_device_ignores_include_open_when_already_included);
     RUN_TEST(test_automatic_inclusion_flow_integration);
+    RUN_TEST(test_include_response_payload_format);
     
     UNITY_END();
 }

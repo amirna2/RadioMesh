@@ -5,14 +5,13 @@ auto storage = EEPROMStorage::getInstance();
 
 EEPROMStorage* initStorage(int size = 128)
 {
-    ByteStorageParams params;
     TEST_ASSERT_NOT_NULL(storage);
 
-    params.size = 0;
-    TEST_ASSERT_EQUAL(RM_E_STORAGE_INVALID_SIZE, storage->setParams(params));
-    params.size = 1025;
-    TEST_ASSERT_EQUAL(RM_E_STORAGE_INVALID_SIZE, storage->setParams(params));
-    params.size = size;
+    ByteStorageParams params0(0);
+    TEST_ASSERT_EQUAL(RM_E_STORAGE_INVALID_SIZE, storage->setParams(params0));
+    ByteStorageParams params1025(1025);
+    TEST_ASSERT_EQUAL(RM_E_STORAGE_INVALID_SIZE, storage->setParams(params1025));
+    ByteStorageParams params(size);
     TEST_ASSERT_EQUAL(RM_E_NONE, storage->setParams(params));
     TEST_ASSERT_EQUAL(RM_E_NONE, storage->begin());
     TEST_ASSERT_EQUAL(RM_E_NONE, storage->clear());

@@ -2,6 +2,7 @@
 
 #include "DeviceStorage.h"
 #include "KeyManager.h"
+#include "NetworkKeyManager.h"
 #include <common/inc/Definitions.h>
 #include <vector>
 
@@ -15,7 +16,7 @@ class RadioMeshDevice;
  * 1. Hub is put in inclusion mode (by user/application)
  * 2. Hub broadcasts INCLUDE_OPEN (unencrypted)
  * 3. Device sends INCLUDE_REQUEST (with public key, initial counter)
- * 4. Hub sends INCLUDE_RESPONSE (with hub public key, encrypted session key)
+ * 4. Hub sends INCLUDE_RESPONSE (with hub public key, encrypted network key)
  * 5. Device sends INCLUDE_CONFIRM (encrypted nonce)
  * 6. Hub sends INCLUDE_SUCCESS
  */
@@ -110,11 +111,11 @@ public:
     int checkProtocolTimeouts();
 
     /**
-     * @brief Load and apply stored session key to device crypto
+     * @brief Load and apply stored network key to device crypto
      * Called on device startup if device is already included
      * @return RM_E_NONE on success, error code otherwise
      */
-    int loadAndApplySessionKey();
+    int loadAndApplyNetworkKey();
 
 private:
     const std::string STATE_KEY = "is"; // inclusion state
@@ -131,6 +132,7 @@ private:
 
     std::unique_ptr<DeviceStorage> storage;
     std::unique_ptr<KeyManager> keyManager;
+    std::unique_ptr<NetworkKeyManager> networkKeyManager;
 
     // Protocol state machine
     enum InclusionProtocolState {
@@ -166,6 +168,8 @@ private:
     int handleHubKey(const std::vector<byte>& hubKey);
     // Used when processing INCLUDE_RESPONSE
     int handleSessionKey(const std::vector<byte>& encryptedKey);
+    // Used when processing INCLUDE_RESPONSE (new network key version)
+    int handleNetworkKey(const std::vector<byte>& encryptedKey, uint32_t keyVersion);
 
     std::vector<byte> currentNonce; // Store current session nonce
 

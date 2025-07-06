@@ -31,45 +31,48 @@ void test_updateSecurityParams_with_crypto(void)
 {
     RadioMeshDevice device = createDevice();
     
-    // Initialize crypto with initial params
+    // Initialize crypto with initial network key
     SecurityParams initialParams;
     initialParams.method = SecurityMethod::AES;
-    initialParams.key = key;
+    initialParams.key = key;  // Initial network key
     initialParams.iv = iv;
     
     int rc = device.initializeAesCrypto(initialParams);
     TEST_ASSERT_EQUAL(RM_E_NONE, rc);
     
-    // Update with new security params
+    // Update with new network key (e.g., during key rotation)
     SecurityParams newParams;
     newParams.method = SecurityMethod::AES;
-    newParams.key = newKey;
+    newParams.key = newKey;  // New network key
     newParams.iv = newIv;
     
     rc = device.updateSecurityParams(newParams);
     TEST_ASSERT_EQUAL(RM_E_NONE, rc);
 }
 
-void test_updateSecurityParams_without_crypto(void)
+void test_updateSecurityParams_without_crypto_creates_crypto(void)
 {
     RadioMeshDevice device = createDevice();
     
-    // Don't initialize device - following pattern from test_Device.cpp
-    // Try to update security params without initializing crypto
+    // Don't initialize crypto first - this tests dynamic crypto creation
+    // Try to update security params without initializing crypto first
+    // This should now succeed by creating AesCrypto on-demand
     SecurityParams newParams;
     newParams.method = SecurityMethod::AES;
-    newParams.key = key;
+    newParams.key = key;  // Network key received during inclusion
     newParams.iv = iv;
     
     int rc = device.updateSecurityParams(newParams);
-    TEST_ASSERT_EQUAL(RM_E_INVALID_STATE, rc);
+    // This should now succeed because updateSecurityParams creates AesCrypto on-demand
+    // when crypto is null, enabling dynamic security initialization for standard devices
+    TEST_ASSERT_EQUAL(RM_E_NONE, rc);
 }
 
 void setup()
 {
     UNITY_BEGIN();
     RUN_TEST(test_updateSecurityParams_with_crypto);
-    RUN_TEST(test_updateSecurityParams_without_crypto);
+    RUN_TEST(test_updateSecurityParams_without_crypto_creates_crypto);
     UNITY_END();
 }
 

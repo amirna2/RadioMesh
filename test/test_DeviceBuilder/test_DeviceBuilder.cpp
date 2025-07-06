@@ -170,6 +170,75 @@ void test_DeviceBuilder_buildDevice_withEverything(void)
     TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
 }
 
+void test_DeviceBuilder_buildHubDevice_withSecureMessaging(void)
+{
+    DeviceBuilder builder;
+    reset_device();
+    
+    // Create SecurityParams for hub
+    SecurityParams securityParams;
+    securityParams.method = SecurityMethod::AES;
+    securityParams.key = key;
+    securityParams.iv = iv;
+    
+    device = builder.start()
+                 .withSecureMessaging(securityParams)
+                 .build("hubDevice", device_id, MeshDeviceType::HUB);
+
+    TEST_ASSERT_NOT_NULL(device);
+    TEST_ASSERT_EQUAL_STRING("hubDevice", device->getDeviceName().c_str());
+    TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
+    TEST_ASSERT_EQUAL(MeshDeviceType::HUB, device->getDeviceType());
+}
+
+void test_DeviceBuilder_buildHubDevice_withoutSecurity_shouldFail(void)
+{
+    DeviceBuilder builder;
+    reset_device();
+    
+    // Try to build hub without security - should fail
+    device = builder.start()
+                 .build("hubDevice", device_id, MeshDeviceType::HUB);
+
+    TEST_ASSERT_NULL(device);  // Build should fail
+}
+
+void test_DeviceBuilder_buildStandardDevice_withoutSecurity_shouldSucceed(void)
+{
+    DeviceBuilder builder;
+    reset_device();
+    
+    // Standard devices can be built without security
+    device = builder.start()
+                 .build("standardDevice", device_id, MeshDeviceType::STANDARD);
+
+    TEST_ASSERT_NOT_NULL(device);
+    TEST_ASSERT_EQUAL_STRING("standardDevice", device->getDeviceName().c_str());
+    TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
+    TEST_ASSERT_EQUAL(MeshDeviceType::STANDARD, device->getDeviceType());
+}
+
+void test_DeviceBuilder_buildStandardDevice_withSecureMessaging(void)
+{
+    DeviceBuilder builder;
+    reset_device();
+    
+    // Create SecurityParams for standard device
+    SecurityParams securityParams;
+    securityParams.method = SecurityMethod::AES;
+    securityParams.key = key;
+    securityParams.iv = iv;
+    
+    device = builder.start()
+                 .withSecureMessaging(securityParams)
+                 .build("standardDevice", device_id, MeshDeviceType::STANDARD);
+
+    TEST_ASSERT_NOT_NULL(device);
+    TEST_ASSERT_EQUAL_STRING("standardDevice", device->getDeviceName().c_str());
+    TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
+    TEST_ASSERT_EQUAL(MeshDeviceType::STANDARD, device->getDeviceType());
+}
+
 void setup()
 {
     UNITY_BEGIN();
@@ -183,6 +252,10 @@ void setup()
     RUN_TEST(test_DeviceBuilder_buildDevice_withAesCrypto);
     RUN_TEST(test_DeviceBuilder_buildDevice_withOledDisplay);
     RUN_TEST(test_DeviceBuilder_buildDevice_withEverything);
+    RUN_TEST(test_DeviceBuilder_buildHubDevice_withSecureMessaging);
+    RUN_TEST(test_DeviceBuilder_buildHubDevice_withoutSecurity_shouldFail);
+    RUN_TEST(test_DeviceBuilder_buildStandardDevice_withoutSecurity_shouldSucceed);
+    RUN_TEST(test_DeviceBuilder_buildStandardDevice_withSecureMessaging);
 
     UNITY_END();
 }

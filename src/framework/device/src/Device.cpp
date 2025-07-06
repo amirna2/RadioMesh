@@ -502,9 +502,9 @@ int RadioMeshDevice::initialize()
     inclusionController = std::make_unique<InclusionController>(*this);
     
     if (inclusionController->getState() == DeviceInclusionState::INCLUDED) {
-        rc = inclusionController->loadAndApplySessionKey();
+        rc = inclusionController->loadAndApplyNetworkKey();
         if (rc != RM_E_NONE) {
-            logwarn_ln("Failed to load session key, device may need re-inclusion: %d", rc);
+            logwarn_ln("Failed to load network key, device may need re-inclusion: %d", rc);
         }
     }
     

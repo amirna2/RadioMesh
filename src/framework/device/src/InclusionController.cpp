@@ -11,6 +11,7 @@ InclusionController::InclusionController(RadioMeshDevice& device) : device(devic
     if (byteStorage) {
         storage = std::make_unique<DeviceStorage>(byteStorage);
         keyManager = std::make_unique<KeyManager>(*storage);
+        networkKeyManager = std::make_unique<NetworkKeyManager>(*storage);
     } else {
         logerr_ln("No byte storage available for InclusionController");
         // TODO: Handle this error case properly
@@ -22,6 +23,14 @@ InclusionController::InclusionController(RadioMeshDevice& device) : device(devic
         logerr_ln("Failed to initialize device keys");
         // TODO: We should probably handle this failure case better
         // Maybe set device to a failed state?
+    }
+    
+    // Initialize network key manager for hub devices
+    if (deviceType == MeshDeviceType::HUB) {
+        rc = networkKeyManager->initializeForHub();
+        if (rc != RM_E_NONE) {
+            logerr_ln("Failed to initialize hub network key");
+        }
     }
     
     if (deviceType == MeshDeviceType::HUB) {
@@ -117,6 +126,33 @@ int InclusionController::handleSessionKey(const std::vector<byte>& encryptedKey)
     return keyManager->persistSessionKey(sessionKey);
 }
 
+int InclusionController::handleNetworkKey(const std::vector<byte>& encryptedKey, uint32_t keyVersion)
+{
+    std::vector<byte> privateKey;
+    int rc = keyManager->loadPrivateKey(privateKey);
+    if (rc != RM_E_NONE) {
+        logerr_ln("Failed to load private key for network key decryption: %d", rc);
+        return rc;
+    }
+
+    std::vector<byte> networkKey;
+    rc = networkKeyManager->decryptNetworkKey(encryptedKey, privateKey, networkKey);
+    if (rc != RM_E_NONE) {
+        logerr_ln("Failed to decrypt network key: %d", rc);
+        return rc;
+    }
+
+    // Store network key and version
+    rc = networkKeyManager->setNetworkKey(networkKey, keyVersion);
+    if (rc != RM_E_NONE) {
+        logerr_ln("Failed to store network key: %d", rc);
+        return rc;
+    }
+
+    loginfo_ln("Successfully stored network key version %u", keyVersion);
+    return RM_E_NONE;
+}
+
 DeviceInclusionState InclusionController::getState() const
 {
     return state;
@@ -208,38 +244,34 @@ int InclusionController::sendInclusionResponse(const RadioMeshPacket& packet)
         return RM_E_INVALID_DEVICE_TYPE;
     }
 
-    // 1. Generate new session key
-    std::vector<byte> sessionKey;
-    int rc = keyManager->generateSessionKey(sessionKey);
-    if (rc != RM_E_NONE)
+    // 1. Get current network key from NetworkKeyManager
+    std::vector<byte> networkKey;
+    int rc = networkKeyManager->getCurrentNetworkKey(networkKey);
+    if (rc != RM_E_NONE) {
+        logerr_ln("Failed to get network key: %d", rc);
         return rc;
+    }
+    
+    uint32_t keyVersion = networkKeyManager->getCurrentNetworkKeyVersion();
+    loginfo_ln("Distributing network key version %u to device", keyVersion);
 
-    // 2. Encrypt session key with device's public key
-
-    // Get device public key from the packet
+    // 2. Encrypt network key with device's public key
     std::vector<byte> devicePublicKey;
     devicePublicKey = packet.packetData;
     if (devicePublicKey.size() != KeyManager::PUBLIC_KEY_SIZE) {
         logerr_ln("Invalid public key size: %d", devicePublicKey.size());
         return RM_E_INVALID_LENGTH;
     }
-    std::vector<byte> encryptedKey;
-    rc = keyManager->encryptSessionKey(sessionKey, devicePublicKey, encryptedKey);
-    if (rc != RM_E_NONE)
-        return rc;
-
-    SecurityParams newParams;
-    newParams.method = SecurityMethod::AES;
-    newParams.key = sessionKey;
-    newParams.iv = std::vector<byte>(16, 0);
     
-    rc = device.updateSecurityParams(newParams);
+    std::vector<byte> encryptedKey;
+    rc = networkKeyManager->encryptNetworkKey(networkKey, devicePublicKey, encryptedKey);
     if (rc != RM_E_NONE) {
-        logerr_ln("Hub failed to apply session key: %d", rc);
-        // Continue anyway - hub might want to help device complete inclusion
-    } else {
-        loginfo_ln("Hub applied session key for device");
+        logerr_ln("Failed to encrypt network key: %d", rc);
+        return rc;
     }
+
+    // Hub already uses network key from initialization, no need to update security params here
+    loginfo_ln("Hub distributing network key to device");
 
     // 4. Build response payload
     std::vector<byte> payload;
@@ -252,6 +284,10 @@ int InclusionController::sendInclusionResponse(const RadioMeshPacket& packet)
 
     payload.insert(payload.end(), hubKey.begin(), hubKey.end());
     payload.insert(payload.end(), encryptedKey.begin(), encryptedKey.end());
+    
+    // Add network key version (4 bytes)
+    std::vector<byte> versionBytes = RadioMeshUtils::numberToBytes(keyVersion);
+    payload.insert(payload.end(), versionBytes.begin(), versionBytes.end());
 
     // TODO: Generate new random nonce
     std::vector<byte> nonce = {0, 0, 0, 0};
@@ -348,9 +384,44 @@ int InclusionController::handleInclusionMessage(const RadioMeshPacket& packet)
             case MessageTopic::INCLUDE_RESPONSE:
                 if (state == DeviceInclusionState::INCLUSION_PENDING && protocolState == WAITING_FOR_RESPONSE) {
                     loginfo_ln("Device received INCLUDE_RESPONSE from hub");
+                    
+                    // Parse the response payload: [hub_pub_key][encrypted_network_key][key_version][nonce]
+                    const std::vector<byte>& payload = packet.packetData;
+                    const size_t HUB_KEY_SIZE = 32;
+                    const size_t ENCRYPTED_KEY_SIZE = 32;
+                    const size_t VERSION_SIZE = 4;
+                    const size_t NONCE_SIZE = 4;
+                    
+                    if (payload.size() < HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE + VERSION_SIZE + NONCE_SIZE) {
+                        logerr_ln("INCLUDE_RESPONSE payload too small: %d", payload.size());
+                        return RM_E_INVALID_LENGTH;
+                    }
+                    
+                    // Extract hub public key
+                    std::vector<byte> hubKey(payload.begin(), payload.begin() + HUB_KEY_SIZE);
+                    int rc = handleHubKey(hubKey);
+                    if (rc != RM_E_NONE) {
+                        logerr_ln("Failed to handle hub key: %d", rc);
+                        return rc;
+                    }
+                    
+                    // Extract encrypted network key
+                    std::vector<byte> encryptedKey(payload.begin() + HUB_KEY_SIZE, 
+                                                   payload.begin() + HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE);
+                    
+                    // Extract network key version
+                    std::vector<byte> versionBytes(payload.begin() + HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE,
+                                                   payload.begin() + HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE + VERSION_SIZE);
+                    uint32_t keyVersion = RadioMeshUtils::bytesToNumber<uint32_t>(versionBytes);
+                    
+                    // Handle network key
+                    rc = handleNetworkKey(encryptedKey, keyVersion);
+                    if (rc != RM_E_NONE) {
+                        logerr_ln("Failed to handle network key: %d", rc);
+                        return rc;
+                    }
+                    
                     transitionToState(WAITING_FOR_SUCCESS);
-                    // TODO: Process hub key and session key
-                    // For now, just send confirmation
                     return sendInclusionConfirm();
                 } else {
                     logwarn_ln("Device received INCLUDE_RESPONSE in wrong state (device: %d, protocol: %s)", 
@@ -365,22 +436,23 @@ int InclusionController::handleInclusionMessage(const RadioMeshPacket& packet)
                     storage->persistState(state);
                     transitionToState(PROTOCOL_IDLE);
                     
-                    std::vector<byte> sessionKey;
-                    int rc = keyManager->loadSessionKey(sessionKey);
+                    std::vector<byte> networkKey;
+                    int rc = networkKeyManager->getCurrentNetworkKey(networkKey);
                     if (rc == RM_E_NONE) {
                         SecurityParams newParams;
                         newParams.method = SecurityMethod::AES;
-                        newParams.key = sessionKey;
+                        newParams.key = networkKey;
                         newParams.iv = std::vector<byte>(16, 0);
                         
                         rc = device.updateSecurityParams(newParams);
                         if (rc == RM_E_NONE) {
-                            loginfo_ln("Applied session key to crypto system");
+                            uint32_t keyVersion = networkKeyManager->getCurrentNetworkKeyVersion();
+                            loginfo_ln("Applied network key version %u to crypto system", keyVersion);
                         } else {
-                            logerr_ln("Failed to apply session key: %d", rc);
+                            logerr_ln("Failed to apply network key: %d", rc);
                         }
                     } else {
-                        logerr_ln("Failed to load session key: %d", rc);
+                        logerr_ln("Failed to load network key: %d", rc);
                     }
                 } else {
                     logwarn_ln("Device received INCLUDE_SUCCESS in wrong state (device: %d, protocol: %s)", 
@@ -465,30 +537,31 @@ const char* InclusionController::getProtocolStateString(InclusionProtocolState s
     }
 }
 
-int InclusionController::loadAndApplySessionKey()
+int InclusionController::loadAndApplyNetworkKey()
 {
     if (state != DeviceInclusionState::INCLUDED) {
-        logdbg_ln("Device not included, no session key to load");
+        logdbg_ln("Device not included, no network key to load");
         return RM_E_INVALID_STATE;
     }
 
-    std::vector<byte> sessionKey;
-    int rc = keyManager->loadSessionKey(sessionKey);
+    std::vector<byte> networkKey;
+    int rc = networkKeyManager->getCurrentNetworkKey(networkKey);
     if (rc != RM_E_NONE) {
-        logerr_ln("Failed to load session key: %d", rc);
+        logerr_ln("Failed to load network key: %d", rc);
         return rc;
     }
 
     SecurityParams params;
     params.method = SecurityMethod::AES;
-    params.key = sessionKey;
+    params.key = networkKey;
     params.iv = std::vector<byte>(16, 0);
 
     rc = device.updateSecurityParams(params);
     if (rc == RM_E_NONE) {
-        loginfo_ln("Applied stored session key to crypto system");
+        uint32_t keyVersion = networkKeyManager->getCurrentNetworkKeyVersion();
+        loginfo_ln("Applied stored network key version %u to crypto system", keyVersion);
     } else {
-        logerr_ln("Failed to apply session key: %d", rc);
+        logerr_ln("Failed to apply network key: %d", rc);
     }
 
     return rc;
