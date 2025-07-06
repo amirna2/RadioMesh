@@ -228,7 +228,20 @@ int InclusionController::sendInclusionResponse(const RadioMeshPacket& packet)
     if (rc != RM_E_NONE)
         return rc;
 
-    // 3. Build response payload
+    SecurityParams newParams;
+    newParams.method = SecurityMethod::AES;
+    newParams.key = sessionKey;
+    newParams.iv = std::vector<byte>(16, 0);
+    
+    rc = device.updateSecurityParams(newParams);
+    if (rc != RM_E_NONE) {
+        logerr_ln("Hub failed to apply session key: %d", rc);
+        // Continue anyway - hub might want to help device complete inclusion
+    } else {
+        loginfo_ln("Hub applied session key for device");
+    }
+
+    // 4. Build response payload
     std::vector<byte> payload;
 
     // Add hub public key
@@ -351,7 +364,24 @@ int InclusionController::handleInclusionMessage(const RadioMeshPacket& packet)
                     state = DeviceInclusionState::INCLUDED;
                     storage->persistState(state);
                     transitionToState(PROTOCOL_IDLE);
-                    // TODO: Save session key and hub public key
+                    
+                    std::vector<byte> sessionKey;
+                    int rc = keyManager->loadSessionKey(sessionKey);
+                    if (rc == RM_E_NONE) {
+                        SecurityParams newParams;
+                        newParams.method = SecurityMethod::AES;
+                        newParams.key = sessionKey;
+                        newParams.iv = std::vector<byte>(16, 0);
+                        
+                        rc = device.updateSecurityParams(newParams);
+                        if (rc == RM_E_NONE) {
+                            loginfo_ln("Applied session key to crypto system");
+                        } else {
+                            logerr_ln("Failed to apply session key: %d", rc);
+                        }
+                    } else {
+                        logerr_ln("Failed to load session key: %d", rc);
+                    }
                 } else {
                     logwarn_ln("Device received INCLUDE_SUCCESS in wrong state (device: %d, protocol: %s)", 
                               static_cast<int>(state), getProtocolStateString(protocolState));
@@ -433,4 +463,33 @@ const char* InclusionController::getProtocolStateString(InclusionProtocolState s
         case WAITING_FOR_SUCCESS: return "WAITING_FOR_SUCCESS";
         default: return "UNKNOWN";
     }
+}
+
+int InclusionController::loadAndApplySessionKey()
+{
+    if (state != DeviceInclusionState::INCLUDED) {
+        logdbg_ln("Device not included, no session key to load");
+        return RM_E_INVALID_STATE;
+    }
+
+    std::vector<byte> sessionKey;
+    int rc = keyManager->loadSessionKey(sessionKey);
+    if (rc != RM_E_NONE) {
+        logerr_ln("Failed to load session key: %d", rc);
+        return rc;
+    }
+
+    SecurityParams params;
+    params.method = SecurityMethod::AES;
+    params.key = sessionKey;
+    params.iv = std::vector<byte>(16, 0);
+
+    rc = device.updateSecurityParams(params);
+    if (rc == RM_E_NONE) {
+        loginfo_ln("Applied stored session key to crypto system");
+    } else {
+        logerr_ln("Failed to apply session key: %d", rc);
+    }
+
+    return rc;
 }

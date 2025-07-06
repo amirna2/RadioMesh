@@ -500,6 +500,14 @@ int RadioMeshDevice::initialize()
     }
 
     inclusionController = std::make_unique<InclusionController>(*this);
+    
+    if (inclusionController->getState() == DeviceInclusionState::INCLUDED) {
+        rc = inclusionController->loadAndApplySessionKey();
+        if (rc != RM_E_NONE) {
+            logwarn_ln("Failed to load session key, device may need re-inclusion: %d", rc);
+        }
+    }
+    
     return RM_E_NONE;
 }
 
@@ -528,5 +536,25 @@ int RadioMeshDevice::factoryReset()
     }
 
     loginfo_ln("Factory reset complete");
+    return RM_E_NONE;
+}
+
+int RadioMeshDevice::updateSecurityParams(const SecurityParams& params)
+{
+    if (crypto == nullptr) {
+        loginfo_ln("Crypto not initialized, creating AesCrypto instance for dynamic security");
+        crypto = AesCrypto::getInstance();
+        if (crypto == nullptr) {
+            logerr_ln("Failed to create AesCrypto instance");
+            return RM_E_UNKNOWN;
+        }
+    }
+
+    loginfo_ln("Updating device security parameters");
+    
+    crypto->setParams(params);
+    router->setCrypto(crypto);
+    
+    loginfo_ln("Security parameters updated successfully");
     return RM_E_NONE;
 }

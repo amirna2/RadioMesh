@@ -26,7 +26,7 @@ std::string deviceName = "testDevice";
 
 RadioMeshDevice createDevice()
 {
-    return RadioMeshDevice("testDevice", id);
+    return RadioMeshDevice("testDevice", id, MeshDeviceType::STANDARD);
 }
 
 void test_getDeviceId(void)
@@ -66,10 +66,16 @@ void test_initializeAesCrypto(void)
 {
     RadioMeshDevice device = createDevice();
 
-    int rc = device.initializeAesCrypto(key, iv);
+    SecurityParams initialParams;
+    initialParams.method = SecurityMethod::AES;
+    initialParams.key = key;
+    initialParams.iv = iv;
+
+    int rc = device.initializeAesCrypto(initialParams);
     TEST_ASSERT_EQUAL(RM_E_NONE, rc);
 }
 
+#if !defined(RM_NO_DISPLAY)
 void test_initializeOledDisplay(void)
 {
     RadioMeshDevice device = createDevice();
@@ -79,6 +85,12 @@ void test_initializeOledDisplay(void)
     int rc = device.initializeOledDisplay(displayParams);
     TEST_ASSERT_EQUAL(RM_E_NONE, rc);
 }
+#else
+void test_initializeOledDisplay(void)
+{ // This test is skipped if RM_NO_DISPLAY is defined
+    TEST_IGNORE_MESSAGE("Display initialization is not supported in this build.");
+}
+#endif // !RM_NO_DISPLAY
 
 void test_initializeWifi(void)
 {
@@ -144,6 +156,51 @@ void test_initializeWifiAccessPoint_with_invalid_ip_address(void)
     TEST_ASSERT_EQUAL(RM_E_INVALID_AP_PARAMS, rc);
 }
 
+void test_updateSecurityParams(void)
+{
+    RadioMeshDevice device = createDevice();
+
+    // Initialize device first
+    int rc = device.initialize();
+    TEST_ASSERT_EQUAL(RM_E_NONE, rc);
+
+    // Initialize crypto with initial params
+    SecurityParams initialParams;
+    initialParams.method = SecurityMethod::AES;
+    initialParams.key = key;
+    initialParams.iv = iv;
+
+    rc = device.initializeAesCrypto(initialParams);
+    TEST_ASSERT_EQUAL(RM_E_NONE, rc);
+
+    // Update with new security params
+    std::vector<byte> newKey(32, 0xAA);
+    std::vector<byte> newIv(16, 0xBB);
+
+    SecurityParams newParams;
+    newParams.method = SecurityMethod::AES;
+    newParams.key = newKey;
+    newParams.iv = newIv;
+
+    rc = device.updateSecurityParams(newParams);
+    TEST_ASSERT_EQUAL(RM_E_NONE, rc);
+}
+
+void test_updateSecurityParams_without_crypto(void)
+{
+    RadioMeshDevice device = createDevice();
+
+    // Don't call device.initialize() - it fails in test environment
+    // Try to update security params without initializing crypto
+    SecurityParams newParams;
+    newParams.method = SecurityMethod::AES;
+    newParams.key = key;
+    newParams.iv = iv;
+
+    int rc = device.updateSecurityParams(newParams);
+    TEST_ASSERT_EQUAL(RM_E_INVALID_STATE, rc);
+}
+
 void setup()
 {
     UNITY_BEGIN();
@@ -160,6 +217,8 @@ void setup()
     RUN_TEST(test_initializeWifiAccessPoint_with_invalid_ssid_length);
     RUN_TEST(test_initializeWifiAccessPoint_with_invalid_password_length);
     RUN_TEST(test_initializeWifiAccessPoint_with_invalid_ip_address);
+    RUN_TEST(test_updateSecurityParams);
+    RUN_TEST(test_updateSecurityParams_without_crypto);
     UNITY_END();
 }
 

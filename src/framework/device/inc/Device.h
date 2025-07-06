@@ -73,6 +73,7 @@ public:
 
     bool isIncluded() const override;
     int factoryReset() override;
+    int updateSecurityParams(const SecurityParams& params) override;
 
     // Device specific methods
 

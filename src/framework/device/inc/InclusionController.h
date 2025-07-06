@@ -109,6 +109,13 @@ public:
      */
     int checkProtocolTimeouts();
 
+    /**
+     * @brief Load and apply stored session key to device crypto
+     * Called on device startup if device is already included
+     * @return RM_E_NONE on success, error code otherwise
+     */
+    int loadAndApplySessionKey();
+
 private:
     const std::string STATE_KEY = "is"; // inclusion state
     const std::string CTR_KEY = "mc";   // message counter
