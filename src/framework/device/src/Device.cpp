@@ -288,7 +288,11 @@ int RadioMeshDevice::sendData(const uint8_t topic, const std::vector<byte> data,
     txPacket.nextHopId = BROADCAST_ADDR;
     txPacket.packetData = data;
 
-    return router->routePacket(txPacket, this->id.data());
+    // Get current inclusion state for encryption context
+    DeviceInclusionState currentState = inclusionController ? 
+        inclusionController->getState() : DeviceInclusionState::NOT_INCLUDED;
+    
+    return router->routePacket(txPacket, this->id.data(), deviceType, currentState);
 }
 
 bool RadioMeshDevice::isReceivedDataCrcValid(RadioMeshPacket& receivedPacket)
@@ -349,6 +353,14 @@ int RadioMeshDevice::handleReceivedData()
     if (isInclusionMessage(receivedPacket.topic)) {
         logdbg_ln("Received inclusion message with topic: 0x%02X", receivedPacket.topic);
 
+        // Decrypt packet data if this device is the destination
+        if (encryptionService != nullptr) {
+            receivedPacket.packetData = encryptionService->decrypt(receivedPacket.packetData,
+                                                                  receivedPacket.topic,
+                                                                  deviceType,
+                                                                  inclusionController->getState());
+        }
+
         // Let the InclusionController handle it automatically
         int result = inclusionController->handleInclusionMessage(receivedPacket);
         if (result != RM_E_NONE) {
@@ -379,7 +391,9 @@ int RadioMeshDevice::handleReceivedData()
     // Only a standard device with relay enabled should route the packet
     if (this->deviceType == MeshDeviceType::STANDARD && relayEnabled) {
         loginfo_ln("Router device. Routing received packet...");
-        rc = router->routePacket(receivedPacket, this->id.data());
+        DeviceInclusionState currentState = inclusionController ? 
+            inclusionController->getState() : DeviceInclusionState::NOT_INCLUDED;
+        rc = router->routePacket(receivedPacket, this->id.data(), deviceType, currentState);
         if (rc != RM_E_NONE) {
             logerr_ln("ERROR handleReceivedPacket. Failed to route packet. rc = %d", rc);
             return rc;
@@ -501,7 +515,13 @@ int RadioMeshDevice::initialize()
 
     inclusionController = std::make_unique<InclusionController>(*this);
     
-    if (inclusionController->getState() == DeviceInclusionState::INCLUDED) {
+    // Initialize EncryptionService
+    encryptionService = std::make_unique<EncryptionService>();
+    router->setEncryptionService(encryptionService.get());
+    
+    // Load and apply network key for included devices or hubs
+    if (inclusionController->getState() == DeviceInclusionState::INCLUDED || 
+        deviceType == MeshDeviceType::HUB) {
         rc = inclusionController->loadAndApplyNetworkKey();
         if (rc != RM_E_NONE) {
             logwarn_ln("Failed to load network key, device may need re-inclusion: %d", rc);
@@ -541,16 +561,23 @@ int RadioMeshDevice::factoryReset()
 
 int RadioMeshDevice::updateSecurityParams(const SecurityParams& params)
 {
+    loginfo_ln("Updating device security parameters");
+    
+    // Configure EncryptionService with network key
+    if (encryptionService != nullptr && params.method == SecurityMethod::AES) {
+        encryptionService->setNetworkKey(params.key);
+        loginfo_ln("Network key configured for EncryptionService");
+    }
+    
+    // Also maintain backward compatibility with old crypto system
     if (crypto == nullptr) {
-        loginfo_ln("Crypto not initialized, creating AesCrypto instance for dynamic security");
+        loginfo_ln("Crypto not initialized, creating AesCrypto instance for backward compatibility");
         crypto = AesCrypto::getInstance();
         if (crypto == nullptr) {
             logerr_ln("Failed to create AesCrypto instance");
             return RM_E_UNKNOWN;
         }
     }
-
-    loginfo_ln("Updating device security parameters");
     
     crypto->setParams(params);
     router->setCrypto(crypto);

@@ -20,8 +20,7 @@ public:
     
     // Network key operations
     int getCurrentNetworkKey(std::vector<byte>& networkKey);
-    uint32_t getCurrentNetworkKeyVersion();
-    int setNetworkKey(const std::vector<byte>& networkKey, uint32_t version);
+    int setNetworkKey(const std::vector<byte>& networkKey);
     
     // Network key encryption/decryption for distribution
     int encryptNetworkKey(const std::vector<byte>& networkKey,
@@ -34,8 +33,6 @@ public:
     // Storage operations
     int loadNetworkKey(std::vector<byte>& networkKey);
     int persistNetworkKey(const std::vector<byte>& networkKey);
-    int loadNetworkKeyVersion(uint32_t& version);
-    int persistNetworkKeyVersion(uint32_t version);
     
     // Key validation
     bool validateNetworkKey(const std::vector<byte>& networkKey);
@@ -48,10 +45,4 @@ public:
 
 private:
     DeviceStorage& storage;
-    std::vector<byte> cachedNetworkKey;
-    uint32_t cachedVersion = 0;
-    bool cacheValid = false;
-    
-    void invalidateCache();
-    int refreshCache();
 };

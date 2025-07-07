@@ -1,22 +1,39 @@
 #include <common/inc/Logger.h>
 #include <framework/device/inc/KeyManager.h>
+#include <core/protocol/inc/crypto/EncryptionService.h>
+extern "C" {
+typedef struct uECC_Curve_t* uECC_Curve;
+uECC_Curve uECC_secp256r1(void);
+void uECC_set_rng(int (*rng_function)(uint8_t *dest, unsigned size));
+int uECC_make_key(uint8_t *public_key, uint8_t *private_key, uECC_Curve curve);
+}
+
+// RNG function for ECC
+static int rng_function(uint8_t *dest, unsigned size) {
+    while (size) {
+        *dest++ = random(256);
+        size--;
+    }
+    return 1;
+}
 
 int KeyManager::generateKeyPair(std::vector<byte>& publicKey, std::vector<byte>& privateKey)
 {
-    // TODO: Replace with actual ECC key generation
-    // For now generate random bytes as placeholder
-    privateKey.resize(PRIVATE_KEY_SIZE);
-    publicKey.resize(PUBLIC_KEY_SIZE);
-
-    // Generate private key
-    for (size_t i = 0; i < PRIVATE_KEY_SIZE; i++) {
-        privateKey[i] = random(256);
+    // Initialize ECC
+    static bool initialized = false;
+    if (!initialized) {
+        uECC_set_rng(&rng_function);
+        initialized = true;
     }
-
-    // For now just derive "public key" from private
-    // This will be replaced with proper ECC
-    for (size_t i = 0; i < PUBLIC_KEY_SIZE; i++) {
-        publicKey[i] = privateKey[i] ^ 0xFF;
+    
+    // Use proper ECC key generation
+    privateKey.resize(PRIVATE_KEY_SIZE);  // 32 bytes
+    publicKey.resize(64);  // 64 bytes for full public key
+    
+    uECC_Curve curve = uECC_secp256r1();
+    if (!uECC_make_key(publicKey.data(), privateKey.data(), curve)) {
+        logerr_ln("Failed to generate ECC key pair");
+        return RM_E_CRYPTO_SETUP;
     }
 
     return RM_E_NONE;
@@ -38,15 +55,17 @@ int KeyManager::encryptSessionKey(const std::vector<byte>& sessionKey,
                                   const std::vector<byte>& recipientPubKey,
                                   std::vector<byte>& encryptedKey)
 {
-    // TODO: Implement ECIES encryption
-    // For now just XOR with recipient public key as placeholder
-    if (!validatePublicKey(recipientPubKey) || !validateSessionKey(sessionKey)) {
+    if (recipientPubKey.size() != 64 || !validateSessionKey(sessionKey)) {
         return RM_E_INVALID_PARAM;
     }
 
-    encryptedKey.resize(sessionKey.size());
-    for (size_t i = 0; i < sessionKey.size(); i++) {
-        encryptedKey[i] = sessionKey[i] ^ recipientPubKey[i % PUBLIC_KEY_SIZE];
+    // Use proper ECIES encryption
+    EncryptionService encryptionService;
+    encryptedKey = encryptionService.encryptECIES(sessionKey, recipientPubKey);
+    
+    if (encryptedKey.size() <= sessionKey.size()) {
+        logerr_ln("ECIES encryption failed for session key");
+        return RM_E_CRYPTO_SETUP;
     }
 
     return RM_E_NONE;
@@ -56,15 +75,17 @@ int KeyManager::decryptSessionKey(const std::vector<byte>& encryptedKey,
                                   const std::vector<byte>& privateKey,
                                   std::vector<byte>& sessionKey)
 {
-    // TODO: Implement ECIES decryption
-    // For now just XOR with private key as placeholder
     if (!validatePrivateKey(privateKey)) {
         return RM_E_INVALID_PARAM;
     }
 
-    sessionKey.resize(encryptedKey.size());
-    for (size_t i = 0; i < encryptedKey.size(); i++) {
-        sessionKey[i] = encryptedKey[i] ^ privateKey[i % PRIVATE_KEY_SIZE];
+    // Use proper ECIES decryption
+    EncryptionService encryptionService;
+    sessionKey = encryptionService.decryptECIES(encryptedKey, privateKey);
+    
+    if (!validateSessionKey(sessionKey)) {
+        logerr_ln("ECIES decryption failed for session key");
+        return RM_E_CRYPTO_SETUP;
     }
 
     return RM_E_NONE;
@@ -74,15 +95,17 @@ int KeyManager::encryptNetworkKey(const std::vector<byte>& networkKey,
                                   const std::vector<byte>& recipientPubKey,
                                   std::vector<byte>& encryptedKey)
 {
-    // TODO: Implement ECIES encryption
-    // For now just XOR with recipient public key as placeholder
-    if (!validatePublicKey(recipientPubKey) || !validateNetworkKey(networkKey)) {
+    if (recipientPubKey.size() != 64 || !validateNetworkKey(networkKey)) {
         return RM_E_INVALID_PARAM;
     }
 
-    encryptedKey.resize(networkKey.size());
-    for (size_t i = 0; i < networkKey.size(); i++) {
-        encryptedKey[i] = networkKey[i] ^ recipientPubKey[i % PUBLIC_KEY_SIZE];
+    // Use proper ECIES encryption
+    EncryptionService encryptionService;
+    encryptedKey = encryptionService.encryptECIES(networkKey, recipientPubKey);
+    
+    if (encryptedKey.size() <= networkKey.size()) {
+        logerr_ln("ECIES encryption failed for network key");
+        return RM_E_CRYPTO_SETUP;
     }
 
     return RM_E_NONE;
@@ -92,15 +115,17 @@ int KeyManager::decryptNetworkKey(const std::vector<byte>& encryptedKey,
                                   const std::vector<byte>& privateKey,
                                   std::vector<byte>& networkKey)
 {
-    // TODO: Implement ECIES decryption
-    // For now just XOR with private key as placeholder
     if (!validatePrivateKey(privateKey)) {
         return RM_E_INVALID_PARAM;
     }
 
-    networkKey.resize(encryptedKey.size());
-    for (size_t i = 0; i < encryptedKey.size(); i++) {
-        networkKey[i] = encryptedKey[i] ^ privateKey[i % PRIVATE_KEY_SIZE];
+    // Use proper ECIES decryption
+    EncryptionService encryptionService;
+    networkKey = encryptionService.decryptECIES(encryptedKey, privateKey);
+    
+    if (!validateNetworkKey(networkKey)) {
+        logerr_ln("ECIES decryption failed for network key");
+        return RM_E_CRYPTO_SETUP;
     }
 
     return RM_E_NONE;
@@ -171,7 +196,7 @@ int KeyManager::persistNetworkKeyVersion(uint32_t version)
 
 bool KeyManager::validatePublicKey(const std::vector<byte>& publicKey)
 {
-    return publicKey.size() == PUBLIC_KEY_SIZE;
+    return publicKey.size() == 64; // Full ECC public key is 64 bytes
 }
 
 bool KeyManager::validatePrivateKey(const std::vector<byte>& privateKey)

@@ -7,6 +7,7 @@
 #include <common/inc/Definitions.h>
 #include <common/inc/Errors.h>
 #include <core/protocol/inc/crypto/aes/AesCrypto.h>
+#include <core/protocol/inc/crypto/EncryptionService.h>
 #include <core/protocol/inc/packet/Callbacks.h>
 #include <core/protocol/inc/routing/PacketRouter.h>
 #include <framework/interfaces/IDevice.h>
@@ -86,6 +87,16 @@ public:
     {
         return radioParams;
     };
+
+    /**
+     * @brief Get the encryption service
+     *
+     * @return EncryptionService pointer
+     */
+    EncryptionService* getEncryptionService()
+    {
+        return encryptionService.get();
+    }
 
     /**
      * @brief Get the device type
@@ -201,6 +212,8 @@ private:
     LoraRadio* radio = nullptr;
     AesCrypto* crypto = nullptr;
     EEPROMStorage* eepromStorage = nullptr;
+    
+    std::unique_ptr<EncryptionService> encryptionService;
 
 #ifndef RM_NO_DISPLAY
     OledDisplay* oledDisplay = nullptr;

@@ -172,6 +172,7 @@ private:
     int handleNetworkKey(const std::vector<byte>& encryptedKey, uint32_t keyVersion);
 
     std::vector<byte> currentNonce; // Store current session nonce
+    std::vector<byte> tempHubPublicKey; // Temporary storage for hub's public key during inclusion
 
     std::vector<byte> generateNonce()
     {

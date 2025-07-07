@@ -6,7 +6,8 @@
 
 PacketRouter* PacketRouter::instance = nullptr;
 
-int PacketRouter::routePacket(RadioMeshPacket packet, const byte* ourDeviceId)
+int PacketRouter::routePacket(RadioMeshPacket packet, const byte* ourDeviceId, 
+                             MeshDeviceType deviceType, DeviceInclusionState inclusionState)
 {
     RadioMeshUtils::CRC32 crc32;
     RadioMeshPacket packetCopy = packet;
@@ -25,7 +26,7 @@ int PacketRouter::routePacket(RadioMeshPacket packet, const byte* ourDeviceId)
 
     packetCopy.reserved.fill(0);
 
-    encryptPacketData(packetCopy);
+    encryptPacketData(packetCopy, deviceType, inclusionState);
 
     calculatePacketCrc(packetCopy, crc32, key);
     int rc = sendPacket(packetCopy);
@@ -71,12 +72,27 @@ void PacketRouter::routeToNextHop(RadioMeshPacket& packetCopy)
     }
 }
 
-void PacketRouter::encryptPacketData(RadioMeshPacket& packetCopy)
+void PacketRouter::encryptPacketData(RadioMeshPacket& packetCopy, MeshDeviceType deviceType, DeviceInclusionState inclusionState)
 {
-    if (crypto != nullptr && packetCopy.packetData.size() > 0) {
+    if (packetCopy.packetData.size() == 0) {
+        return;
+    }
+
+    // Use EncryptionService if available (new approach)
+    if (encryptionService != nullptr) {
+        packetCopy.packetData = encryptionService->encrypt(packetCopy.packetData, 
+                                                          packetCopy.topic, 
+                                                          deviceType, 
+                                                          inclusionState);
+        return;
+    }
+
+    // Fall back to old AesCrypto approach (deprecated)
+    if (crypto != nullptr) {
         packetCopy.packetData = crypto->encrypt(packetCopy.packetData);
+        logwarn_ln("Using deprecated AesCrypto. Consider upgrading to EncryptionService.");
     } else {
-        logwarn_ln("No crypto component set. Packet will be sent unencrypted.");
+        logwarn_ln("No encryption service set. Packet will be sent unencrypted.");
     }
 }
 

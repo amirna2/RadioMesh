@@ -31,7 +31,7 @@ Actor          HUB                                 NEW DEVICE
   |--switch to->|                                      |<--Enter Discovery
   | inclusion   |                                      |    Mode
   |   mode      |----Broadcast INCLUDE_OPEN----------->|
-  |             |                                      |
+  |             |    (Hub PublicKey)                   |
   |             |<---INCLUDE_REQUEST-------------------|
   |             |    (DeviceID, PublicKey,             |
   |             |     InitialCounter)                  |
@@ -99,19 +99,19 @@ Instead of generating unique session keys, the hub now:
 #### INCLUDE_RESPONSE (Hub → Device) - UPDATED
 ```cpp
 struct IncludeResponseMessage {
-    uint8_t hubPublicKey[32];          // Hub's public key
-    uint8_t encryptedNetworkKey[48];   // ECIES encrypted network key ← CHANGED
-    uint8_t encryptedNonce[16];        // AES encrypted nonce
+    uint8_t hubPublicKey[64];          // Hub's public key
+    uint8_t encryptedNetworkKey[32];   // ECC encrypted network key ← CHANGED
+    uint8_t encryptedNonce[4];         // AES encrypted nonce
     uint32_t hubInitialCounter;        // Hub's initial frame counter
     uint32_t networkKeyVersion;       // Network key version ← NEW
 };
 ```
 
 #### Other Messages (Unchanged)
-- INCLUDE_OPEN: No payload
-- INCLUDE_REQUEST: DeviceID + PublicKey + InitialCounter
-- INCLUDE_CONFIRM: EncryptedNonce
-- INCLUDE_SUCCESS: No payload
+- INCLUDE_OPEN: Hub public key (64 bytes)
+- INCLUDE_REQUEST: DeviceID + PublicKey + InitialCounter (72 bytes)
+- INCLUDE_CONFIRM: EncryptedNonce (4 bytes)
+- INCLUDE_SUCCESS: Empty payload (0 bytes)
 
 ### Device State Changes
 
@@ -199,14 +199,51 @@ int HubDevice::initialize() {
 3. **Broadcast Support**: Hub can send encrypted broadcasts to all devices
 4. **Group Communication**: Devices can communicate directly without hub mediation
 
+## Encryption Design - Simplified ECC Approach
+
+### Inclusion Message Encryption Table
+
+| Message          | Encrypted? | Crypto Used              | Key Used                    | Overhead | Purpose                                        |
+|------------------|------------|--------------------------|----------------------------|----------|------------------------------------------------|
+| INCLUDE_OPEN     | ❌ No       | —                        | —                          | 0 bytes  | Broadcast hub public key for bootstrapping     |
+| INCLUDE_REQUEST  | ✅ Yes      | ECC (device → hub)       | Hub's public key           | 0 bytes  | Encrypts device info using hub's public key    |
+| INCLUDE_RESPONSE | ✅ Yes      | ECC (hub → device)       | Device's public key        | 0 bytes  | Encrypts network key using device's public key |
+| INCLUDE_CONFIRM  | ✅ Yes      | AES (shared key)         | Shared network key         | 0 bytes  | Encrypts incremented nonce                     |
+| INCLUDE_SUCCESS  | ✅ Yes      | AES (shared key)         | Shared network key         | 0 bytes  | Final acknowledgment                           |
+
+### Key Management Strategy
+
+#### Device Key Generation
+- **When**: Device initialization (after EEPROM initialization)
+- **Storage**: Device stores own private key and hub's public key (from INCLUDE_OPEN)
+- **Lifecycle**: Keys persist across inclusion attempts for efficiency
+
+#### Hub Key Management
+- **Storage**: Hub does NOT permanently store device public keys
+- **Usage**: Hub uses device public key only during active inclusion session
+- **Lifecycle**: Device public keys discarded after inclusion completion
+
+#### Industry Alignment
+This approach follows proven IoT protocols:
+- **Z-Wave S2**: Direct ECC encryption without ECIES overhead
+- **Zigbee 3.0**: Direct AES encryption after simple key exchange
+- **Thread/Matter**: Direct ECDH without ephemeral key overhead
+
+### Benefits of Simplified Approach
+- ✅ **Zero Encryption Overhead**: No ephemeral keys, no bandwidth waste
+- ✅ **Industry Proven**: Same approach as Z-Wave, Zigbee, Thread
+- ✅ **Simpler Implementation**: Direct ECC encryption/decryption
+- ✅ **Battery Friendly**: Less radio transmission overhead
+- ✅ **Secure**: Fresh keys per device, no replay attacks across sessions
+
 ## Security Considerations
 
 ### Security Model
 - **Network Perimeter**: Shared network key establishes trusted network boundary
-- **Inclusion Security**: ECDH + ECIES protects network key during distribution
+- **Inclusion Security**: Direct ECC encryption protects sensitive data during distribution
 - **Transport Security**: All application traffic encrypted with AES-256
 - **Replay Protection**: Frame counters prevent replay attacks
-- **Device Authentication**: Device public keys stored for identity verification
+- **Device Authentication**: Device public keys validate identity during inclusion
 
 ### Security Trade-offs
 - ✅ **Industry Standard**: Proven security model used by major IoT protocols
@@ -216,18 +253,26 @@ int HubDevice::initialize() {
 - ⚠️ **Key Rotation**: Network-wide key updates more complex
 
 ### Future Security Enhancements
-1. **Key Rotation**: Periodic network key updates
-2. **Device Revocation**: Remove compromised devices from network
-3. **Security Classes**: Different keys for different device types
-4. **End-to-End Encryption**: Optional additional encryption for sensitive data
+1. **Install Code Authentication**: Optional Z-Wave S2 style device authentication
+   - Install codes printed on device labels during manufacturing
+   - User enters install code into hub during inclusion
+   - Only devices with matching install codes can join network
+   - Prevents unauthorized devices from joining during inclusion mode
+2. **Key Rotation**: Periodic network key updates
+3. **Device Revocation**: Remove compromised devices from network
+4. **Security Classes**: Different keys for different device types
+5. **End-to-End Encryption**: Optional additional encryption for sensitive data
 
 ## Implementation Migration
 
 ### Phase 1: Core Protocol Update
+- [ ] Update Device initialization to generate device key pairs (ECC - Use ESP32 chipID() as seed)
+- [ ] Replace ECIES with direct ECC encryption/decryption
 - [ ] Update KeyManager to handle network keys instead of session keys
 - [ ] Modify InclusionController to distribute network key
+- [ ] Generate device key pairs during initialization
 - [ ] Update device storage schema
-- [ ] Maintain backward compatibility during transition
+- [ ] Remove ephemeral key overhead from all inclusion messages
 
 ### Phase 2: Hub State Simplification
 - [ ] Implement NetworkKeyManager class

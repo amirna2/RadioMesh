@@ -8,7 +8,7 @@
 class KeyManager
 {
 public:
-    static constexpr size_t PUBLIC_KEY_SIZE = 32; // Example size, adjust based on chosen curve
+    static constexpr size_t PUBLIC_KEY_SIZE = 64; // Full ECC public key (uncompressed)
     static constexpr size_t PRIVATE_KEY_SIZE = 32;
     static constexpr size_t SESSION_KEY_SIZE = 32; // Deprecated, use NETWORK_KEY_SIZE
     static constexpr size_t NETWORK_KEY_SIZE = 32;

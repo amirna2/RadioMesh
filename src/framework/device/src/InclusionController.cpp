@@ -1,4 +1,5 @@
 #include <common/inc/Logger.h>
+#include <core/protocol/inc/crypto/aes/AesCrypto.h>
 #include <framework/device/inc/Device.h>
 #include <framework/device/inc/InclusionController.h>
 
@@ -23,8 +24,23 @@ InclusionController::InclusionController(RadioMeshDevice& device) : device(devic
         logerr_ln("Failed to initialize device keys");
         // TODO: We should probably handle this failure case better
         // Maybe set device to a failed state?
+    } else {
+        // Configure EncryptionService with device's own keys
+        std::vector<byte> privateKey, publicKey;
+        if (keyManager->loadPrivateKey(privateKey) == RM_E_NONE) {
+            // Try to load existing public key, or generate new key pair if needed
+            if (keyManager->generateKeyPair(publicKey, privateKey) == RM_E_NONE) {
+                // Save the generated keys
+                keyManager->persistPrivateKey(privateKey);
+                
+                if (device.getEncryptionService()) {
+                    device.getEncryptionService()->setDeviceKeys(privateKey, publicKey);
+                    logdbg_ln("Configured EncryptionService with device keys");
+                }
+            }
+        }
     }
-    
+
     // Initialize network key manager for hub devices
     if (deviceType == MeshDeviceType::HUB) {
         rc = networkKeyManager->initializeForHub();
@@ -32,7 +48,7 @@ InclusionController::InclusionController(RadioMeshDevice& device) : device(devic
             logerr_ln("Failed to initialize hub network key");
         }
     }
-    
+
     if (deviceType == MeshDeviceType::HUB) {
         state = DeviceInclusionState::INCLUDED;
     } else {
@@ -126,7 +142,8 @@ int InclusionController::handleSessionKey(const std::vector<byte>& encryptedKey)
     return keyManager->persistSessionKey(sessionKey);
 }
 
-int InclusionController::handleNetworkKey(const std::vector<byte>& encryptedKey, uint32_t keyVersion)
+int InclusionController::handleNetworkKey(const std::vector<byte>& encryptedKey,
+                                          uint32_t keyVersion)
 {
     std::vector<byte> privateKey;
     int rc = keyManager->loadPrivateKey(privateKey);
@@ -142,14 +159,13 @@ int InclusionController::handleNetworkKey(const std::vector<byte>& encryptedKey,
         return rc;
     }
 
-    // Store network key and version
-    rc = networkKeyManager->setNetworkKey(networkKey, keyVersion);
+    rc = networkKeyManager->setNetworkKey(networkKey);
     if (rc != RM_E_NONE) {
         logerr_ln("Failed to store network key: %d", rc);
         return rc;
     }
 
-    loginfo_ln("Successfully stored network key version %u", keyVersion);
+    loginfo_ln("Successfully stored network key");
     return RM_E_NONE;
 }
 
@@ -213,10 +229,17 @@ int InclusionController::sendInclusionOpen()
 
     // Start the protocol state machine
     transitionToState(WAITING_FOR_REQUEST);
-    
-    // Send empty broadcast
-    std::vector<byte> emptyData;
-    return device.sendData(MessageTopic::INCLUDE_OPEN, emptyData);
+
+    // Get hub public key to include in broadcast
+    std::vector<byte> hubPublicKey;
+    int rc = getPublicKey(hubPublicKey);
+    if (rc != RM_E_NONE) {
+        logerr_ln("Failed to get hub public key: %d", rc);
+        return rc;
+    }
+
+    loginfo_ln("Broadcasting INCLUDE_OPEN with hub public key");
+    return device.sendData(MessageTopic::INCLUDE_OPEN, hubPublicKey);
 }
 
 int InclusionController::sendInclusionRequest()
@@ -226,16 +249,36 @@ int InclusionController::sendInclusionRequest()
         return RM_E_INVALID_DEVICE_TYPE;
     }
 
-    std::vector<byte> publicKey;
-    int rc = getPublicKey(publicKey);
+    // Ensure we have the hub's public key from INCLUDE_OPEN
+    if (tempHubPublicKey.empty()) {
+        logerr_ln("No hub public key available for encryption");
+        return RM_E_INVALID_STATE;
+    }
+
+    std::vector<byte> devicePublicKey;
+    int rc = getPublicKey(devicePublicKey);
     if (rc != RM_E_NONE) {
         return rc;
     }
 
-    // Build payload as before but now with real public key
-    std::vector<byte> payload;
-    payload.insert(payload.end(), publicKey.begin(), publicKey.end());
-    return device.sendData(MessageTopic::INCLUDE_REQUEST, payload);
+    // Build unencrypted payload: device ID + device public key + initial counter
+    std::vector<byte> unencryptedPayload;
+
+    // Add device ID (4 bytes)
+    std::array<byte, RM_ID_LENGTH> deviceIdArray = device.getDeviceId();
+    unencryptedPayload.insert(unencryptedPayload.end(), deviceIdArray.begin(), deviceIdArray.end());
+
+    // Add device public key
+    unencryptedPayload.insert(unencryptedPayload.end(), devicePublicKey.begin(),
+                              devicePublicKey.end());
+
+    // Add initial counter (4 bytes)
+    uint32_t initialCounter = 0; // Start with 0 for new devices
+    std::vector<byte> counterBytes = RadioMeshUtils::numberToBytes(initialCounter);
+    unencryptedPayload.insert(unencryptedPayload.end(), counterBytes.begin(), counterBytes.end());
+
+    loginfo_ln("Sending INCLUDE_REQUEST with device public key");
+    return device.sendData(MessageTopic::INCLUDE_REQUEST, unencryptedPayload);
 }
 
 int InclusionController::sendInclusionResponse(const RadioMeshPacket& packet)
@@ -251,18 +294,29 @@ int InclusionController::sendInclusionResponse(const RadioMeshPacket& packet)
         logerr_ln("Failed to get network key: %d", rc);
         return rc;
     }
-    
-    uint32_t keyVersion = networkKeyManager->getCurrentNetworkKeyVersion();
-    loginfo_ln("Distributing network key version %u to device", keyVersion);
 
-    // 2. Encrypt network key with device's public key
-    std::vector<byte> devicePublicKey;
-    devicePublicKey = packet.packetData;
-    if (devicePublicKey.size() != KeyManager::PUBLIC_KEY_SIZE) {
-        logerr_ln("Invalid public key size: %d", devicePublicKey.size());
+    loginfo_ln("Distributing network key to device");
+
+    // 2. Extract device public key from INCLUDE_REQUEST
+    // PacketRouter already decrypted the payload
+    const std::vector<byte>& decryptedPayload = packet.packetData;
+    
+    // Expected payload: device_id(4) + device_public_key(64) + counter(4) = 72 bytes
+    const size_t expectedSize = 4 + 64 + 4;
+    if (decryptedPayload.size() != expectedSize) {
+        logerr_ln("Invalid decrypted payload size: %d, expected: %d", decryptedPayload.size(), expectedSize);
         return RM_E_INVALID_LENGTH;
     }
     
+    // Extract device public key (skip device ID, take 64 bytes)
+    std::vector<byte> devicePublicKey = std::vector<byte>(decryptedPayload.begin() + 4, decryptedPayload.begin() + 4 + 64);
+    
+    // Configure EncryptionService with device's public key for INCLUDE_RESPONSE
+    if (device.getEncryptionService()) {
+        device.getEncryptionService()->setTempDevicePublicKey(devicePublicKey);
+        logdbg_ln("Configured EncryptionService with device public key");
+    }
+
     std::vector<byte> encryptedKey;
     rc = networkKeyManager->encryptNetworkKey(networkKey, devicePublicKey, encryptedKey);
     if (rc != RM_E_NONE) {
@@ -284,14 +338,19 @@ int InclusionController::sendInclusionResponse(const RadioMeshPacket& packet)
 
     payload.insert(payload.end(), hubKey.begin(), hubKey.end());
     payload.insert(payload.end(), encryptedKey.begin(), encryptedKey.end());
-    
-    // Add network key version (4 bytes)
-    std::vector<byte> versionBytes = RadioMeshUtils::numberToBytes(keyVersion);
+
+    // Add placeholder version bytes (4 bytes) for protocol compatibility
+    std::vector<byte> versionBytes = RadioMeshUtils::numberToBytes(static_cast<uint32_t>(1));
     payload.insert(payload.end(), versionBytes.begin(), versionBytes.end());
 
-    // TODO: Generate new random nonce
-    std::vector<byte> nonce = {0, 0, 0, 0};
-    payload.insert(payload.end(), nonce.begin(), nonce.end());
+    // Generate random nonce and store it for verification
+    currentNonce = generateNonce();
+    logdbg_ln("Generated nonce: %s",
+              RadioMeshUtils::convertToHex(currentNonce.data(), currentNonce.size()).c_str());
+
+    // For now, send nonce unencrypted (will be encrypted by device with network key)
+    // The device will encrypt it after receiving and verifying the network key
+    payload.insert(payload.end(), currentNonce.begin(), currentNonce.end());
 
     return device.sendData(MessageTopic::INCLUDE_RESPONSE, payload);
 }
@@ -302,13 +361,22 @@ int InclusionController::sendInclusionConfirm()
         logerr_ln("HUB cannot send inclusion confirm");
         return RM_E_INVALID_DEVICE_TYPE;
     }
-    std::vector<byte> payload;
-    // inrement nonce from response
-    // TODO: Actually use the nonce from the response
-    std::vector<byte> nonce = {0, 0, 0, 1};
 
-    payload.insert(payload.end(), nonce.begin(), nonce.end());
-    return device.sendData(MessageTopic::INCLUDE_CONFIRM, payload);
+    // Increment the nonce
+    uint32_t nonceValue = RadioMeshUtils::bytesToNumber<uint32_t>(currentNonce);
+    logdbg_ln("Original nonce value: %u (0x%08X)", nonceValue, nonceValue);
+    nonceValue++;
+    std::vector<byte> incrementedNonce = RadioMeshUtils::numberToBytes(nonceValue);
+
+    logdbg_ln(
+        "Incremented nonce: %u (0x%08X), bytes: %s", nonceValue, nonceValue,
+        RadioMeshUtils::convertToHex(incrementedNonce.data(), incrementedNonce.size()).c_str());
+
+    // Send incremented nonce - EncryptionService will automatically encrypt with network key
+    logdbg_ln("Sending incremented nonce: %s",
+              RadioMeshUtils::convertToHex(incrementedNonce.data(), incrementedNonce.size()).c_str());
+
+    return device.sendData(MessageTopic::INCLUDE_CONFIRM, incrementedNonce);
 }
 
 int InclusionController::sendInclusionSuccess()
@@ -325,144 +393,206 @@ int InclusionController::sendInclusionSuccess()
 
 int InclusionController::handleInclusionMessage(const RadioMeshPacket& packet)
 {
-    logdbg_ln("Handling inclusion message, topic: 0x%02X, device type: %d", 
-              packet.topic, static_cast<int>(deviceType));
+    logdbg_ln("Handling inclusion message, topic: 0x%02X, device type: %d", packet.topic,
+              static_cast<int>(deviceType));
 
     // Handle messages based on device type
     if (deviceType == MeshDeviceType::HUB) {
         // Hub handles requests from devices
         switch (packet.topic) {
-            case MessageTopic::INCLUDE_REQUEST:
-                if (isInclusionModeEnabled() && protocolState == WAITING_FOR_REQUEST) {
-                    loginfo_ln("Hub received INCLUDE_REQUEST from device");
-                    transitionToState(WAITING_FOR_CONFIRMATION);
-                    // TODO: Process the request and send response
-                    return sendInclusionResponse(packet);
-                } else {
-                    logwarn_ln("Hub received INCLUDE_REQUEST but not ready (mode: %s, state: %s)", 
-                              isInclusionModeEnabled() ? "enabled" : "disabled",
-                              getProtocolStateString(protocolState));
-                    return RM_E_INVALID_STATE;
-                }
-                break;
+        case MessageTopic::INCLUDE_REQUEST:
+            if (isInclusionModeEnabled() && protocolState == WAITING_FOR_REQUEST) {
+                loginfo_ln("Hub received INCLUDE_REQUEST from device");
+                transitionToState(WAITING_FOR_CONFIRMATION);
+                // TODO: Process the request and send response
+                return sendInclusionResponse(packet);
+            } else {
+                logwarn_ln("Hub received INCLUDE_REQUEST but not ready (mode: %s, state: %s)",
+                           isInclusionModeEnabled() ? "enabled" : "disabled",
+                           getProtocolStateString(protocolState));
+                return RM_E_INVALID_STATE;
+            }
+            break;
 
-            case MessageTopic::INCLUDE_CONFIRM:
-                if (protocolState == WAITING_FOR_CONFIRMATION) {
-                    loginfo_ln("Hub received INCLUDE_CONFIRM from device");
-                    transitionToState(PROTOCOL_IDLE);
-                    // TODO: Verify the confirmation and complete inclusion
-                    // For now, just send success
-                    return sendInclusionSuccess();
-                } else {
-                    logwarn_ln("Hub received INCLUDE_CONFIRM in wrong state: %s", 
-                              getProtocolStateString(protocolState));
-                    return RM_E_INVALID_STATE;
-                }
-                break;
+        case MessageTopic::INCLUDE_CONFIRM:
+            if (protocolState == WAITING_FOR_CONFIRMATION) {
+                loginfo_ln("Hub received INCLUDE_CONFIRM from device");
 
-            default:
-                logwarn_ln("Hub received unexpected inclusion message: 0x%02X", packet.topic);
-                break;
+                // PacketRouter automatically decrypts INCLUDE_CONFIRM with network key
+                const std::vector<byte>& decryptedNonce = packet.packetData;
+                logdbg_ln("Received decrypted nonce: %s",
+                          RadioMeshUtils::convertToHex(decryptedNonce.data(), decryptedNonce.size())
+                              .c_str());
+
+                // Verify the nonce is incremented by 1
+                uint32_t originalNonceValue = RadioMeshUtils::bytesToNumber<uint32_t>(currentNonce);
+                uint32_t receivedNonceValue =
+                    RadioMeshUtils::bytesToNumber<uint32_t>(decryptedNonce);
+
+                logdbg_ln("Decrypted nonce bytes: %s",
+                          RadioMeshUtils::convertToHex(decryptedNonce.data(), decryptedNonce.size())
+                              .c_str());
+                logdbg_ln("Original nonce: %u (0x%08X), Received nonce: %u (0x%08X)",
+                          originalNonceValue, originalNonceValue, receivedNonceValue,
+                          receivedNonceValue);
+
+                if (receivedNonceValue != originalNonceValue + 1) {
+                    logerr_ln("Nonce verification failed! Expected %u, got %u",
+                              originalNonceValue + 1, receivedNonceValue);
+                    return RM_E_INVALID_PARAM;
+                }
+
+                loginfo_ln("Nonce verified successfully!");
+                transitionToState(PROTOCOL_IDLE);
+                return sendInclusionSuccess();
+            } else {
+                logwarn_ln("Hub received INCLUDE_CONFIRM in wrong state: %s",
+                           getProtocolStateString(protocolState));
+                return RM_E_INVALID_STATE;
+            }
+            break;
+
+        default:
+            logwarn_ln("Hub received unexpected inclusion message: 0x%02X", packet.topic);
+            break;
         }
     } else {
         // Standard device handles messages from hub
         switch (packet.topic) {
-            case MessageTopic::INCLUDE_OPEN:
-                if (state == DeviceInclusionState::NOT_INCLUDED && protocolState == PROTOCOL_IDLE) {
-                    loginfo_ln("Device received INCLUDE_OPEN, starting inclusion");
-                    state = DeviceInclusionState::INCLUSION_PENDING;
-                    storage->persistState(state);
-                    transitionToState(WAITING_FOR_RESPONSE);
-                    return sendInclusionRequest();
-                } else {
-                    logdbg_ln("Device received INCLUDE_OPEN but not ready (state: %s, protocol: %s)", 
-                             state == DeviceInclusionState::INCLUDED ? "INCLUDED" : "PENDING",
-                             getProtocolStateString(protocolState));
-                }
-                break;
+        case MessageTopic::INCLUDE_OPEN:
+            if (state == DeviceInclusionState::NOT_INCLUDED && protocolState == PROTOCOL_IDLE) {
+                loginfo_ln("Device received INCLUDE_OPEN, starting inclusion");
 
-            case MessageTopic::INCLUDE_RESPONSE:
-                if (state == DeviceInclusionState::INCLUSION_PENDING && protocolState == WAITING_FOR_RESPONSE) {
-                    loginfo_ln("Device received INCLUDE_RESPONSE from hub");
-                    
-                    // Parse the response payload: [hub_pub_key][encrypted_network_key][key_version][nonce]
-                    const std::vector<byte>& payload = packet.packetData;
-                    const size_t HUB_KEY_SIZE = 32;
-                    const size_t ENCRYPTED_KEY_SIZE = 32;
-                    const size_t VERSION_SIZE = 4;
-                    const size_t NONCE_SIZE = 4;
-                    
-                    if (payload.size() < HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE + VERSION_SIZE + NONCE_SIZE) {
-                        logerr_ln("INCLUDE_RESPONSE payload too small: %d", payload.size());
-                        return RM_E_INVALID_LENGTH;
-                    }
-                    
-                    // Extract hub public key
-                    std::vector<byte> hubKey(payload.begin(), payload.begin() + HUB_KEY_SIZE);
-                    int rc = handleHubKey(hubKey);
-                    if (rc != RM_E_NONE) {
-                        logerr_ln("Failed to handle hub key: %d", rc);
-                        return rc;
-                    }
-                    
-                    // Extract encrypted network key
-                    std::vector<byte> encryptedKey(payload.begin() + HUB_KEY_SIZE, 
-                                                   payload.begin() + HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE);
-                    
-                    // Extract network key version
-                    std::vector<byte> versionBytes(payload.begin() + HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE,
-                                                   payload.begin() + HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE + VERSION_SIZE);
-                    uint32_t keyVersion = RadioMeshUtils::bytesToNumber<uint32_t>(versionBytes);
-                    
-                    // Handle network key
-                    rc = handleNetworkKey(encryptedKey, keyVersion);
-                    if (rc != RM_E_NONE) {
-                        logerr_ln("Failed to handle network key: %d", rc);
-                        return rc;
-                    }
-                    
-                    transitionToState(WAITING_FOR_SUCCESS);
-                    return sendInclusionConfirm();
-                } else {
-                    logwarn_ln("Device received INCLUDE_RESPONSE in wrong state (device: %d, protocol: %s)", 
-                              static_cast<int>(state), getProtocolStateString(protocolState));
+                // Extract hub public key from INCLUDE_OPEN message
+                if (packet.packetData.size() != KeyManager::PUBLIC_KEY_SIZE) {
+                    logerr_ln("Invalid hub public key size in INCLUDE_OPEN: %d",
+                              packet.packetData.size());
+                    return RM_E_INVALID_LENGTH;
                 }
-                break;
 
-            case MessageTopic::INCLUDE_SUCCESS:
-                if (state == DeviceInclusionState::INCLUSION_PENDING && protocolState == WAITING_FOR_SUCCESS) {
-                    loginfo_ln("Device received INCLUDE_SUCCESS, inclusion complete!");
-                    state = DeviceInclusionState::INCLUDED;
-                    storage->persistState(state);
-                    transitionToState(PROTOCOL_IDLE);
-                    
-                    std::vector<byte> networkKey;
-                    int rc = networkKeyManager->getCurrentNetworkKey(networkKey);
+                // Store hub public key temporarily for encrypting INCLUDE_REQUEST
+                tempHubPublicKey = packet.packetData;
+                logdbg_ln("Received hub public key: %s",
+                          RadioMeshUtils::convertToHex(
+                              tempHubPublicKey.data(),
+                              std::min(8U, static_cast<unsigned int>(tempHubPublicKey.size())))
+                              .c_str());
+                
+                // Configure EncryptionService with hub's public key for INCLUDE_REQUEST
+                if (device.getEncryptionService()) {
+                    device.getEncryptionService()->setHubPublicKey(tempHubPublicKey);
+                    logdbg_ln("Configured EncryptionService with hub public key");
+                }
+
+                state = DeviceInclusionState::INCLUSION_PENDING;
+                storage->persistState(state);
+                transitionToState(WAITING_FOR_RESPONSE);
+                return sendInclusionRequest();
+            } else {
+                logdbg_ln("Device received INCLUDE_OPEN but not ready (state: %s, protocol: %s)",
+                          state == DeviceInclusionState::INCLUDED ? "INCLUDED" : "PENDING",
+                          getProtocolStateString(protocolState));
+            }
+            break;
+
+        case MessageTopic::INCLUDE_RESPONSE:
+            if (state == DeviceInclusionState::INCLUSION_PENDING &&
+                protocolState == WAITING_FOR_RESPONSE) {
+                loginfo_ln("Device received INCLUDE_RESPONSE from hub");
+
+                // Parse the response payload:
+                // [hub_pub_key][encrypted_network_key][key_version][nonce]
+                const std::vector<byte>& payload = packet.packetData;
+                const size_t HUB_KEY_SIZE = 64;
+                const size_t ENCRYPTED_KEY_SIZE =
+                    80; // 32 bytes ephemeral key + 48 bytes encrypted data
+                const size_t VERSION_SIZE = 4;
+                const size_t NONCE_SIZE = 4;
+
+                if (payload.size() <
+                    HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE + VERSION_SIZE + NONCE_SIZE) {
+                    logerr_ln("INCLUDE_RESPONSE payload too small: %d", payload.size());
+                    return RM_E_INVALID_LENGTH;
+                }
+
+                // Extract hub public key
+                std::vector<byte> hubKey(payload.begin(), payload.begin() + HUB_KEY_SIZE);
+                int rc = handleHubKey(hubKey);
+                if (rc != RM_E_NONE) {
+                    logerr_ln("Failed to handle hub key: %d", rc);
+                    return rc;
+                }
+
+                // Extract encrypted network key
+                std::vector<byte> encryptedKey(payload.begin() + HUB_KEY_SIZE,
+                                               payload.begin() + HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE);
+
+                // Extract network key version
+                std::vector<byte> versionBytes(payload.begin() + HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE,
+                                               payload.begin() + HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE +
+                                                   VERSION_SIZE);
+                uint32_t keyVersion = RadioMeshUtils::bytesToNumber<uint32_t>(versionBytes);
+
+                // Extract nonce
+                currentNonce = std::vector<byte>(
+                    payload.begin() + HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE + VERSION_SIZE,
+                    payload.begin() + HUB_KEY_SIZE + ENCRYPTED_KEY_SIZE + VERSION_SIZE +
+                        NONCE_SIZE);
+                logdbg_ln(
+                    "Received nonce: %s",
+                    RadioMeshUtils::convertToHex(currentNonce.data(), currentNonce.size()).c_str());
+
+                // Handle network key
+                rc = handleNetworkKey(encryptedKey, keyVersion);
+                if (rc != RM_E_NONE) {
+                    logerr_ln("Failed to handle network key: %d", rc);
+                    return rc;
+                }
+
+                transitionToState(WAITING_FOR_SUCCESS);
+                return sendInclusionConfirm();
+            } else {
+                logwarn_ln(
+                    "Device received INCLUDE_RESPONSE in wrong state (device: %d, protocol: %s)",
+                    static_cast<int>(state), getProtocolStateString(protocolState));
+            }
+            break;
+
+        case MessageTopic::INCLUDE_SUCCESS:
+            if (state == DeviceInclusionState::INCLUSION_PENDING &&
+                protocolState == WAITING_FOR_SUCCESS) {
+                loginfo_ln("Device received INCLUDE_SUCCESS, inclusion complete!");
+                state = DeviceInclusionState::INCLUDED;
+                storage->persistState(state);
+                transitionToState(PROTOCOL_IDLE);
+
+                std::vector<byte> networkKey;
+                int rc = networkKeyManager->getCurrentNetworkKey(networkKey);
+                if (rc == RM_E_NONE) {
+                    SecurityParams newParams;
+                    newParams.method = SecurityMethod::AES;
+                    newParams.key = networkKey;
+                    newParams.iv = std::vector<byte>(16, 0);
+
+                    rc = device.updateSecurityParams(newParams);
                     if (rc == RM_E_NONE) {
-                        SecurityParams newParams;
-                        newParams.method = SecurityMethod::AES;
-                        newParams.key = networkKey;
-                        newParams.iv = std::vector<byte>(16, 0);
-                        
-                        rc = device.updateSecurityParams(newParams);
-                        if (rc == RM_E_NONE) {
-                            uint32_t keyVersion = networkKeyManager->getCurrentNetworkKeyVersion();
-                            loginfo_ln("Applied network key version %u to crypto system", keyVersion);
-                        } else {
-                            logerr_ln("Failed to apply network key: %d", rc);
-                        }
+                        loginfo_ln("Applied network key to crypto system");
                     } else {
-                        logerr_ln("Failed to load network key: %d", rc);
+                        logerr_ln("Failed to apply network key: %d", rc);
                     }
                 } else {
-                    logwarn_ln("Device received INCLUDE_SUCCESS in wrong state (device: %d, protocol: %s)", 
-                              static_cast<int>(state), getProtocolStateString(protocolState));
+                    logerr_ln("Failed to load network key: %d", rc);
                 }
-                break;
+            } else {
+                logwarn_ln(
+                    "Device received INCLUDE_SUCCESS in wrong state (device: %d, protocol: %s)",
+                    static_cast<int>(state), getProtocolStateString(protocolState));
+            }
+            break;
 
-            default:
-                logwarn_ln("Device received unexpected inclusion message: 0x%02X", packet.topic);
-                break;
+        default:
+            logwarn_ln("Device received unexpected inclusion message: 0x%02X", packet.topic);
+            break;
         }
     }
 
@@ -472,10 +602,9 @@ int InclusionController::handleInclusionMessage(const RadioMeshPacket& packet)
 void InclusionController::transitionToState(InclusionProtocolState newState)
 {
     if (protocolState != newState) {
-        loginfo_ln("Inclusion protocol: %s -> %s", 
-                   getProtocolStateString(protocolState), 
+        loginfo_ln("Inclusion protocol: %s -> %s", getProtocolStateString(protocolState),
                    getProtocolStateString(newState));
-        
+
         protocolState = newState;
         stateStartTime = millis();
         retryCount = 0;
@@ -487,7 +616,7 @@ bool InclusionController::isStateTimedOut() const
     if (protocolState == PROTOCOL_IDLE) {
         return false;
     }
-    
+
     uint32_t elapsed = millis() - stateStartTime;
     return elapsed > getStateTimeoutMs();
 }
@@ -509,9 +638,10 @@ void InclusionController::resetProtocolState()
     loginfo_ln("Resetting inclusion protocol state");
     transitionToState(PROTOCOL_IDLE);
     retryCount = 0;
-    
+
     // If this was a device trying to join, reset to NOT_INCLUDED
-    if (deviceType == MeshDeviceType::STANDARD && state == DeviceInclusionState::INCLUSION_PENDING) {
+    if (deviceType == MeshDeviceType::STANDARD &&
+        state == DeviceInclusionState::INCLUSION_PENDING) {
         state = DeviceInclusionState::NOT_INCLUDED;
         storage->persistState(state);
     }
@@ -528,18 +658,26 @@ int InclusionController::checkProtocolTimeouts()
 const char* InclusionController::getProtocolStateString(InclusionProtocolState state) const
 {
     switch (state) {
-        case PROTOCOL_IDLE: return "IDLE";
-        case WAITING_FOR_REQUEST: return "WAITING_FOR_REQUEST";
-        case WAITING_FOR_RESPONSE: return "WAITING_FOR_RESPONSE";
-        case WAITING_FOR_CONFIRMATION: return "WAITING_FOR_CONFIRMATION";
-        case WAITING_FOR_SUCCESS: return "WAITING_FOR_SUCCESS";
-        default: return "UNKNOWN";
+    case PROTOCOL_IDLE:
+        return "IDLE";
+    case WAITING_FOR_REQUEST:
+        return "WAITING_FOR_REQUEST";
+    case WAITING_FOR_RESPONSE:
+        return "WAITING_FOR_RESPONSE";
+    case WAITING_FOR_CONFIRMATION:
+        return "WAITING_FOR_CONFIRMATION";
+    case WAITING_FOR_SUCCESS:
+        return "WAITING_FOR_SUCCESS";
+    default:
+        return "UNKNOWN";
     }
 }
 
 int InclusionController::loadAndApplyNetworkKey()
 {
-    if (state != DeviceInclusionState::INCLUDED) {
+    // For hub devices, always apply network key
+    // For standard devices, only apply if included
+    if (deviceType != MeshDeviceType::HUB && state != DeviceInclusionState::INCLUDED) {
         logdbg_ln("Device not included, no network key to load");
         return RM_E_INVALID_STATE;
     }
@@ -558,8 +696,7 @@ int InclusionController::loadAndApplyNetworkKey()
 
     rc = device.updateSecurityParams(params);
     if (rc == RM_E_NONE) {
-        uint32_t keyVersion = networkKeyManager->getCurrentNetworkKeyVersion();
-        loginfo_ln("Applied stored network key version %u to crypto system", keyVersion);
+        loginfo_ln("Applied stored network key to crypto system");
     } else {
         logerr_ln("Failed to apply network key: %d", rc);
     }
