@@ -6,8 +6,8 @@
 
 PacketRouter* PacketRouter::instance = nullptr;
 
-int PacketRouter::routePacket(RadioMeshPacket packet, const byte* ourDeviceId, 
-                             MeshDeviceType deviceType, DeviceInclusionState inclusionState)
+int PacketRouter::routePacket(RadioMeshPacket packet, const byte* ourDeviceId,
+                              MeshDeviceType deviceType, DeviceInclusionState inclusionState)
 {
     RadioMeshUtils::CRC32 crc32;
     RadioMeshPacket packetCopy = packet;
@@ -72,28 +72,19 @@ void PacketRouter::routeToNextHop(RadioMeshPacket& packetCopy)
     }
 }
 
-void PacketRouter::encryptPacketData(RadioMeshPacket& packetCopy, MeshDeviceType deviceType, DeviceInclusionState inclusionState)
+void PacketRouter::encryptPacketData(RadioMeshPacket& packetCopy, MeshDeviceType deviceType,
+                                     DeviceInclusionState inclusionState)
 {
     if (packetCopy.packetData.size() == 0) {
         return;
     }
 
-    // Use EncryptionService if available (new approach)
-    if (encryptionService != nullptr) {
-        packetCopy.packetData = encryptionService->encrypt(packetCopy.packetData, 
-                                                          packetCopy.topic, 
-                                                          deviceType, 
-                                                          inclusionState);
+    if (encryptionService == nullptr) {
+        logerr_ln("Encryption service not set, cannot encrypt packet data");
         return;
     }
-
-    // Fall back to old AesCrypto approach (deprecated)
-    if (crypto != nullptr) {
-        packetCopy.packetData = crypto->encrypt(packetCopy.packetData);
-        logwarn_ln("Using deprecated AesCrypto. Consider upgrading to EncryptionService.");
-    } else {
-        logwarn_ln("No encryption service set. Packet will be sent unencrypted.");
-    }
+    packetCopy.packetData = encryptionService->encrypt(packetCopy.packetData, packetCopy.topic,
+                                                       deviceType, inclusionState);
 }
 
 void PacketRouter::calculatePacketCrc(RadioMeshPacket& packetCopy, RadioMeshUtils::CRC32& crc32,

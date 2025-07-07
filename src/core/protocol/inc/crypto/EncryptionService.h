@@ -5,7 +5,6 @@
 #include <vector>
 
 class AesCrypto;
-class NetworkKeyManager;
 class KeyManager;
 
 /**
@@ -51,7 +50,7 @@ public:
     void setNetworkKey(const std::vector<byte>& key);
 
     /**
-     * @brief Set the device's key pair for ECIES operations
+     * @brief Set the device's key pair for direct ECC operations
      * @param privateKey The device's private key
      * @param publicKey The device's public key
      */
@@ -70,29 +69,29 @@ public:
     void setTempDevicePublicKey(const std::vector<byte>& devicePublicKey);
 
     /**
-     * @brief Decrypt data using ECIES (public for manual decryption)
+     * @brief Decrypt data using direct ECC (public for manual decryption)
      * @param data Encrypted data
      * @param privateKey Private key for decryption
      * @return Decrypted data
      */
-    std::vector<byte> decryptECIES(const std::vector<byte>& data,
-                                   const std::vector<byte>& privateKey);
+    std::vector<byte> decryptDirectECC(const std::vector<byte>& data,
+                                        const std::vector<byte>& privateKey);
 
     /**
-     * @brief Encrypt data using ECIES (public for manual encryption)
+     * @brief Encrypt data using direct ECC (public for manual encryption)
      * @param data Data to encrypt
      * @param publicKey Public key for encryption
      * @return Encrypted data
      */
-    std::vector<byte> encryptECIES(const std::vector<byte>& data,
-                                   const std::vector<byte>& publicKey);
+    std::vector<byte> encryptDirectECC(const std::vector<byte>& data,
+                                        const std::vector<byte>& publicKey);
 
 private:
     enum class EncryptionMethod
     {
-        NONE,  // No encryption
-        ECIES, // Elliptic Curve Integrated Encryption Scheme
-        AES    // AES with shared network key
+        NONE,       // No encryption
+        DIRECT_ECC, // Direct Elliptic Curve Encryption (zero overhead)
+        AES         // AES with shared network key
     };
 
     EncryptionMethod determineEncryptionMethod(uint8_t topic, MeshDeviceType deviceType,

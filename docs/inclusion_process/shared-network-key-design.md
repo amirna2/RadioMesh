@@ -100,10 +100,8 @@ Instead of generating unique session keys, the hub now:
 ```cpp
 struct IncludeResponseMessage {
     uint8_t hubPublicKey[64];          // Hub's public key
-    uint8_t encryptedNetworkKey[32];   // ECC encrypted network key ← CHANGED
-    uint8_t encryptedNonce[4];         // AES encrypted nonce
-    uint32_t hubInitialCounter;        // Hub's initial frame counter
-    uint32_t networkKeyVersion;       // Network key version ← NEW
+    uint8_t encryptedNetworkKey[32];   // Direct ECC encrypted network key (zero overhead)
+    uint8_t encryptedNonce[4];         // Nonce for verification
 };
 ```
 
@@ -120,9 +118,8 @@ struct IncludeResponseMessage {
 // Device persistent storage
 - "is": Inclusion state (1 byte)
 - "nk": Network key (32 bytes)           ← CHANGED from "sk" (session key)
-- "nv": Network key version (4 bytes)    ← NEW
 - "pk": Device private key (32 bytes)
-- "hk": Hub public key (32 bytes)
+- "hk": Hub public key (64 bytes)        ← CORRECTED: Full ECC public key
 - "mc": Message counter (4 bytes)
 ```
 
@@ -266,13 +263,13 @@ This approach follows proven IoT protocols:
 ## Implementation Migration
 
 ### Phase 1: Core Protocol Update
-- [ ] Update Device initialization to generate device key pairs (ECC - Use ESP32 chipID() as seed)
-- [ ] Replace ECIES with direct ECC encryption/decryption
-- [ ] Update KeyManager to handle network keys instead of session keys
-- [ ] Modify InclusionController to distribute network key
-- [ ] Generate device key pairs during initialization
-- [ ] Update device storage schema
-- [ ] Remove ephemeral key overhead from all inclusion messages
+- [x] Update Device initialization to generate device key pairs (ECC - Use ESP32 chipID() as seed)
+- [x] Replace ECIES with direct ECC encryption/decryption
+- [x] Update KeyManager to handle network keys instead of session keys
+- [x] Modify InclusionController to distribute network key
+- [x] Generate device key pairs during initialization
+- [x] Update device storage schema
+- [x] Remove ephemeral key overhead from all inclusion messages
 
 ### Phase 2: Hub State Simplification
 - [ ] Implement NetworkKeyManager class

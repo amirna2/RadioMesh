@@ -2,7 +2,6 @@
 
 #include "DeviceStorage.h"
 #include "KeyManager.h"
-#include "NetworkKeyManager.h"
 #include <common/inc/Definitions.h>
 #include <vector>
 
@@ -120,7 +119,6 @@ public:
 private:
     const std::string STATE_KEY = "is"; // inclusion state
     const std::string CTR_KEY = "mc";   // message counter
-    const std::string SKEY = "sk";      // session key
     const std::string PRIV_KEY = "pk";  // device private key
     const std::string HUB_KEY = "hk";   // hub public key
     const size_t NONCE_SIZE = 4;
@@ -132,7 +130,6 @@ private:
 
     std::unique_ptr<DeviceStorage> storage;
     std::unique_ptr<KeyManager> keyManager;
-    std::unique_ptr<NetworkKeyManager> networkKeyManager;
 
     // Protocol state machine
     enum InclusionProtocolState {
@@ -152,7 +149,7 @@ private:
     static const uint8_t MAX_RETRIES = 3;              // Maximum retry attempts (unused)
     static const uint32_t MAX_TOTAL_TIMEOUT_MS = 60000; // 60 seconds total timeout
 
-    int initializeKeys();
+    int initializeKeys(std::vector<byte>& privateKey, std::vector<byte>& publicKey);
 
     // State machine management
     void transitionToState(InclusionProtocolState newState);
@@ -166,10 +163,8 @@ private:
     int getPublicKey(std::vector<byte>& publicKey);
     // Used when processing INCLUDE_RESPONSE
     int handleHubKey(const std::vector<byte>& hubKey);
-    // Used when processing INCLUDE_RESPONSE
-    int handleSessionKey(const std::vector<byte>& encryptedKey);
     // Used when processing INCLUDE_RESPONSE (new network key version)
-    int handleNetworkKey(const std::vector<byte>& encryptedKey, uint32_t keyVersion);
+    int handleNetworkKey(const std::vector<byte>& encryptedKey);
 
     std::vector<byte> currentNonce; // Store current session nonce
     std::vector<byte> tempHubPublicKey; // Temporary storage for hub's public key during inclusion

@@ -15,9 +15,7 @@ private:
     // Storage keys
     const std::string STATE_KEY = "is"; // inclusion state
     const std::string CTR_KEY = "mc";   // message counter
-    const std::string SKEY = "sk";      // session key (deprecated)
     const std::string NKEY = "nk";      // network key
-    const std::string NKEY_VER = "nv";  // network key version
     const std::string PRIV_KEY = "pk";  // device private key
     const std::string HUB_KEY = "hk";   // hub public key
 
@@ -60,15 +58,6 @@ public:
         return rc;
     }
 
-    int persistSessionKey(const std::vector<byte>& key)
-    {
-        return storage->writeAndCommit(SKEY, key);
-    }
-
-    int loadSessionKey(std::vector<byte>& key)
-    {
-        return storage->read(SKEY, key);
-    }
 
     int persistPrivateKey(const std::vector<byte>& key)
     {
@@ -100,18 +89,4 @@ public:
         return storage->read(NKEY, key);
     }
 
-    int persistNetworkKeyVersion(uint32_t version)
-    {
-        return storage->writeAndCommit(NKEY_VER, RadioMeshUtils::numberToBytes(version));
-    }
-
-    int loadNetworkKeyVersion(uint32_t& version)
-    {
-        std::vector<byte> versionData;
-        int rc = storage->read(NKEY_VER, versionData);
-        if (rc == RM_E_NONE && versionData.size() == sizeof(uint32_t)) {
-            version = RadioMeshUtils::bytesToNumber<uint32_t>(versionData);
-        }
-        return rc;
-    }
 };

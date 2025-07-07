@@ -50,14 +50,14 @@ std::vector<byte> EncryptionService::encrypt(const std::vector<byte>& data, uint
         logdbg_ln("No encryption for topic 0x%02X", topic);
         return data;
 
-    case EncryptionMethod::ECIES: {
+    case EncryptionMethod::DIRECT_ECC: {
         std::vector<byte> key = getEncryptionKey(method, topic, deviceType);
         if (key.empty()) {
-            logerr_ln("No ECIES key available for topic 0x%02X, deviceType=%d", topic, (int)deviceType);
+            logerr_ln("No direct ECC key available for topic 0x%02X, deviceType=%d", topic, (int)deviceType);
             return data;
         }
-        logdbg_ln("Encrypting with ECIES for topic 0x%02X, key size=%d", topic, key.size());
-        return encryptECIES(data, key);
+        logdbg_ln("Encrypting with direct ECC for topic 0x%02X, key size=%d", topic, key.size());
+        return encryptDirectECC(data, key);
     }
 
     case EncryptionMethod::AES: {
@@ -90,13 +90,13 @@ std::vector<byte> EncryptionService::decrypt(const std::vector<byte>& data, uint
         logdbg_ln("No decryption for topic 0x%02X", topic);
         return data;
 
-    case EncryptionMethod::ECIES: {
+    case EncryptionMethod::DIRECT_ECC: {
         std::vector<byte> key = getEncryptionKey(method, topic, deviceType);
         if (key.empty()) {
-            logerr_ln("No ECIES key available for topic 0x%02X", topic);
+            logerr_ln("No direct ECC key available for topic 0x%02X", topic);
             return data;
         }
-        return decryptECIES(data, key);
+        return decryptDirectECC(data, key);
     }
 
     case EncryptionMethod::AES: {
@@ -151,11 +151,10 @@ EncryptionService::determineEncryptionMethod(uint8_t topic, MeshDeviceType devic
         return EncryptionMethod::NONE;
 
     case MessageTopic::INCLUDE_REQUEST:
-        // Standard device encrypts with hub's public key, Hub decrypts with hub's private key
-        if ((deviceType == MeshDeviceType::STANDARD &&
-             inclusionState == DeviceInclusionState::INCLUSION_PENDING) ||
-            (deviceType == MeshDeviceType::HUB)) {
-            return EncryptionMethod::ECIES;
+        // Only standard device encrypts when sending INCLUDE_REQUEST (during inclusion)
+        if (deviceType == MeshDeviceType::STANDARD &&
+            inclusionState == DeviceInclusionState::INCLUSION_PENDING) {
+            return EncryptionMethod::DIRECT_ECC;
         }
         return EncryptionMethod::NONE;
 
@@ -164,7 +163,7 @@ EncryptionService::determineEncryptionMethod(uint8_t topic, MeshDeviceType devic
         if ((deviceType == MeshDeviceType::HUB) ||
             (deviceType == MeshDeviceType::STANDARD &&
              inclusionState == DeviceInclusionState::INCLUSION_PENDING)) {
-            return EncryptionMethod::ECIES;
+            return EncryptionMethod::DIRECT_ECC;
         }
         return EncryptionMethod::NONE;
 
@@ -201,7 +200,7 @@ std::vector<byte> EncryptionService::getEncryptionKey(EncryptionMethod method, u
     logdbg_ln("getEncryptionKey: method=%d, topic=0x%02X, deviceType=%d", (int)method, topic, (int)deviceType);
     
     switch (method) {
-    case EncryptionMethod::ECIES:
+    case EncryptionMethod::DIRECT_ECC:
         if (topic == MessageTopic::INCLUDE_REQUEST) {
             // Standard device uses hub's public key
             logdbg_ln("Returning hub public key, size=%d", hubPublicKey.size());
@@ -225,11 +224,16 @@ std::vector<byte> EncryptionService::getEncryptionKey(EncryptionMethod method, u
     return std::vector<byte>();
 }
 
-std::vector<byte> EncryptionService::encryptECIES(const std::vector<byte>& data,
+std::vector<byte> EncryptionService::encryptDirectECC(const std::vector<byte>& data,
                                                   const std::vector<byte>& publicKey)
 {
     if (publicKey.size() != 64) {
-        logerr_ln("Invalid public key size for ECIES: %d (expected 64)", publicKey.size());
+        logerr_ln("Invalid public key size for direct ECC: %d (expected 64)", publicKey.size());
+        return data;
+    }
+
+    if (devicePrivateKey.size() != 32) {
+        logerr_ln("Device private key not set for direct ECC encryption");
         return data;
     }
 
@@ -239,29 +243,10 @@ std::vector<byte> EncryptionService::encryptECIES(const std::vector<byte>& data,
     // Use secp256r1 curve (ESP32's TinyCrypt supports this)
     uECC_Curve curve = uECC_secp256r1();
     
-    // Generate ephemeral key pair  
-    uint8_t ephemeralPrivKey[32];
-    uint8_t ephemeralPubKey[64]; // Uncompressed public key
-    
-    // Generate random private key
-    if (!uECC_make_key(ephemeralPubKey, ephemeralPrivKey, curve)) {
-        logerr_ln("Failed to generate ephemeral key pair");
-        return data;
-    }
-    
-    // For this implementation, we'll use the first 32 bytes of the uncompressed public key
-    // as the ephemeral public key to match the expected test format
-    uint8_t ephemeralPubKeyX[32];
-    memcpy(ephemeralPubKeyX, ephemeralPubKey, 32);
-    
-    // Use the full 64-byte public key directly
-    uint8_t recipientFullPubKey[64];
-    memcpy(recipientFullPubKey, publicKey.data(), 64);
-    
-    // Perform ECDH to get shared secret
+    // Perform ECDH directly using device's private key and recipient's public key
     uint8_t sharedSecret[32];
-    if (!uECC_shared_secret(recipientFullPubKey, ephemeralPrivKey, sharedSecret, curve)) {
-        logerr_ln("Failed to compute ECDH shared secret");
+    if (!uECC_shared_secret(publicKey.data(), devicePrivateKey.data(), sharedSecret, curve)) {
+        logerr_ln("Failed to compute ECDH shared secret for direct ECC");
         return data;
     }
     
@@ -275,32 +260,49 @@ std::vector<byte> EncryptionService::encryptECIES(const std::vector<byte>& data,
     // Convert to vector for AES encryption
     std::vector<byte> keyVector(encryptionKey, encryptionKey + 32);
     
-    // Encrypt data with AES using derived key
+    // Encrypt data with AES using derived key - ZERO OVERHEAD!
     std::vector<byte> encryptedData = encryptAES(data, keyVector);
     if (encryptedData.empty()) {
-        logerr_ln("Failed to encrypt data with ECIES");
+        logerr_ln("Failed to encrypt data with direct ECC");
         return data;
     }
 
-    // Return: [ephemeral_pub_key(64)] + [encrypted_data]
-    std::vector<byte> result;
-    result.insert(result.end(), ephemeralPubKey, ephemeralPubKey + 64);
-    result.insert(result.end(), encryptedData.begin(), encryptedData.end());
-
-    return result;
+    logdbg_ln("Direct ECC encryption: input=%d bytes, output=%d bytes (zero overhead)", 
+              data.size(), encryptedData.size());
+    
+    // Return encrypted data directly - no ephemeral key overhead!
+    return encryptedData;
 }
 
-std::vector<byte> EncryptionService::decryptECIES(const std::vector<byte>& data,
+std::vector<byte> EncryptionService::decryptDirectECC(const std::vector<byte>& data,
                                                   const std::vector<byte>& privateKey)
 {
-    // Expected format: [ephemeral_pub_key(64)] + [encrypted_data]
-    if (data.size() < 64 + 1) { // (at least 1 byte of encrypted data)
-        logerr_ln("Invalid ECIES data size: %d", data.size());
+    if (data.empty()) {
+        logerr_ln("Empty data for direct ECC decryption");
         return data;
     }
 
     if (privateKey.size() != 32) {
-        logerr_ln("Invalid private key size for ECIES: %d", privateKey.size());
+        logerr_ln("Invalid private key size for direct ECC: %d", privateKey.size());
+        return data;
+    }
+
+    // For direct ECC, we need the sender's public key to perform ECDH
+    // This should be available in the context (either devicePublicKey or hubPublicKey)
+    std::vector<byte> senderPublicKey;
+    
+    // Determine sender's public key based on context
+    if (!hubPublicKey.empty()) {
+        senderPublicKey = hubPublicKey; // Device decrypting, sender is hub
+    } else if (!tempDevicePublicKey.empty()) {
+        senderPublicKey = tempDevicePublicKey; // Hub decrypting, sender is device
+    } else {
+        logerr_ln("No sender public key available for direct ECC decryption");
+        return data;
+    }
+
+    if (senderPublicKey.size() != 64) {
+        logerr_ln("Invalid sender public key size for direct ECC: %d", senderPublicKey.size());
         return data;
     }
 
@@ -310,16 +312,10 @@ std::vector<byte> EncryptionService::decryptECIES(const std::vector<byte>& data,
     // Use secp256r1 curve (ESP32's TinyCrypt supports this)
     uECC_Curve curve = uECC_secp256r1();
     
-    // Extract ephemeral public key (64 bytes) and encrypted data
-    uint8_t ephemeralFullPubKey[64];
-    memcpy(ephemeralFullPubKey, data.data(), 64);
-    
-    std::vector<byte> encryptedData(data.begin() + 64, data.end());
-    
-    // Perform ECDH to get shared secret
+    // Perform ECDH using sender's public key and our private key
     uint8_t sharedSecret[32];
-    if (!uECC_shared_secret(ephemeralFullPubKey, privateKey.data(), sharedSecret, curve)) {
-        logerr_ln("Failed to compute ECDH shared secret for decryption");
+    if (!uECC_shared_secret(senderPublicKey.data(), privateKey.data(), sharedSecret, curve)) {
+        logerr_ln("Failed to compute ECDH shared secret for direct ECC decryption");
         return data;
     }
     
@@ -333,8 +329,10 @@ std::vector<byte> EncryptionService::decryptECIES(const std::vector<byte>& data,
     // Convert to vector for AES decryption
     std::vector<byte> keyVector(encryptionKey, encryptionKey + 32);
     
-    // Decrypt data with AES using derived key
-    return decryptAES(encryptedData, keyVector);
+    logdbg_ln("Direct ECC decryption: input=%d bytes", data.size());
+    
+    // Decrypt data with AES using derived key - input data is pure encrypted content
+    return decryptAES(data, keyVector);
 }
 
 std::vector<byte> EncryptionService::encryptAES(const std::vector<byte>& data,

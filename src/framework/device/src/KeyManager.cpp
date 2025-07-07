@@ -1,93 +1,115 @@
+#include <Arduino.h>
 #include <common/inc/Logger.h>
-#include <framework/device/inc/KeyManager.h>
 #include <core/protocol/inc/crypto/EncryptionService.h>
-extern "C" {
-typedef struct uECC_Curve_t* uECC_Curve;
-uECC_Curve uECC_secp256r1(void);
-void uECC_set_rng(int (*rng_function)(uint8_t *dest, unsigned size));
-int uECC_make_key(uint8_t *public_key, uint8_t *private_key, uECC_Curve curve);
+#include <framework/device/inc/KeyManager.h>
+#ifdef ESP32
+#include <esp_system.h>
+#endif
+extern "C"
+{
+    typedef struct uECC_Curve_t* uECC_Curve;
+    uECC_Curve uECC_secp256r1(void);
+    void uECC_set_rng(int (*rng_function)(uint8_t* dest, unsigned size));
+    int uECC_make_key(uint8_t* public_key, uint8_t* private_key, uECC_Curve curve);
+    int uECC_compute_public_key(const uint8_t* private_key, uint8_t* public_key, uECC_Curve curve);
 }
 
-// RNG function for ECC
-static int rng_function(uint8_t *dest, unsigned size) {
-    while (size) {
-        *dest++ = random(256);
-        size--;
+static uint32_t seededRngState = 0;
+static bool rngSeeded = false;
+
+// Deterministic RNG using ESP32 chipID as seed
+static int deterministic_rng_function(uint8_t* dest, unsigned size)
+{
+    if (!rngSeeded) {
+#ifdef ESP32
+        uint64_t chipId = ESP.getEfuseMac();
+        seededRngState = (uint32_t)(chipId ^ (chipId >> 32));
+#else
+        seededRngState = 12345; // Fallback for non-ESP32 platforms
+#endif
+        rngSeeded = true;
+        logdbg_ln("Seeded deterministic RNG with chipID-based seed: 0x%08X", seededRngState);
+    }
+
+    // Simple linear congruential generator with ESP32 chipID seed
+    for (unsigned i = 0; i < size; i++) {
+        seededRngState = seededRngState * 1103515245 + 12345;
+        dest[i] = (seededRngState >> 16) & 0xFF;
     }
     return 1;
 }
 
 int KeyManager::generateKeyPair(std::vector<byte>& publicKey, std::vector<byte>& privateKey)
 {
-    // Initialize ECC
+    // Initialize ECC with deterministic RNG
     static bool initialized = false;
     if (!initialized) {
-        uECC_set_rng(&rng_function);
+        uECC_set_rng(&deterministic_rng_function);
         initialized = true;
     }
-    
-    // Use proper ECC key generation
-    privateKey.resize(PRIVATE_KEY_SIZE);  // 32 bytes
-    publicKey.resize(64);  // 64 bytes for full public key
-    
+
+    // Use proper ECC key generation with deterministic seed
+    privateKey.resize(PRIVATE_KEY_SIZE); // 32 bytes
+    publicKey.resize(64);                // 64 bytes for full public key
+
     uECC_Curve curve = uECC_secp256r1();
     if (!uECC_make_key(publicKey.data(), privateKey.data(), curve)) {
         logerr_ln("Failed to generate ECC key pair");
         return RM_E_CRYPTO_SETUP;
     }
 
+    logdbg_ln("Generated deterministic ECC key pair based on ESP32 chipID");
     return RM_E_NONE;
 }
 
-int KeyManager::generateSessionKey(std::vector<byte>& sessionKey)
+int KeyManager::derivePublicKey(const std::vector<byte>& privateKey, std::vector<byte>& publicKey)
 {
-    sessionKey.resize(SESSION_KEY_SIZE);
-
-    // Generate random session key
-    for (size_t i = 0; i < SESSION_KEY_SIZE; i++) {
-        sessionKey[i] = random(256);
-    }
-
-    return RM_E_NONE;
-}
-
-int KeyManager::encryptSessionKey(const std::vector<byte>& sessionKey,
-                                  const std::vector<byte>& recipientPubKey,
-                                  std::vector<byte>& encryptedKey)
-{
-    if (recipientPubKey.size() != 64 || !validateSessionKey(sessionKey)) {
+    if (privateKey.size() != 32) {
+        logerr_ln("Invalid private key size: %d", privateKey.size());
         return RM_E_INVALID_PARAM;
     }
 
-    // Use proper ECIES encryption
-    EncryptionService encryptionService;
-    encryptedKey = encryptionService.encryptECIES(sessionKey, recipientPubKey);
-    
-    if (encryptedKey.size() <= sessionKey.size()) {
-        logerr_ln("ECIES encryption failed for session key");
+    publicKey.resize(64);
+    uECC_Curve curve = uECC_secp256r1();
+
+    if (!uECC_compute_public_key(privateKey.data(), publicKey.data(), curve)) {
+        logerr_ln("Failed to derive public key from private key");
         return RM_E_CRYPTO_SETUP;
     }
 
     return RM_E_NONE;
 }
 
-int KeyManager::decryptSessionKey(const std::vector<byte>& encryptedKey,
-                                  const std::vector<byte>& privateKey,
-                                  std::vector<byte>& sessionKey)
+int KeyManager::generateNetworkKey(std::vector<byte>& networkKey)
 {
-    if (!validatePrivateKey(privateKey)) {
+    networkKey.resize(NETWORK_KEY_SIZE);
+
+    // Generate random network key
+    for (size_t i = 0; i < NETWORK_KEY_SIZE; i++) {
+        networkKey[i] = random(256);
+    }
+
+    loginfo_ln("Generated new network key");
+    return RM_E_NONE;
+}
+
+int KeyManager::getCurrentNetworkKey(std::vector<byte>& networkKey)
+{
+    return storage.loadNetworkKey(networkKey);
+}
+
+int KeyManager::setNetworkKey(const std::vector<byte>& networkKey)
+{
+    if (!validateNetworkKey(networkKey)) {
         return RM_E_INVALID_PARAM;
     }
 
-    // Use proper ECIES decryption
-    EncryptionService encryptionService;
-    sessionKey = encryptionService.decryptECIES(encryptedKey, privateKey);
-    
-    if (!validateSessionKey(sessionKey)) {
-        logerr_ln("ECIES decryption failed for session key");
-        return RM_E_CRYPTO_SETUP;
+    int rc = persistNetworkKey(networkKey);
+    if (rc != RM_E_NONE) {
+        return rc;
     }
 
+    loginfo_ln("Set network key");
     return RM_E_NONE;
 }
 
@@ -99,15 +121,34 @@ int KeyManager::encryptNetworkKey(const std::vector<byte>& networkKey,
         return RM_E_INVALID_PARAM;
     }
 
-    // Use proper ECIES encryption
+    // Load our private key and public key for direct ECC encryption
+    std::vector<byte> privateKey, publicKey;
+    int rc = loadPrivateKey(privateKey);
+    if (rc != RM_E_NONE) {
+        logerr_ln("Failed to load private key for network key encryption");
+        return rc;
+    }
+
+    // Re-derive public key from private key
+    rc = derivePublicKey(privateKey, publicKey);
+    if (rc != RM_E_NONE) {
+        logerr_ln("Failed to derive public key for network key encryption");
+        return rc;
+    }
+
+    // Use direct ECC encryption (zero overhead)
     EncryptionService encryptionService;
-    encryptedKey = encryptionService.encryptECIES(networkKey, recipientPubKey);
-    
-    if (encryptedKey.size() <= networkKey.size()) {
-        logerr_ln("ECIES encryption failed for network key");
+    encryptionService.setDeviceKeys(privateKey, publicKey);
+    encryptedKey = encryptionService.encryptDirectECC(networkKey, recipientPubKey);
+
+    if (encryptedKey.size() != networkKey.size()) {
+        logerr_ln("Direct ECC encryption failed - unexpected size change: %d -> %d",
+                  networkKey.size(), encryptedKey.size());
         return RM_E_CRYPTO_SETUP;
     }
 
+    logdbg_ln("Network key encrypted with direct ECC (zero overhead): %d bytes",
+              encryptedKey.size());
     return RM_E_NONE;
 }
 
@@ -119,15 +160,17 @@ int KeyManager::decryptNetworkKey(const std::vector<byte>& encryptedKey,
         return RM_E_INVALID_PARAM;
     }
 
-    // Use proper ECIES decryption
+    // For direct ECC decryption, we need the sender's public key
+    // This should be set in the EncryptionService context
     EncryptionService encryptionService;
-    networkKey = encryptionService.decryptECIES(encryptedKey, privateKey);
-    
+    networkKey = encryptionService.decryptDirectECC(encryptedKey, privateKey);
+
     if (!validateNetworkKey(networkKey)) {
-        logerr_ln("ECIES decryption failed for network key");
+        logerr_ln("Direct ECC decryption failed for network key");
         return RM_E_CRYPTO_SETUP;
     }
 
+    logdbg_ln("Network key decrypted with direct ECC: %d bytes", networkKey.size());
     return RM_E_NONE;
 }
 
@@ -158,19 +201,6 @@ int KeyManager::persistHubKey(const std::vector<byte>& hubKey)
     return storage.persistHubKey(hubKey);
 }
 
-int KeyManager::loadSessionKey(std::vector<byte>& sessionKey)
-{
-    return storage.loadSessionKey(sessionKey);
-}
-
-int KeyManager::persistSessionKey(const std::vector<byte>& sessionKey)
-{
-    if (!validateSessionKey(sessionKey)) {
-        return RM_E_INVALID_PARAM;
-    }
-    return storage.persistSessionKey(sessionKey);
-}
-
 int KeyManager::loadNetworkKey(std::vector<byte>& networkKey)
 {
     return storage.loadNetworkKey(networkKey);
@@ -184,16 +214,6 @@ int KeyManager::persistNetworkKey(const std::vector<byte>& networkKey)
     return storage.persistNetworkKey(networkKey);
 }
 
-int KeyManager::loadNetworkKeyVersion(uint32_t& version)
-{
-    return storage.loadNetworkKeyVersion(version);
-}
-
-int KeyManager::persistNetworkKeyVersion(uint32_t version)
-{
-    return storage.persistNetworkKeyVersion(version);
-}
-
 bool KeyManager::validatePublicKey(const std::vector<byte>& publicKey)
 {
     return publicKey.size() == 64; // Full ECC public key is 64 bytes
@@ -204,12 +224,39 @@ bool KeyManager::validatePrivateKey(const std::vector<byte>& privateKey)
     return privateKey.size() == PRIVATE_KEY_SIZE;
 }
 
-bool KeyManager::validateSessionKey(const std::vector<byte>& sessionKey)
-{
-    return sessionKey.size() == SESSION_KEY_SIZE;
-}
-
 bool KeyManager::validateNetworkKey(const std::vector<byte>& networkKey)
 {
     return networkKey.size() == NETWORK_KEY_SIZE;
+}
+
+int KeyManager::initializeForHub()
+{
+    // Check if network key already exists
+    if (hasNetworkKey()) {
+        loginfo_ln("Network key already exists, using existing key");
+        return RM_E_NONE;
+    }
+
+    // Generate new network key for hub
+    std::vector<byte> networkKey;
+    int rc = generateNetworkKey(networkKey);
+    if (rc != RM_E_NONE) {
+        return rc;
+    }
+
+    // Store the new network key
+    rc = setNetworkKey(networkKey);
+    if (rc != RM_E_NONE) {
+        return rc;
+    }
+
+    loginfo_ln("Hub initialized with new network key");
+    return RM_E_NONE;
+}
+
+bool KeyManager::hasNetworkKey()
+{
+    std::vector<byte> networkKey;
+    int rc = loadNetworkKey(networkKey);
+    return rc == RM_E_NONE && validateNetworkKey(networkKey);
 }

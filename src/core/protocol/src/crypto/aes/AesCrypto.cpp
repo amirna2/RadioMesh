@@ -46,7 +46,7 @@ std::vector<byte> AesCrypto::encrypt(const std::vector<byte>& clearData)
     ctraes256.clear();
     ctraes256.setKey(this->securityParams.key.data(), AES_KEY_SIZE);
     ctraes256.setIV(this->securityParams.iv.data(), AES_IV_SIZE);
-    ctraes256.setCounterSize(4);
+    ctraes256.setCounterSize(AES_COUNTER_SIZE);
 
     size_t blockSize = AES_BLOCK_SIZE;
 
