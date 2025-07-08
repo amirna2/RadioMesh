@@ -32,8 +32,7 @@ public:
                           const std::vector<byte>& recipientPubKey,
                           std::vector<byte>& encryptedKey);
     int decryptNetworkKey(const std::vector<byte>& encryptedKey,
-                          const std::vector<byte>& privateKey,
-                          std::vector<byte>& networkKey);
+                          const std::vector<byte>& privateKey, std::vector<byte>& networkKey);
 
     // Key storage operations
     int loadPrivateKey(std::vector<byte>& privateKey);
@@ -50,4 +49,10 @@ public:
 
 private:
     DeviceStorage& storage;
+
+    // network key from storage
+    std::vector<byte> networkKey; // Cached network key for quick access
+    // Device keys from storage
+    std::vector<byte> devicePrivateKey; // Device's private key for direct ECC
+    std::vector<byte> devicePublicKey;  // Device's public key for direct ECC
 };

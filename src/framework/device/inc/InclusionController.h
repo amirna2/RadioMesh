@@ -116,6 +116,19 @@ public:
      */
     int loadAndApplyNetworkKey();
 
+    /**
+     * @brief Get access to the KeyManager instance
+     * @return Pointer to KeyManager
+     */
+    KeyManager* getKeyManager() const { return keyManager.get(); }
+
+    /**
+     * @brief Get the device's public key
+     * @param publicKey Vector to store the public key
+     * @return RM_E_NONE on success, error code otherwise
+     */
+    int getDevicePublicKey(std::vector<byte>& publicKey);
+
 private:
     const std::string STATE_KEY = "is"; // inclusion state
     const std::string CTR_KEY = "mc";   // message counter
@@ -132,21 +145,22 @@ private:
     std::unique_ptr<KeyManager> keyManager;
 
     // Protocol state machine
-    enum InclusionProtocolState {
-        PROTOCOL_IDLE = 0,                  // Ready to start inclusion
-        WAITING_FOR_REQUEST,                // Hub: Sent INCLUDE_OPEN, waiting for device request
-        WAITING_FOR_RESPONSE,               // Device: Sent INCLUDE_REQUEST, waiting for hub response
-        WAITING_FOR_CONFIRMATION,           // Hub: Sent INCLUDE_RESPONSE, waiting for confirmation
-        WAITING_FOR_SUCCESS                 // Device: Sent INCLUDE_CONFIRM, waiting for success
+    enum InclusionProtocolState
+    {
+        PROTOCOL_IDLE = 0,        // Ready to start inclusion
+        WAITING_FOR_REQUEST,      // Hub: Sent INCLUDE_OPEN, waiting for device request
+        WAITING_FOR_RESPONSE,     // Device: Sent INCLUDE_REQUEST, waiting for hub response
+        WAITING_FOR_CONFIRMATION, // Hub: Sent INCLUDE_RESPONSE, waiting for confirmation
+        WAITING_FOR_SUCCESS       // Device: Sent INCLUDE_CONFIRM, waiting for success
     };
 
     InclusionProtocolState protocolState = PROTOCOL_IDLE;
-    uint32_t stateStartTime = 0;            // When current state was entered
-    uint8_t retryCount = 0;                 // Number of retries for current state
+    uint32_t stateStartTime = 0; // When current state was entered
+    uint8_t retryCount = 0;      // Number of retries for current state
 
     // State machine configuration
-    static const uint32_t BASE_TIMEOUT_MS = 60000;    // 60 seconds inclusion session timeout
-    static const uint8_t MAX_RETRIES = 3;              // Maximum retry attempts (unused)
+    static const uint32_t BASE_TIMEOUT_MS = 60000;      // 60 seconds inclusion session timeout
+    static const uint8_t MAX_RETRIES = 3;               // Maximum retry attempts (unused)
     static const uint32_t MAX_TOTAL_TIMEOUT_MS = 60000; // 60 seconds total timeout
 
     int initializeKeys(std::vector<byte>& privateKey, std::vector<byte>& publicKey);
@@ -166,7 +180,7 @@ private:
     // Used when processing INCLUDE_RESPONSE (new network key version)
     int handleNetworkKey(const std::vector<byte>& encryptedKey);
 
-    std::vector<byte> currentNonce; // Store current session nonce
+    std::vector<byte> currentNonce;     // Store current session nonce
     std::vector<byte> tempHubPublicKey; // Temporary storage for hub's public key during inclusion
 
     std::vector<byte> generateNonce()
@@ -174,17 +188,10 @@ private:
         std::vector<byte> nonce(NONCE_SIZE);
         // Use RadioMeshUtils::simpleRNG for entropy
         for (size_t i = 0; i < NONCE_SIZE; i++) {
-            nonce[i] = RadioMeshUtils::simpleRNG(1);
+            // nonce[i] = RadioMeshUtils::simpleRNG(1);
+            //  test set the nonce to a fixed value for testing
+            nonce[i] = 0x01; // Fixed value for testing purposes
         }
         return nonce;
-    }
-
-    bool verifyNonce(const std::vector<byte>& receivedNonce)
-    {
-        // Verify the received nonce matches our expected nonce
-        if (receivedNonce.size() != currentNonce.size()) {
-            return false;
-        }
-        return std::equal(receivedNonce.begin(), receivedNonce.end(), currentNonce.begin());
     }
 };

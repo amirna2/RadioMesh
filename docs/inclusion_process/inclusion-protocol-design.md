@@ -33,7 +33,7 @@ Actor          HUB                                 NEW DEVICE
   |             |                                      |
   |             |----INCLUDE_RESPONSE----------------->|
   |             |    (HubPublicKey,                    |
-  |             |     EncryptedSessionKey,             |
+  |             |     EncryptedNetworkKey,             |
   |             |     EncryptedNonce,                  |
   |             |     HubInitialCounter)               |
   |             |                                      |

@@ -75,7 +75,7 @@ public:
      * @return Decrypted data
      */
     std::vector<byte> decryptDirectECC(const std::vector<byte>& data,
-                                        const std::vector<byte>& privateKey);
+                                       const std::vector<byte>& privateKey);
 
     /**
      * @brief Encrypt data using direct ECC (public for manual encryption)
@@ -84,7 +84,7 @@ public:
      * @return Encrypted data
      */
     std::vector<byte> encryptDirectECC(const std::vector<byte>& data,
-                                        const std::vector<byte>& publicKey);
+                                       const std::vector<byte>& publicKey);
 
 private:
     enum class EncryptionMethod
@@ -94,9 +94,11 @@ private:
         AES         // AES with shared network key
     };
 
-    EncryptionMethod determineEncryptionMethod(uint8_t topic, MeshDeviceType deviceType,
-                                               DeviceInclusionState inclusionState) const;
+    EncryptionMethod determineCryptoMethod(uint8_t topic, MeshDeviceType deviceType,
+                                           DeviceInclusionState inclusionState) const;
     std::vector<byte> getEncryptionKey(EncryptionMethod method, uint8_t topic,
+                                       MeshDeviceType deviceType) const;
+    std::vector<byte> getDecryptionKey(EncryptionMethod method, uint8_t topic,
                                        MeshDeviceType deviceType) const;
     std::vector<byte> encryptAES(const std::vector<byte>& data, const std::vector<byte>& key);
     std::vector<byte> decryptAES(const std::vector<byte>& data, const std::vector<byte>& key);

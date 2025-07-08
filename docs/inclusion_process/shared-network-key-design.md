@@ -41,8 +41,7 @@ Actor          HUB                                 NEW DEVICE
   |             |--Generate Nonce                      |
   |             |                                      |
   |             |----INCLUDE_RESPONSE----------------->|
-  |             |    (HubPublicKey,                    |
-  |             |     EncryptedNetworkKey,             |  ← CHANGED
+  |             |     (EncryptedNetworkKey,            |  ← CHANGED
   |             |     EncryptedNonce,                  |
   |             |     HubInitialCounter)               |
   |             |                                      |

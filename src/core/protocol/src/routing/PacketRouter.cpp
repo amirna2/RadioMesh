@@ -26,7 +26,9 @@ int PacketRouter::routePacket(RadioMeshPacket packet, const byte* ourDeviceId,
 
     packetCopy.reserved.fill(0);
 
-    encryptPacketData(packetCopy, deviceType, inclusionState);
+    if (packetCopy.topic != MessageTopic::INCLUDE_OPEN) {
+        encryptPacketData(packetCopy, deviceType, inclusionState);
+    }
 
     calculatePacketCrc(packetCopy, crc32, key);
     int rc = sendPacket(packetCopy);
