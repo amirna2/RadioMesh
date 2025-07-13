@@ -1,5 +1,24 @@
 var NAVTREEINDEX2 =
 {
-"struct_wifi_params.html":[1,0,37],
-"topics.html":[0]
+"struct_byte_storage_params.html#acd0a247875fb1406932af0be841a8097":[2,0,3,0],
+"struct_device_blueprint.html":[2,0,4],
+"struct_device_blueprint.html#a555bbcb335eb62ceffb95869155664f5":[2,0,4,6],
+"struct_device_blueprint.html#a66b184127b6eaafb65d91cbd5343934d":[2,0,4,1],
+"struct_device_blueprint.html#a6af97486d263f1ea8dda3a75c3aba1c4":[2,0,4,4],
+"struct_device_blueprint.html#ac969802dba5cd1263fea51e35656797b":[2,0,4,3],
+"struct_device_blueprint.html#ad4893e6d65a44df346f1508776e7f32a":[2,0,4,5],
+"struct_device_blueprint.html#adc2109b21bd946ebe2ba3bad8402d571":[2,0,4,0],
+"struct_device_blueprint.html#ae48cc3c64e8d6f81ba0e9cb9be94e38d":[2,0,4,8],
+"struct_device_blueprint.html#ae82959589474467b08bb8ab4ba0f6ffd":[2,0,4,7],
+"struct_device_blueprint.html#affbb2bf2b33a194d564d55ed46a20c3d":[2,0,4,2],
+"struct_device_portal_params.html":[2,0,6],
+"struct_portal_event_handler.html":[2,0,28],
+"struct_portal_event_handler.html#a18a4b9561c42abd7d65935b09fa5779b":[2,0,28,0],
+"struct_portal_event_handler.html#a71d405a0a4811de94d58be365437cb53":[2,0,28,1],
+"struct_route_entry.html":[2,0,32],
+"struct_security_params.html":[2,0,34],
+"struct_security_params.html#ab53b46de3cb9b3ba590e5c74d6c9f4ea":[2,0,34,0],
+"struct_wifi_access_point_params.html":[2,0,36],
+"struct_wifi_params.html":[2,0,38],
+"topics.html":[1]
 };

@@ -22,5 +22,6 @@ var class_i_device =
     [ "sendInclusionRequest", "class_i_device.html#a4a1b1fc333a26c7aebb971559d0c536b", null ],
     [ "sendInclusionResponse", "class_i_device.html#abb2a2042cd6a41b83ab3269d3a4d9de6", null ],
     [ "sendInclusionSuccess", "class_i_device.html#a1bc5b715e4508cd3aaaa62daea46dce1", null ],
-    [ "setDeviceType", "class_i_device.html#aa62457f072bcf7b7a094c8e71c2e5ad2", null ]
+    [ "setDeviceType", "class_i_device.html#aa62457f072bcf7b7a094c8e71c2e5ad2", null ],
+    [ "updateSecurityParams", "class_i_device.html#a55154856819907f85aee4768c70cb7c5", null ]
 ];

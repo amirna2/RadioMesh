@@ -11,6 +11,7 @@ var annotated_dup =
     [ "DevicePortalParams", "struct_device_portal_params.html", null ],
     [ "DeviceStorage", "class_device_storage.html", null ],
     [ "EEPROMStorage", "class_e_e_p_r_o_m_storage.html", "class_e_e_p_r_o_m_storage" ],
+    [ "EncryptionService", "class_encryption_service.html", "class_encryption_service" ],
     [ "IAesCrypto", "class_i_aes_crypto.html", null ],
     [ "IByteStorage", "class_i_byte_storage.html", "class_i_byte_storage" ],
     [ "ICrypto", "class_i_crypto.html", "class_i_crypto" ],

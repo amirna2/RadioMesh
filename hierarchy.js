@@ -6,6 +6,7 @@ var hierarchy =
     [ "DeviceBuilder", "class_device_builder.html", null ],
     [ "DevicePortalParams", "struct_device_portal_params.html", null ],
     [ "DeviceStorage", "class_device_storage.html", null ],
+    [ "EncryptionService", "class_encryption_service.html", null ],
     [ "IByteStorage", "class_i_byte_storage.html", [
       [ "EEPROMStorage", "class_e_e_p_r_o_m_storage.html", null ]
     ] ],

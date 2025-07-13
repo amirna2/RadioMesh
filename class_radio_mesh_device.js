@@ -10,6 +10,7 @@ var class_radio_mesh_device =
     [ "getDevicePortal", "class_radio_mesh_device.html#a4cbf8a142a728d60775b46cf51e53ba1", null ],
     [ "getDeviceType", "class_radio_mesh_device.html#accd985cb4055b3bdb6942d91a03ff355", null ],
     [ "getDisplay", "class_radio_mesh_device.html#a44545d60283c56b3883c6e21f6e0ec7b", null ],
+    [ "getEncryptionService", "class_radio_mesh_device.html#af1a9b3838a4b7ceb9d66454e35d0f45c", null ],
     [ "getLoRaRadioParams", "class_radio_mesh_device.html#af594fd4abc5af0bb848266c1bf18b56f", null ],
     [ "getRadio", "class_radio_mesh_device.html#a501ccfb75de4e17d76f018a121498409", null ],
     [ "getWifiAccessPoint", "class_radio_mesh_device.html#a02842e6e5a42ac3aa30308efb9bcb504", null ],
@@ -35,5 +36,6 @@ var class_radio_mesh_device =
     [ "sendInclusionResponse", "class_radio_mesh_device.html#adaa1e703851800cce51c6d88d0ef8e49", null ],
     [ "sendInclusionSuccess", "class_radio_mesh_device.html#a500f5ffa7437da3fcbe1d79c8a0ec733", null ],
     [ "setCustomDisplay", "class_radio_mesh_device.html#a1aa74113031cd886d047c95491766b3a", null ],
-    [ "setDeviceType", "class_radio_mesh_device.html#ab586ea6da9e70b01081d7e95b046fdf7", null ]
+    [ "setDeviceType", "class_radio_mesh_device.html#ab586ea6da9e70b01081d7e95b046fdf7", null ],
+    [ "updateSecurityParams", "class_radio_mesh_device.html#afbcacbe4d68cba950bd2bd9e2ba28a5a", null ]
 ];

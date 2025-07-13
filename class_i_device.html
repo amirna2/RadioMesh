@@ -182,6 +182,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac346555b60dc13ef539e29c3eb71cce0" id="r_ac346555b60dc13ef539e29c3eb71cce0"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_device.html#ac346555b60dc13ef539e29c3eb71cce0">factoryReset</a> ()=0</td></tr>
 <tr class="memdesc:ac346555b60dc13ef539e29c3eb71cce0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory reset the device.  <br /></td></tr>
 <tr class="separator:ac346555b60dc13ef539e29c3eb71cce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55154856819907f85aee4768c70cb7c5" id="r_a55154856819907f85aee4768c70cb7c5"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_device.html#a55154856819907f85aee4768c70cb7c5">updateSecurityParams</a> (const <a class="el" href="struct_security_params.html">SecurityParams</a> &amp;params)=0</td></tr>
+<tr class="memdesc:a55154856819907f85aee4768c70cb7c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the device's security parameters dynamically.  <br /></td></tr>
+<tr class="separator:a55154856819907f85aee4768c70cb7c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class is an interface for a device. </p>
@@ -935,6 +938,44 @@ Public Member Functions</h2></td></tr>
 </dl>
 
 <p>Implemented in <a class="el" href="class_radio_mesh_device.html#ab586ea6da9e70b01081d7e95b046fdf7">RadioMeshDevice</a>.</p>
+
+</div>
+</div>
+<a id="a55154856819907f85aee4768c70cb7c5" name="a55154856819907f85aee4768c70cb7c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55154856819907f85aee4768c70cb7c5">&#9670;&#160;</a></span>updateSecurityParams()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual int IDevice::updateSecurityParams </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="struct_security_params.html">SecurityParams</a> &amp;&#160;</td>
+          <td class="paramname"><em>params</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Update the device's security parameters dynamically. </p>
+<p>This method allows updating the encryption keys and parameters after device initialization, typically used after successful inclusion to apply the negotiated session keys.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">params</td><td>The new security parameters to apply </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE on success, error code otherwise </dd></dl>
+
+<p>Implemented in <a class="el" href="class_radio_mesh_device.html#afbcacbe4d68cba950bd2bd9e2ba28a5a">RadioMeshDevice</a>.</p>
 
 </div>
 </div>

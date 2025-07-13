@@ -109,68 +109,82 @@ $(document).ready(function(){initNavTree('_packet_router_8h_source.html',''); in
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;core/protocol/inc/crypto/aes/AesCrypto.h&gt;</span></div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;core/protocol/inc/packet/Packet.h&gt;</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;core/protocol/inc/routing/PacketTracker.h&gt;</span></div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;core/protocol/inc/routing/RoutingTable.h&gt;</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="foldopen" id="foldopen00023" data-start="{" data-end="};">
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="class_packet_router.html">   23</a></span><span class="keyword">class </span><a class="code hl_class" href="class_packet_router.html">PacketRouter</a></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>{</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">public</span>:</div>
-<div class="foldopen" id="foldopen00030" data-start="{" data-end="}">
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="class_packet_router.html#ad501c69a2fd7bf8402017ec984e1e0cb">   30</a></span>    <span class="keyword">static</span> <a class="code hl_class" href="class_packet_router.html">PacketRouter</a>* <a class="code hl_function" href="class_packet_router.html#ad501c69a2fd7bf8402017ec984e1e0cb">getInstance</a>()</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    {</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>        <span class="keywordflow">if</span> (!instance) {</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>            instance = <span class="keyword">new</span> <a class="code hl_class" href="class_packet_router.html">PacketRouter</a>();</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        }</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        <span class="keywordflow">return</span> instance;</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    }</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;core/protocol/inc/crypto/EncryptionService.h&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;core/protocol/inc/packet/Packet.h&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;core/protocol/inc/routing/PacketTracker.h&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;core/protocol/inc/routing/RoutingTable.h&gt;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="foldopen" id="foldopen00024" data-start="{" data-end="};">
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="class_packet_router.html">   24</a></span><span class="keyword">class </span><a class="code hl_class" href="class_packet_router.html">PacketRouter</a></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>{</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">public</span>:</div>
+<div class="foldopen" id="foldopen00031" data-start="{" data-end="}">
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="class_packet_router.html#ad501c69a2fd7bf8402017ec984e1e0cb">   31</a></span>    <span class="keyword">static</span> <a class="code hl_class" href="class_packet_router.html">PacketRouter</a>* <a class="code hl_function" href="class_packet_router.html#ad501c69a2fd7bf8402017ec984e1e0cb">getInstance</a>()</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    {</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        <span class="keywordflow">if</span> (!instance) {</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>            instance = <span class="keyword">new</span> <a class="code hl_class" href="class_packet_router.html">PacketRouter</a>();</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        }</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        <span class="keywordflow">return</span> instance;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    }</div>
 </div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <span class="keyword">virtual</span> <a class="code hl_class" href="class_packet_router.html">~PacketRouter</a>()</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    {</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    }</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keywordtype">int</span> <a class="code hl_function" href="class_packet_router.html#abe67ff257f310b586dc2e936de4b589e">routePacket</a>(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a> packet, <span class="keyword">const</span> <span class="keywordtype">byte</span>* ourDeviceId);</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="class_packet_router.html#a5f7a37cb9d0f21e0db8a74075e371dbd">isPacketFoundInTracker</a>(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a> packet);</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
-<div class="foldopen" id="foldopen00059" data-start="{" data-end="}">
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="class_packet_router.html#a26b7eb39a978b92e9a623c6e644cdf9a">   59</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_packet_router.html#a26b7eb39a978b92e9a623c6e644cdf9a">setCrypto</a>(<a class="code hl_class" href="class_aes_crypto.html">AesCrypto</a>* crypto)</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    {</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>        this-&gt;crypto = crypto;</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    }</div>
-</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <a class="code hl_class" href="class_packet_router.html">PacketRouter</a>()</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    {</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keyword">virtual</span> <a class="code hl_class" href="class_packet_router.html">~PacketRouter</a>()</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    {</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    }</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keywordtype">int</span> <a class="code hl_function" href="class_packet_router.html#ac64db2f29568f0ba471453ac651aadb6">routePacket</a>(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a> packet, <span class="keyword">const</span> <span class="keywordtype">byte</span>* ourDeviceId, </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>                   <a class="code hl_enumeration" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7f">MeshDeviceType</a> deviceType, <a class="code hl_enumeration" href="_definitions_8h.html#aadab43cd4209cf2dd62a0dff6e1e5192">DeviceInclusionState</a> inclusionState);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="class_packet_router.html#a5f7a37cb9d0f21e0db8a74075e371dbd">isPacketFoundInTracker</a>(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a> packet);</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
+<div class="foldopen" id="foldopen00064" data-start="{" data-end="}">
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="class_packet_router.html#a739443cef8326dddcfb845457dddd166">   64</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_packet_router.html#a739443cef8326dddcfb845457dddd166">setEncryptionService</a>(<a class="code hl_class" href="class_encryption_service.html">EncryptionService</a>* encryptionService)</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    {</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        this-&gt;encryptionService = encryptionService;</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    }</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <a class="code hl_class" href="class_packet_router.html">PacketRouter</a>(<span class="keyword">const</span> <a class="code hl_class" href="class_packet_router.html">PacketRouter</a>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keywordtype">void</span> operator=(<span class="keyword">const</span> <a class="code hl_class" href="class_packet_router.html">PacketRouter</a>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <a class="code hl_class" href="class_packet_tracker.html">PacketTracker</a> packetTracker = <a class="code hl_class" href="class_packet_tracker.html">PacketTracker</a>(50);</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <a class="code hl_class" href="class_aes_crypto.html">AesCrypto</a>* crypto = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    <span class="keyword">static</span> <a class="code hl_class" href="class_packet_router.html">PacketRouter</a>* instance;</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <span class="keywordtype">bool</span> checkMaxHops(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; packetCopy);</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <span class="keywordtype">void</span> updateLastHopId(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; packetCopy, <span class="keyword">const</span> <span class="keywordtype">byte</span>* ourDeviceId);</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    <span class="keywordtype">void</span> routeToNextHop(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; packetCopy);</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="keywordtype">void</span> encryptPacketData(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; packetCopy);</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="keywordtype">void</span> calculatePacketCrc(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; packetCopy, <a class="code hl_class" href="class_radio_mesh_utils_1_1_c_r_c32.html">RadioMeshUtils::CRC32</a>&amp; crc32,</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>                            uint32_t key);</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="keywordtype">int</span> sendPacket(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; packetCopy);</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <span class="keywordtype">void</span> trackPacket(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; packetCopy, uint32_t key);</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>};</div>
+</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
+<div class="foldopen" id="foldopen00074" data-start="{" data-end="}">
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="class_packet_router.html#a26b7eb39a978b92e9a623c6e644cdf9a">   74</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_packet_router.html#a26b7eb39a978b92e9a623c6e644cdf9a">setCrypto</a>(<a class="code hl_class" href="class_aes_crypto.html">AesCrypto</a>* crypto)</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    {</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        this-&gt;crypto = crypto;</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    }</div>
+</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <a class="code hl_class" href="class_packet_router.html">PacketRouter</a>()</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    {</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    }</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <a class="code hl_class" href="class_packet_router.html">PacketRouter</a>(<span class="keyword">const</span> <a class="code hl_class" href="class_packet_router.html">PacketRouter</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    <span class="keywordtype">void</span> operator=(<span class="keyword">const</span> <a class="code hl_class" href="class_packet_router.html">PacketRouter</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    <a class="code hl_class" href="class_packet_tracker.html">PacketTracker</a> packetTracker = <a class="code hl_class" href="class_packet_tracker.html">PacketTracker</a>(50);</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    <a class="code hl_class" href="class_aes_crypto.html">AesCrypto</a>* crypto = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    <a class="code hl_class" href="class_encryption_service.html">EncryptionService</a>* encryptionService = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keyword">static</span> <a class="code hl_class" href="class_packet_router.html">PacketRouter</a>* instance;</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    <span class="keywordtype">bool</span> checkMaxHops(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; packetCopy);</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    <span class="keywordtype">void</span> updateLastHopId(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; packetCopy, <span class="keyword">const</span> <span class="keywordtype">byte</span>* ourDeviceId);</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    <span class="keywordtype">void</span> routeToNextHop(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; packetCopy);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <span class="keywordtype">void</span> encryptPacketData(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; packetCopy, <a class="code hl_enumeration" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7f">MeshDeviceType</a> deviceType, <a class="code hl_enumeration" href="_definitions_8h.html#aadab43cd4209cf2dd62a0dff6e1e5192">DeviceInclusionState</a> inclusionState);</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    <span class="keywordtype">void</span> calculatePacketCrc(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; packetCopy, <a class="code hl_class" href="class_radio_mesh_utils_1_1_c_r_c32.html">RadioMeshUtils::CRC32</a>&amp; crc32,</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>                            uint32_t key);</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    <span class="keywordtype">int</span> sendPacket(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; packetCopy);</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    <span class="keywordtype">void</span> trackPacket(<a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; packetCopy, uint32_t key);</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>};</div>
 </div>
 <div class="ttc" id="a_definitions_8h_html"><div class="ttname"><a href="_definitions_8h.html">Definitions.h</a></div><div class="ttdoc">This file contains type definitions used in the RadioMesh project.</div></div>
+<div class="ttc" id="a_definitions_8h_html_aadab43cd4209cf2dd62a0dff6e1e5192"><div class="ttname"><a href="_definitions_8h.html#aadab43cd4209cf2dd62a0dff6e1e5192">DeviceInclusionState</a></div><div class="ttdeci">DeviceInclusionState</div><div class="ttdef"><b>Definition</b> Definitions.h:452</div></div>
+<div class="ttc" id="a_definitions_8h_html_ac96a3da8e6084c54e4cbeda2a1891c7f"><div class="ttname"><a href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7f">MeshDeviceType</a></div><div class="ttdeci">MeshDeviceType</div><div class="ttdoc">Enumerates the possible device types in the mesh.</div><div class="ttdef"><b>Definition</b> Definitions.h:61</div></div>
 <div class="ttc" id="a_errors_8h_html"><div class="ttname"><a href="_errors_8h.html">Errors.h</a></div><div class="ttdoc">This file contains error codes used in the RadioMesh project.</div></div>
 <div class="ttc" id="aclass_aes_crypto_html"><div class="ttname"><a href="class_aes_crypto.html">AesCrypto</a></div><div class="ttdef"><b>Definition</b> AesCrypto.h:15</div></div>
-<div class="ttc" id="aclass_packet_router_html"><div class="ttname"><a href="class_packet_router.html">PacketRouter</a></div><div class="ttdoc">This class is responsible for routing packets in the mesh network.</div><div class="ttdef"><b>Definition</b> PacketRouter.h:24</div></div>
-<div class="ttc" id="aclass_packet_router_html_a26b7eb39a978b92e9a623c6e644cdf9a"><div class="ttname"><a href="class_packet_router.html#a26b7eb39a978b92e9a623c6e644cdf9a">PacketRouter::setCrypto</a></div><div class="ttdeci">void setCrypto(AesCrypto *crypto)</div><div class="ttdoc">Set the crypto component to use for encrypting and decrypting packets.</div><div class="ttdef"><b>Definition</b> PacketRouter.h:59</div></div>
-<div class="ttc" id="aclass_packet_router_html_a5f7a37cb9d0f21e0db8a74075e371dbd"><div class="ttname"><a href="class_packet_router.html#a5f7a37cb9d0f21e0db8a74075e371dbd">PacketRouter::isPacketFoundInTracker</a></div><div class="ttdeci">bool isPacketFoundInTracker(RadioMeshPacket packet)</div><div class="ttdoc">Check if a packet has already been tracked.</div><div class="ttdef"><b>Definition</b> PacketRouter.cpp:118</div></div>
-<div class="ttc" id="aclass_packet_router_html_abe67ff257f310b586dc2e936de4b589e"><div class="ttname"><a href="class_packet_router.html#abe67ff257f310b586dc2e936de4b589e">PacketRouter::routePacket</a></div><div class="ttdeci">int routePacket(RadioMeshPacket packet, const byte *ourDeviceId)</div><div class="ttdoc">Route a packet to the next hop in the mesh network.</div><div class="ttdef"><b>Definition</b> PacketRouter.cpp:9</div></div>
-<div class="ttc" id="aclass_packet_router_html_ad501c69a2fd7bf8402017ec984e1e0cb"><div class="ttname"><a href="class_packet_router.html#ad501c69a2fd7bf8402017ec984e1e0cb">PacketRouter::getInstance</a></div><div class="ttdeci">static PacketRouter * getInstance()</div><div class="ttdoc">Get the instance of the PacketRouter.</div><div class="ttdef"><b>Definition</b> PacketRouter.h:30</div></div>
+<div class="ttc" id="aclass_encryption_service_html"><div class="ttname"><a href="class_encryption_service.html">EncryptionService</a></div><div class="ttdoc">Central encryption service that handles all packet encryption/decryption.</div><div class="ttdef"><b>Definition</b> EncryptionService.h:22</div></div>
+<div class="ttc" id="aclass_packet_router_html"><div class="ttname"><a href="class_packet_router.html">PacketRouter</a></div><div class="ttdoc">This class is responsible for routing packets in the mesh network.</div><div class="ttdef"><b>Definition</b> PacketRouter.h:25</div></div>
+<div class="ttc" id="aclass_packet_router_html_a26b7eb39a978b92e9a623c6e644cdf9a"><div class="ttname"><a href="class_packet_router.html#a26b7eb39a978b92e9a623c6e644cdf9a">PacketRouter::setCrypto</a></div><div class="ttdeci">void setCrypto(AesCrypto *crypto)</div><div class="ttdoc">Set the crypto component to use for encrypting and decrypting packets.</div><div class="ttdef"><b>Definition</b> PacketRouter.h:74</div></div>
+<div class="ttc" id="aclass_packet_router_html_a5f7a37cb9d0f21e0db8a74075e371dbd"><div class="ttname"><a href="class_packet_router.html#a5f7a37cb9d0f21e0db8a74075e371dbd">PacketRouter::isPacketFoundInTracker</a></div><div class="ttdeci">bool isPacketFoundInTracker(RadioMeshPacket packet)</div><div class="ttdoc">Check if a packet has already been tracked.</div><div class="ttdef"><b>Definition</b> PacketRouter.cpp:127</div></div>
+<div class="ttc" id="aclass_packet_router_html_a739443cef8326dddcfb845457dddd166"><div class="ttname"><a href="class_packet_router.html#a739443cef8326dddcfb845457dddd166">PacketRouter::setEncryptionService</a></div><div class="ttdeci">void setEncryptionService(EncryptionService *encryptionService)</div><div class="ttdoc">Set the encryption service to use for encrypting and decrypting packets.</div><div class="ttdef"><b>Definition</b> PacketRouter.h:64</div></div>
+<div class="ttc" id="aclass_packet_router_html_ac64db2f29568f0ba471453ac651aadb6"><div class="ttname"><a href="class_packet_router.html#ac64db2f29568f0ba471453ac651aadb6">PacketRouter::routePacket</a></div><div class="ttdeci">int routePacket(RadioMeshPacket packet, const byte *ourDeviceId, MeshDeviceType deviceType, DeviceInclusionState inclusionState)</div><div class="ttdoc">Route a packet to the next hop in the mesh network.</div><div class="ttdef"><b>Definition</b> PacketRouter.cpp:9</div></div>
+<div class="ttc" id="aclass_packet_router_html_ad501c69a2fd7bf8402017ec984e1e0cb"><div class="ttname"><a href="class_packet_router.html#ad501c69a2fd7bf8402017ec984e1e0cb">PacketRouter::getInstance</a></div><div class="ttdeci">static PacketRouter * getInstance()</div><div class="ttdoc">Get the instance of the PacketRouter.</div><div class="ttdef"><b>Definition</b> PacketRouter.h:31</div></div>
 <div class="ttc" id="aclass_packet_tracker_html"><div class="ttname"><a href="class_packet_tracker.html">PacketTracker</a></div><div class="ttdoc">This class is a packet tracker.</div><div class="ttdef"><b>Definition</b> PacketTracker.h:16</div></div>
 <div class="ttc" id="aclass_radio_mesh_packet_html"><div class="ttname"><a href="class_radio_mesh_packet.html">RadioMeshPacket</a></div><div class="ttdoc">Optimized packet structure for the mesh protocol.</div><div class="ttdef"><b>Definition</b> Packet.h:71</div></div>
 <div class="ttc" id="aclass_radio_mesh_utils_1_1_c_r_c32_html"><div class="ttname"><a href="class_radio_mesh_utils_1_1_c_r_c32.html">RadioMeshUtils::CRC32</a></div><div class="ttdef"><b>Definition</b> RadioMeshCrc32.h:8</div></div>

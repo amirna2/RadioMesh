@@ -105,12 +105,15 @@ $(document).ready(function(){initNavTree('class_packet_router.html',''); initRes
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:abe67ff257f310b586dc2e936de4b589e" id="r_abe67ff257f310b586dc2e936de4b589e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet_router.html#abe67ff257f310b586dc2e936de4b589e">routePacket</a> (<a class="el" href="class_radio_mesh_packet.html">RadioMeshPacket</a> packet, const byte *ourDeviceId)</td></tr>
-<tr class="memdesc:abe67ff257f310b586dc2e936de4b589e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Route a packet to the next hop in the mesh network.  <br /></td></tr>
-<tr class="separator:abe67ff257f310b586dc2e936de4b589e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac64db2f29568f0ba471453ac651aadb6" id="r_ac64db2f29568f0ba471453ac651aadb6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet_router.html#ac64db2f29568f0ba471453ac651aadb6">routePacket</a> (<a class="el" href="class_radio_mesh_packet.html">RadioMeshPacket</a> packet, const byte *ourDeviceId, <a class="el" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7f">MeshDeviceType</a> deviceType, <a class="el" href="_definitions_8h.html#aadab43cd4209cf2dd62a0dff6e1e5192">DeviceInclusionState</a> inclusionState)</td></tr>
+<tr class="memdesc:ac64db2f29568f0ba471453ac651aadb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Route a packet to the next hop in the mesh network.  <br /></td></tr>
+<tr class="separator:ac64db2f29568f0ba471453ac651aadb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f7a37cb9d0f21e0db8a74075e371dbd" id="r_a5f7a37cb9d0f21e0db8a74075e371dbd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet_router.html#a5f7a37cb9d0f21e0db8a74075e371dbd">isPacketFoundInTracker</a> (<a class="el" href="class_radio_mesh_packet.html">RadioMeshPacket</a> packet)</td></tr>
 <tr class="memdesc:a5f7a37cb9d0f21e0db8a74075e371dbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a packet has already been tracked.  <br /></td></tr>
 <tr class="separator:a5f7a37cb9d0f21e0db8a74075e371dbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a739443cef8326dddcfb845457dddd166" id="r_a739443cef8326dddcfb845457dddd166"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet_router.html#a739443cef8326dddcfb845457dddd166">setEncryptionService</a> (<a class="el" href="class_encryption_service.html">EncryptionService</a> *encryptionService)</td></tr>
+<tr class="memdesc:a739443cef8326dddcfb845457dddd166"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the encryption service to use for encrypting and decrypting packets.  <br /></td></tr>
+<tr class="separator:a739443cef8326dddcfb845457dddd166"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26b7eb39a978b92e9a623c6e644cdf9a" id="r_a26b7eb39a978b92e9a623c6e644cdf9a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet_router.html#a26b7eb39a978b92e9a623c6e644cdf9a">setCrypto</a> (<a class="el" href="class_aes_crypto.html">AesCrypto</a> *crypto)</td></tr>
 <tr class="memdesc:a26b7eb39a978b92e9a623c6e644cdf9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the crypto component to use for encrypting and decrypting packets.  <br /></td></tr>
 <tr class="separator:a26b7eb39a978b92e9a623c6e644cdf9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -180,8 +183,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="abe67ff257f310b586dc2e936de4b589e" name="abe67ff257f310b586dc2e936de4b589e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe67ff257f310b586dc2e936de4b589e">&#9670;&#160;</a></span>routePacket()</h2>
+<a id="ac64db2f29568f0ba471453ac651aadb6" name="ac64db2f29568f0ba471453ac651aadb6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac64db2f29568f0ba471453ac651aadb6">&#9670;&#160;</a></span>routePacket()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -196,7 +199,19 @@ Static Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const byte *&#160;</td>
-          <td class="paramname"><em>ourDeviceId</em>&#160;</td>
+          <td class="paramname"><em>ourDeviceId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7f">MeshDeviceType</a>&#160;</td>
+          <td class="paramname"><em>deviceType</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_definitions_8h.html#aadab43cd4209cf2dd62a0dff6e1e5192">DeviceInclusionState</a>&#160;</td>
+          <td class="paramname"><em>inclusionState</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -210,6 +225,9 @@ Static Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">packet</td><td><a class="el" href="class_radio_mesh_packet.html" title="Optimized packet structure for the mesh protocol.">RadioMeshPacket</a> to route </td></tr>
+    <tr><td class="paramname">ourDeviceId</td><td>Our device ID </td></tr>
+    <tr><td class="paramname">deviceType</td><td>Type of device (Hub or Standard) </td></tr>
+    <tr><td class="paramname">inclusionState</td><td>Current inclusion state </td></tr>
   </table>
   </dd>
 </dl>
@@ -245,6 +263,41 @@ Static Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">crypto</td><td><a class="el" href="class_aes_crypto.html">AesCrypto</a> component to use </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000001">Deprecated:</a></b></dt><dd>Use setEncryptionService instead </dd></dl>
+
+</div>
+</div>
+<a id="a739443cef8326dddcfb845457dddd166" name="a739443cef8326dddcfb845457dddd166"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a739443cef8326dddcfb845457dddd166">&#9670;&#160;</a></span>setEncryptionService()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PacketRouter::setEncryptionService </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_encryption_service.html">EncryptionService</a> *&#160;</td>
+          <td class="paramname"><em>encryptionService</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the encryption service to use for encrypting and decrypting packets. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">encryptionService</td><td><a class="el" href="class_encryption_service.html" title="Central encryption service that handles all packet encryption/decryption.">EncryptionService</a> component to use </td></tr>
   </table>
   </dd>
 </dl>

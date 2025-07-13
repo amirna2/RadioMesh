@@ -143,6 +143,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a04b853afe0e814015c3527ae49d0af67" id="r_a04b853afe0e814015c3527ae49d0af67"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_inclusion_controller.html#a04b853afe0e814015c3527ae49d0af67">checkProtocolTimeouts</a> ()</td></tr>
 <tr class="memdesc:a04b853afe0e814015c3527ae49d0af67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check for protocol timeouts and handle them Should be called periodically from Device::run()  <br /></td></tr>
 <tr class="separator:a04b853afe0e814015c3527ae49d0af67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2835a09bdd318032f81e2539b0f4c66e" id="r_a2835a09bdd318032f81e2539b0f4c66e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_inclusion_controller.html#a2835a09bdd318032f81e2539b0f4c66e">loadAndApplyNetworkKey</a> ()</td></tr>
+<tr class="memdesc:a2835a09bdd318032f81e2539b0f4c66e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load and apply stored network key to device crypto Called on device startup if device is already included.  <br /></td></tr>
+<tr class="separator:a2835a09bdd318032f81e2539b0f4c66e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad6b97c17e6a9a1bbf05cfda48234aa6" id="r_aad6b97c17e6a9a1bbf05cfda48234aa6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_key_manager.html">KeyManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_inclusion_controller.html#aad6b97c17e6a9a1bbf05cfda48234aa6">getKeyManager</a> () const</td></tr>
+<tr class="memdesc:aad6b97c17e6a9a1bbf05cfda48234aa6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get access to the <a class="el" href="class_key_manager.html" title="Manages cryptographic keys for RadioMesh devices.">KeyManager</a> instance.  <br /></td></tr>
+<tr class="separator:aad6b97c17e6a9a1bbf05cfda48234aa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a403d1f4eedbb753856f403a97bb145bd" id="r_a403d1f4eedbb753856f403a97bb145bd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_inclusion_controller.html#a403d1f4eedbb753856f403a97bb145bd">getDevicePublicKey</a> (std::vector&lt; byte &gt; &amp;publicKey)</td></tr>
+<tr class="memdesc:a403d1f4eedbb753856f403a97bb145bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the device's public key.  <br /></td></tr>
+<tr class="separator:a403d1f4eedbb753856f403a97bb145bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Controls the device inclusion sequence into a RadioMesh network. </p>
@@ -150,7 +159,7 @@ Public Member Functions</h2></td></tr>
 <li>Hub is put in inclusion mode (by user/application)</li>
 <li>Hub broadcasts INCLUDE_OPEN (unencrypted)</li>
 <li>Device sends INCLUDE_REQUEST (with public key, initial counter)</li>
-<li>Hub sends INCLUDE_RESPONSE (with hub public key, encrypted session key)</li>
+<li>Hub sends INCLUDE_RESPONSE (with hub public key, encrypted network key)</li>
 <li>Device sends INCLUDE_CONFIRM (encrypted nonce)</li>
 <li>Hub sends INCLUDE_SUCCESS </li>
 </ol>
@@ -242,6 +251,61 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a403d1f4eedbb753856f403a97bb145bd" name="a403d1f4eedbb753856f403a97bb145bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a403d1f4eedbb753856f403a97bb145bd">&#9670;&#160;</a></span>getDevicePublicKey()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int InclusionController::getDevicePublicKey </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; byte &gt; &amp;&#160;</td>
+          <td class="paramname"><em>publicKey</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the device's public key. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">publicKey</td><td>Vector to store the public key </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE on success, error code otherwise </dd></dl>
+
+</div>
+</div>
+<a id="aad6b97c17e6a9a1bbf05cfda48234aa6" name="aad6b97c17e6a9a1bbf05cfda48234aa6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad6b97c17e6a9a1bbf05cfda48234aa6">&#9670;&#160;</a></span>getKeyManager()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_key_manager.html">KeyManager</a> * InclusionController::getKeyManager </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get access to the <a class="el" href="class_key_manager.html" title="Manages cryptographic keys for RadioMesh devices.">KeyManager</a> instance. </p>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to <a class="el" href="class_key_manager.html" title="Manages cryptographic keys for RadioMesh devices.">KeyManager</a> </dd></dl>
+
+</div>
+</div>
 <a id="a3a13263e3a9f9ff9af22f4b1e0a44636" name="a3a13263e3a9f9ff9af22f4b1e0a44636"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3a13263e3a9f9ff9af22f4b1e0a44636">&#9670;&#160;</a></span>getState()</h2>
 
@@ -306,6 +370,26 @@ Public Member Functions</h2></td></tr>
 
 <p>Check if hub is in inclusion mode. </p>
 <dl class="section return"><dt>Returns</dt><dd>true if inclusion mode enabled </dd></dl>
+
+</div>
+</div>
+<a id="a2835a09bdd318032f81e2539b0f4c66e" name="a2835a09bdd318032f81e2539b0f4c66e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2835a09bdd318032f81e2539b0f4c66e">&#9670;&#160;</a></span>loadAndApplyNetworkKey()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int InclusionController::loadAndApplyNetworkKey </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Load and apply stored network key to device crypto Called on device startup if device is already included. </p>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE on success, error code otherwise </dd></dl>
 
 </div>
 </div>

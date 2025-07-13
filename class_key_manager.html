@@ -97,6 +97,11 @@ $(document).ready(function(){initNavTree('class_key_manager.html',''); initResiz
   <div class="headertitle"><div class="title">KeyManager Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Manages cryptographic keys for RadioMesh devices.  
+ <a href="class_key_manager.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_key_manager_8h_source.html">KeyManager.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -106,15 +111,30 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2019d0ca3eb8c132ada5c2428ab576e2" id="r_a2019d0ca3eb8c132ada5c2428ab576e2"><td class="memItemLeft" align="right" valign="top"><a id="a2019d0ca3eb8c132ada5c2428ab576e2" name="a2019d0ca3eb8c132ada5c2428ab576e2"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>generateKeyPair</b> (std::vector&lt; byte &gt; &amp;publicKey, std::vector&lt; byte &gt; &amp;privateKey)</td></tr>
 <tr class="separator:a2019d0ca3eb8c132ada5c2428ab576e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a426c6437e0b9b8f86fbc0285231558" id="r_a0a426c6437e0b9b8f86fbc0285231558"><td class="memItemLeft" align="right" valign="top"><a id="a0a426c6437e0b9b8f86fbc0285231558" name="a0a426c6437e0b9b8f86fbc0285231558"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>generateSessionKey</b> (std::vector&lt; byte &gt; &amp;sessionKey)</td></tr>
-<tr class="separator:a0a426c6437e0b9b8f86fbc0285231558"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67e736cc674551ec83e434ff9cc34ae6" id="r_a67e736cc674551ec83e434ff9cc34ae6"><td class="memItemLeft" align="right" valign="top"><a id="a67e736cc674551ec83e434ff9cc34ae6" name="a67e736cc674551ec83e434ff9cc34ae6"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>encryptSessionKey</b> (const std::vector&lt; byte &gt; &amp;sessionKey, const std::vector&lt; byte &gt; &amp;recipientPubKey, std::vector&lt; byte &gt; &amp;encryptedKey)</td></tr>
-<tr class="separator:a67e736cc674551ec83e434ff9cc34ae6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a632a8e7dc60ffe2ea93b6c10900f10fe" id="r_a632a8e7dc60ffe2ea93b6c10900f10fe"><td class="memItemLeft" align="right" valign="top"><a id="a632a8e7dc60ffe2ea93b6c10900f10fe" name="a632a8e7dc60ffe2ea93b6c10900f10fe"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>decryptSessionKey</b> (const std::vector&lt; byte &gt; &amp;encryptedKey, const std::vector&lt; byte &gt; &amp;privateKey, std::vector&lt; byte &gt; &amp;sessionKey)</td></tr>
-<tr class="separator:a632a8e7dc60ffe2ea93b6c10900f10fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7fe68e3b250d26ea9f71397e21eb9897" id="r_a7fe68e3b250d26ea9f71397e21eb9897"><td class="memItemLeft" align="right" valign="top"><a id="a7fe68e3b250d26ea9f71397e21eb9897" name="a7fe68e3b250d26ea9f71397e21eb9897"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>derivePublicKey</b> (const std::vector&lt; byte &gt; &amp;privateKey, std::vector&lt; byte &gt; &amp;publicKey)</td></tr>
+<tr class="separator:a7fe68e3b250d26ea9f71397e21eb9897"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7738bf8e8a67b7ab79e6c1ef12b6d7cf" id="r_a7738bf8e8a67b7ab79e6c1ef12b6d7cf"><td class="memItemLeft" align="right" valign="top"><a id="a7738bf8e8a67b7ab79e6c1ef12b6d7cf" name="a7738bf8e8a67b7ab79e6c1ef12b6d7cf"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>generateNetworkKey</b> (std::vector&lt; byte &gt; &amp;networkKey)</td></tr>
+<tr class="separator:a7738bf8e8a67b7ab79e6c1ef12b6d7cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb2465f78fe1784d3b9432ebddce6fd4" id="r_afb2465f78fe1784d3b9432ebddce6fd4"><td class="memItemLeft" align="right" valign="top"><a id="afb2465f78fe1784d3b9432ebddce6fd4" name="afb2465f78fe1784d3b9432ebddce6fd4"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>getCurrentNetworkKey</b> (std::vector&lt; byte &gt; &amp;networkKey)</td></tr>
+<tr class="separator:afb2465f78fe1784d3b9432ebddce6fd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8313d07d1afcc982c9e8cf623720ade4" id="r_a8313d07d1afcc982c9e8cf623720ade4"><td class="memItemLeft" align="right" valign="top"><a id="a8313d07d1afcc982c9e8cf623720ade4" name="a8313d07d1afcc982c9e8cf623720ade4"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>setNetworkKey</b> (const std::vector&lt; byte &gt; &amp;networkKey)</td></tr>
+<tr class="separator:a8313d07d1afcc982c9e8cf623720ade4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6613c588c820d5a7ccb1d62554bcfbc" id="r_ae6613c588c820d5a7ccb1d62554bcfbc"><td class="memItemLeft" align="right" valign="top"><a id="ae6613c588c820d5a7ccb1d62554bcfbc" name="ae6613c588c820d5a7ccb1d62554bcfbc"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>initializeForHub</b> ()</td></tr>
+<tr class="separator:ae6613c588c820d5a7ccb1d62554bcfbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d8dac5adc33ffb20ceaaeb25141223c" id="r_a7d8dac5adc33ffb20ceaaeb25141223c"><td class="memItemLeft" align="right" valign="top"><a id="a7d8dac5adc33ffb20ceaaeb25141223c" name="a7d8dac5adc33ffb20ceaaeb25141223c"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>hasNetworkKey</b> ()</td></tr>
+<tr class="separator:a7d8dac5adc33ffb20ceaaeb25141223c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85cd69f2544f96ab7840a3b67b9b9091" id="r_a85cd69f2544f96ab7840a3b67b9b9091"><td class="memItemLeft" align="right" valign="top"><a id="a85cd69f2544f96ab7840a3b67b9b9091" name="a85cd69f2544f96ab7840a3b67b9b9091"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>encryptNetworkKey</b> (const std::vector&lt; byte &gt; &amp;networkKey, const std::vector&lt; byte &gt; &amp;recipientPubKey, std::vector&lt; byte &gt; &amp;encryptedKey)</td></tr>
+<tr class="separator:a85cd69f2544f96ab7840a3b67b9b9091"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fbc550064a25949776a6abd88b74034" id="r_a9fbc550064a25949776a6abd88b74034"><td class="memItemLeft" align="right" valign="top"><a id="a9fbc550064a25949776a6abd88b74034" name="a9fbc550064a25949776a6abd88b74034"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>decryptNetworkKey</b> (const std::vector&lt; byte &gt; &amp;encryptedKey, const std::vector&lt; byte &gt; &amp;privateKey, std::vector&lt; byte &gt; &amp;networkKey)</td></tr>
+<tr class="separator:a9fbc550064a25949776a6abd88b74034"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14251f9020725535578081e5965f4390" id="r_a14251f9020725535578081e5965f4390"><td class="memItemLeft" align="right" valign="top"><a id="a14251f9020725535578081e5965f4390" name="a14251f9020725535578081e5965f4390"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>loadPrivateKey</b> (std::vector&lt; byte &gt; &amp;privateKey)</td></tr>
 <tr class="separator:a14251f9020725535578081e5965f4390"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -127,21 +147,21 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>loadHubKey</b> (std::v
 <tr class="memitem:ad93e56a794f38e7b206f760323e4a314" id="r_ad93e56a794f38e7b206f760323e4a314"><td class="memItemLeft" align="right" valign="top"><a id="ad93e56a794f38e7b206f760323e4a314" name="ad93e56a794f38e7b206f760323e4a314"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>persistHubKey</b> (const std::vector&lt; byte &gt; &amp;hubKey)</td></tr>
 <tr class="separator:ad93e56a794f38e7b206f760323e4a314"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a462e4376199a123dd042868b5ac684" id="r_a7a462e4376199a123dd042868b5ac684"><td class="memItemLeft" align="right" valign="top"><a id="a7a462e4376199a123dd042868b5ac684" name="a7a462e4376199a123dd042868b5ac684"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>loadSessionKey</b> (std::vector&lt; byte &gt; &amp;sessionKey)</td></tr>
-<tr class="separator:a7a462e4376199a123dd042868b5ac684"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7b55876e0138559e0332cc31b745acf" id="r_af7b55876e0138559e0332cc31b745acf"><td class="memItemLeft" align="right" valign="top"><a id="af7b55876e0138559e0332cc31b745acf" name="af7b55876e0138559e0332cc31b745acf"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>persistSessionKey</b> (const std::vector&lt; byte &gt; &amp;sessionKey)</td></tr>
-<tr class="separator:af7b55876e0138559e0332cc31b745acf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae68d74b9271d374318100d10d6917253" id="r_ae68d74b9271d374318100d10d6917253"><td class="memItemLeft" align="right" valign="top"><a id="ae68d74b9271d374318100d10d6917253" name="ae68d74b9271d374318100d10d6917253"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>loadNetworkKey</b> (std::vector&lt; byte &gt; &amp;networkKey)</td></tr>
+<tr class="separator:ae68d74b9271d374318100d10d6917253"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1c1107e11c3af77894750f0ed71f8ec" id="r_af1c1107e11c3af77894750f0ed71f8ec"><td class="memItemLeft" align="right" valign="top"><a id="af1c1107e11c3af77894750f0ed71f8ec" name="af1c1107e11c3af77894750f0ed71f8ec"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>persistNetworkKey</b> (const std::vector&lt; byte &gt; &amp;networkKey)</td></tr>
+<tr class="separator:af1c1107e11c3af77894750f0ed71f8ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a287d073186827f010c61261f3e03a1" id="r_a6a287d073186827f010c61261f3e03a1"><td class="memItemLeft" align="right" valign="top"><a id="a6a287d073186827f010c61261f3e03a1" name="a6a287d073186827f010c61261f3e03a1"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>validatePublicKey</b> (const std::vector&lt; byte &gt; &amp;publicKey)</td></tr>
 <tr class="separator:a6a287d073186827f010c61261f3e03a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64e8b8b9f8463a1e89145f6c4cd31705" id="r_a64e8b8b9f8463a1e89145f6c4cd31705"><td class="memItemLeft" align="right" valign="top"><a id="a64e8b8b9f8463a1e89145f6c4cd31705" name="a64e8b8b9f8463a1e89145f6c4cd31705"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>validatePrivateKey</b> (const std::vector&lt; byte &gt; &amp;privateKey)</td></tr>
 <tr class="separator:a64e8b8b9f8463a1e89145f6c4cd31705"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a0a6d018f8631211673f6ad75bbf6f4" id="r_a7a0a6d018f8631211673f6ad75bbf6f4"><td class="memItemLeft" align="right" valign="top"><a id="a7a0a6d018f8631211673f6ad75bbf6f4" name="a7a0a6d018f8631211673f6ad75bbf6f4"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>validateSessionKey</b> (const std::vector&lt; byte &gt; &amp;sessionKey)</td></tr>
-<tr class="separator:a7a0a6d018f8631211673f6ad75bbf6f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0205aad18a865a1705284922f68bc7d" id="r_ad0205aad18a865a1705284922f68bc7d"><td class="memItemLeft" align="right" valign="top"><a id="ad0205aad18a865a1705284922f68bc7d" name="ad0205aad18a865a1705284922f68bc7d"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>validateNetworkKey</b> (const std::vector&lt; byte &gt; &amp;networkKey)</td></tr>
+<tr class="separator:ad0205aad18a865a1705284922f68bc7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -151,11 +171,13 @@ static constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><b>PU
 <tr class="memitem:a6146b5b01e2c234ef78d685733770f30" id="r_a6146b5b01e2c234ef78d685733770f30"><td class="memItemLeft" align="right" valign="top"><a id="a6146b5b01e2c234ef78d685733770f30" name="a6146b5b01e2c234ef78d685733770f30"></a>
 static constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><b>PRIVATE_KEY_SIZE</b> = 32</td></tr>
 <tr class="separator:a6146b5b01e2c234ef78d685733770f30"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00491745da07dd73d5ebc3cd319b9a78" id="r_a00491745da07dd73d5ebc3cd319b9a78"><td class="memItemLeft" align="right" valign="top"><a id="a00491745da07dd73d5ebc3cd319b9a78" name="a00491745da07dd73d5ebc3cd319b9a78"></a>
-static constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><b>SESSION_KEY_SIZE</b> = 32</td></tr>
-<tr class="separator:a00491745da07dd73d5ebc3cd319b9a78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f6340d98c36b66e09e2e88282316774" id="r_a0f6340d98c36b66e09e2e88282316774"><td class="memItemLeft" align="right" valign="top"><a id="a0f6340d98c36b66e09e2e88282316774" name="a0f6340d98c36b66e09e2e88282316774"></a>
+static constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><b>NETWORK_KEY_SIZE</b> = 32</td></tr>
+<tr class="separator:a0f6340d98c36b66e09e2e88282316774"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Manages cryptographic keys for RadioMesh devices. </p>
+</div><hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/framework/device/inc/<a class="el" href="_key_manager_8h_source.html">KeyManager.h</a></li>
 <li>src/framework/device/src/<b>KeyManager.cpp</b></li>
 </ul>

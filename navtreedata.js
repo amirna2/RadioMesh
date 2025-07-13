@@ -25,6 +25,7 @@
 var NAVTREE =
 [
   [ "RadioMesh", "index.html", [
+    [ "Deprecated List", "deprecated.html", null ],
     [ "Topics", "topics.html", "topics" ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
@@ -51,8 +52,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_aes_crypto_8h_source.html",
-"class_oled_display.html#a0b81ffa5703dbaad8c329e8416cc4690",
-"struct_wifi_params.html"
+"class_lora_radio.html#aba11e8225ec4411db92c9fbda9f8a7b6",
+"struct_byte_storage_params.html#acd0a247875fb1406932af0be841a8097"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
