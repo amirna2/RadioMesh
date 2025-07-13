@@ -1,6 +1,5 @@
 <p align="center">
-  <a href="https://tlo.mit.edu/understand-ip/exploring-mit-open-source-license-comprehensive-guide"><img src="https://img.shields.io/github/license/amirna2/RadioMesh
-  " alt="License"></a>
+  <a href="https://tlo.mit.edu/understand-ip/exploring-mit-open-source-license-comprehensive-guide"><img src="https://img.shields.io/github/license/amirna2/RadioMesh" alt="License"></a>
   <a href="https://github.com/amirna2/RadioMesh/wiki"><img src="https://img.shields.io/badge/Read-Wiki-50dda0" alt="Wiki"></a>
   <a href="https://amirna2.github.io/RadioMesh"><img src="https://img.shields.io/badge/API-Doc-50dda0" alt="Api Doc"></a>
   <img src="https://img.shields.io/github/v/release/amirna2/RadioMesh?include_prereleases&label=Release&color=10aaff" alt="Release">
