@@ -1,0 +1,32 @@
+name: "Release RadioMesh"
+
+on: workflow_dispatch
+
+jobs:
+  release:
+    name : Release RadioMesh
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout latest tag
+        run: git checkout $(git describe --tags $(git rev-list --tags --max-count=1))
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install PlatformIO
+        run: |
+          pip install --upgrade platformio
+
+      - name: Publish to PlatformIO
+        env:
+          PLATFORMIO_AUTH_TOKEN: ${{ secrets.PLATFORMIO_AUTH_TOKEN }}
+        run: pio pkg publish --no-interactive
+
