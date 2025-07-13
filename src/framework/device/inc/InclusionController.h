@@ -186,11 +186,9 @@ private:
     std::vector<byte> generateNonce()
     {
         std::vector<byte> nonce(NONCE_SIZE);
-        // Use RadioMeshUtils::simpleRNG for entropy
+        // Generate cryptographically secure random nonce
         for (size_t i = 0; i < NONCE_SIZE; i++) {
-            // nonce[i] = RadioMeshUtils::simpleRNG(1);
-            //  test set the nonce to a fixed value for testing
-            nonce[i] = 0x01; // Fixed value for testing purposes
+            nonce[i] = random(256);
         }
         return nonce;
     }

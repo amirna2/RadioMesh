@@ -256,11 +256,6 @@ std::vector<byte> EncryptionService::encryptDirectECC(const std::vector<byte>& d
         return data;
     }
 
-    // Debug: Log the keys being used
-    logdbg_ln("ENCRYPT using device private key (first 8 bytes): %s",
-              RadioMeshUtils::convertToHex(devicePrivateKey.data(), 8).c_str());
-    logdbg_ln("ENCRYPT using recipient public key (first 8 bytes): %s",
-              RadioMeshUtils::convertToHex(publicKey.data(), 8).c_str());
 
     // Perform ECDH using Curve25519
     uint8_t sharedSecret[32];
@@ -269,9 +264,6 @@ std::vector<byte> EncryptionService::encryptDirectECC(const std::vector<byte>& d
         return data;
     }
 
-    // Debug: Print shared secret for comparison
-    logdbg_ln("ENCRYPT ECDH shared secret (first 8 bytes): %s",
-              RadioMeshUtils::convertToHex(sharedSecret, 8).c_str());
 
     // Use SHA256 to derive encryption key from shared secret
     SHA256 sha256;
@@ -329,11 +321,6 @@ std::vector<byte> EncryptionService::decryptDirectECC(const std::vector<byte>& d
         return data;
     }
 
-    // Debug: Log the keys being used
-    logdbg_ln("DECRYPT using our private key (first 8 bytes): %s",
-              RadioMeshUtils::convertToHex(privateKey.data(), 8).c_str());
-    logdbg_ln("DECRYPT using sender public key (first 8 bytes): %s",
-              RadioMeshUtils::convertToHex(senderPublicKey.data(), 8).c_str());
 
     // Perform ECDH using Curve25519
     uint8_t sharedSecret[32];
@@ -342,9 +329,6 @@ std::vector<byte> EncryptionService::decryptDirectECC(const std::vector<byte>& d
         return data;
     }
 
-    // Debug: Print shared secret for comparison
-    logdbg_ln("DECRYPT ECDH shared secret (first 8 bytes): %s",
-              RadioMeshUtils::convertToHex(sharedSecret, 8).c_str());
 
     // Use SHA256 to derive encryption key from shared secret
     SHA256 sha256;

@@ -13,8 +13,7 @@ InclusionController::InclusionController(RadioMeshDevice& device) : device(devic
         storage = std::make_unique<DeviceStorage>(byteStorage);
         keyManager = std::make_unique<KeyManager>(*storage);
 
-        // FOR TESTING ONLY
-        byteStorage->clear(); // Clear storage on initialization
+        // Storage initialized normally
     } else {
         logerr_ln("No byte storage available for InclusionController");
         // TODO: Handle this error case properly
@@ -309,8 +308,7 @@ int InclusionController::sendInclusionResponse(const RadioMeshPacket& packet)
 
     // Generate random nonce and store it for verification
     currentNonce = generateNonce();
-    logdbg_ln("Generated nonce: %s",
-              RadioMeshUtils::convertToHex(currentNonce.data(), currentNonce.size()).c_str());
+    logdbg_ln("Generated nonce for inclusion");
 
     // For now, send nonce unencrypted (will be encrypted by device with network key)
     // The device will encrypt it after receiving and verifying the network key
@@ -386,21 +384,13 @@ int InclusionController::handleInclusionMessage(const RadioMeshPacket& packet)
                 // Device.handleReceivedData() already decrypted INCLUDE_CONFIRM via
                 // EncryptionService
                 const std::vector<byte>& decryptedNonce = packet.packetData;
-                logdbg_ln("Received decrypted nonce: %s",
-                          RadioMeshUtils::convertToHex(decryptedNonce.data(), decryptedNonce.size())
-                              .c_str());
-
                 // Verify the nonce is incremented by 1
                 uint32_t originalNonceValue = RadioMeshUtils::bytesToNumber<uint32_t>(currentNonce);
                 uint32_t receivedNonceValue =
                     RadioMeshUtils::bytesToNumber<uint32_t>(decryptedNonce);
 
-                logdbg_ln("Decrypted nonce bytes: %s",
-                          RadioMeshUtils::convertToHex(decryptedNonce.data(), decryptedNonce.size())
-                              .c_str());
-                logdbg_ln("Original nonce: %u (0x%08X), Received nonce: %u (0x%08X)",
-                          originalNonceValue, originalNonceValue, receivedNonceValue,
-                          receivedNonceValue);
+                logdbg_ln("Verifying nonce: original=0x%08X, received=0x%08X",
+                          originalNonceValue, receivedNonceValue);
 
                 if (receivedNonceValue != originalNonceValue + 1) {
                     logerr_ln("Nonce verification failed! Expected %u, got %u",
@@ -438,11 +428,7 @@ int InclusionController::handleInclusionMessage(const RadioMeshPacket& packet)
 
                 // Store hub public key temporarily for encrypting INCLUDE_REQUEST
                 tempHubPublicKey = packet.packetData;
-                logdbg_ln("Received hub public key: %s",
-                          RadioMeshUtils::convertToHex(
-                              tempHubPublicKey.data(),
-                              std::min(8U, static_cast<unsigned int>(tempHubPublicKey.size())))
-                              .c_str());
+                logdbg_ln("Received hub public key, size=%d", tempHubPublicKey.size());
 
                 // Configure EncryptionService with hub's public key for INCLUDE_REQUEST encryption
                 if (device.getEncryptionService()) {

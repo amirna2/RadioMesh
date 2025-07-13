@@ -74,10 +74,9 @@ int KeyManager::derivePublicKey(const std::vector<byte>& privateKey, std::vector
 int KeyManager::generateNetworkKey(std::vector<byte>& networkKey)
 {
     networkKey.resize(NETWORK_KEY_SIZE);
-    // Generate random network key
+    // Generate cryptographically secure random network key
     for (size_t i = 0; i < NETWORK_KEY_SIZE; i++) {
-        // networkKey[i] = random(256);
-        networkKey[i] = 0x02; // For testing, use a simple pattern
+        networkKey[i] = random(256);
     }
     loginfo_ln("Generated new network key");
     return RM_E_NONE;
