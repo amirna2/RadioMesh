@@ -8,3 +8,6 @@ wifiConfig.h
 .vscode/**
 .aider*
 context/**
+
+CLAUDE.md
+AI_DEVELOPER.md

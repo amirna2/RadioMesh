@@ -193,4 +193,15 @@ public:
      * @return RM_E_NONE if the factory reset was successful, an error code otherwise.
      */
     virtual int factoryReset() = 0;
+
+    /**
+     * @brief Update the device's security parameters dynamically.
+     *
+     * This method allows updating the encryption keys and parameters after device initialization,
+     * typically used after successful inclusion to apply the negotiated session keys.
+     *
+     * @param params The new security parameters to apply
+     * @return RM_E_NONE on success, error code otherwise
+     */
+    virtual int updateSecurityParams(const SecurityParams& params) = 0;
 };

@@ -115,5 +115,5 @@ private:
     bool isStorageValid();
 
     // list of reserved keys (used internally)
-    const std::vector<std::string> reservedKeys = {"is", "mc", "sk"};
+    const std::vector<std::string> reservedKeys = {"is", "mc", "nk", "pk", "hk"};
 };

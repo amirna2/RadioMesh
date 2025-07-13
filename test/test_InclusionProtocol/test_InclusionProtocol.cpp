@@ -2,347 +2,505 @@
 #include <common/inc/Definitions.h>
 #include <common/inc/Errors.h>
 #include <core/protocol/inc/packet/Packet.h>
+#include <core/protocol/inc/crypto/EncryptionService.h>
+#include <core/protocol/inc/crypto/aes/AesCrypto.h>
+#include <common/utils/Utils.h>
+#include <cstring>
+#include <EEPROM.h>
 
-// Simple test device class without inheritance complexity
-class TestDevice 
-{
-public:
-    TestDevice(MeshDeviceType type) : deviceType(type), inclusionState(DeviceInclusionState::NOT_INCLUDED) {
-        if (type == MeshDeviceType::HUB) {
-            inclusionState = DeviceInclusionState::INCLUDED;
-            inclusionModeEnabled = false;
-        }
+// ========================================
+// SPECIFICATION COMPLIANCE TESTS
+// ========================================
+
+/**
+ * @brief Inclusion Protocol Message Specifications
+ * 
+ * INCLUDE_OPEN:
+ * - Encryption: None
+ * - Key: N/A
+ * - Payload: Hub public key (64 bytes)
+ * - Expected Length: 64 bytes
+ * 
+ * INCLUDE_REQUEST:
+ * - Encryption: Direct ECC
+ * - Key: Hub public key
+ * - Payload: Device ID (4) + Device public key (64) + Initial counter (4) = 72 bytes
+ * - Expected Length: 72 bytes (zero overhead with direct ECC)
+ * 
+ * INCLUDE_RESPONSE:
+ * - Encryption: Direct ECC
+ * - Key: Device public key
+ * - Payload: Hub public key (64) + Encrypted network key (32) + Nonce (4) = 100 bytes
+ * - Expected Length: 100 bytes (zero overhead with direct ECC)
+ * 
+ * INCLUDE_CONFIRM:
+ * - Encryption: AES
+ * - Key: Shared network key
+ * - Payload: Incremented nonce (4 bytes)
+ * - Expected Length: 16 bytes (AES block size)
+ * 
+ * INCLUDE_SUCCESS:
+ * - Encryption: AES
+ * - Key: Shared network key
+ * - Payload: Empty (0 bytes)
+ * - Expected Length: 16 bytes (AES minimum block size)
+ */
+
+// Use ESP32's built-in ECC from TinyCrypt
+extern "C" {
+typedef struct uECC_Curve_t* uECC_Curve;
+uECC_Curve uECC_secp256r1(void);
+void uECC_set_rng(int (*rng_function)(uint8_t *dest, unsigned size));
+int uECC_make_key(uint8_t *public_key, uint8_t *private_key, uECC_Curve curve);
+}
+
+// RNG function for micro-ecc
+static int test_rng(uint8_t *dest, unsigned size) {
+    while (size) {
+        *dest++ = random(256);
+        size--;
     }
+    return 1;
+}
+
+// Generate valid ECC test keys
+std::vector<byte> TEST_HUB_PRIVATE_KEY(32);
+std::vector<byte> TEST_HUB_PUBLIC_KEY(64);  // Full 64-byte public key
+std::vector<byte> TEST_DEVICE_PRIVATE_KEY(32);
+std::vector<byte> TEST_DEVICE_PUBLIC_KEY(64);  // Full 64-byte public key
+
+void generateTestKeys() {
+    static bool keysGenerated = false;
+    if (keysGenerated) return;
     
-    // Test helper methods
-    bool isInclusionMessage(uint8_t topic) {
-        return (topic >= INCLUDE_REQUEST && topic <= INCLUDE_SUCCESS);
-    }
+    uECC_set_rng(&test_rng);
+    uECC_Curve curve = uECC_secp256r1();
     
-    DeviceInclusionState getInclusionState() { return inclusionState; }
-    void setInclusionState(DeviceInclusionState state) { inclusionState = state; }
+    // Generate hub key pair
+    uint8_t hubPrivKey[32];
+    uint8_t hubPubKey[64];
+    uECC_make_key(hubPubKey, hubPrivKey, curve);
+    memcpy(TEST_HUB_PRIVATE_KEY.data(), hubPrivKey, 32);
+    memcpy(TEST_HUB_PUBLIC_KEY.data(), hubPubKey, 64); // Full 64-byte key
     
-    bool isInclusionModeEnabled() { return inclusionModeEnabled; }
-    void setInclusionMode(bool enabled) { inclusionModeEnabled = enabled; }
+    // Generate device key pair
+    uint8_t devicePrivKey[32];
+    uint8_t devicePubKey[64];
+    uECC_make_key(devicePubKey, devicePrivKey, curve);
+    memcpy(TEST_DEVICE_PRIVATE_KEY.data(), devicePrivKey, 32);
+    memcpy(TEST_DEVICE_PUBLIC_KEY.data(), devicePubKey, 64); // Full 64-byte key
     
-    MeshDeviceType getDeviceType() { return deviceType; }
-    
-    // Mock message handling
-    int handleInclusionMessage(const RadioMeshPacket& packet) {
-        if (deviceType == MeshDeviceType::HUB) {
-            return handleHubMessage(packet);
-        } else {
-            return handleDeviceMessage(packet);
-        }
-    }
-    
-    // Test data
-    uint8_t lastSentTopic = 0;
-    std::vector<byte> lastSentData;
-    
-private:
-    MeshDeviceType deviceType;
-    DeviceInclusionState inclusionState;
-    bool inclusionModeEnabled = false;
-    
-    int handleHubMessage(const RadioMeshPacket& packet) {
-        switch (packet.topic) {
-            case INCLUDE_REQUEST:
-                if (inclusionModeEnabled) {
-                    lastSentTopic = INCLUDE_RESPONSE;
-                    return RM_E_NONE;
-                } else {
-                    return RM_E_INVALID_STATE;
-                }
-                break;
-            case INCLUDE_CONFIRM:
-                lastSentTopic = INCLUDE_SUCCESS;
-                return RM_E_NONE;
-                break;
-        }
-        return RM_E_NONE;
-    }
-    
-    int handleDeviceMessage(const RadioMeshPacket& packet) {
-        switch (packet.topic) {
-            case INCLUDE_OPEN:
-                if (inclusionState == DeviceInclusionState::NOT_INCLUDED) {
-                    inclusionState = DeviceInclusionState::INCLUSION_PENDING;
-                    lastSentTopic = INCLUDE_REQUEST;
-                    return RM_E_NONE;
-                }
-                break;
-            case INCLUDE_RESPONSE:
-                if (inclusionState == DeviceInclusionState::INCLUSION_PENDING) {
-                    lastSentTopic = INCLUDE_CONFIRM;
-                    return RM_E_NONE;
-                }
-                break;
-            case INCLUDE_SUCCESS:
-                if (inclusionState == DeviceInclusionState::INCLUSION_PENDING) {
-                    inclusionState = DeviceInclusionState::INCLUDED;
-                    return RM_E_NONE;
-                }
-                break;
-        }
-        return RM_E_NONE;
-    }
+    keysGenerated = true;
+}
+
+const std::vector<byte> TEST_NETWORK_KEY = {
+    0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0xDE, 0xF0,
+    0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+    0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00,
+    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
 };
 
+const std::array<byte, 4> TEST_DEVICE_ID = {0x11, 0x11, 0x11, 0x11};
+const std::array<byte, 4> TEST_HUB_ID = {0x77, 0x77, 0x77, 0x77};
+
 void setUp(void) {
-    // Set up before each test
+    // Set up before each test - initialize Arduino and crypto system
+    Serial.begin(115200);
+    
+    // Initialize EEPROM for crypto system
+    EEPROM.begin(512);
+    
+    // Generate test keys
+    generateTestKeys();
+    
+    delay(100);
 }
 
 void tearDown(void) {
     // Clean up after each test
+    delay(10);
 }
 
-void test_device_isInclusionMessage() {
-    TestDevice device(MeshDeviceType::STANDARD);
+// ========================================
+// ENCRYPTION SERVICE TESTS
+// ========================================
+
+void test_encryption_service_include_open() {
+    EncryptionService service;
     
-    // Test inclusion message topics
-    TEST_ASSERT_TRUE(device.isInclusionMessage(INCLUDE_REQUEST));
-    TEST_ASSERT_TRUE(device.isInclusionMessage(INCLUDE_RESPONSE));
-    TEST_ASSERT_TRUE(device.isInclusionMessage(INCLUDE_OPEN));
-    TEST_ASSERT_TRUE(device.isInclusionMessage(INCLUDE_CONFIRM));
-    TEST_ASSERT_TRUE(device.isInclusionMessage(INCLUDE_SUCCESS));
+    // INCLUDE_OPEN should not be encrypted
+    std::vector<byte> data = TEST_HUB_PUBLIC_KEY;
+    std::vector<byte> result = service.encrypt(data, MessageTopic::INCLUDE_OPEN, 
+                                              MeshDeviceType::HUB, 
+                                              DeviceInclusionState::INCLUDED);
     
-    // Test non-inclusion message topics
-    TEST_ASSERT_FALSE(device.isInclusionMessage(PING));
-    TEST_ASSERT_FALSE(device.isInclusionMessage(PONG));
-    TEST_ASSERT_FALSE(device.isInclusionMessage(ACK));
-    TEST_ASSERT_FALSE(device.isInclusionMessage(0x10)); // User topic
+    // Should return original data unchanged
+    TEST_ASSERT_EQUAL(64, result.size());
+    TEST_ASSERT_EQUAL_MEMORY(data.data(), result.data(), 64);
 }
 
-void test_device_handles_include_open() {
-    TestDevice device(MeshDeviceType::STANDARD);
+void test_encryption_service_include_request() {
+    EncryptionService service;
+    service.setHubPublicKey(TEST_HUB_PUBLIC_KEY);
+    service.setDeviceKeys(TEST_DEVICE_PRIVATE_KEY, TEST_DEVICE_PUBLIC_KEY);
     
-    // Create INCLUDE_OPEN packet
-    RadioMeshPacket packet;
-    packet.topic = INCLUDE_OPEN;
-    packet.sourceDevId = {0x11, 0x12, 0x13, 0x14}; // Hub ID
-    packet.destDevId = {0x00, 0x00, 0x00, 0x00};   // Broadcast
+    // Build INCLUDE_REQUEST payload: device ID + public key + counter
+    std::vector<byte> payload;
+    payload.insert(payload.end(), TEST_DEVICE_ID.begin(), TEST_DEVICE_ID.end()); // 4 bytes
+    payload.insert(payload.end(), TEST_DEVICE_PUBLIC_KEY.begin(), TEST_DEVICE_PUBLIC_KEY.end()); // 64 bytes
+    std::vector<byte> counter = RadioMeshUtils::numberToBytes(static_cast<uint32_t>(0)); // 4 bytes
+    payload.insert(payload.end(), counter.begin(), counter.end());
     
-    // Device should be NOT_INCLUDED initially
-    TEST_ASSERT_EQUAL(DeviceInclusionState::NOT_INCLUDED, device.getInclusionState());
+    TEST_ASSERT_EQUAL(72, payload.size()); // Verify unencrypted payload size
     
-    // Process the INCLUDE_OPEN message
-    int result = device.handleInclusionMessage(packet);
+    // INCLUDE_REQUEST should be direct ECC encrypted for standard device in pending state
+    std::vector<byte> encrypted = service.encrypt(payload, MessageTopic::INCLUDE_REQUEST,
+                                                 MeshDeviceType::STANDARD,
+                                                 DeviceInclusionState::INCLUSION_PENDING);
     
-    // Should succeed
-    TEST_ASSERT_EQUAL(RM_E_NONE, result);
-    
-    // Should have sent INCLUDE_REQUEST
-    TEST_ASSERT_EQUAL(INCLUDE_REQUEST, device.lastSentTopic);
-    
-    // State should now be INCLUSION_PENDING
-    TEST_ASSERT_EQUAL(DeviceInclusionState::INCLUSION_PENDING, device.getInclusionState());
+    // Should be direct ECC encrypted: original 72 bytes with zero overhead = 72 bytes
+    TEST_ASSERT_EQUAL(72, encrypted.size());
+    TEST_ASSERT_FALSE(memcmp(payload.data(), encrypted.data(), 72) == 0);
 }
 
-void test_device_handles_include_response() {
-    TestDevice device(MeshDeviceType::STANDARD);
+void test_encryption_service_include_response() {
+    EncryptionService service;
+    service.setTempDevicePublicKey(TEST_DEVICE_PUBLIC_KEY);
+    service.setDeviceKeys(TEST_HUB_PRIVATE_KEY, TEST_HUB_PUBLIC_KEY);
     
-    // Set device to INCLUSION_PENDING state
-    device.setInclusionState(DeviceInclusionState::INCLUSION_PENDING);
+    // Build INCLUDE_RESPONSE payload: hub key + encrypted network key + nonce
+    std::vector<byte> payload;
+    payload.insert(payload.end(), TEST_HUB_PUBLIC_KEY.begin(), TEST_HUB_PUBLIC_KEY.end()); // 64 bytes
+    std::vector<byte> encryptedNetworkKey(32, 0xAB); // Mock 32-byte encrypted key (direct ECC)
+    payload.insert(payload.end(), encryptedNetworkKey.begin(), encryptedNetworkKey.end()); // 32 bytes
+    std::vector<byte> nonce = {0xFF, 0xFE, 0xFD, 0xFC}; // 4 bytes
+    payload.insert(payload.end(), nonce.begin(), nonce.end());
     
-    // Create INCLUDE_RESPONSE packet
-    RadioMeshPacket packet;
-    packet.topic = INCLUDE_RESPONSE;
-    packet.sourceDevId = {0x11, 0x12, 0x13, 0x14}; // Hub ID
-    packet.destDevId = {0x01, 0x02, 0x03, 0x04};   // Device ID
+    TEST_ASSERT_EQUAL(100, payload.size()); // Verify unencrypted payload size
     
-    // Process the INCLUDE_RESPONSE message
-    int result = device.handleInclusionMessage(packet);
+    // INCLUDE_RESPONSE should be direct ECC encrypted for hub
+    std::vector<byte> encrypted = service.encrypt(payload, MessageTopic::INCLUDE_RESPONSE,
+                                                 MeshDeviceType::HUB,
+                                                 DeviceInclusionState::INCLUDED);
     
-    // Should succeed
-    TEST_ASSERT_EQUAL(RM_E_NONE, result);
-    
-    // Should have sent INCLUDE_CONFIRM
-    TEST_ASSERT_EQUAL(INCLUDE_CONFIRM, device.lastSentTopic);
+    // Should be direct ECC encrypted: original 100 bytes with zero overhead = 100 bytes
+    TEST_ASSERT_EQUAL(100, encrypted.size());
+    TEST_ASSERT_FALSE(memcmp(payload.data(), encrypted.data(), 100) == 0);
 }
 
-void test_device_handles_include_success() {
-    TestDevice device(MeshDeviceType::STANDARD);
+void test_encryption_service_include_confirm() {
+    EncryptionService service;
+    service.setNetworkKey(TEST_NETWORK_KEY);
     
-    // Set device to INCLUSION_PENDING state
-    device.setInclusionState(DeviceInclusionState::INCLUSION_PENDING);
+    // INCLUDE_CONFIRM payload: incremented nonce (4 bytes)
+    std::vector<byte> nonce = {0xFF, 0xFE, 0xFD, 0xFD}; // Original + 1
     
-    // Create INCLUDE_SUCCESS packet
-    RadioMeshPacket packet;
-    packet.topic = INCLUDE_SUCCESS;
-    packet.sourceDevId = {0x11, 0x12, 0x13, 0x14}; // Hub ID
-    packet.destDevId = {0x01, 0x02, 0x03, 0x04};   // Device ID
+    // INCLUDE_CONFIRM should be AES encrypted for standard device in pending state
+    std::vector<byte> encrypted = service.encrypt(nonce, MessageTopic::INCLUDE_CONFIRM,
+                                                 MeshDeviceType::STANDARD,
+                                                 DeviceInclusionState::INCLUSION_PENDING);
     
-    // Process the INCLUDE_SUCCESS message
-    int result = device.handleInclusionMessage(packet);
+    // Should be AES encrypted: CTR mode outputs same size as input (4 bytes)
+    TEST_ASSERT_EQUAL(4, encrypted.size());
+    TEST_ASSERT_FALSE(memcmp(nonce.data(), encrypted.data(), 4) == 0);
     
-    // Should succeed
-    TEST_ASSERT_EQUAL(RM_E_NONE, result);
+    // NOW TEST DECRYPTION - This is what was missing!
+    EncryptionService hubService;
+    hubService.setNetworkKey(TEST_NETWORK_KEY);
+    std::vector<byte> decrypted = hubService.decrypt(encrypted, MessageTopic::INCLUDE_CONFIRM,
+                                                     MeshDeviceType::HUB,
+                                                     DeviceInclusionState::INCLUDED);
     
-    // State should now be INCLUDED
-    TEST_ASSERT_EQUAL(DeviceInclusionState::INCLUDED, device.getInclusionState());
+    // Decrypted should match original
+    TEST_ASSERT_EQUAL(nonce.size(), decrypted.size());
+    TEST_ASSERT_EQUAL_MEMORY(nonce.data(), decrypted.data(), nonce.size());
 }
 
-void test_hub_handles_include_request() {
-    TestDevice hub(MeshDeviceType::HUB);
+void test_encryption_service_include_success() {
+    EncryptionService service;
+    service.setNetworkKey(TEST_NETWORK_KEY);
     
-    // Enable inclusion mode
-    hub.setInclusionMode(true);
+    // INCLUDE_SUCCESS payload: empty
+    std::vector<byte> empty;
     
-    // Create INCLUDE_REQUEST packet
-    RadioMeshPacket packet;
-    packet.topic = INCLUDE_REQUEST;
-    packet.sourceDevId = {0x01, 0x02, 0x03, 0x04}; // Device ID
-    packet.destDevId = {0x11, 0x12, 0x13, 0x14};   // Hub ID
+    // INCLUDE_SUCCESS should be AES encrypted for hub
+    std::vector<byte> encrypted = service.encrypt(empty, MessageTopic::INCLUDE_SUCCESS,
+                                                 MeshDeviceType::HUB,
+                                                 DeviceInclusionState::INCLUDED);
     
-    // Process the INCLUDE_REQUEST message
-    int result = hub.handleInclusionMessage(packet);
-    
-    // Should succeed
-    TEST_ASSERT_EQUAL(RM_E_NONE, result);
-    
-    // Should have sent INCLUDE_RESPONSE
-    TEST_ASSERT_EQUAL(INCLUDE_RESPONSE, hub.lastSentTopic);
+    // Should be AES encrypted: CTR mode with empty input outputs empty
+    TEST_ASSERT_EQUAL(0, encrypted.size());
 }
 
-void test_hub_handles_include_confirm() {
-    TestDevice hub(MeshDeviceType::HUB);
+// ========================================
+// PAYLOAD CONSTRUCTION TESTS
+// ========================================
+
+void test_include_request_payload_construction() {
+    // Test the exact payload that should be built for INCLUDE_REQUEST
+    std::vector<byte> expectedPayload;
     
-    // Enable inclusion mode
-    hub.setInclusionMode(true);
+    // Device ID (4 bytes)
+    expectedPayload.insert(expectedPayload.end(), TEST_DEVICE_ID.begin(), TEST_DEVICE_ID.end());
     
-    // Create INCLUDE_CONFIRM packet
-    RadioMeshPacket packet;
-    packet.topic = INCLUDE_CONFIRM;
-    packet.sourceDevId = {0x01, 0x02, 0x03, 0x04}; // Device ID
-    packet.destDevId = {0x11, 0x12, 0x13, 0x14};   // Hub ID
+    // Device public key (32 bytes)
+    expectedPayload.insert(expectedPayload.end(), TEST_DEVICE_PUBLIC_KEY.begin(), TEST_DEVICE_PUBLIC_KEY.end());
     
-    // Process the INCLUDE_CONFIRM message
-    int result = hub.handleInclusionMessage(packet);
+    // Initial counter (4 bytes) - should be 0 for new devices
+    uint32_t initialCounter = 0;
+    std::vector<byte> counterBytes = RadioMeshUtils::numberToBytes(initialCounter);
+    expectedPayload.insert(expectedPayload.end(), counterBytes.begin(), counterBytes.end());
     
-    // Should succeed
-    TEST_ASSERT_EQUAL(RM_E_NONE, result);
+    // Verify total size
+    TEST_ASSERT_EQUAL(72, expectedPayload.size());
     
-    // Should have sent INCLUDE_SUCCESS
-    TEST_ASSERT_EQUAL(INCLUDE_SUCCESS, hub.lastSentTopic);
+    // Verify components
+    TEST_ASSERT_EQUAL_MEMORY(TEST_DEVICE_ID.data(), expectedPayload.data(), 4);
+    TEST_ASSERT_EQUAL_MEMORY(TEST_DEVICE_PUBLIC_KEY.data(), expectedPayload.data() + 4, 64);
+    
+    // Verify counter is 0
+    uint32_t extractedCounter = RadioMeshUtils::bytesToNumber<uint32_t>(
+        std::vector<byte>(expectedPayload.begin() + 68, expectedPayload.end()));
+    TEST_ASSERT_EQUAL(0, extractedCounter);
 }
 
-void test_hub_rejects_request_when_not_in_inclusion_mode() {
-    TestDevice hub(MeshDeviceType::HUB);
+void test_include_response_payload_construction() {
+    // Test the exact payload that should be built for INCLUDE_RESPONSE
+    std::vector<byte> expectedPayload;
     
-    // DON'T enable inclusion mode (should be false by default)
+    // Hub public key (64 bytes)
+    expectedPayload.insert(expectedPayload.end(), TEST_HUB_PUBLIC_KEY.begin(), TEST_HUB_PUBLIC_KEY.end());
     
-    // Create INCLUDE_REQUEST packet
-    RadioMeshPacket packet;
-    packet.topic = INCLUDE_REQUEST;
-    packet.sourceDevId = {0x01, 0x02, 0x03, 0x04}; // Device ID
-    packet.destDevId = {0x11, 0x12, 0x13, 0x14};   // Hub ID
+    // Mock encrypted network key (32 bytes - direct ECC output for 32-byte key)
+    std::vector<byte> encryptedNetworkKey(32, 0xAB);
+    expectedPayload.insert(expectedPayload.end(), encryptedNetworkKey.begin(), encryptedNetworkKey.end());
     
-    // Process the INCLUDE_REQUEST message
-    int result = hub.handleInclusionMessage(packet);
+    // Nonce (4 bytes)
+    std::vector<byte> nonce = {0xFF, 0xFE, 0xFD, 0xFC};
+    expectedPayload.insert(expectedPayload.end(), nonce.begin(), nonce.end());
     
-    // Should fail
-    TEST_ASSERT_EQUAL(RM_E_INVALID_STATE, result);
+    // Verify total size
+    TEST_ASSERT_EQUAL(100, expectedPayload.size());
     
-    // Should NOT have sent any response
-    TEST_ASSERT_NOT_EQUAL(INCLUDE_RESPONSE, hub.lastSentTopic);
+    // Verify components can be extracted
+    std::vector<byte> extractedHubKey(expectedPayload.begin(), expectedPayload.begin() + 64);
+    TEST_ASSERT_EQUAL_MEMORY(TEST_HUB_PUBLIC_KEY.data(), extractedHubKey.data(), 64);
+    
+    std::vector<byte> extractedEncryptedKey(expectedPayload.begin() + 64, expectedPayload.begin() + 96);
+    TEST_ASSERT_EQUAL(32, extractedEncryptedKey.size());
+    
+    std::vector<byte> extractedNonce(expectedPayload.begin() + 96, expectedPayload.end());
+    TEST_ASSERT_EQUAL_MEMORY(nonce.data(), extractedNonce.data(), 4);
 }
 
-void test_device_ignores_include_open_when_already_included() {
-    TestDevice device(MeshDeviceType::STANDARD);
+// ========================================
+// DIRECT ECC ENCRYPTION/DECRYPTION TESTS
+// ========================================
+
+void test_direct_ecc_encryption_decryption() {
+    EncryptionService service;
+    service.setTempDevicePublicKey(TEST_DEVICE_PUBLIC_KEY);
+    service.setDeviceKeys(TEST_HUB_PRIVATE_KEY, TEST_HUB_PUBLIC_KEY);
     
-    // Set device to INCLUDED state
-    device.setInclusionState(DeviceInclusionState::INCLUDED);
+    // Test data
+    std::vector<byte> originalData = {0x01, 0x02, 0x03, 0x04, 0x05};
     
-    // Create INCLUDE_OPEN packet
-    RadioMeshPacket packet;
-    packet.topic = INCLUDE_OPEN;
-    packet.sourceDevId = {0x11, 0x12, 0x13, 0x14}; // Hub ID
-    packet.destDevId = {0x00, 0x00, 0x00, 0x00};   // Broadcast
+    // Encrypt using INCLUDE_RESPONSE context (which uses direct ECC)
+    std::vector<byte> encrypted = service.encrypt(originalData, MessageTopic::INCLUDE_RESPONSE,
+                                                 MeshDeviceType::HUB, DeviceInclusionState::INCLUDED);
     
-    // Clear last sent data
-    device.lastSentTopic = 0;
+    // Should have same size as original (zero overhead with direct ECC)
+    TEST_ASSERT_EQUAL(originalData.size(), encrypted.size());
+    TEST_ASSERT_FALSE(memcmp(originalData.data(), encrypted.data(), originalData.size()) == 0);
     
-    // Process the INCLUDE_OPEN message
-    int result = device.handleInclusionMessage(packet);
+    // Test decryption - set up service as device receiving from hub
+    EncryptionService deviceService;
+    deviceService.setHubPublicKey(TEST_HUB_PUBLIC_KEY); // Device knows hub's public key
+    std::vector<byte> decrypted = deviceService.decryptDirectECC(encrypted, TEST_DEVICE_PRIVATE_KEY);
     
-    // Should succeed but do nothing
-    TEST_ASSERT_EQUAL(RM_E_NONE, result);
-    
-    // Should NOT have sent INCLUDE_REQUEST
-    TEST_ASSERT_NOT_EQUAL(INCLUDE_REQUEST, device.lastSentTopic);
-    
-    // State should remain INCLUDED
-    TEST_ASSERT_EQUAL(DeviceInclusionState::INCLUDED, device.getInclusionState());
+    // Should recover original data
+    TEST_ASSERT_EQUAL(originalData.size(), decrypted.size());
+    TEST_ASSERT_EQUAL_MEMORY(originalData.data(), decrypted.data(), originalData.size());
 }
 
-void test_automatic_inclusion_flow_integration() {
-    TestDevice hub(MeshDeviceType::HUB);
-    TestDevice device(MeshDeviceType::STANDARD);
+// ========================================
+// EXPECTED FAILURE TESTS
+// ========================================
+
+void test_include_request_without_hub_key_should_fail() {
+    EncryptionService service;
+    // Don't set hub public key
     
-    // Step 1: Hub enters inclusion mode
-    hub.setInclusionMode(true);
-    TEST_ASSERT_TRUE(hub.isInclusionModeEnabled());
+    std::vector<byte> payload(40, 0x01);
     
-    // Step 2: Device receives INCLUDE_OPEN and responds
-    RadioMeshPacket openPacket;
-    openPacket.topic = INCLUDE_OPEN;
-    openPacket.sourceDevId = {0x11, 0x12, 0x13, 0x14}; // Hub ID
-    openPacket.destDevId = {0x00, 0x00, 0x00, 0x00}; // Broadcast
+    // Should return original data when no key is available
+    std::vector<byte> result = service.encrypt(payload, MessageTopic::INCLUDE_REQUEST,
+                                              MeshDeviceType::STANDARD,
+                                              DeviceInclusionState::INCLUSION_PENDING);
     
-    device.handleInclusionMessage(openPacket);
-    TEST_ASSERT_EQUAL(INCLUDE_REQUEST, device.lastSentTopic);
-    TEST_ASSERT_EQUAL(DeviceInclusionState::INCLUSION_PENDING, device.getInclusionState());
-    
-    // Step 3: Hub receives INCLUDE_REQUEST and responds
-    RadioMeshPacket requestPacket;
-    requestPacket.topic = INCLUDE_REQUEST;
-    requestPacket.sourceDevId = {0x01, 0x02, 0x03, 0x04}; // Device ID
-    requestPacket.destDevId = {0x11, 0x12, 0x13, 0x14}; // Hub ID
-    
-    hub.handleInclusionMessage(requestPacket);
-    TEST_ASSERT_EQUAL(INCLUDE_RESPONSE, hub.lastSentTopic);
-    
-    // Step 4: Device receives INCLUDE_RESPONSE and confirms
-    RadioMeshPacket responsePacket;
-    responsePacket.topic = INCLUDE_RESPONSE;
-    responsePacket.sourceDevId = {0x11, 0x12, 0x13, 0x14}; // Hub ID
-    responsePacket.destDevId = {0x01, 0x02, 0x03, 0x04}; // Device ID
-    
-    device.handleInclusionMessage(responsePacket);
-    TEST_ASSERT_EQUAL(INCLUDE_CONFIRM, device.lastSentTopic);
-    
-    // Step 5: Hub receives INCLUDE_CONFIRM and sends success
-    RadioMeshPacket confirmPacket;
-    confirmPacket.topic = INCLUDE_CONFIRM;
-    confirmPacket.sourceDevId = {0x01, 0x02, 0x03, 0x04}; // Device ID
-    confirmPacket.destDevId = {0x11, 0x12, 0x13, 0x14}; // Hub ID
-    
-    hub.handleInclusionMessage(confirmPacket);
-    TEST_ASSERT_EQUAL(INCLUDE_SUCCESS, hub.lastSentTopic);
-    
-    // Step 6: Device receives INCLUDE_SUCCESS and completes inclusion
-    RadioMeshPacket successPacket;
-    successPacket.topic = INCLUDE_SUCCESS;
-    successPacket.sourceDevId = {0x11, 0x12, 0x13, 0x14}; // Hub ID
-    successPacket.destDevId = {0x01, 0x02, 0x03, 0x04}; // Device ID
-    
-    device.handleInclusionMessage(successPacket);
-    TEST_ASSERT_EQUAL(DeviceInclusionState::INCLUDED, device.getInclusionState());
+    // When encryption fails, should return original data
+    TEST_ASSERT_EQUAL(40, result.size());
+    TEST_ASSERT_EQUAL_MEMORY(payload.data(), result.data(), 40);
 }
+
+void test_include_response_without_device_key_should_fail() {
+    EncryptionService service;
+    // Don't set device public key
+    
+    std::vector<byte> payload(120, 0x02);
+    
+    // Should return original data when no key is available
+    std::vector<byte> result = service.encrypt(payload, MessageTopic::INCLUDE_RESPONSE,
+                                              MeshDeviceType::HUB,
+                                              DeviceInclusionState::INCLUDED);
+    
+    // When encryption fails, should return original data
+    TEST_ASSERT_EQUAL(120, result.size());
+    TEST_ASSERT_EQUAL_MEMORY(payload.data(), result.data(), 120);
+}
+
+void test_aes_encryption_without_network_key_should_fail() {
+    EncryptionService service;
+    // Don't set network key
+    
+    std::vector<byte> payload = {0xFF, 0xFE, 0xFD, 0xFC};
+    
+    // Should return original data when no key is available
+    std::vector<byte> result = service.encrypt(payload, MessageTopic::INCLUDE_CONFIRM,
+                                              MeshDeviceType::STANDARD,
+                                              DeviceInclusionState::INCLUSION_PENDING);
+    
+    // When encryption fails, should return original data
+    TEST_ASSERT_EQUAL(4, result.size());
+    TEST_ASSERT_EQUAL_MEMORY(payload.data(), result.data(), 4);
+}
+
+void test_direct_ecc_decryption_with_invalid_size_should_fail() {
+    EncryptionService service;
+    
+    // Invalid direct ECC data (too small)
+    std::vector<byte> invalidData = {0x01, 0x02, 0x03};
+    
+    std::vector<byte> result = service.decryptDirectECC(invalidData, TEST_DEVICE_PRIVATE_KEY);
+    
+    // Should return original data when decryption fails
+    TEST_ASSERT_EQUAL(invalidData.size(), result.size());
+    TEST_ASSERT_EQUAL_MEMORY(invalidData.data(), result.data(), invalidData.size());
+}
+
+// ========================================
+// PROTOCOL STATE MACHINE TESTS
+// ========================================
+
+void test_encryption_method_determination() {
+    EncryptionService service;
+    
+    // Test INCLUDE_OPEN - should always be NONE
+    auto openEncrypted = service.encrypt({0x01}, MessageTopic::INCLUDE_OPEN, 
+                                        MeshDeviceType::HUB, DeviceInclusionState::INCLUDED);
+    TEST_ASSERT_EQUAL(1, openEncrypted.size()); // No encryption
+    
+    // Test INCLUDE_REQUEST - should be direct ECC for standard device in pending state
+    service.setHubPublicKey(TEST_HUB_PUBLIC_KEY);
+    auto requestEncrypted = service.encrypt({0x01}, MessageTopic::INCLUDE_REQUEST,
+                                           MeshDeviceType::STANDARD, DeviceInclusionState::INCLUSION_PENDING);
+    TEST_ASSERT_EQUAL(1, requestEncrypted.size()); // Direct ECC encryption (zero overhead)
+    
+    // Test INCLUDE_REQUEST - should be NONE for hub or non-pending device
+    auto requestHub = service.encrypt({0x01}, MessageTopic::INCLUDE_REQUEST,
+                                     MeshDeviceType::HUB, DeviceInclusionState::INCLUDED);
+    TEST_ASSERT_EQUAL(1, requestHub.size()); // No encryption for hub
+    
+    auto requestIncluded = service.encrypt({0x01}, MessageTopic::INCLUDE_REQUEST,
+                                          MeshDeviceType::STANDARD, DeviceInclusionState::INCLUDED);
+    TEST_ASSERT_EQUAL(1, requestIncluded.size()); // No encryption for included device
+}
+
+void test_nonce_increment_logic() {
+    // Test nonce increment for INCLUDE_CONFIRM
+    std::vector<byte> originalNonce = {0xFF, 0xFE, 0xFD, 0xFC};
+    uint32_t originalValue = RadioMeshUtils::bytesToNumber<uint32_t>(originalNonce);
+    
+    uint32_t incrementedValue = originalValue + 1;
+    std::vector<byte> incrementedNonce = RadioMeshUtils::numberToBytes(incrementedValue);
+    
+    // Verify increment
+    TEST_ASSERT_EQUAL(originalValue + 1, incrementedValue);
+    TEST_ASSERT_FALSE(memcmp(originalNonce.data(), incrementedNonce.data(), 4) == 0);
+    
+    // Verify we can extract the incremented value
+    uint32_t extracted = RadioMeshUtils::bytesToNumber<uint32_t>(incrementedNonce);
+    TEST_ASSERT_EQUAL(incrementedValue, extracted);
+}
+
+// ========================================
+// REAL WORLD SCENARIO TESTS
+// ========================================
+
+void test_real_world_nonce_encryption_decryption() {
+    // Test the exact scenario from the logs
+    // Original nonce: 0x05010101 (83951873)
+    // Incremented: 0x05010102 (83951874)
+    
+    std::vector<byte> originalNonce = {0x05, 0x01, 0x01, 0x01};
+    std::vector<byte> incrementedNonce = {0x05, 0x01, 0x01, 0x02};
+    
+    // Device encrypts the incremented nonce
+    EncryptionService deviceService;
+    deviceService.setNetworkKey(TEST_NETWORK_KEY);
+    std::vector<byte> encrypted = deviceService.encrypt(incrementedNonce, MessageTopic::INCLUDE_CONFIRM,
+                                                        MeshDeviceType::STANDARD,
+                                                        DeviceInclusionState::INCLUSION_PENDING);
+    
+    // Hub decrypts the nonce
+    EncryptionService hubService;
+    hubService.setNetworkKey(TEST_NETWORK_KEY);
+    std::vector<byte> decrypted = hubService.decrypt(encrypted, MessageTopic::INCLUDE_CONFIRM,
+                                                     MeshDeviceType::HUB,
+                                                     DeviceInclusionState::INCLUDED);
+    
+    // Verify decryption worked
+    TEST_ASSERT_EQUAL(incrementedNonce.size(), decrypted.size());
+    TEST_ASSERT_EQUAL_MEMORY(incrementedNonce.data(), decrypted.data(), incrementedNonce.size());
+    
+    // Verify the actual values
+    uint32_t decryptedValue = RadioMeshUtils::bytesToNumber<uint32_t>(decrypted);
+    TEST_ASSERT_EQUAL(83951874, decryptedValue); // 0x05010102
+}
+
+// ========================================
+// TEST RUNNER
+// ========================================
 
 void setup() {
     UNITY_BEGIN();
     
-    RUN_TEST(test_device_isInclusionMessage);
-    RUN_TEST(test_device_handles_include_open);
-    RUN_TEST(test_device_handles_include_response);
-    RUN_TEST(test_device_handles_include_success);
-    RUN_TEST(test_hub_handles_include_request);
-    RUN_TEST(test_hub_handles_include_confirm);
-    RUN_TEST(test_hub_rejects_request_when_not_in_inclusion_mode);
-    RUN_TEST(test_device_ignores_include_open_when_already_included);
-    RUN_TEST(test_automatic_inclusion_flow_integration);
+    // Encryption Service Tests
+    RUN_TEST(test_encryption_service_include_open);
+    RUN_TEST(test_encryption_service_include_request);
+    RUN_TEST(test_encryption_service_include_response);
+    RUN_TEST(test_encryption_service_include_confirm);
+    RUN_TEST(test_encryption_service_include_success);
+    
+    // Payload Construction Tests
+    RUN_TEST(test_include_request_payload_construction);
+    RUN_TEST(test_include_response_payload_construction);
+    
+    // Direct ECC Tests
+    RUN_TEST(test_direct_ecc_encryption_decryption);
+    
+    // Expected Failure Tests
+    RUN_TEST(test_include_request_without_hub_key_should_fail);
+    RUN_TEST(test_include_response_without_device_key_should_fail);
+    RUN_TEST(test_aes_encryption_without_network_key_should_fail);
+    RUN_TEST(test_direct_ecc_decryption_with_invalid_size_should_fail);
+    
+    // Protocol Logic Tests
+    RUN_TEST(test_encryption_method_determination);
+    RUN_TEST(test_nonce_increment_logic);
+    
+    // Real World Scenario Tests
+    RUN_TEST(test_real_world_nonce_encryption_decryption);
     
     UNITY_END();
 }

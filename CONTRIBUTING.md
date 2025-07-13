@@ -46,6 +46,7 @@ This project acknowledges the use of AI coding assistants in development. Howeve
 - AI tools should complement, not replace, good software development practices
 - All code undergoes thorough review by project maintainers
 - Contributors are responsible for understanding and testing their code
+- Ensure you have the rights to the code you submit, including AI-generated code
 
 The final acceptance of any contribution is based on its technical merit, code quality, and alignment with project goals, regardless of how it was developed.
 

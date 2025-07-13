@@ -9,6 +9,7 @@
 #include <vector>
 
 #include <core/protocol/inc/crypto/aes/AesCrypto.h>
+#include <core/protocol/inc/crypto/EncryptionService.h>
 #include <core/protocol/inc/packet/Packet.h>
 #include <core/protocol/inc/routing/PacketTracker.h>
 #include <core/protocol/inc/routing/RoutingTable.h>
@@ -41,9 +42,13 @@ public:
     /**
      * @brief Route a packet to the next hop in the mesh network.
      * @param packet RadioMeshPacket to route
+     * @param ourDeviceId Our device ID
+     * @param deviceType Type of device (Hub or Standard)
+     * @param inclusionState Current inclusion state
      * @return RM_E_NONE if the packet was successfully routed, an error code otherwise.
      */
-    int routePacket(RadioMeshPacket packet, const byte* ourDeviceId);
+    int routePacket(RadioMeshPacket packet, const byte* ourDeviceId, 
+                   MeshDeviceType deviceType, DeviceInclusionState inclusionState);
 
     /**
      * @brief Check if a packet has already been tracked.
@@ -53,8 +58,18 @@ public:
     bool isPacketFoundInTracker(RadioMeshPacket packet);
 
     /**
+     * @brief Set the encryption service to use for encrypting and decrypting packets.
+     * @param encryptionService EncryptionService component to use
+     */
+    void setEncryptionService(EncryptionService* encryptionService)
+    {
+        this->encryptionService = encryptionService;
+    }
+
+    /**
      * @brief Set the crypto component to use for encrypting and decrypting packets.
      * @param crypto AesCrypto component to use
+     * @deprecated Use setEncryptionService instead
      */
     void setCrypto(AesCrypto* crypto)
     {
@@ -70,13 +85,14 @@ private:
 
     PacketTracker packetTracker = PacketTracker(50);
     AesCrypto* crypto = nullptr;
+    EncryptionService* encryptionService = nullptr;
 
     static PacketRouter* instance;
 
     bool checkMaxHops(RadioMeshPacket& packetCopy);
     void updateLastHopId(RadioMeshPacket& packetCopy, const byte* ourDeviceId);
     void routeToNextHop(RadioMeshPacket& packetCopy);
-    void encryptPacketData(RadioMeshPacket& packetCopy);
+    void encryptPacketData(RadioMeshPacket& packetCopy, MeshDeviceType deviceType, DeviceInclusionState inclusionState);
     void calculatePacketCrc(RadioMeshPacket& packetCopy, RadioMeshUtils::CRC32& crc32,
                             uint32_t key);
     int sendPacket(RadioMeshPacket& packetCopy);

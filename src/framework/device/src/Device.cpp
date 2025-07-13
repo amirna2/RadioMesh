@@ -288,7 +288,11 @@ int RadioMeshDevice::sendData(const uint8_t topic, const std::vector<byte> data,
     txPacket.nextHopId = BROADCAST_ADDR;
     txPacket.packetData = data;
 
-    return router->routePacket(txPacket, this->id.data());
+    // Get current inclusion state for encryption context
+    DeviceInclusionState currentState =
+        inclusionController ? inclusionController->getState() : DeviceInclusionState::NOT_INCLUDED;
+
+    return router->routePacket(txPacket, this->id.data(), deviceType, currentState);
 }
 
 bool RadioMeshDevice::isReceivedDataCrcValid(RadioMeshPacket& receivedPacket)
@@ -349,6 +353,13 @@ int RadioMeshDevice::handleReceivedData()
     if (isInclusionMessage(receivedPacket.topic)) {
         logdbg_ln("Received inclusion message with topic: 0x%02X", receivedPacket.topic);
 
+        // Decrypt packet data if this device is the destination
+        if (encryptionService != nullptr) {
+            receivedPacket.packetData =
+                encryptionService->decrypt(receivedPacket.packetData, receivedPacket.topic,
+                                           deviceType, inclusionController->getState());
+        }
+
         // Let the InclusionController handle it automatically
         int result = inclusionController->handleInclusionMessage(receivedPacket);
         if (result != RM_E_NONE) {
@@ -379,7 +390,10 @@ int RadioMeshDevice::handleReceivedData()
     // Only a standard device with relay enabled should route the packet
     if (this->deviceType == MeshDeviceType::STANDARD && relayEnabled) {
         loginfo_ln("Router device. Routing received packet...");
-        rc = router->routePacket(receivedPacket, this->id.data());
+        DeviceInclusionState currentState = inclusionController
+                                                ? inclusionController->getState()
+                                                : DeviceInclusionState::NOT_INCLUDED;
+        rc = router->routePacket(receivedPacket, this->id.data(), deviceType, currentState);
         if (rc != RM_E_NONE) {
             logerr_ln("ERROR handleReceivedPacket. Failed to route packet. rc = %d", rc);
             return rc;
@@ -500,6 +514,30 @@ int RadioMeshDevice::initialize()
     }
 
     inclusionController = std::make_unique<InclusionController>(*this);
+
+    // Configure what we need for performing inclusion
+
+    encryptionService = std::make_unique<EncryptionService>();
+    router->setEncryptionService(encryptionService.get());
+
+    std::vector<byte> devicePrivateKey, devicePublicKey;
+    auto* keyManager = inclusionController->getKeyManager();
+    if (keyManager) {
+        if (keyManager->loadPrivateKey(devicePrivateKey) == RM_E_NONE &&
+            keyManager->derivePublicKey(devicePrivateKey, devicePublicKey) == RM_E_NONE) {
+            encryptionService->setDeviceKeys(devicePrivateKey, devicePublicKey);
+            loginfo_ln("Configured EncryptionService with device keys");
+        }
+    }
+
+    if (inclusionController->getState() == DeviceInclusionState::INCLUDED ||
+        deviceType == MeshDeviceType::HUB) {
+        rc = inclusionController->loadAndApplyNetworkKey();
+        if (rc != RM_E_NONE) {
+            logwarn_ln("Failed to load network key, device may need re-inclusion: %d", rc);
+        }
+    }
+
     return RM_E_NONE;
 }
 
@@ -528,5 +566,33 @@ int RadioMeshDevice::factoryReset()
     }
 
     loginfo_ln("Factory reset complete");
+    return RM_E_NONE;
+}
+
+int RadioMeshDevice::updateSecurityParams(const SecurityParams& params)
+{
+    loginfo_ln("Updating device security parameters");
+
+    // Configure EncryptionService with network key
+    if (encryptionService != nullptr && params.method == SecurityMethod::AES) {
+        encryptionService->setNetworkKey(params.key);
+        loginfo_ln("Network key configured for EncryptionService");
+    }
+
+    // Also maintain backward compatibility with old crypto system
+    if (crypto == nullptr) {
+        loginfo_ln(
+            "Crypto not initialized, creating AesCrypto instance for backward compatibility");
+        crypto = AesCrypto::getInstance();
+        if (crypto == nullptr) {
+            logerr_ln("Failed to create AesCrypto instance");
+            return RM_E_UNKNOWN;
+        }
+    }
+
+    crypto->setParams(params);
+    router->setCrypto(crypto);
+
+    loginfo_ln("Security parameters updated successfully");
     return RM_E_NONE;
 }

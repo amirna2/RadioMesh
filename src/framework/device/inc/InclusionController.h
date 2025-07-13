@@ -15,7 +15,7 @@ class RadioMeshDevice;
  * 1. Hub is put in inclusion mode (by user/application)
  * 2. Hub broadcasts INCLUDE_OPEN (unencrypted)
  * 3. Device sends INCLUDE_REQUEST (with public key, initial counter)
- * 4. Hub sends INCLUDE_RESPONSE (with hub public key, encrypted session key)
+ * 4. Hub sends INCLUDE_RESPONSE (with hub public key, encrypted network key)
  * 5. Device sends INCLUDE_CONFIRM (encrypted nonce)
  * 6. Hub sends INCLUDE_SUCCESS
  */
@@ -109,10 +109,29 @@ public:
      */
     int checkProtocolTimeouts();
 
+    /**
+     * @brief Load and apply stored network key to device crypto
+     * Called on device startup if device is already included
+     * @return RM_E_NONE on success, error code otherwise
+     */
+    int loadAndApplyNetworkKey();
+
+    /**
+     * @brief Get access to the KeyManager instance
+     * @return Pointer to KeyManager
+     */
+    KeyManager* getKeyManager() const { return keyManager.get(); }
+
+    /**
+     * @brief Get the device's public key
+     * @param publicKey Vector to store the public key
+     * @return RM_E_NONE on success, error code otherwise
+     */
+    int getDevicePublicKey(std::vector<byte>& publicKey);
+
 private:
     const std::string STATE_KEY = "is"; // inclusion state
     const std::string CTR_KEY = "mc";   // message counter
-    const std::string SKEY = "sk";      // session key
     const std::string PRIV_KEY = "pk";  // device private key
     const std::string HUB_KEY = "hk";   // hub public key
     const size_t NONCE_SIZE = 4;
@@ -126,24 +145,25 @@ private:
     std::unique_ptr<KeyManager> keyManager;
 
     // Protocol state machine
-    enum InclusionProtocolState {
-        PROTOCOL_IDLE = 0,                  // Ready to start inclusion
-        WAITING_FOR_REQUEST,                // Hub: Sent INCLUDE_OPEN, waiting for device request
-        WAITING_FOR_RESPONSE,               // Device: Sent INCLUDE_REQUEST, waiting for hub response
-        WAITING_FOR_CONFIRMATION,           // Hub: Sent INCLUDE_RESPONSE, waiting for confirmation
-        WAITING_FOR_SUCCESS                 // Device: Sent INCLUDE_CONFIRM, waiting for success
+    enum InclusionProtocolState
+    {
+        PROTOCOL_IDLE = 0,        // Ready to start inclusion
+        WAITING_FOR_REQUEST,      // Hub: Sent INCLUDE_OPEN, waiting for device request
+        WAITING_FOR_RESPONSE,     // Device: Sent INCLUDE_REQUEST, waiting for hub response
+        WAITING_FOR_CONFIRMATION, // Hub: Sent INCLUDE_RESPONSE, waiting for confirmation
+        WAITING_FOR_SUCCESS       // Device: Sent INCLUDE_CONFIRM, waiting for success
     };
 
     InclusionProtocolState protocolState = PROTOCOL_IDLE;
-    uint32_t stateStartTime = 0;            // When current state was entered
-    uint8_t retryCount = 0;                 // Number of retries for current state
+    uint32_t stateStartTime = 0; // When current state was entered
+    uint8_t retryCount = 0;      // Number of retries for current state
 
     // State machine configuration
-    static const uint32_t BASE_TIMEOUT_MS = 60000;    // 60 seconds inclusion session timeout
-    static const uint8_t MAX_RETRIES = 3;              // Maximum retry attempts (unused)
+    static const uint32_t BASE_TIMEOUT_MS = 60000;      // 60 seconds inclusion session timeout
+    static const uint8_t MAX_RETRIES = 3;               // Maximum retry attempts (unused)
     static const uint32_t MAX_TOTAL_TIMEOUT_MS = 60000; // 60 seconds total timeout
 
-    int initializeKeys();
+    int initializeKeys(std::vector<byte>& privateKey, std::vector<byte>& publicKey);
 
     // State machine management
     void transitionToState(InclusionProtocolState newState);
@@ -157,27 +177,19 @@ private:
     int getPublicKey(std::vector<byte>& publicKey);
     // Used when processing INCLUDE_RESPONSE
     int handleHubKey(const std::vector<byte>& hubKey);
-    // Used when processing INCLUDE_RESPONSE
-    int handleSessionKey(const std::vector<byte>& encryptedKey);
+    // Used when processing INCLUDE_RESPONSE (new network key version)
+    int handleNetworkKey(const std::vector<byte>& encryptedKey);
 
-    std::vector<byte> currentNonce; // Store current session nonce
+    std::vector<byte> currentNonce;     // Store current session nonce
+    std::vector<byte> tempHubPublicKey; // Temporary storage for hub's public key during inclusion
 
     std::vector<byte> generateNonce()
     {
         std::vector<byte> nonce(NONCE_SIZE);
-        // Use RadioMeshUtils::simpleRNG for entropy
+        // Generate cryptographically secure random nonce
         for (size_t i = 0; i < NONCE_SIZE; i++) {
-            nonce[i] = RadioMeshUtils::simpleRNG(1);
+            nonce[i] = random(256);
         }
         return nonce;
-    }
-
-    bool verifyNonce(const std::vector<byte>& receivedNonce)
-    {
-        // Verify the received nonce matches our expected nonce
-        if (receivedNonce.size() != currentNonce.size()) {
-            return false;
-        }
-        return std::equal(receivedNonce.begin(), receivedNonce.end(), currentNonce.begin());
     }
 };

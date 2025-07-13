@@ -15,7 +15,7 @@ private:
     // Storage keys
     const std::string STATE_KEY = "is"; // inclusion state
     const std::string CTR_KEY = "mc";   // message counter
-    const std::string SKEY = "sk";      // session key
+    const std::string NKEY = "nk";      // network key
     const std::string PRIV_KEY = "pk";  // device private key
     const std::string HUB_KEY = "hk";   // hub public key
 
@@ -58,15 +58,6 @@ public:
         return rc;
     }
 
-    int persistSessionKey(const std::vector<byte>& key)
-    {
-        return storage->writeAndCommit(SKEY, key);
-    }
-
-    int loadSessionKey(std::vector<byte>& key)
-    {
-        return storage->read(SKEY, key);
-    }
 
     int persistPrivateKey(const std::vector<byte>& key)
     {
@@ -87,4 +78,15 @@ public:
     {
         return storage->read(HUB_KEY, key);
     }
+
+    int persistNetworkKey(const std::vector<byte>& key)
+    {
+        return storage->writeAndCommit(NKEY, key);
+    }
+
+    int loadNetworkKey(std::vector<byte>& key)
+    {
+        return storage->read(NKEY, key);
+    }
+
 };

@@ -19,21 +19,17 @@
 #define USE_WIFI_AP
 #endif
 
-// Example key and IV for AES encryption
-std::vector<byte> key = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x11, 0x22, 0x33,
-                         0x44, 0x55, 0x66, 0x77, 0x88, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66,
-                         0x77, 0x88, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
-
-std::vector<byte> iv = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
-                        0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
-
 // Default device configuration
-const std::array<byte, RM_ID_LENGTH> DEVICE_ID = {0x88, 0x88, 0x88, 0x88};
-const std::string DEVICE_NAME = "Portal";
-const std::string WIFI_AP_SSID = "PortalAP";
-const std::string WIFI_AP_PASSWORD = "your_wifi_ap_password";
+// DeviceID for testing only. Actual device ID could be stored in EEPROM or use part of ESP32 chipID
+const std::array<byte, RM_ID_LENGTH> DEVICE_ID = {0x77, 0x77, 0x77, 0x77};
+
+// Provided as example
+const std::string DEVICE_NAME = "MiniHub";
+const std::string WIFI_AP_SSID = "MiniHubAP";
+const std::string WIFI_AP_PASSWORD = "firefly2517";
 const std::string WIFI_AP_IP_ADDRESS = "192.168.20.1";
 
+// Change this to your WIFI access. This could also be set during runtime via a web interface
 const std::string WIFI_SSID = "your_wifi_ssid";
 const std::string WIFI_PASSWORD = "your_wifi_password";
 
@@ -54,11 +50,9 @@ OledDisplayParams displayParams = OledDisplayParams(SCL_OLED, SDA_OLED, RST_OLED
 #endif
 
 #ifdef USE_WIFI
-// Default wifi configuration
 WifiParams wifiParams = {WIFI_SSID, WIFI_PASSWORD};
 #endif
 
 #ifdef USE_WIFI_AP
-// Default access point configuration
 WifiAccessPointParams apParams = {WIFI_AP_SSID, WIFI_AP_PASSWORD, WIFI_AP_IP_ADDRESS};
 #endif

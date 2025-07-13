@@ -2,7 +2,7 @@
 
 #define VERSION_MAJOR 0
 #define VERSION_MINOR 0
-#define VERSION_PATCH 8
+#define VERSION_PATCH 10
 #define VERSION_EXTRA 0
 
 #define RM_VERSION                                                                                 \

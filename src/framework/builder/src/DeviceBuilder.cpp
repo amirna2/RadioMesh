@@ -138,6 +138,13 @@ IDevice* DeviceBuilder::build(const std::string name, std::array<byte, RM_ID_LEN
     device->setDeviceType(deviceType);
     logdbg_ln("Device type set.");
 
+    // Security validation: Hub devices MUST have initial crypto, Standard devices can defer
+    // if (deviceType == MeshDeviceType::HUB && !blueprint.usesCrypto) {
+    //    logerr_ln("ERROR: Hub devices must have security configured via withSecureMessaging()");
+    //    destroyDevice(device);
+    //    return nullptr;
+    //}
+
     if (blueprint.hasRxCallback) {
         if (rxCallback == nullptr) {
             logerr_ln("ERROR: Rx callback is cannot be null.");

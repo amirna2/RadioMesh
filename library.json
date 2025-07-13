@@ -1,14 +1,14 @@
 {
     "name": "RadioMesh",
-    "keywords": "mesh-network, long-range, low-power, radio, protocol, toolkit, wireless, networking, iot, esp32, arduino",
-    "description": "A library for building wireless mesh networks of embedded devices using long range radios.",
+    "keywords": "mesh-network, long-range, low-power, radio, protocol, wireless, networking, iot, esp32, arduino",
+    "description": "A library for building wireless mesh networks of low cost devices using long range, low power radios.",
     "authors": {
         "name": "Amir Nathoo",
         "email": "amir.nth@gmail.com",
         "url": "https://github.com/amirna2/RadioMesh",
         "maintainer": true
     },
-    "version": "0.0.8",
+    "version": "0.0.10",
     "repository": {
         "type": "git",
         "url": "https://github.com/amirna2/RadioMesh"
@@ -19,7 +19,7 @@
         "heltec-cubecell"
     ],
     "headers": "include/RadioMesh.h",
-    "license": "Apache-2.0",
+    "license": "MIT",
     "examples": [
         "[Ee]xamples/*/*.ino"
     ],
@@ -31,11 +31,6 @@
             "owner": "jgromes",
             "name": "RadioLib",
             "version": "7.1.0"
-        },
-        {
-            "owner": "kmackay",
-            "name": "micro-ecc",
-            "version": "1.0.0"
         },
         {
             "owner": "operatorfoundation",

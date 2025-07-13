@@ -225,7 +225,7 @@ public:
                   RadioMeshUtils::convertToHex(reserved.data(), reserved.size()).c_str());
         logdbg_ln("  Data Length: %d bytes", packetData.size());
         if (!packetData.empty()) {
-            logdbg_ln("  Data (encrypted): %s",
+            logdbg_ln("  Data: %s",
                       RadioMeshUtils::convertToHex(packetData.data(), packetData.size()).c_str());
         }
     }

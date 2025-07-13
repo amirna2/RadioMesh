@@ -1,5 +1,6 @@
 <p align="center">
-  <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache2-0AC0E9.svg" alt="License"></a>
+  <a href="https://tlo.mit.edu/understand-ip/exploring-mit-open-source-license-comprehensive-guide"><img src="https://img.shields.io/github/license/amirna2/RadioMesh
+  " alt="License"></a>
   <a href="https://github.com/amirna2/RadioMesh/wiki"><img src="https://img.shields.io/badge/Read-Wiki-50dda0" alt="Wiki"></a>
   <a href="https://amirna2.github.io/RadioMesh"><img src="https://img.shields.io/badge/API-Doc-50dda0" alt="Api Doc"></a>
   <img src="https://img.shields.io/github/v/release/amirna2/RadioMesh?include_prereleases&label=Release&color=10aaff" alt="Release">
@@ -11,7 +12,7 @@ A library for building wireless, low power mesh networks using long range radios
 Perfect for sensor networks, IoT devices, and remote control/monitoring systems.
 
 RadioMesh combines an adaptive wireless mesh protocol design with an easy to use and flexible device development kit.
-It leverages [LoRa](https://www.semtech.com/lora) radios and the Arduino framework.
+It leverages [LoRa](https://www.semtech.com/lora) radios, the Arduino framework and PlatformIO IDE for development.s
 
 ## Core Components
 
@@ -23,10 +24,11 @@ At its core, RadioMesh implements a mesh network protocol aimed at self-organizi
 - Passive route learning
 - Multi-hop message delivery
 - Adaptive role-based network topology
+- Device inclusion and exclusion
 - Power-efficient operation
 
 ### Device Framework
-Additionally, RadioMesh provides an developer friendly framework for building mesh-capable devices:
+Additionally, RadioMesh provides a developer friendly framework for building mesh-capable devices:
 - Hardware abstraction interfaces (Display, Radio, WiFi)
 - Modular component architecture
 - Security and encryption
@@ -51,6 +53,6 @@ Additionally, RadioMesh provides an developer friendly framework for building me
 - Repeat the build/deploy steps with the [HubDevice](https://github.com/amirna2/RadioMesh/tree/main/examples/HubDevice) example to setup a device-to-device communication
 - Detailed instructions are in the [Wiki](https://github.com/amirna2/RadioMesh/wiki/Getting-Started)
 
-    
+
 ## Contributing
 RadioMesh welcomes contributions! Whether you're interested in adding new features, fixing bugs, improving documentation, or sharing example applications, check out the [Contributing Guide](CONTRIBUTING.md) to get started.
