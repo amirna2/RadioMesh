@@ -267,8 +267,9 @@ void setup()
         appState = AppState::ERROR;
         return;
     }
-    
+
     // Factory reset on every boot for testing
+#if 0
     loginfo_ln("Performing factory reset...");
     int rc = device->factoryReset();
     if (rc == RM_E_NONE) {
@@ -280,6 +281,7 @@ void setup()
     appState = AppState::NOT_INCLUDED;
     loginfo_ln("Device ready - waiting for hub inclusion broadcast");
     loginfo_ln("Device will automatically join when hub enables inclusion mode");
+#endif
 
 #ifdef USE_DISPLAY
     updateDisplay();
