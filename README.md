@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/github/license/amirna2/RadioMesh
+  <a href="https://tlo.mit.edu/understand-ip/exploring-mit-open-source-license-comprehensive-guide"><img src="https://img.shields.io/github/license/amirna2/RadioMesh
   " alt="License"></a>
   <a href="https://github.com/amirna2/RadioMesh/wiki"><img src="https://img.shields.io/badge/Read-Wiki-50dda0" alt="Wiki"></a>
   <a href="https://amirna2.github.io/RadioMesh"><img src="https://img.shields.io/badge/API-Doc-50dda0" alt="Api Doc"></a>
