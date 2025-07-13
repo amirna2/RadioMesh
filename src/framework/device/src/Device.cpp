@@ -515,11 +515,11 @@ int RadioMeshDevice::initialize()
 
     inclusionController = std::make_unique<InclusionController>(*this);
 
-    // Initialize EncryptionService
+    // Configure what we need for performing inclusion
+
     encryptionService = std::make_unique<EncryptionService>();
     router->setEncryptionService(encryptionService.get());
 
-    // Configure EncryptionService with device keys for inclusion protocol
     std::vector<byte> devicePrivateKey, devicePublicKey;
     auto* keyManager = inclusionController->getKeyManager();
     if (keyManager) {
@@ -530,7 +530,6 @@ int RadioMeshDevice::initialize()
         }
     }
 
-    // Load and apply network key for included devices or hubs
     if (inclusionController->getState() == DeviceInclusionState::INCLUDED ||
         deviceType == MeshDeviceType::HUB) {
         rc = inclusionController->loadAndApplyNetworkKey();

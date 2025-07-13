@@ -2,78 +2,69 @@
 #include <common/inc/Logger.h>
 #include <core/protocol/inc/crypto/EncryptionService.h>
 #include <framework/device/inc/KeyManager.h>
+#include <Crypto.h>
+#include <Curve25519.h>
+#include <RNG.h>
 #ifdef ESP32
 #include <esp_system.h>
 #endif
-extern "C"
-{
-    typedef struct uECC_Curve_t* uECC_Curve;
-    uECC_Curve uECC_secp256r1(void);
-    void uECC_set_rng(int (*rng_function)(uint8_t* dest, unsigned size));
-    int uECC_make_key(uint8_t* public_key, uint8_t* private_key, uECC_Curve curve);
-    int uECC_compute_public_key(const uint8_t* private_key, uint8_t* public_key, uECC_Curve curve);
-}
 
-static uint32_t seededRngState = 0;
-static bool rngSeeded = false;
-
-// Deterministic RNG using ESP32 chipID as seed
-static int deterministic_rng_function(uint8_t* dest, unsigned size)
+// Deterministic key generation using ESP32 chipID as seed
+static void generateDeterministicKey(uint8_t* key, size_t keySize)
 {
-    if (!rngSeeded) {
+    uint32_t seed = 0;
 #ifdef ESP32
-        uint64_t chipId = ESP.getEfuseMac();
-        seededRngState = (uint32_t)(chipId ^ (chipId >> 32));
+    uint64_t chipId = ESP.getEfuseMac();
+    seed = (uint32_t)(chipId ^ (chipId >> 32));
 #else
-        seededRngState = 12345; // Fallback for non-ESP32 platforms
+    seed = 12345; // Fallback for non-ESP32 platforms
 #endif
-        rngSeeded = true;
-        logdbg_ln("Seeded deterministic RNG with chipID-based seed: 0x%08X", seededRngState);
+    
+    logdbg_ln("Generating deterministic key with chipID-based seed: 0x%08X", seed);
+    
+    // Use simple LCG to generate deterministic bytes
+    for (size_t i = 0; i < keySize; i++) {
+        seed = seed * 1103515245 + 12345;
+        key[i] = (seed >> 16) & 0xFF;
     }
-
-    // Simple linear congruential generator with ESP32 chipID seed
-    for (unsigned i = 0; i < size; i++) {
-        seededRngState = seededRngState * 1103515245 + 12345;
-        dest[i] = (seededRngState >> 16) & 0xFF;
+    
+    // Apply Curve25519 private key mask
+    if (keySize == 32) {
+        key[0] &= 0xF8;  // Clear bottom 3 bits
+        key[31] = (key[31] & 0x7F) | 0x40;  // Clear top bit, set second-to-top bit
     }
-    return 1;
 }
 
 int KeyManager::generateKeyPair(std::vector<byte>& publicKey, std::vector<byte>& privateKey)
 {
-    // Initialize ECC with deterministic RNG
-    static bool initialized = false;
-    if (!initialized) {
-        uECC_set_rng(&deterministic_rng_function);
-        initialized = true;
-    }
+    // Generate deterministic Curve25519 key pair
+    privateKey.resize(32); // Curve25519 private key is 32 bytes
+    publicKey.resize(32);  // Curve25519 public key is 32 bytes
 
-    // Use proper ECC key generation with deterministic seed
-    privateKey.resize(PRIVATE_KEY_SIZE); // 32 bytes
-    publicKey.resize(64);                // 64 bytes for full public key
-
-    uECC_Curve curve = uECC_secp256r1();
-    if (!uECC_make_key(publicKey.data(), privateKey.data(), curve)) {
-        logerr_ln("Failed to generate ECC key pair");
+    // Generate deterministic private key based on ESP32 chipID
+    generateDeterministicKey(privateKey.data(), 32);
+    
+    // Compute public key from private key using Curve25519
+    if (!Curve25519::eval(publicKey.data(), privateKey.data(), nullptr)) {
+        logerr_ln("Failed to generate Curve25519 public key from private key");
         return RM_E_CRYPTO_SETUP;
     }
 
-    logdbg_ln("Generated deterministic ECC key pair based on ESP32 chipID");
+    logdbg_ln("Generated deterministic Curve25519 key pair based on ESP32 chipID");
     return RM_E_NONE;
 }
 
 int KeyManager::derivePublicKey(const std::vector<byte>& privateKey, std::vector<byte>& publicKey)
 {
     if (privateKey.size() != 32) {
-        logerr_ln("Invalid private key size: %d", privateKey.size());
+        logerr_ln("Invalid private key size: %d (expected 32 for Curve25519)", privateKey.size());
         return RM_E_INVALID_PARAM;
     }
 
-    publicKey.resize(64);
-    uECC_Curve curve = uECC_secp256r1();
+    publicKey.resize(32); // Curve25519 public key is 32 bytes
 
-    if (!uECC_compute_public_key(privateKey.data(), publicKey.data(), curve)) {
-        logerr_ln("Failed to derive public key from private key");
+    if (!Curve25519::eval(publicKey.data(), privateKey.data(), nullptr)) {
+        logerr_ln("Failed to derive Curve25519 public key from private key");
         return RM_E_CRYPTO_SETUP;
     }
 
@@ -83,12 +74,11 @@ int KeyManager::derivePublicKey(const std::vector<byte>& privateKey, std::vector
 int KeyManager::generateNetworkKey(std::vector<byte>& networkKey)
 {
     networkKey.resize(NETWORK_KEY_SIZE);
-
     // Generate random network key
     for (size_t i = 0; i < NETWORK_KEY_SIZE; i++) {
-        networkKey[i] = random(256);
+        // networkKey[i] = random(256);
+        networkKey[i] = 0x02; // For testing, use a simple pattern
     }
-
     loginfo_ln("Generated new network key");
     return RM_E_NONE;
 }
@@ -117,7 +107,7 @@ int KeyManager::encryptNetworkKey(const std::vector<byte>& networkKey,
                                   const std::vector<byte>& recipientPubKey,
                                   std::vector<byte>& encryptedKey)
 {
-    if (recipientPubKey.size() != 64 || !validateNetworkKey(networkKey)) {
+    if (recipientPubKey.size() != 32 || !validateNetworkKey(networkKey)) {
         return RM_E_INVALID_PARAM;
     }
 
@@ -216,7 +206,7 @@ int KeyManager::persistNetworkKey(const std::vector<byte>& networkKey)
 
 bool KeyManager::validatePublicKey(const std::vector<byte>& publicKey)
 {
-    return publicKey.size() == 64; // Full ECC public key is 64 bytes
+    return publicKey.size() == 32; // Curve25519 public key is 32 bytes
 }
 
 bool KeyManager::validatePrivateKey(const std::vector<byte>& privateKey)

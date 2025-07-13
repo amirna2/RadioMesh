@@ -2,41 +2,11 @@
 #include <common/utils/Utils.h>
 #include <core/protocol/inc/crypto/EncryptionService.h>
 #include <core/protocol/inc/crypto/aes/AesCrypto.h>
-// Use ESP32's built-in ECC from TinyCrypt
-extern "C"
-{
-    typedef struct uECC_Curve_t* uECC_Curve;
-    uECC_Curve uECC_secp256r1(void);
-    void uECC_set_rng(int (*rng_function)(uint8_t* dest, unsigned size));
-    int uECC_make_key(uint8_t* public_key, uint8_t* private_key, uECC_Curve curve);
-    int uECC_shared_secret(const uint8_t* public_key, const uint8_t* private_key, uint8_t* secret,
-                           uECC_Curve curve);
-    int uECC_valid_public_key(const uint8_t* public_key, uECC_Curve curve);
-    // Note: ESP32 TinyCrypt doesn't have compress/decompress
-}
 #include <Arduino.h>
 #include <Crypto.h>
+#include <Curve25519.h>
 #include <SHA256.h>
 
-// RNG function for micro-ecc
-static int RNG(uint8_t* dest, unsigned size)
-{
-    while (size) {
-        *dest++ = random(256);
-        size--;
-    }
-    return 1;
-}
-
-// Initialize micro-ecc RNG on first use
-static void initECC()
-{
-    static bool initialized = false;
-    if (!initialized) {
-        uECC_set_rng(&RNG);
-        initialized = true;
-    }
-}
 
 std::vector<byte> EncryptionService::encrypt(const std::vector<byte>& data, uint8_t topic,
                                              MeshDeviceType deviceType,
@@ -128,19 +98,40 @@ void EncryptionService::setNetworkKey(const std::vector<byte>& key)
 void EncryptionService::setDeviceKeys(const std::vector<byte>& privateKey,
                                       const std::vector<byte>& publicKey)
 {
+    // Curve25519 uses 32-byte keys for both private and public
+    if (privateKey.size() != 32) {
+        logerr_ln("Invalid private key size: %d (expected 32 for Curve25519)", privateKey.size());
+        return;
+    }
+    if (publicKey.size() != 32) {
+        logerr_ln("Invalid public key size: %d (expected 32 for Curve25519)", publicKey.size());
+        return;
+    }
+    
     devicePrivateKey = privateKey;
     devicePublicKey = publicKey;
-    logdbg_ln("Device keys set for EncryptionService");
+    
+    logdbg_ln("Device keys set for EncryptionService (Curve25519)");
 }
 
 void EncryptionService::setHubPublicKey(const std::vector<byte>& hubKey)
 {
+    if (hubKey.size() != 32) {
+        logerr_ln("Invalid hub public key size: %d (expected 32 for Curve25519)", hubKey.size());
+        return;
+    }
+    
     hubPublicKey = hubKey;
     logdbg_ln("Hub public key set for EncryptionService, size=%d", hubKey.size());
 }
 
 void EncryptionService::setTempDevicePublicKey(const std::vector<byte>& deviceKey)
 {
+    if (deviceKey.size() != 32) {
+        logerr_ln("Invalid temp device public key size: %d (expected 32 for Curve25519)", deviceKey.size());
+        return;
+    }
+    
     tempDevicePublicKey = deviceKey;
     logdbg_ln("Temporary device public key set for EncryptionService");
 }
@@ -162,19 +153,23 @@ EncryptionService::determineCryptoMethod(uint8_t topic, MeshDeviceType deviceTyp
     case MessageTopic::INCLUDE_RESPONSE:
         // By design: Always Direct ECC encrypted (hub -> device)
         return EncryptionMethod::DIRECT_ECC;
+        // return EncryptionMethod::NONE;
 
     case MessageTopic::INCLUDE_CONFIRM:
         // By design: Always AES encrypted with network key (device -> hub)
         return EncryptionMethod::AES;
+        // return EncryptionMethod::NONE;
 
     case MessageTopic::INCLUDE_SUCCESS:
         // By design: Always AES encrypted with network key (hub -> device)
         return EncryptionMethod::AES;
+        // return EncryptionMethod::NONE;
 
     default:
         // Regular messages - use AES if device is included or is a hub
         if (inclusionState == DeviceInclusionState::INCLUDED || deviceType == MeshDeviceType::HUB) {
             return EncryptionMethod::AES;
+            // return EncryptionMethod::NONE;
         }
         return EncryptionMethod::NONE;
     }
@@ -251,8 +246,8 @@ std::vector<byte> EncryptionService::getDecryptionKey(EncryptionMethod method, u
 std::vector<byte> EncryptionService::encryptDirectECC(const std::vector<byte>& data,
                                                       const std::vector<byte>& publicKey)
 {
-    if (publicKey.size() != 64) {
-        logerr_ln("Invalid public key size for direct ECC: %d (expected 64)", publicKey.size());
+    if (publicKey.size() != 32) {
+        logerr_ln("Invalid public key size for Curve25519: %d (expected 32)", publicKey.size());
         return data;
     }
 
@@ -261,16 +256,16 @@ std::vector<byte> EncryptionService::encryptDirectECC(const std::vector<byte>& d
         return data;
     }
 
-    // Initialize ECC if needed
-    initECC();
+    // Debug: Log the keys being used
+    logdbg_ln("ENCRYPT using device private key (first 8 bytes): %s",
+              RadioMeshUtils::convertToHex(devicePrivateKey.data(), 8).c_str());
+    logdbg_ln("ENCRYPT using recipient public key (first 8 bytes): %s",
+              RadioMeshUtils::convertToHex(publicKey.data(), 8).c_str());
 
-    // Use secp256r1 curve (ESP32's TinyCrypt supports this)
-    uECC_Curve curve = uECC_secp256r1();
-
-    // Perform ECDH directly using device's private key and recipient's public key
+    // Perform ECDH using Curve25519
     uint8_t sharedSecret[32];
-    if (!uECC_shared_secret(publicKey.data(), devicePrivateKey.data(), sharedSecret, curve)) {
-        logerr_ln("Failed to compute ECDH shared secret for direct ECC");
+    if (!Curve25519::eval(sharedSecret, devicePrivateKey.data(), publicKey.data())) {
+        logerr_ln("Failed to compute Curve25519 shared secret for direct ECC");
         return data;
     }
 
@@ -291,11 +286,11 @@ std::vector<byte> EncryptionService::encryptDirectECC(const std::vector<byte>& d
     // Encrypt data with AES using derived key - ZERO OVERHEAD!
     std::vector<byte> encryptedData = encryptAES(data, keyVector);
     if (encryptedData.empty()) {
-        logerr_ln("Failed to encrypt data with direct ECC");
+        logerr_ln("Failed to encrypt data with Curve25519 ECC");
         return data;
     }
 
-    logdbg_ln("Direct ECC encryption: input=%d bytes, output=%d bytes (zero overhead)", data.size(),
+    logdbg_ln("Curve25519 ECC encryption: input=%d bytes, output=%d bytes (zero overhead)", data.size(),
               encryptedData.size());
 
     // Return encrypted data directly - no ephemeral key overhead!
@@ -311,7 +306,7 @@ std::vector<byte> EncryptionService::decryptDirectECC(const std::vector<byte>& d
     }
 
     if (privateKey.size() != 32) {
-        logerr_ln("Invalid private key size for direct ECC: %d", privateKey.size());
+        logerr_ln("Invalid private key size for Curve25519: %d (expected 32)", privateKey.size());
         return data;
     }
 
@@ -329,21 +324,21 @@ std::vector<byte> EncryptionService::decryptDirectECC(const std::vector<byte>& d
         return data;
     }
 
-    if (senderPublicKey.size() != 64) {
-        logerr_ln("Invalid sender public key size for direct ECC: %d", senderPublicKey.size());
+    if (senderPublicKey.size() != 32) {
+        logerr_ln("Invalid sender public key size for Curve25519: %d (expected 32)", senderPublicKey.size());
         return data;
     }
 
-    // Initialize ECC if needed
-    initECC();
+    // Debug: Log the keys being used
+    logdbg_ln("DECRYPT using our private key (first 8 bytes): %s",
+              RadioMeshUtils::convertToHex(privateKey.data(), 8).c_str());
+    logdbg_ln("DECRYPT using sender public key (first 8 bytes): %s",
+              RadioMeshUtils::convertToHex(senderPublicKey.data(), 8).c_str());
 
-    // Use secp256r1 curve (ESP32's TinyCrypt supports this)
-    uECC_Curve curve = uECC_secp256r1();
-
-    // Perform ECDH using sender's public key and our private key
+    // Perform ECDH using Curve25519
     uint8_t sharedSecret[32];
-    if (!uECC_shared_secret(senderPublicKey.data(), privateKey.data(), sharedSecret, curve)) {
-        logerr_ln("Failed to compute ECDH shared secret for direct ECC decryption");
+    if (!Curve25519::eval(sharedSecret, privateKey.data(), senderPublicKey.data())) {
+        logerr_ln("Failed to compute Curve25519 shared secret for direct ECC decryption");
         return data;
     }
 
@@ -361,7 +356,7 @@ std::vector<byte> EncryptionService::decryptDirectECC(const std::vector<byte>& d
     // Convert to vector for AES decryption
     std::vector<byte> keyVector(encryptionKey, encryptionKey + 32);
 
-    logdbg_ln("Direct ECC decryption: input=%d bytes", data.size());
+    logdbg_ln("Curve25519 ECC decryption: input=%d bytes", data.size());
 
     // Decrypt data with AES using derived key - input data is pure encrypted content
     return decryptAES(data, keyVector);

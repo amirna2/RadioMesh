@@ -5,10 +5,15 @@
 #include <memory>
 #include <vector>
 
+/**
+ * @class KeyManager
+ * @brief Manages cryptographic keys for RadioMesh devices
+ *
+ */
 class KeyManager
 {
 public:
-    static constexpr size_t PUBLIC_KEY_SIZE = 64; // Full ECC public key (uncompressed)
+    static constexpr size_t PUBLIC_KEY_SIZE = 32; // Curve25519 public key
     static constexpr size_t PRIVATE_KEY_SIZE = 32;
     static constexpr size_t NETWORK_KEY_SIZE = 32;
 

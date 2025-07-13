@@ -246,7 +246,7 @@ int InclusionController::sendInclusionRequest()
     // Build payload: device public key ONLY
     std::vector<byte> payload;
 
-    // Add device public key (64 bytes)
+    // Add device public key (32 bytes)
     payload.insert(payload.end(), devicePublicKey.begin(), devicePublicKey.end());
 
     loginfo_ln("Sending INCLUDE_REQUEST with device public key");
@@ -273,15 +273,15 @@ int InclusionController::sendInclusionResponse(const RadioMeshPacket& packet)
     // Device.handleReceivedData() already decrypted the payload via EncryptionService
     const std::vector<byte>& decryptedPayload = packet.packetData;
 
-    // Expected payload: device_public_key(64) = 64 bytes
-    const size_t expectedSize = 64;
+    // Expected payload: device_public_key(32) = 32 bytes
+    const size_t expectedSize = 32;
     if (decryptedPayload.size() != expectedSize) {
         logerr_ln("Invalid decrypted payload size: %d, expected: %d", decryptedPayload.size(),
                   expectedSize);
         return RM_E_INVALID_LENGTH;
     }
 
-    // Extract device public key (all 64 bytes)
+    // Extract device public key (all 32 bytes)
     std::vector<byte> devicePublicKey = decryptedPayload;
 
     // Keep the device public key for later use
