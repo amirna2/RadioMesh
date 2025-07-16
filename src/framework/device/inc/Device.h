@@ -240,6 +240,7 @@ private:
     RadioMeshPacket txPacket = RadioMeshPacket();
 
     bool isReceivedDataCrcValid(RadioMeshPacket& receivedPacket);
+    bool verifyReceivedPacketMIC(RadioMeshPacket& receivedPacket);
     bool canSendMessage(uint8_t topic) const;
     bool isInclusionMessage(uint8_t topic) const;
 };

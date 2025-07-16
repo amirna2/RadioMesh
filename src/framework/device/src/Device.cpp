@@ -311,6 +311,35 @@ bool RadioMeshDevice::isReceivedDataCrcValid(RadioMeshPacket& receivedPacket)
     return true;
 }
 
+bool RadioMeshDevice::verifyReceivedPacketMIC(RadioMeshPacket& receivedPacket)
+{
+    if (encryptionService == nullptr) {
+        logerr_ln("Encryption service not set, cannot verify MIC");
+        return false;
+    }
+
+    // Extract MIC from packet data
+    std::array<byte, MIC_LENGTH> receivedMic;
+    if (!receivedPacket.extractMIC(receivedMic)) {
+        logerr_ln("Failed to extract MIC from received packet");
+        return false;
+    }
+
+    // Get packet data for MIC computation (header + encrypted payload, excluding MIC)
+    std::vector<byte> packetData = receivedPacket.getDataForMIC();
+    
+    // Verify MIC using encryption service
+    bool valid = encryptionService->verifyMIC(packetData, receivedMic);
+    
+    if (!valid) {
+        logwarn_ln("MIC verification failed for received packet");
+    } else {
+        logdbg_ln("MIC verification successful for received packet");
+    }
+    
+    return valid;
+}
+
 int RadioMeshDevice::handleReceivedData()
 {
     std::vector<byte> dataBytes;
@@ -332,6 +361,17 @@ int RadioMeshDevice::handleReceivedData()
     if (router->isPacketFoundInTracker(receivedPacket)) {
         logwarn_ln("Packet already seen. Ignoring...");
         return RM_E_NONE;
+    }
+
+    // Verify MIC if packet supports it (BEFORE decryption)
+    if (receivedPacket.shouldUseMIC()) {
+        if (!verifyReceivedPacketMIC(receivedPacket)) {
+            logerr_ln("ERROR handleReceivedPacket. MIC verification failed");
+            return RM_E_PACKET_AUTH_FAILED;
+        }
+        
+        // Remove MIC from packet data before further processing
+        receivedPacket.removeMIC();
     }
 
     if (!isReceivedDataCrcValid(receivedPacket)) {
