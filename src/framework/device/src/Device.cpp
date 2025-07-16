@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 
+#include <common/inc/Errors.h>
 #include <common/utils/RadioMeshCrc32.h>
 #include <core/protocol/inc/routing/RoutingTable.h>
 #include <framework/device/inc/Device.h>

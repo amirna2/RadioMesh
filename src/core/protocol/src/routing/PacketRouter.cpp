@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 
+#include <common/inc/Errors.h>
 #include <core/protocol/inc/routing/PacketRouter.h>
 #include <hardware/inc/radio/LoraRadio.h>
 
@@ -135,7 +136,7 @@ int PacketRouter::computeAndAppendMIC(RadioMeshPacket& packetCopy)
 
     if (encryptionService == nullptr) {
         logerr_ln("Encryption service not set, cannot compute MIC");
-        return RM_E_NOT_INITIALIZED;
+        return RM_E_CRYPTO_NOT_INITIALIZED;
     }
 
     // Get packet data for MIC computation (header + encrypted payload)

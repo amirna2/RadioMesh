@@ -241,6 +241,16 @@
 #define RM_E_INVALID_CRYPTO_PARAMS (-402)
 
 /**
+ * @brief The crypto component is not initialized.
+ */
+#define RM_E_CRYPTO_NOT_INITIALIZED (-403)
+
+/**
+ * @brief Crypto operation failed.
+ */
+#define RM_E_CRYPTO_ERROR (-404)
+
+/**
  * @brief The storage setup failed.
  */
 #define RM_E_STORAGE_SETUP (-501)

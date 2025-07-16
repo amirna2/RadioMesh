@@ -29,7 +29,7 @@ int AesCmac::setKey(const std::vector<byte>& key)
 int AesCmac::generateSubkeys()
 {
     if (!keySet) {
-        return RM_E_NOT_INITIALIZED;
+        return RM_E_CRYPTO_NOT_INITIALIZED;
     }
 
     // Step 1: AES encrypt zero block to get L
@@ -96,7 +96,7 @@ int AesCmac::computeCmac(const std::vector<byte>& data, std::array<byte, CMAC_SI
 {
     if (!keySet) {
         logerr_ln("AES-CMAC key not set");
-        return RM_E_NOT_INITIALIZED;
+        return RM_E_CRYPTO_NOT_INITIALIZED;
     }
 
     size_t dataLen = data.size();

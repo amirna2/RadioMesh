@@ -1,4 +1,5 @@
 #include <common/inc/Logger.h>
+#include <common/inc/Errors.h>
 #include <common/utils/Utils.h>
 #include <core/protocol/inc/crypto/EncryptionService.h>
 #include <core/protocol/inc/crypto/aes/AesCrypto.h>
@@ -385,7 +386,7 @@ int EncryptionService::computeMIC(const std::vector<byte>& packetData, std::arra
 {
     if (networkKey.empty()) {
         logerr_ln("Network key not set for MIC computation");
-        return RM_E_NOT_INITIALIZED;
+        return RM_E_CRYPTO_NOT_INITIALIZED;
     }
 
     if (!aesCmac) {
