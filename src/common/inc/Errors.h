@@ -59,20 +59,25 @@
 #define RM_E_PACKET_CORRUPTED (-7)
 
 /**
+ * @brief The packet MIC authentication failed.
+ */
+#define RM_E_PACKET_AUTH_FAILED (-8)
+
+/**
  * @brief The packet has reached the maximum number of hops.
  */
-#define RM_E_MAX_HOPS (-8)
+#define RM_E_MAX_HOPS (-9)
 
 /**
  * @brief The device type is invalid.
  */
-#define RM_E_INVALID_DEVICE_TYPE (-9)
+#define RM_E_INVALID_DEVICE_TYPE (-10)
 
 /**
  * @brief Device initialization failed.
  *        This error is returned when the device fails to initialize properly.
  */
-#define RM_E_DEVICE_INITIALIZATION_FAILED (-10)
+#define RM_E_DEVICE_INITIALIZATION_FAILED (-11)
 
 /**
  * @brief The radio setup failed.
@@ -234,6 +239,16 @@
  * @brief The crypto parameters are invalid.
  */
 #define RM_E_INVALID_CRYPTO_PARAMS (-402)
+
+/**
+ * @brief The crypto component is not initialized.
+ */
+#define RM_E_CRYPTO_NOT_INITIALIZED (-403)
+
+/**
+ * @brief Crypto operation failed.
+ */
+#define RM_E_CRYPTO_ERROR (-404)
 
 /**
  * @brief The storage setup failed.
