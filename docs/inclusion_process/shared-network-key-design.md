@@ -33,8 +33,8 @@ Actor          HUB                                 NEW DEVICE
   |   mode      |----Broadcast INCLUDE_OPEN----------->|
   |             |    (Hub PublicKey)                   |
   |             |<---INCLUDE_REQUEST-------------------|
-  |             |    (DeviceID, PublicKey,             |
-  |             |     InitialCounter)                  |
+  |             |    (DeviceID, PublicKey)             |
+  |             |                                      |
   |             |                                      |
   |             |--Verify DeviceID                     |
   |             |--Encrypt Network Key                 |  ← CHANGED
@@ -42,8 +42,8 @@ Actor          HUB                                 NEW DEVICE
   |             |                                      |
   |             |----INCLUDE_RESPONSE----------------->|
   |             |     (EncryptedNetworkKey,            |  ← CHANGED
-  |             |     EncryptedNonce,                  |
-  |             |     HubInitialCounter)               |
+  |             |     EncryptedNonce)                  |
+  |             |                                      |
   |             |                                      |
   |             |                              Decrypt Network Key    ← CHANGED
   |             |                              Store Hub Public Key
