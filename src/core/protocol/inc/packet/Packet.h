@@ -10,7 +10,7 @@
 #include <common/utils/Utils.h>
 
 // Protocol version
-#define RM_PROTOCOL_VERSION 3
+#define RM_PROTOCOL_VERSION 4
 #define PROTOCOL_VERSION_LENGTH 1
 
 // Packet size constants
@@ -45,8 +45,11 @@
 
 #define HEADER_LENGTH DATA_POS
 
+// MIC constants
+#define MIC_SIZE 4
+
 // Data/packet range constants
-#define MAX_DATA_LENGTH (PACKET_LENGTH - HEADER_LENGTH)
+#define MAX_DATA_LENGTH (PACKET_LENGTH - HEADER_LENGTH - MIC_SIZE)
 #define MIN_PACKET_LENGTH (HEADER_LENGTH + 1)
 
 /**
@@ -243,6 +246,94 @@ public:
     {
         return (topic == MessageTopic::INCLUDE_REQUEST || topic == MessageTopic::INCLUDE_RESPONSE ||
                 topic == MessageTopic::INCLUDE_OPEN || topic == MessageTopic::INCLUDE_CONFIRM);
+    }
+
+    /**
+     * @brief Check if packet has MIC appended to payload
+     * @return true if payload includes MIC, false otherwise
+     */
+    bool hasMIC() const
+    {
+        return (topic != MessageTopic::INCLUDE_OPEN && 
+                topic != MessageTopic::INCLUDE_REQUEST) && 
+               (packetData.size() >= MIC_SIZE);
+    }
+
+    /**
+     * @brief Extract MIC from packet payload
+     * @return 4-byte MIC or empty vector if no MIC present
+     */
+    std::vector<byte> extractMIC() const
+    {
+        if (!hasMIC()) {
+            return std::vector<byte>();
+        }
+        return std::vector<byte>(packetData.end() - MIC_SIZE, packetData.end());
+    }
+
+    /**
+     * @brief Get payload data without MIC
+     * @return Payload data excluding MIC bytes
+     */
+    std::vector<byte> getDataWithoutMIC() const
+    {
+        if (!hasMIC()) {
+            return packetData;
+        }
+        return std::vector<byte>(packetData.begin(), packetData.end() - MIC_SIZE);
+    }
+
+    /**
+     * @brief Append MIC to packet payload
+     * @param mic 4-byte MIC to append
+     */
+    void appendMIC(const std::vector<byte>& mic)
+    {
+        if (mic.size() != MIC_SIZE) {
+            logerr_ln("Invalid MIC size for append: %d (expected %d)", mic.size(), MIC_SIZE);
+            return;
+        }
+
+        if (packetData.size() + MIC_SIZE > getMaxDataLength() + MIC_SIZE) {
+            logerr_ln("Cannot append MIC: would exceed maximum packet size");
+            return;
+        }
+
+        packetData.insert(packetData.end(), mic.begin(), mic.end());
+    }
+
+    /**
+     * @brief Get header as byte vector for MIC computation
+     * @return 35-byte header
+     */
+    std::vector<byte> getHeaderBytes() const
+    {
+        std::vector<byte> header;
+        header.reserve(HEADER_LENGTH);
+
+        header.push_back(protocolVersion);
+        header.insert(header.end(), sourceDevId.begin(), sourceDevId.end());
+        header.insert(header.end(), destDevId.begin(), destDevId.end());
+        header.insert(header.end(), packetId.begin(), packetId.end());
+        header.push_back(topic);
+        header.push_back(deviceType);
+        header.push_back(hopCount);
+
+        header.push_back((packetCrc >> 24) & 0xFF);
+        header.push_back((packetCrc >> 16) & 0xFF);
+        header.push_back((packetCrc >> 8) & 0xFF);
+        header.push_back(packetCrc & 0xFF);
+
+        header.push_back((fcounter >> 24) & 0xFF);
+        header.push_back((fcounter >> 16) & 0xFF);
+        header.push_back((fcounter >> 8) & 0xFF);
+        header.push_back(fcounter & 0xFF);
+
+        header.insert(header.end(), lastHopId.begin(), lastHopId.end());
+        header.insert(header.end(), nextHopId.begin(), nextHopId.end());
+        header.insert(header.end(), reserved.begin(), reserved.end());
+
+        return header;
     }
     /**
      * @brief Assignment operator

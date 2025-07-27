@@ -10,6 +10,7 @@
 
 #include <core/protocol/inc/crypto/aes/AesCrypto.h>
 #include <core/protocol/inc/crypto/EncryptionService.h>
+#include <core/protocol/inc/crypto/MicService.h>
 #include <core/protocol/inc/packet/Packet.h>
 #include <core/protocol/inc/routing/PacketTracker.h>
 #include <core/protocol/inc/routing/RoutingTable.h>
@@ -67,6 +68,16 @@ public:
     }
 
     /**
+     * @brief Set the MIC service for packet authentication
+     * @param micService MicService component to use
+     */
+    void setMicService(MicService* micService)
+    {
+        this->micService = micService;
+    }
+
+
+    /**
      * @brief Set the crypto component to use for encrypting and decrypting packets.
      * @param crypto AesCrypto component to use
      * @deprecated Use setEncryptionService instead
@@ -86,6 +97,7 @@ private:
     PacketTracker packetTracker = PacketTracker(50);
     AesCrypto* crypto = nullptr;
     EncryptionService* encryptionService = nullptr;
+    MicService* micService = nullptr;
 
     static PacketRouter* instance;
 
@@ -93,6 +105,7 @@ private:
     void updateLastHopId(RadioMeshPacket& packetCopy, const byte* ourDeviceId);
     void routeToNextHop(RadioMeshPacket& packetCopy);
     void encryptPacketData(RadioMeshPacket& packetCopy, MeshDeviceType deviceType, DeviceInclusionState inclusionState);
+    int computeAndAppendMIC(RadioMeshPacket& packetCopy, MeshDeviceType deviceType, DeviceInclusionState inclusionState);
     void calculatePacketCrc(RadioMeshPacket& packetCopy, RadioMeshUtils::CRC32& crc32,
                             uint32_t key);
     int sendPacket(RadioMeshPacket& packetCopy);

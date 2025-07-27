@@ -7,7 +7,7 @@
 
 RadioMeshDevice::RadioMeshDevice(const std::string& name, const std::array<byte, RM_ID_LENGTH>& id,
                                  MeshDeviceType type)
-    : name(name), id(id), deviceType(type)
+    : name(name), id(id), deviceType(type), encryptionService(), micService(&encryptionService)
 {
     // InclusionController will be created in initialize() after storage is set up
 }
@@ -339,6 +339,12 @@ int RadioMeshDevice::handleReceivedData()
         return RM_E_PACKET_CORRUPTED;
     }
 
+    // Verify MIC before any further processing
+    if (!verifyReceivedPacketMIC(receivedPacket)) {
+        logerr_ln("ERROR handleReceivedPacket. MIC verification failed");
+        return RM_E_AUTH_FAILED;
+    }
+
     // Update routing table with information from received packet
     // We do this for all valid packets, even if they're for us
     int lastRssi = radio->getRSSI();
@@ -354,11 +360,9 @@ int RadioMeshDevice::handleReceivedData()
         logdbg_ln("Received inclusion message with topic: 0x%02X", receivedPacket.topic);
 
         // Decrypt packet data if this device is the destination
-        if (encryptionService != nullptr) {
-            receivedPacket.packetData =
-                encryptionService->decrypt(receivedPacket.packetData, receivedPacket.topic,
-                                           deviceType, inclusionController->getState());
-        }
+        receivedPacket.packetData =
+            encryptionService.decrypt(receivedPacket.packetData, receivedPacket.topic,
+                                     deviceType, inclusionController->getState());
 
         // Let the InclusionController handle it automatically
         int result = inclusionController->handleInclusionMessage(receivedPacket);
@@ -517,15 +521,15 @@ int RadioMeshDevice::initialize()
 
     // Configure what we need for performing inclusion
 
-    encryptionService = std::make_unique<EncryptionService>();
-    router->setEncryptionService(encryptionService.get());
+    router->setEncryptionService(&encryptionService);
+    router->setMicService(&micService);
 
     std::vector<byte> devicePrivateKey, devicePublicKey;
     auto* keyManager = inclusionController->getKeyManager();
     if (keyManager) {
         if (keyManager->loadPrivateKey(devicePrivateKey) == RM_E_NONE &&
             keyManager->derivePublicKey(devicePrivateKey, devicePublicKey) == RM_E_NONE) {
-            encryptionService->setDeviceKeys(devicePrivateKey, devicePublicKey);
+            encryptionService.setDeviceKeys(devicePrivateKey, devicePublicKey);
             loginfo_ln("Configured EncryptionService with device keys");
         }
     }
@@ -574,8 +578,8 @@ int RadioMeshDevice::updateSecurityParams(const SecurityParams& params)
     loginfo_ln("Updating device security parameters");
 
     // Configure EncryptionService with network key
-    if (encryptionService != nullptr && params.method == SecurityMethod::AES) {
-        encryptionService->setNetworkKey(params.key);
+    if (params.method == SecurityMethod::AES) {
+        encryptionService.setNetworkKey(params.key);
         loginfo_ln("Network key configured for EncryptionService");
     }
 
@@ -595,4 +599,50 @@ int RadioMeshDevice::updateSecurityParams(const SecurityParams& params)
 
     loginfo_ln("Security parameters updated successfully");
     return RM_E_NONE;
+}
+
+bool RadioMeshDevice::verifyReceivedPacketMIC(RadioMeshPacket& receivedPacket)
+{
+    // Public key exchange messages don't have MIC
+    if (receivedPacket.topic == MessageTopic::INCLUDE_OPEN ||
+        receivedPacket.topic == MessageTopic::INCLUDE_REQUEST) {
+        logdbg_ln("Public key exchange message (0x%02X) - no MIC verification needed", 
+                  receivedPacket.topic);
+        return true;
+    }
+
+    // Check if packet has MIC
+    if (!receivedPacket.hasMIC()) {
+        logerr_ln("Packet missing MIC for topic 0x%02X", receivedPacket.topic);
+        return false;
+    }
+
+    // Use Device's own MicService instance
+
+    // Extract MIC and payload without MIC
+    std::vector<byte> receivedMic = receivedPacket.extractMIC();
+    std::vector<byte> payloadWithoutMic = receivedPacket.getDataWithoutMIC();
+
+    // Get header bytes for MIC computation
+    std::vector<byte> header = receivedPacket.getHeaderBytes();
+
+    DeviceInclusionState currentState = inclusionController
+                                           ? inclusionController->getState()
+                                           : DeviceInclusionState::NOT_INCLUDED;
+
+    bool isValid = micService.verifyPacketMIC(header, payloadWithoutMic, receivedMic,
+                                             receivedPacket.topic, deviceType, currentState);
+
+    if (!isValid) {
+        logerr_ln("MIC verification FAILED for packet from device %s, topic 0x%02X",
+                 RadioMeshUtils::convertToHex(receivedPacket.sourceDevId.data(), DEV_ID_LENGTH).c_str(),
+                 receivedPacket.topic);
+        return false;
+    }
+
+    logdbg_ln("MIC verification passed for topic 0x%02X", receivedPacket.topic);
+
+    // Update the packet data to remove MIC for further processing
+    receivedPacket.packetData = payloadWithoutMic;
+    return true;
 }

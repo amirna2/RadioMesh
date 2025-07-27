@@ -26,8 +26,20 @@ int PacketRouter::routePacket(RadioMeshPacket packet, const byte* ourDeviceId,
 
     packetCopy.reserved.fill(0);
 
+    // For relayed packets, ensure any existing MIC is stripped before recomputation
+    if (packetCopy.hasMIC()) {
+        logdbg_ln("Stripping existing MIC from relayed packet for topic 0x%02X", packetCopy.topic);
+        packetCopy.packetData = packetCopy.getDataWithoutMIC();
+    }
+
     if (packetCopy.topic != MessageTopic::INCLUDE_OPEN) {
         encryptPacketData(packetCopy, deviceType, inclusionState);
+    }
+
+    // Compute and append MIC after encryption
+    int micResult = computeAndAppendMIC(packetCopy, deviceType, inclusionState);
+    if (micResult != RM_E_NONE) {
+        return micResult;
     }
 
     calculatePacketCrc(packetCopy, crc32, key);
@@ -122,6 +134,34 @@ void PacketRouter::trackPacket(RadioMeshPacket& packetCopy, uint32_t key)
 {
     loginfo_ln("Tracking packet with ID: 0x%X, data crc: 0x%X", key, packetCopy.packetCrc);
     packetTracker.addEntry(key, packetCopy.packetCrc);
+}
+
+int PacketRouter::computeAndAppendMIC(RadioMeshPacket& packetCopy, MeshDeviceType deviceType,
+                                      DeviceInclusionState inclusionState)
+{
+    if (!micService) {
+        logerr_ln("CRITICAL: MIC service not available");
+        return RM_E_DEVICE_INITIALIZATION_FAILED;
+    }
+
+    if (packetCopy.topic == MessageTopic::INCLUDE_OPEN || 
+        packetCopy.topic == MessageTopic::INCLUDE_REQUEST) {
+        return RM_E_NONE;
+    }
+
+    std::vector<byte> header = packetCopy.getHeaderBytes();
+    std::vector<byte> encryptedPayload = packetCopy.packetData;
+
+    std::vector<byte> mic = micService->computePacketMIC(header, encryptedPayload, 
+                                                        packetCopy.topic, deviceType, inclusionState);
+    
+    if (mic.empty()) {
+        logerr_ln("Failed to compute MIC for topic 0x%02X", packetCopy.topic);
+        return RM_E_AUTH_FAILED;
+    }
+
+    packetCopy.appendMIC(mic);
+    return RM_E_NONE;
 }
 
 bool PacketRouter::isPacketFoundInTracker(RadioMeshPacket packet)

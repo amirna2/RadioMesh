@@ -86,6 +86,30 @@ public:
     std::vector<byte> encryptDirectECC(const std::vector<byte>& data,
                                        const std::vector<byte>& publicKey);
 
+    /**
+     * @brief Get network key for MIC computation
+     * @return Network key or empty vector if not set
+     */
+    const std::vector<byte>& getNetworkKey() const { return networkKey; }
+
+    /**
+     * @brief Get device private key for ECIES operations
+     * @return Device private key or empty vector if not set
+     */
+    const std::vector<byte>& getDevicePrivateKey() const { return devicePrivateKey; }
+
+    /**
+     * @brief Get hub public key for ECIES operations
+     * @return Hub public key or empty vector if not set
+     */
+    const std::vector<byte>& getHubPublicKey() const { return hubPublicKey; }
+
+    /**
+     * @brief Get temporary device public key for ECIES operations
+     * @return Temporary device public key or empty vector if not set
+     */
+    const std::vector<byte>& getTempDevicePublicKey() const { return tempDevicePublicKey; }
+
 private:
     enum class EncryptionMethod
     {

@@ -8,6 +8,7 @@
 #include <common/inc/Errors.h>
 #include <core/protocol/inc/crypto/aes/AesCrypto.h>
 #include <core/protocol/inc/crypto/EncryptionService.h>
+#include <core/protocol/inc/crypto/MicService.h>
 #include <core/protocol/inc/packet/Callbacks.h>
 #include <core/protocol/inc/routing/PacketRouter.h>
 #include <framework/interfaces/IDevice.h>
@@ -95,7 +96,7 @@ public:
      */
     EncryptionService* getEncryptionService()
     {
-        return encryptionService.get();
+        return &encryptionService;
     }
 
     /**
@@ -213,7 +214,8 @@ private:
     AesCrypto* crypto = nullptr;
     EEPROMStorage* eepromStorage = nullptr;
     
-    std::unique_ptr<EncryptionService> encryptionService;
+    EncryptionService encryptionService;
+    MicService micService;
 
 #ifndef RM_NO_DISPLAY
     OledDisplay* oledDisplay = nullptr;
@@ -240,6 +242,7 @@ private:
     RadioMeshPacket txPacket = RadioMeshPacket();
 
     bool isReceivedDataCrcValid(RadioMeshPacket& receivedPacket);
+    bool verifyReceivedPacketMIC(RadioMeshPacket& receivedPacket);
     bool canSendMessage(uint8_t topic) const;
     bool isInclusionMessage(uint8_t topic) const;
 };
