@@ -7,5 +7,6 @@ var searchData=
   ['end_4',['end',['../class_i_byte_storage.html#af6d7ddd7c85da20008944ac0d805b720',1,'IByteStorage::end()'],['../class_e_e_p_r_o_m_storage.html#a7653819ef4c21c5db8c60ee11a9f4831',1,'EEPROMStorage::end()']]],
   ['enterinclusionmode_5',['enterInclusionMode',['../class_inclusion_controller.html#a36472cc8b1aad4dabc346936734fcdf3',1,'InclusionController']]],
   ['exists_6',['exists',['../class_i_byte_storage.html#a43d09d1a17ab762608dcaa2ae6c341f6',1,'IByteStorage::exists()'],['../class_e_e_p_r_o_m_storage.html#aa084dd63b6f315dab2a3e4af0c3a9a88',1,'EEPROMStorage::exists()']]],
-  ['exitinclusionmode_7',['exitInclusionMode',['../class_inclusion_controller.html#a8c7004902101ae9734f4824f7baec139',1,'InclusionController']]]
+  ['exitinclusionmode_7',['exitInclusionMode',['../class_inclusion_controller.html#a8c7004902101ae9734f4824f7baec139',1,'InclusionController']]],
+  ['extractmic_8',['extractMIC',['../class_radio_mesh_packet.html#ab8d2abd6d5faa125c583e36f6b91ebc5',1,'RadioMeshPacket']]]
 ];

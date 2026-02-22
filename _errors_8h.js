@@ -1,5 +1,7 @@
 var _errors_8h =
 [
+    [ "RM_E_CRYPTO_ERROR", "group__error__codes.html#gacb44a8b307e77bc130de99097f300a5c", null ],
+    [ "RM_E_CRYPTO_NOT_INITIALIZED", "group__error__codes.html#gaf916763fee315bde5418fa7c763361f8", null ],
     [ "RM_E_CRYPTO_SETUP", "group__error__codes.html#ga8a50d2e67a43654b06ba5e1b1321c8bd", null ],
     [ "RM_E_DEVICE_INITIALIZATION_FAILED", "group__error__codes.html#ga97c2f36345a1b739712d016dfd420025", null ],
     [ "RM_E_DEVICE_NOT_INCLUDED", "group__error__codes.html#ga9550a629f5f5657498b8565db0c75f0a", null ],
@@ -25,6 +27,7 @@ var _errors_8h =
     [ "RM_E_NONE", "group__error__codes.html#ga84bf827c452c38cbd379ecfeb401b844", null ],
     [ "RM_E_NOT_IMPLEMENTED", "group__error__codes.html#gaa8ab2ff815cba1fb410d2d86b047bd23", null ],
     [ "RM_E_NOT_SUPPORTED", "group__error__codes.html#gab3d25ce0f7b2ea77c76489b5ceeb0b80", null ],
+    [ "RM_E_PACKET_AUTH_FAILED", "group__error__codes.html#gafbf895388b98c1b0c2a365f3a8666c7d", null ],
     [ "RM_E_PACKET_CORRUPTED", "group__error__codes.html#ga39066426c0ae9b81003ec2a4e75b30cd", null ],
     [ "RM_E_PACKET_TOO_LONG", "group__error__codes.html#gab0209d3358136501b9a6e8a2703cca76", null ],
     [ "RM_E_RADIO_ALREADY_SETUP", "group__error__codes.html#ga2da81a9de87047df98ee2b18e5f9d6a0", null ],

@@ -8,8 +8,9 @@ var searchData=
   ['registertxcallback_5',['registerTxCallback',['../class_radio_mesh_device.html#ac40c705982fd661bb4d0c792d9866198',1,'RadioMeshDevice']]],
   ['remove_6',['remove',['../class_i_byte_storage.html#a70f1101ef553af439c896d4062f050a8',1,'IByteStorage::remove()'],['../class_e_e_p_r_o_m_storage.html#ac7e99405f28c2b493e98266dc7327f2e',1,'EEPROMStorage::remove()']]],
   ['removeentry_7',['removeEntry',['../class_packet_tracker.html#aca9d22e33f97fa1d6c495b02e833a079',1,'PacketTracker']]],
-  ['reset_8',['reset',['../class_radio_mesh_packet.html#a54734d38deeb23b50e4d0f4b966b3a07',1,'RadioMeshPacket']]],
-  ['resetsecurityparams_9',['resetsecurityparams',['../class_aes_crypto.html#a8856d27731d1f60f40f302ddb92f0cca',1,'AesCrypto::resetSecurityParams()'],['../class_i_crypto.html#acb25a9b953d220ecc297e6aaaa691b33',1,'ICrypto::resetSecurityParams()']]],
-  ['routepacket_10',['routePacket',['../class_packet_router.html#ac64db2f29568f0ba471453ac651aadb6',1,'PacketRouter']]],
-  ['run_11',['run',['../class_radio_mesh_device.html#a92fd50c70ef482b2e0074ffa9393ef86',1,'RadioMeshDevice::run()'],['../class_i_device.html#a2d8a9c19fff70c19dd165d79fa22cd7a',1,'IDevice::run()']]]
+  ['removemic_8',['removeMIC',['../class_radio_mesh_packet.html#a3477afbd96cf21253f7829880171f1ea',1,'RadioMeshPacket']]],
+  ['reset_9',['reset',['../class_radio_mesh_packet.html#a54734d38deeb23b50e4d0f4b966b3a07',1,'RadioMeshPacket']]],
+  ['resetsecurityparams_10',['resetsecurityparams',['../class_aes_crypto.html#a8856d27731d1f60f40f302ddb92f0cca',1,'AesCrypto::resetSecurityParams()'],['../class_i_crypto.html#acb25a9b953d220ecc297e6aaaa691b33',1,'ICrypto::resetSecurityParams()']]],
+  ['routepacket_11',['routePacket',['../class_packet_router.html#ac64db2f29568f0ba471453ac651aadb6',1,'PacketRouter']]],
+  ['run_12',['run',['../class_radio_mesh_device.html#a92fd50c70ef482b2e0074ffa9393ef86',1,'RadioMeshDevice::run()'],['../class_i_device.html#a2d8a9c19fff70c19dd165d79fa22cd7a',1,'IDevice::run()']]]
 ];
