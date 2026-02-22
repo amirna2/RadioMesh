@@ -1,0 +1,62 @@
+---- Opened the serial port /dev/tty.usbserial-0001 ----
+[I][MiniHub.ino] Starting inclusion mode
+[I][InclusionController.cpp] Inclusion protocol: IDLE -> WAITING_FOR_REQUEST
+[D][EEPROMStorage.cpp] Read successful for key: pk
+[I][InclusionController.cpp] Broadcasting INCLUDE_OPEN with hub public key
+[D][InclusionController.cpp] Hub device can send any message
+[I][PacketRouter.cpp] Routing packet with ID: 0x35355A47
+[I][PacketRouter.cpp] Routing packet with ID: 0x35355A47, hop count: 1
+[I][PacketRouter.cpp] Calculating packet crc for packet ID: 0x35355A47
+[I][PacketRouter.cpp]   Frame Counter: 1
+[I][PacketRouter.cpp]   Data: EDCE2151B9E6A85677E23FF219420CE48378B4695E4A98D8BE153B630BC9F773
+[I][PacketRouter.cpp] Routing packet with id: 35355A47 crc: 0xE10E7D35
+[D][Packet.h] Packet dump:
+[D][Packet.h]   Protocol Version: 4
+[D][Packet.h]   Source ID: 77777777
+[D][Packet.h]   Dest ID: FFFFFFFF
+[D][Packet.h]   Packet ID: 0x35355A47
+[D][Packet.h]   Topic: INCLUDE_OPEN
+[D][Packet.h]   Device Type: 3
+[D][Packet.h]   Hop Count: 1
+[D][Packet.h]   CRC: 0xE10E7D35
+[D][Packet.h]   Frame Counter: 1
+[D][Packet.h]   Last Hop: 77777777
+[D][Packet.h]   Next Hop: FFFFFFFF
+[D][Packet.h]   Reserved: 000000
+[D][Packet.h]   Data Length: 32 bytes
+[D][Packet.h]   Data: EDCE2151B9E6A85677E23FF219420CE48378B4695E4A98D8BE153B630BC9F773
+[D][LoraRadio.cpp] TX Data - len: 67, 0477777777FFFFFFFF35355A47080301E10E7D350000000177777777FFFFFFFF000000EDCE2151B9E6A85677E23FF219420CE48378B4695E4A98D8BE153B630BC9F773
+[D][LoraRadio.cpp] Radio sent packet...
+[D][LoraRadio.cpp] TX data done in : 2 ms
+[I][PacketRouter.cpp] Tracking packet with ID: 0x35355A47, data crc: 0xE10E7D35
+[I][MiniHub.ino] Inclusion mode active - devices can now join the network
+[I][MiniHub.ino] Status: Inclusion Active - Requests: 0, Success: 0
+[I][LoraRadio.cpp] Start receiving data...
+[D][LoraRadio.cpp] Rx packet: 0411111111FFFFFFFF50485A530602016B93BB3C0000000111111111FFFFFFFF00000049D62EFB290908A1E6C84C600874D75E7C2F60678031BC04155FBC59B3A7B69C
+[D][LoraRadio.cpp] RX: rssi: -48.000000 snr: 12.500000 size: 67
+[D][Packet.h] Packet dump:
+[D][Packet.h]   Protocol Version: 4
+[D][Packet.h]   Source ID: 11111111
+[D][Packet.h]   Dest ID: FFFFFFFF
+[D][Packet.h]   Packet ID: 0x50485A53
+[D][Packet.h]   Topic: INCLUDE_REQUEST
+[D][Packet.h]   Device Type: 2
+[D][Packet.h]   Hop Count: 1
+[D][Packet.h]   CRC: 0x6B93BB3C
+[D][Packet.h]   Frame Counter: 1
+[D][Packet.h]   Last Hop: 11111111
+[D][Packet.h]   Next Hop: FFFFFFFF
+[D][Packet.h]   Reserved: 000000
+[D][Packet.h]   Data Length: 32 bytes
+[D][Packet.h]   Data: 49D62EFB290908A1E6C84C600874D75E7C2F60678031BC04155FBC59B3A7B69C
+[E][** MicService.cpp : 196] Missing keys for ECIES MAC derivation - private key size: 32, public key size: 0
+[E][** MicService.cpp : 65] No MIC key available for topic 0x06 verification
+[E][** Device.cpp : 637] MIC verification FAILED for packet from device 11111111, topic 0x06
+[E][** Device.cpp : 344] ERROR handleReceivedPacket. MIC verification failed
+[E][** Device.cpp : 441] ERROR handleReceivedData failed with rc = -403
+[E][** MiniHub.ino : 142] RX Failed [-403]
+[I][MiniHub.ino] Status: Inclusion Active - Requests: 0, Success: 0
+[I][MiniHub.ino] Status: Inclusion Active - Requests: 0, Success: 0
+[I][MiniHub.ino] Status: Inclusion Active - Requests: 0, Success: 0
+[I][MiniHub.ino] Status: Inclusion Active - Requests: 0, Success: 0
+---- Closed the serial port /dev/tty.usbserial-0001 ----
