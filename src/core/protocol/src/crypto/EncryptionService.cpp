@@ -1,9 +1,7 @@
 #include <common/inc/Logger.h>
-#include <common/inc/Errors.h>
 #include <common/utils/Utils.h>
 #include <core/protocol/inc/crypto/EncryptionService.h>
 #include <core/protocol/inc/crypto/aes/AesCrypto.h>
-#include <core/protocol/inc/crypto/aes/AesCmac.h>
 #include <Arduino.h>
 #include <Crypto.h>
 #include <Curve25519.h>
@@ -380,94 +378,4 @@ std::vector<byte> EncryptionService::decryptAES(const std::vector<byte>& data,
 
     aesCrypto->setParams(params);
     return aesCrypto->decrypt(data);
-}
-
-int EncryptionService::computeMIC(const std::vector<byte>& packetData, std::array<byte, 4>& mic)
-{
-    if (networkKey.empty()) {
-        logerr_ln("Network key not set for MIC computation");
-        return RM_E_CRYPTO_NOT_INITIALIZED;
-    }
-
-    if (!aesCmac) {
-        aesCmac = AesCmac::getInstance();
-    }
-
-    // Set the network key for CMAC
-    int rc = aesCmac->setKey(networkKey);
-    if (rc != RM_E_NONE) {
-        logerr_ln("Failed to set key for AES-CMAC");
-        return rc;
-    }
-
-    // Compute MIC over the entire packet data (header + encrypted payload)
-    rc = aesCmac->computeMic(packetData, mic);
-    if (rc != RM_E_NONE) {
-        logerr_ln("Failed to compute MIC");
-        return rc;
-    }
-
-    logdbg_ln("MIC computed successfully: %02X%02X%02X%02X", 
-              mic[0], mic[1], mic[2], mic[3]);
-    
-    return RM_E_NONE;
-}
-
-bool EncryptionService::verifyMIC(const std::vector<byte>& packetData, 
-                                  const std::array<byte, 4>& receivedMic)
-{
-    if (networkKey.empty()) {
-        logerr_ln("Network key not set for MIC verification");
-        return false;
-    }
-
-    if (!aesCmac) {
-        aesCmac = AesCmac::getInstance();
-    }
-
-    // Set the network key for CMAC
-    int rc = aesCmac->setKey(networkKey);
-    if (rc != RM_E_NONE) {
-        logerr_ln("Failed to set key for AES-CMAC verification");
-        return false;
-    }
-
-    // Verify MIC using constant-time comparison
-    bool valid = aesCmac->verifyMic(packetData, receivedMic);
-    
-    if (!valid) {
-        logwarn_ln("MIC verification failed for packet");
-    } else {
-        logdbg_ln("MIC verification successful");
-    }
-    
-    return valid;
-}
-
-bool EncryptionService::shouldUseMIC(uint8_t topic, uint8_t protocolVersion) const
-{
-    // MIC is required for protocol version 4 and above
-    const uint8_t MIC_PROTOCOL_VERSION = 4;
-    
-    if (protocolVersion < MIC_PROTOCOL_VERSION) {
-        return false;
-    }
-
-    // MIC is not used for INCLUDE_OPEN messages (broadcast, no shared key yet)
-    if (topic == MessageTopic::INCLUDE_OPEN) {
-        return false;
-    }
-
-    // MIC is not used for INCLUDE_REQUEST (device doesn't have network key yet)
-    if (topic == MessageTopic::INCLUDE_REQUEST) {
-        return false;
-    }
-
-    // MIC is not used for INCLUDE_RESPONSE (device doesn't have network key yet)
-    if (topic == MessageTopic::INCLUDE_RESPONSE) {
-        return false;
-    }
-
-    // All other messages use MIC when protocol version supports it
-    return true;
 }

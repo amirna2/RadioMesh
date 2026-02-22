@@ -10,7 +10,7 @@
 #include <common/utils/Utils.h>
 
 // Protocol version
-#define RM_PROTOCOL_VERSION 4
+#define RM_PROTOCOL_VERSION 3
 #define PROTOCOL_VERSION_LENGTH 1
 
 // Packet size constants
@@ -27,7 +27,6 @@
 #define DATA_CRC_LENGTH 4
 #define FCOUNTER_LENGTH 4
 #define RESERVED_LENGTH 3
-#define MIC_LENGTH 4
 
 // Field positions in packet
 #define VERSION_POS 0
@@ -46,9 +45,9 @@
 
 #define HEADER_LENGTH DATA_POS
 
-// Data/packet range constants  
-#define MAX_DATA_LENGTH (PACKET_LENGTH - HEADER_LENGTH - MIC_LENGTH)
-#define MIN_PACKET_LENGTH (HEADER_LENGTH + 1 + MIC_LENGTH)
+// Data/packet range constants
+#define MAX_DATA_LENGTH (PACKET_LENGTH - HEADER_LENGTH)
+#define MIN_PACKET_LENGTH (HEADER_LENGTH + 1)
 
 /**
  * @class RadioMeshPacket
@@ -245,87 +244,6 @@ public:
         return (topic == MessageTopic::INCLUDE_REQUEST || topic == MessageTopic::INCLUDE_RESPONSE ||
                 topic == MessageTopic::INCLUDE_OPEN || topic == MessageTopic::INCLUDE_CONFIRM);
     }
-
-    /**
-     * @brief Check if protocol version supports MIC
-     * @return true if MIC is supported
-     */
-    bool supportsMIC() const
-    {
-        return protocolVersion >= 4;
-    }
-
-    /**
-     * @brief Check if topic should use MIC
-     * @return true if MIC should be used for this topic
-     */
-    bool shouldUseMIC() const
-    {
-        return supportsMIC() && 
-               topic != MessageTopic::INCLUDE_OPEN && 
-               topic != MessageTopic::INCLUDE_REQUEST && 
-               topic != MessageTopic::INCLUDE_RESPONSE;
-    }
-
-    /**
-     * @brief Extract MIC from packet data
-     * @param mic Output buffer for 4-byte MIC
-     * @return true if MIC was extracted, false if not present
-     */
-    bool extractMIC(std::array<byte, MIC_LENGTH>& mic) const
-    {
-        if (!shouldUseMIC() || packetData.size() < MIC_LENGTH) {
-            return false;
-        }
-        
-        // MIC is in the last 4 bytes of packet data
-        size_t micPos = packetData.size() - MIC_LENGTH;
-        std::copy(packetData.begin() + micPos, packetData.end(), mic.begin());
-        return true;
-    }
-
-    /**
-     * @brief Append MIC to packet data
-     * @param mic The 4-byte MIC to append
-     */
-    void appendMIC(const std::array<byte, MIC_LENGTH>& mic)
-    {
-        if (shouldUseMIC()) {
-            packetData.insert(packetData.end(), mic.begin(), mic.end());
-        }
-    }
-
-    /**
-     * @brief Remove MIC from packet data
-     * @return true if MIC was removed, false if not present
-     */
-    bool removeMIC()
-    {
-        if (!shouldUseMIC() || packetData.size() < MIC_LENGTH) {
-            return false;
-        }
-        
-        // Remove last 4 bytes (MIC)
-        packetData.resize(packetData.size() - MIC_LENGTH);
-        return true;
-    }
-
-    /**
-     * @brief Get packet data for MIC computation (header + encrypted payload)
-     * @return Vector containing header and payload bytes (excluding MIC)
-     */
-    std::vector<byte> getDataForMIC() const
-    {
-        std::vector<byte> data = toByteBuffer();
-        
-        // If MIC is present, remove it
-        if (shouldUseMIC() && data.size() >= HEADER_LENGTH + MIC_LENGTH) {
-            data.resize(data.size() - MIC_LENGTH);
-        }
-        
-        return data;
-    }
-
     /**
      * @brief Assignment operator
      */

@@ -3,10 +3,8 @@
 #include <common/inc/Definitions.h>
 #include <memory>
 #include <vector>
-#include <array>
 
 class AesCrypto;
-class AesCmac;
 class KeyManager;
 
 /**
@@ -88,30 +86,6 @@ public:
     std::vector<byte> encryptDirectECC(const std::vector<byte>& data,
                                        const std::vector<byte>& publicKey);
 
-    /**
-     * @brief Compute MIC for packet authentication
-     * @param packetData Complete packet data (header + encrypted payload)
-     * @param mic Output buffer for 4-byte MIC
-     * @return RM_E_NONE on success, error code otherwise
-     */
-    int computeMIC(const std::vector<byte>& packetData, std::array<byte, 4>& mic);
-
-    /**
-     * @brief Verify MIC for received packet
-     * @param packetData Complete packet data (header + encrypted payload, excluding MIC)
-     * @param receivedMic The 4-byte MIC to verify
-     * @return true if MIC is valid, false otherwise
-     */
-    bool verifyMIC(const std::vector<byte>& packetData, const std::array<byte, 4>& receivedMic);
-
-    /**
-     * @brief Check if MIC should be used for this packet
-     * @param topic Message topic
-     * @param protocolVersion Protocol version from packet
-     * @return true if MIC authentication is required
-     */
-    bool shouldUseMIC(uint8_t topic, uint8_t protocolVersion) const;
-
 private:
     enum class EncryptionMethod
     {
@@ -138,5 +112,4 @@ private:
 
     // Crypto instances
     AesCrypto* aesCrypto = nullptr;
-    AesCmac* aesCmac = nullptr;
 };

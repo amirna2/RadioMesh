@@ -1,7 +1,6 @@
 #include <string>
 #include <vector>
 
-#include <common/inc/Errors.h>
 #include <core/protocol/inc/routing/PacketRouter.h>
 #include <hardware/inc/radio/LoraRadio.h>
 
@@ -32,14 +31,7 @@ int PacketRouter::routePacket(RadioMeshPacket packet, const byte* ourDeviceId,
     }
 
     calculatePacketCrc(packetCopy, crc32, key);
-    
-    // Compute and append MIC if supported
-    int rc = computeAndAppendMIC(packetCopy);
-    if (rc != RM_E_NONE) {
-        return rc;
-    }
-    
-    rc = sendPacket(packetCopy);
+    int rc = sendPacket(packetCopy);
     if (rc != RM_E_NONE) {
         return rc;
     }
@@ -124,39 +116,6 @@ int PacketRouter::sendPacket(RadioMeshPacket& packetCopy)
         logerr_ln("Failed to send packet");
     }
     return rc;
-}
-
-int PacketRouter::computeAndAppendMIC(RadioMeshPacket& packetCopy)
-{
-    // Only compute MIC if packet supports it
-    if (!packetCopy.shouldUseMIC()) {
-        logdbg_ln("MIC not required for packet with topic 0x%02X", packetCopy.topic);
-        return RM_E_NONE;
-    }
-
-    if (encryptionService == nullptr) {
-        logerr_ln("Encryption service not set, cannot compute MIC");
-        return RM_E_CRYPTO_NOT_INITIALIZED;
-    }
-
-    // Get packet data for MIC computation (header + encrypted payload)
-    std::vector<byte> packetData = packetCopy.getDataForMIC();
-    
-    // Compute MIC
-    std::array<byte, MIC_LENGTH> mic;
-    int rc = encryptionService->computeMIC(packetData, mic);
-    if (rc != RM_E_NONE) {
-        logerr_ln("Failed to compute MIC for packet");
-        return rc;
-    }
-
-    // Append MIC to packet data
-    packetCopy.appendMIC(mic);
-    
-    logdbg_ln("MIC computed and appended to packet: %02X%02X%02X%02X", 
-              mic[0], mic[1], mic[2], mic[3]);
-    
-    return RM_E_NONE;
 }
 
 void PacketRouter::trackPacket(RadioMeshPacket& packetCopy, uint32_t key)
