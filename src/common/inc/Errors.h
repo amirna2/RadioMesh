@@ -236,6 +236,11 @@
 #define RM_E_INVALID_CRYPTO_PARAMS (-402)
 
 /**
+ * @brief Message authentication failed (MIC verification).
+ */
+#define RM_E_AUTH_FAILED (-403)
+
+/**
  * @brief The storage setup failed.
  */
 #define RM_E_STORAGE_SETUP (-501)
