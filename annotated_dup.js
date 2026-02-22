@@ -3,6 +3,7 @@ var annotated_dup =
     [ "RadioMeshUtils", null, [
       [ "CRC32", "class_radio_mesh_utils_1_1_c_r_c32.html", null ]
     ] ],
+    [ "AesCmac", "class_aes_cmac.html", null ],
     [ "AesCrypto", "class_aes_crypto.html", "class_aes_crypto" ],
     [ "AsyncDevicePortal", "class_async_device_portal.html", "class_async_device_portal" ],
     [ "ByteStorageParams", "struct_byte_storage_params.html", "struct_byte_storage_params" ],
@@ -25,6 +26,7 @@ var annotated_dup =
     [ "KeyManager", "class_key_manager.html", null ],
     [ "LoraRadio", "class_lora_radio.html", "class_lora_radio" ],
     [ "LoraRadioParams", "class_lora_radio_params.html", "class_lora_radio_params" ],
+    [ "MicService", "class_mic_service.html", "class_mic_service" ],
     [ "OledDisplay", "class_oled_display.html", "class_oled_display" ],
     [ "OledDisplayParams", "class_oled_display_params.html", "class_oled_display_params" ],
     [ "PacketRouter", "class_packet_router.html", "class_packet_router" ],

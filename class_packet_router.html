@@ -114,6 +114,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a739443cef8326dddcfb845457dddd166" id="r_a739443cef8326dddcfb845457dddd166"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet_router.html#a739443cef8326dddcfb845457dddd166">setEncryptionService</a> (<a class="el" href="class_encryption_service.html">EncryptionService</a> *encryptionService)</td></tr>
 <tr class="memdesc:a739443cef8326dddcfb845457dddd166"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the encryption service to use for encrypting and decrypting packets.  <br /></td></tr>
 <tr class="separator:a739443cef8326dddcfb845457dddd166"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fedbb5e595987f25654607d10440ece" id="r_a6fedbb5e595987f25654607d10440ece"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet_router.html#a6fedbb5e595987f25654607d10440ece">setMicService</a> (<a class="el" href="class_mic_service.html">MicService</a> *micService)</td></tr>
+<tr class="memdesc:a6fedbb5e595987f25654607d10440ece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the MIC service for packet authentication.  <br /></td></tr>
+<tr class="separator:a6fedbb5e595987f25654607d10440ece"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26b7eb39a978b92e9a623c6e644cdf9a" id="r_a26b7eb39a978b92e9a623c6e644cdf9a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet_router.html#a26b7eb39a978b92e9a623c6e644cdf9a">setCrypto</a> (<a class="el" href="class_aes_crypto.html">AesCrypto</a> *crypto)</td></tr>
 <tr class="memdesc:a26b7eb39a978b92e9a623c6e644cdf9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the crypto component to use for encrypting and decrypting packets.  <br /></td></tr>
 <tr class="separator:a26b7eb39a978b92e9a623c6e644cdf9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -298,6 +301,40 @@ Static Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">encryptionService</td><td><a class="el" href="class_encryption_service.html" title="Central encryption service that handles all packet encryption/decryption.">EncryptionService</a> component to use </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6fedbb5e595987f25654607d10440ece" name="a6fedbb5e595987f25654607d10440ece"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fedbb5e595987f25654607d10440ece">&#9670;&#160;</a></span>setMicService()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PacketRouter::setMicService </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_mic_service.html">MicService</a> *&#160;</td>
+          <td class="paramname"><em>micService</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the MIC service for packet authentication. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">micService</td><td><a class="el" href="class_mic_service.html" title="Service for context-aware MIC computation and verification.">MicService</a> component to use </td></tr>
   </table>
   </dd>
 </dl>

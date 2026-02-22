@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['oleddisplayparams_0',['OledDisplayParams',['../class_oled_display_params.html#a6d3dfeda893877b1b680537c92edf330',1,'OledDisplayParams']]],
-  ['oninterrupt_1',['onInterrupt',['../class_lora_radio.html#a1e440641b8e29c4bf9131f9a2b6a8fa7',1,'LoraRadio']]],
-  ['operator_3d_2',['operator=',['../struct_byte_storage_params.html#a905e3543c0740f4d12ba15ceecb53931',1,'ByteStorageParams::operator=()'],['../class_radio_mesh_packet.html#a6948b22316c8ccb882eed3bc21773d3d',1,'RadioMeshPacket::operator=()']]]
+  ['micservice_0',['MicService',['../class_mic_service.html#ac45f9a9630f78f0d0c256142d8782c1a',1,'MicService']]]
 ];

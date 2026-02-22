@@ -128,6 +128,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a70ff933787d9cec8155f00b48c119976" id="r_a70ff933787d9cec8155f00b48c119976"><td class="memItemLeft" align="right" valign="top">std::vector&lt; byte &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_encryption_service.html#a70ff933787d9cec8155f00b48c119976">encryptDirectECC</a> (const std::vector&lt; byte &gt; &amp;data, const std::vector&lt; byte &gt; &amp;publicKey)</td></tr>
 <tr class="memdesc:a70ff933787d9cec8155f00b48c119976"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encrypt data using direct ECC (public for manual encryption)  <br /></td></tr>
 <tr class="separator:a70ff933787d9cec8155f00b48c119976"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a760a99e6bc43a7fea14f93bbdf7170b2" id="r_a760a99e6bc43a7fea14f93bbdf7170b2"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; byte &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_encryption_service.html#a760a99e6bc43a7fea14f93bbdf7170b2">getNetworkKey</a> () const</td></tr>
+<tr class="memdesc:a760a99e6bc43a7fea14f93bbdf7170b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get network key for MIC computation.  <br /></td></tr>
+<tr class="separator:a760a99e6bc43a7fea14f93bbdf7170b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9ffb7768352ac55e58fddb09da12d15" id="r_ac9ffb7768352ac55e58fddb09da12d15"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; byte &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_encryption_service.html#ac9ffb7768352ac55e58fddb09da12d15">getDevicePrivateKey</a> () const</td></tr>
+<tr class="memdesc:ac9ffb7768352ac55e58fddb09da12d15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get device private key for ECIES operations.  <br /></td></tr>
+<tr class="separator:ac9ffb7768352ac55e58fddb09da12d15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0bbd7247ac8d7e266b5d21e871ba03c" id="r_af0bbd7247ac8d7e266b5d21e871ba03c"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; byte &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_encryption_service.html#af0bbd7247ac8d7e266b5d21e871ba03c">getHubPublicKey</a> () const</td></tr>
+<tr class="memdesc:af0bbd7247ac8d7e266b5d21e871ba03c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get hub public key for ECIES operations.  <br /></td></tr>
+<tr class="separator:af0bbd7247ac8d7e266b5d21e871ba03c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad93d70f632e702da155525699a293526" id="r_ad93d70f632e702da155525699a293526"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; byte &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_encryption_service.html#ad93d70f632e702da155525699a293526">getTempDevicePublicKey</a> () const</td></tr>
+<tr class="memdesc:ad93d70f632e702da155525699a293526"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get temporary device public key for ECIES operations.  <br /></td></tr>
+<tr class="separator:ad93d70f632e702da155525699a293526"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Central encryption service that handles all packet encryption/decryption. </p>
@@ -315,6 +327,118 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Encrypted data </dd></dl>
+
+</div>
+</div>
+<a id="ac9ffb7768352ac55e58fddb09da12d15" name="ac9ffb7768352ac55e58fddb09da12d15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9ffb7768352ac55e58fddb09da12d15">&#9670;&#160;</a></span>getDevicePrivateKey()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; byte &gt; &amp; EncryptionService::getDevicePrivateKey </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get device private key for ECIES operations. </p>
+<dl class="section return"><dt>Returns</dt><dd>Device private key or empty vector if not set </dd></dl>
+
+</div>
+</div>
+<a id="af0bbd7247ac8d7e266b5d21e871ba03c" name="af0bbd7247ac8d7e266b5d21e871ba03c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0bbd7247ac8d7e266b5d21e871ba03c">&#9670;&#160;</a></span>getHubPublicKey()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; byte &gt; &amp; EncryptionService::getHubPublicKey </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get hub public key for ECIES operations. </p>
+<dl class="section return"><dt>Returns</dt><dd>Hub public key or empty vector if not set </dd></dl>
+
+</div>
+</div>
+<a id="a760a99e6bc43a7fea14f93bbdf7170b2" name="a760a99e6bc43a7fea14f93bbdf7170b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a760a99e6bc43a7fea14f93bbdf7170b2">&#9670;&#160;</a></span>getNetworkKey()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; byte &gt; &amp; EncryptionService::getNetworkKey </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get network key for MIC computation. </p>
+<dl class="section return"><dt>Returns</dt><dd>Network key or empty vector if not set </dd></dl>
+
+</div>
+</div>
+<a id="ad93d70f632e702da155525699a293526" name="ad93d70f632e702da155525699a293526"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad93d70f632e702da155525699a293526">&#9670;&#160;</a></span>getTempDevicePublicKey()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; byte &gt; &amp; EncryptionService::getTempDevicePublicKey </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get temporary device public key for ECIES operations. </p>
+<dl class="section return"><dt>Returns</dt><dd>Temporary device public key or empty vector if not set </dd></dl>
 
 </div>
 </div>

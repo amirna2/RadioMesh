@@ -1,5 +1,6 @@
 var _errors_8h =
 [
+    [ "RM_E_AUTH_FAILED", "group__error__codes.html#gae25a785a2988187e565d1a6fa2e31c6a", null ],
     [ "RM_E_CRYPTO_SETUP", "group__error__codes.html#ga8a50d2e67a43654b06ba5e1b1321c8bd", null ],
     [ "RM_E_DEVICE_INITIALIZATION_FAILED", "group__error__codes.html#ga97c2f36345a1b739712d016dfd420025", null ],
     [ "RM_E_DEVICE_NOT_INCLUDED", "group__error__codes.html#ga9550a629f5f5657498b8565db0c75f0a", null ],

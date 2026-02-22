@@ -124,6 +124,21 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>reset</b> ()</td></tr
 void&#160;</td><td class="memItemRight" valign="bottom"><b>log</b> () const</td></tr>
 <tr class="memdesc:a8a256e1eff5a897ce188a28078131803"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log packet contents for debugging. <br /></td></tr>
 <tr class="separator:a8a256e1eff5a897ce188a28078131803"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e1af456b20ae1fa2b0f00223475dff5" id="r_a7e1af456b20ae1fa2b0f00223475dff5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_radio_mesh_packet.html#a7e1af456b20ae1fa2b0f00223475dff5">hasMIC</a> () const</td></tr>
+<tr class="memdesc:a7e1af456b20ae1fa2b0f00223475dff5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if packet has MIC appended to payload.  <br /></td></tr>
+<tr class="separator:a7e1af456b20ae1fa2b0f00223475dff5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d5a598e97918e2e140e1997f75ac712" id="r_a7d5a598e97918e2e140e1997f75ac712"><td class="memItemLeft" align="right" valign="top">std::vector&lt; byte &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_radio_mesh_packet.html#a7d5a598e97918e2e140e1997f75ac712">extractMIC</a> () const</td></tr>
+<tr class="memdesc:a7d5a598e97918e2e140e1997f75ac712"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract MIC from packet payload.  <br /></td></tr>
+<tr class="separator:a7d5a598e97918e2e140e1997f75ac712"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3bac8ab8ba2cf2fd56f04206f2f446ef" id="r_a3bac8ab8ba2cf2fd56f04206f2f446ef"><td class="memItemLeft" align="right" valign="top">std::vector&lt; byte &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_radio_mesh_packet.html#a3bac8ab8ba2cf2fd56f04206f2f446ef">getDataWithoutMIC</a> () const</td></tr>
+<tr class="memdesc:a3bac8ab8ba2cf2fd56f04206f2f446ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get payload data without MIC.  <br /></td></tr>
+<tr class="separator:a3bac8ab8ba2cf2fd56f04206f2f446ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9be4e9057fbe6504396e13691ef77a17" id="r_a9be4e9057fbe6504396e13691ef77a17"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_radio_mesh_packet.html#a9be4e9057fbe6504396e13691ef77a17">appendMIC</a> (const std::vector&lt; byte &gt; &amp;mic)</td></tr>
+<tr class="memdesc:a9be4e9057fbe6504396e13691ef77a17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append MIC to packet payload.  <br /></td></tr>
+<tr class="separator:a9be4e9057fbe6504396e13691ef77a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8a713fae05f9f7fe0c3420d22917bcf" id="r_ab8a713fae05f9f7fe0c3420d22917bcf"><td class="memItemLeft" align="right" valign="top">std::vector&lt; byte &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_radio_mesh_packet.html#ab8a713fae05f9f7fe0c3420d22917bcf">getHeaderBytes</a> () const</td></tr>
+<tr class="memdesc:ab8a713fae05f9f7fe0c3420d22917bcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get header as byte vector for MIC computation.  <br /></td></tr>
+<tr class="separator:ab8a713fae05f9f7fe0c3420d22917bcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6948b22316c8ccb882eed3bc21773d3d" id="r_a6948b22316c8ccb882eed3bc21773d3d"><td class="memItemLeft" align="right" valign="top"><a id="a6948b22316c8ccb882eed3bc21773d3d" name="a6948b22316c8ccb882eed3bc21773d3d"></a>
 <a class="el" href="class_radio_mesh_packet.html">RadioMeshPacket</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="class_radio_mesh_packet.html">RadioMeshPacket</a> &amp;other)</td></tr>
 <tr class="memdesc:a6948b22316c8ccb882eed3bc21773d3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assignment operator. <br /></td></tr>
@@ -232,6 +247,124 @@ std::vector&lt; byte &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a9be4e9057fbe6504396e13691ef77a17" name="a9be4e9057fbe6504396e13691ef77a17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9be4e9057fbe6504396e13691ef77a17">&#9670;&#160;</a></span>appendMIC()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RadioMeshPacket::appendMIC </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; byte &gt; &amp;&#160;</td>
+          <td class="paramname"><em>mic</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Append MIC to packet payload. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mic</td><td>4-byte MIC to append </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7d5a598e97918e2e140e1997f75ac712" name="a7d5a598e97918e2e140e1997f75ac712"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d5a598e97918e2e140e1997f75ac712">&#9670;&#160;</a></span>extractMIC()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; byte &gt; RadioMeshPacket::extractMIC </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Extract MIC from packet payload. </p>
+<dl class="section return"><dt>Returns</dt><dd>4-byte MIC or empty vector if no MIC present </dd></dl>
+
+</div>
+</div>
+<a id="a3bac8ab8ba2cf2fd56f04206f2f446ef" name="a3bac8ab8ba2cf2fd56f04206f2f446ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3bac8ab8ba2cf2fd56f04206f2f446ef">&#9670;&#160;</a></span>getDataWithoutMIC()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; byte &gt; RadioMeshPacket::getDataWithoutMIC </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get payload data without MIC. </p>
+<dl class="section return"><dt>Returns</dt><dd>Payload data excluding MIC bytes </dd></dl>
+
+</div>
+</div>
+<a id="ab8a713fae05f9f7fe0c3420d22917bcf" name="ab8a713fae05f9f7fe0c3420d22917bcf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8a713fae05f9f7fe0c3420d22917bcf">&#9670;&#160;</a></span>getHeaderBytes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; byte &gt; RadioMeshPacket::getHeaderBytes </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get header as byte vector for MIC computation. </p>
+<dl class="section return"><dt>Returns</dt><dd>35-byte header </dd></dl>
+
+</div>
+</div>
 <a id="af0a4ee6e4b06c254e96a33e66bd60387" name="af0a4ee6e4b06c254e96a33e66bd60387"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af0a4ee6e4b06c254e96a33e66bd60387">&#9670;&#160;</a></span>getMaxDataLength()</h2>
 
@@ -257,6 +390,34 @@ std::vector&lt; byte &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>
 
 <p>Get maximum allowed data length. </p>
 <dl class="section return"><dt>Returns</dt><dd>Maximum data payload size </dd></dl>
+
+</div>
+</div>
+<a id="a7e1af456b20ae1fa2b0f00223475dff5" name="a7e1af456b20ae1fa2b0f00223475dff5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e1af456b20ae1fa2b0f00223475dff5">&#9670;&#160;</a></span>hasMIC()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool RadioMeshPacket::hasMIC </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Check if packet has MIC appended to payload. </p>
+<dl class="section return"><dt>Returns</dt><dd>true if payload includes MIC, false otherwise </dd></dl>
 
 </div>
 </div>

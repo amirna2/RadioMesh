@@ -1,5 +1,6 @@
 var hierarchy =
 [
+    [ "AesCmac", "class_aes_cmac.html", null ],
     [ "ByteStorageParams", "struct_byte_storage_params.html", null ],
     [ "RadioMeshUtils::CRC32", "class_radio_mesh_utils_1_1_c_r_c32.html", null ],
     [ "DeviceBlueprint", "struct_device_blueprint.html", null ],
@@ -36,6 +37,7 @@ var hierarchy =
     ] ],
     [ "KeyManager", "class_key_manager.html", null ],
     [ "LoraRadioParams", "class_lora_radio_params.html", null ],
+    [ "MicService", "class_mic_service.html", null ],
     [ "OledDisplayParams", "class_oled_display_params.html", null ],
     [ "PacketRouter", "class_packet_router.html", null ],
     [ "PacketTracker", "class_packet_tracker.html", null ],
