@@ -95,6 +95,7 @@ private:
     void encryptPacketData(RadioMeshPacket& packetCopy, MeshDeviceType deviceType, DeviceInclusionState inclusionState);
     void calculatePacketCrc(RadioMeshPacket& packetCopy, RadioMeshUtils::CRC32& crc32,
                             uint32_t key);
+    int computeAndAppendMIC(RadioMeshPacket& packetCopy);
     int sendPacket(RadioMeshPacket& packetCopy);
     void trackPacket(RadioMeshPacket& packetCopy, uint32_t key);
 };
