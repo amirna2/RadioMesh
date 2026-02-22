@@ -12,6 +12,5 @@ var searchData=
   ['errors_2eh_9',['Errors.h',['../_errors_8h.html',1,'']]],
   ['event_10',['event',['../struct_portal_event_handler.html#a71d405a0a4811de94d58be365437cb53',1,'PortalEventHandler']]],
   ['exists_11',['exists',['../class_i_byte_storage.html#a43d09d1a17ab762608dcaa2ae6c341f6',1,'IByteStorage::exists()'],['../class_e_e_p_r_o_m_storage.html#aa084dd63b6f315dab2a3e4af0c3a9a88',1,'EEPROMStorage::exists()']]],
-  ['exitinclusionmode_12',['exitInclusionMode',['../class_inclusion_controller.html#a8c7004902101ae9734f4824f7baec139',1,'InclusionController']]],
-  ['extractmic_13',['extractMIC',['../class_radio_mesh_packet.html#ab8d2abd6d5faa125c583e36f6b91ebc5',1,'RadioMeshPacket']]]
+  ['exitinclusionmode_12',['exitInclusionMode',['../class_inclusion_controller.html#a8c7004902101ae9734f4824f7baec139',1,'InclusionController']]]
 ];

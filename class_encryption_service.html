@@ -128,15 +128,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a70ff933787d9cec8155f00b48c119976" id="r_a70ff933787d9cec8155f00b48c119976"><td class="memItemLeft" align="right" valign="top">std::vector&lt; byte &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_encryption_service.html#a70ff933787d9cec8155f00b48c119976">encryptDirectECC</a> (const std::vector&lt; byte &gt; &amp;data, const std::vector&lt; byte &gt; &amp;publicKey)</td></tr>
 <tr class="memdesc:a70ff933787d9cec8155f00b48c119976"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encrypt data using direct ECC (public for manual encryption)  <br /></td></tr>
 <tr class="separator:a70ff933787d9cec8155f00b48c119976"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a599b270767ee01d38c690170f006dd38" id="r_a599b270767ee01d38c690170f006dd38"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_encryption_service.html#a599b270767ee01d38c690170f006dd38">computeMIC</a> (const std::vector&lt; byte &gt; &amp;packetData, std::array&lt; byte, 4 &gt; &amp;mic)</td></tr>
-<tr class="memdesc:a599b270767ee01d38c690170f006dd38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute MIC for packet authentication.  <br /></td></tr>
-<tr class="separator:a599b270767ee01d38c690170f006dd38"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62b2fd92a665fd95e5384625ada753e0" id="r_a62b2fd92a665fd95e5384625ada753e0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_encryption_service.html#a62b2fd92a665fd95e5384625ada753e0">verifyMIC</a> (const std::vector&lt; byte &gt; &amp;packetData, const std::array&lt; byte, 4 &gt; &amp;receivedMic)</td></tr>
-<tr class="memdesc:a62b2fd92a665fd95e5384625ada753e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verify MIC for received packet.  <br /></td></tr>
-<tr class="separator:a62b2fd92a665fd95e5384625ada753e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00084686c3fb345dc027b775a2840201" id="r_a00084686c3fb345dc027b775a2840201"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_encryption_service.html#a00084686c3fb345dc027b775a2840201">shouldUseMIC</a> (uint8_t topic, uint8_t protocolVersion) const</td></tr>
-<tr class="memdesc:a00084686c3fb345dc027b775a2840201"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if MIC should be used for this packet.  <br /></td></tr>
-<tr class="separator:a00084686c3fb345dc027b775a2840201"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Central encryption service that handles all packet encryption/decryption. </p>
@@ -147,44 +138,6 @@ Public Member Functions</h2></td></tr>
 </ul>
 <p>It replaces direct <a class="el" href="class_aes_crypto.html">AesCrypto</a> usage in <a class="el" href="class_packet_router.html" title="This class is responsible for routing packets in the mesh network.">PacketRouter</a> to provide context-aware encryption. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a599b270767ee01d38c690170f006dd38" name="a599b270767ee01d38c690170f006dd38"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a599b270767ee01d38c690170f006dd38">&#9670;&#160;</a></span>computeMIC()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int EncryptionService::computeMIC </td>
-          <td>(</td>
-          <td class="paramtype">const std::vector&lt; byte &gt; &amp;&#160;</td>
-          <td class="paramname"><em>packetData</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::array&lt; byte, 4 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>mic</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Compute MIC for packet authentication. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">packetData</td><td>Complete packet data (header + encrypted payload) </td></tr>
-    <tr><td class="paramname">mic</td><td>Output buffer for 4-byte MIC </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE on success, error code otherwise </dd></dl>
-
-</div>
-</div>
 <a id="abfc810397e543d017bd65d9e021d31fe" name="abfc810397e543d017bd65d9e021d31fe"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abfc810397e543d017bd65d9e021d31fe">&#9670;&#160;</a></span>decrypt()</h2>
 
@@ -477,82 +430,6 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="a00084686c3fb345dc027b775a2840201" name="a00084686c3fb345dc027b775a2840201"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a00084686c3fb345dc027b775a2840201">&#9670;&#160;</a></span>shouldUseMIC()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool EncryptionService::shouldUseMIC </td>
-          <td>(</td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>topic</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>protocolVersion</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Check if MIC should be used for this packet. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">topic</td><td>Message topic </td></tr>
-    <tr><td class="paramname">protocolVersion</td><td>Protocol version from packet </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>true if MIC authentication is required </dd></dl>
-
-</div>
-</div>
-<a id="a62b2fd92a665fd95e5384625ada753e0" name="a62b2fd92a665fd95e5384625ada753e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a62b2fd92a665fd95e5384625ada753e0">&#9670;&#160;</a></span>verifyMIC()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool EncryptionService::verifyMIC </td>
-          <td>(</td>
-          <td class="paramtype">const std::vector&lt; byte &gt; &amp;&#160;</td>
-          <td class="paramname"><em>packetData</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::array&lt; byte, 4 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>receivedMic</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Verify MIC for received packet. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">packetData</td><td>Complete packet data (header + encrypted payload, excluding MIC) </td></tr>
-    <tr><td class="paramname">receivedMic</td><td>The 4-byte MIC to verify </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>true if MIC is valid, false otherwise </dd></dl>
 
 </div>
 </div>

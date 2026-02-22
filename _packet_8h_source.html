@@ -110,7 +110,7 @@ $(document).ready(function(){initNavTree('_packet_8h_source.html',''); initResiz
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;common/utils/Utils.h&gt;</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment">// Protocol version</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#define RM_PROTOCOL_VERSION 4</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#define RM_PROTOCOL_VERSION 3</span></div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#define PROTOCOL_VERSION_LENGTH 1</span></div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="comment">// Packet size constants</span></div>
@@ -127,304 +127,229 @@ $(document).ready(function(){initNavTree('_packet_8h_source.html',''); initResiz
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#define DATA_CRC_LENGTH 4</span></div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#define FCOUNTER_LENGTH 4</span></div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#define RESERVED_LENGTH 3</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#define MIC_LENGTH 4</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="comment">// Field positions in packet</span></div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#define VERSION_POS 0</span></div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#define SDEV_ID_POS (VERSION_POS + PROTOCOL_VERSION_LENGTH)</span></div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#define DDEV_ID_POS (SDEV_ID_POS + DEV_ID_LENGTH)</span></div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="preprocessor">#define PKT_ID_POS (DDEV_ID_POS + DEV_ID_LENGTH)</span></div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">#define TOPIC_POS (PKT_ID_POS + MSG_ID_LENGTH)</span></div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="preprocessor">#define DEVICE_TYPE_POS (TOPIC_POS + 1)</span></div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="preprocessor">#define HOP_COUNT_POS (DEVICE_TYPE_POS + 1)</span></div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="preprocessor">#define DATA_CRC_POS (HOP_COUNT_POS + 1)</span></div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="preprocessor">#define FCOUNTER_POS (DATA_CRC_POS + DATA_CRC_LENGTH)</span></div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="preprocessor">#define LAST_HOP_ID_POS (FCOUNTER_POS + FCOUNTER_LENGTH)</span></div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="preprocessor">#define NEXT_HOP_POS (LAST_HOP_ID_POS + DEV_ID_LENGTH)</span></div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="preprocessor">#define RESERVED_POS (NEXT_HOP_POS + DEV_ID_LENGTH)</span></div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="preprocessor">#define DATA_POS (RESERVED_POS + RESERVED_LENGTH)</span></div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="preprocessor">#define HEADER_LENGTH DATA_POS</span></div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="comment">// Data/packet range constants  </span></div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="preprocessor">#define MAX_DATA_LENGTH (PACKET_LENGTH - HEADER_LENGTH - MIC_LENGTH)</span></div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="preprocessor">#define MIN_PACKET_LENGTH (HEADER_LENGTH + 1 + MIC_LENGTH)</span></div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
-<div class="foldopen" id="foldopen00071" data-start="{" data-end="};">
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html">   71</a></span><span class="keyword">class </span><a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a></div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>{</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    <span class="comment">// Packet fields</span></div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    uint8_t protocolVersion;</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    std::array&lt;byte, DEV_ID_LENGTH&gt; sourceDevId;</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    std::array&lt;byte, DEV_ID_LENGTH&gt; destDevId;</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    std::array&lt;byte, MSG_ID_LENGTH&gt; packetId;</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    uint8_t topic;</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    uint8_t deviceType;</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    uint8_t hopCount;</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    uint32_t packetCrc;</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    uint32_t fcounter;</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    std::array&lt;byte, DEV_ID_LENGTH&gt; lastHopId;</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    std::array&lt;byte, DEV_ID_LENGTH&gt; nextHopId;</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    std::array&lt;byte, RESERVED_LENGTH&gt; reserved;</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    std::vector&lt;byte&gt; packetData;</div>
-<div class="foldopen" id="foldopen00091" data-start="{" data-end="}">
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#ad731509cf660bb60ca2f4092f16dbf1c">   91</a></span>    <a class="code hl_function" href="class_radio_mesh_packet.html#ad731509cf660bb60ca2f4092f16dbf1c">RadioMeshPacket</a>()</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    {</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>        protocolVersion = RM_PROTOCOL_VERSION;</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        sourceDevId.fill(0);</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        destDevId.fill(0);</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        packetId.fill(0);</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        lastHopId.fill(0);</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        nextHopId.fill(0);</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        reserved.fill(0);</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span> </div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        topic = MessageTopic::UNUSED;</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        deviceType = <a class="code hl_enumvalue" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c">MeshDeviceType::UNKNOWN</a>;</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        hopCount = 0;</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        packetCrc = 0;</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        fcounter = 0;</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    }</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="comment">// Field positions in packet</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#define VERSION_POS 0</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#define SDEV_ID_POS (VERSION_POS + PROTOCOL_VERSION_LENGTH)</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#define DDEV_ID_POS (SDEV_ID_POS + DEV_ID_LENGTH)</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#define PKT_ID_POS (DDEV_ID_POS + DEV_ID_LENGTH)</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="preprocessor">#define TOPIC_POS (PKT_ID_POS + MSG_ID_LENGTH)</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">#define DEVICE_TYPE_POS (TOPIC_POS + 1)</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="preprocessor">#define HOP_COUNT_POS (DEVICE_TYPE_POS + 1)</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="preprocessor">#define DATA_CRC_POS (HOP_COUNT_POS + 1)</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="preprocessor">#define FCOUNTER_POS (DATA_CRC_POS + DATA_CRC_LENGTH)</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="preprocessor">#define LAST_HOP_ID_POS (FCOUNTER_POS + FCOUNTER_LENGTH)</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="preprocessor">#define NEXT_HOP_POS (LAST_HOP_ID_POS + DEV_ID_LENGTH)</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="preprocessor">#define RESERVED_POS (NEXT_HOP_POS + DEV_ID_LENGTH)</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="preprocessor">#define DATA_POS (RESERVED_POS + RESERVED_LENGTH)</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="preprocessor">#define HEADER_LENGTH DATA_POS</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="comment">// Data/packet range constants</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="preprocessor">#define MAX_DATA_LENGTH (PACKET_LENGTH - HEADER_LENGTH)</span></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="preprocessor">#define MIN_PACKET_LENGTH (HEADER_LENGTH + 1)</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="foldopen" id="foldopen00070" data-start="{" data-end="};">
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html">   70</a></span><span class="keyword">class </span><a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a></div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>{</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="comment">// Packet fields</span></div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    uint8_t protocolVersion;</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    std::array&lt;byte, DEV_ID_LENGTH&gt; sourceDevId;</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    std::array&lt;byte, DEV_ID_LENGTH&gt; destDevId;</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    std::array&lt;byte, MSG_ID_LENGTH&gt; packetId;</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    uint8_t topic;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    uint8_t deviceType;</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    uint8_t hopCount;</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    uint32_t packetCrc;</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    uint32_t fcounter;</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    std::array&lt;byte, DEV_ID_LENGTH&gt; lastHopId;</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    std::array&lt;byte, DEV_ID_LENGTH&gt; nextHopId;</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    std::array&lt;byte, RESERVED_LENGTH&gt; reserved;</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    std::vector&lt;byte&gt; packetData;</div>
+<div class="foldopen" id="foldopen00090" data-start="{" data-end="}">
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#ad731509cf660bb60ca2f4092f16dbf1c">   90</a></span>    <a class="code hl_function" href="class_radio_mesh_packet.html#ad731509cf660bb60ca2f4092f16dbf1c">RadioMeshPacket</a>()</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    {</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>        protocolVersion = RM_PROTOCOL_VERSION;</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>        sourceDevId.fill(0);</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        destDevId.fill(0);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        packetId.fill(0);</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        lastHopId.fill(0);</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        nextHopId.fill(0);</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        reserved.fill(0);</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        topic = MessageTopic::UNUSED;</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        deviceType = <a class="code hl_enumvalue" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c">MeshDeviceType::UNKNOWN</a>;</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        hopCount = 0;</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        packetCrc = 0;</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        fcounter = 0;</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    }</div>
 </div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
-<div class="foldopen" id="foldopen00112" data-start="{" data-end="}">
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#aa40164ed2272e27fafb532f5ff047b11">  112</a></span>    <span class="keyword">explicit</span> <a class="code hl_function" href="class_radio_mesh_packet.html#aa40164ed2272e27fafb532f5ff047b11">RadioMeshPacket</a>(<span class="keyword">const</span> std::vector&lt;byte&gt;&amp; buffer)</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    {</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>        <span class="comment">// Simple sequential field parsing</span></div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>        protocolVersion = buffer[VERSION_POS];</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span> </div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>        <span class="comment">// IDs (4 bytes each)</span></div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span> </div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>        <span class="comment">// use array copy for better performance</span></div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>        std::copy_n(buffer.begin() + SDEV_ID_POS, DEV_ID_LENGTH, sourceDevId.begin());</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        std::copy_n(buffer.begin() + DDEV_ID_POS, DEV_ID_LENGTH, destDevId.begin());</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>        std::copy_n(buffer.begin() + PKT_ID_POS, MSG_ID_LENGTH, packetId.begin());</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        <span class="comment">// Single byte fields</span></div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>        topic = buffer[TOPIC_POS];</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>        deviceType = buffer[DEVICE_TYPE_POS];</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>        hopCount = buffer[HOP_COUNT_POS];</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span> </div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>        <span class="comment">// Multi-byte fields</span></div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>        packetCrc = (buffer[DATA_CRC_POS] &lt;&lt; 24) | (buffer[DATA_CRC_POS + 1] &lt;&lt; 16) |</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>                    (buffer[DATA_CRC_POS + 2] &lt;&lt; 8) | buffer[DATA_CRC_POS + 3];</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span> </div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>        fcounter = (buffer[FCOUNTER_POS] &lt;&lt; 24) | (buffer[FCOUNTER_POS + 1] &lt;&lt; 16) |</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>                   (buffer[FCOUNTER_POS + 2] &lt;&lt; 8) | buffer[FCOUNTER_POS + 3];</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>        <span class="comment">// Routing IDs</span></div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>        std::copy_n(buffer.begin() + LAST_HOP_ID_POS, DEV_ID_LENGTH, lastHopId.begin());</div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>        std::copy_n(buffer.begin() + NEXT_HOP_POS, DEV_ID_LENGTH, nextHopId.begin());</div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>        <span class="comment">// Reserved and data</span></div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>        std::copy_n(buffer.begin() + RESERVED_POS, RESERVED_LENGTH, reserved.begin());</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>        packetData.assign(buffer.begin() + DATA_POS, buffer.end());</div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    }</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span> </div>
+<div class="foldopen" id="foldopen00111" data-start="{" data-end="}">
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#aa40164ed2272e27fafb532f5ff047b11">  111</a></span>    <span class="keyword">explicit</span> <a class="code hl_function" href="class_radio_mesh_packet.html#aa40164ed2272e27fafb532f5ff047b11">RadioMeshPacket</a>(<span class="keyword">const</span> std::vector&lt;byte&gt;&amp; buffer)</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    {</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>        <span class="comment">// Simple sequential field parsing</span></div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>        protocolVersion = buffer[VERSION_POS];</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span> </div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>        <span class="comment">// IDs (4 bytes each)</span></div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>        <span class="comment">// use array copy for better performance</span></div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>        std::copy_n(buffer.begin() + SDEV_ID_POS, DEV_ID_LENGTH, sourceDevId.begin());</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>        std::copy_n(buffer.begin() + DDEV_ID_POS, DEV_ID_LENGTH, destDevId.begin());</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        std::copy_n(buffer.begin() + PKT_ID_POS, MSG_ID_LENGTH, packetId.begin());</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        <span class="comment">// Single byte fields</span></div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        topic = buffer[TOPIC_POS];</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>        deviceType = buffer[DEVICE_TYPE_POS];</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>        hopCount = buffer[HOP_COUNT_POS];</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span> </div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>        <span class="comment">// Multi-byte fields</span></div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>        packetCrc = (buffer[DATA_CRC_POS] &lt;&lt; 24) | (buffer[DATA_CRC_POS + 1] &lt;&lt; 16) |</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>                    (buffer[DATA_CRC_POS + 2] &lt;&lt; 8) | buffer[DATA_CRC_POS + 3];</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>        fcounter = (buffer[FCOUNTER_POS] &lt;&lt; 24) | (buffer[FCOUNTER_POS + 1] &lt;&lt; 16) |</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>                   (buffer[FCOUNTER_POS + 2] &lt;&lt; 8) | buffer[FCOUNTER_POS + 3];</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>        <span class="comment">// Routing IDs</span></div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>        std::copy_n(buffer.begin() + LAST_HOP_ID_POS, DEV_ID_LENGTH, lastHopId.begin());</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>        std::copy_n(buffer.begin() + NEXT_HOP_POS, DEV_ID_LENGTH, nextHopId.begin());</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>        <span class="comment">// Reserved and data</span></div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>        std::copy_n(buffer.begin() + RESERVED_POS, RESERVED_LENGTH, reserved.begin());</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>        packetData.assign(buffer.begin() + DATA_POS, buffer.end());</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>    }</div>
 </div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span> </div>
-<div class="foldopen" id="foldopen00148" data-start="{" data-end="}">
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#a784c0a4d4f0805d56edb699e75fca03a">  148</a></span>    std::vector&lt;byte&gt; <a class="code hl_function" href="class_radio_mesh_packet.html#a784c0a4d4f0805d56edb699e75fca03a">toByteBuffer</a>()<span class="keyword"> const</span></div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>        std::vector&lt;byte&gt; buffer;</div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>        buffer.reserve(HEADER_LENGTH + packetData.size());</div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>        <span class="comment">// Add header fields</span></div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>        buffer.push_back(protocolVersion);</div>
-<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>        buffer.insert(buffer.end(), sourceDevId.begin(), sourceDevId.end());</div>
-<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>        buffer.insert(buffer.end(), destDevId.begin(), destDevId.end());</div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>        buffer.insert(buffer.end(), packetId.begin(), packetId.end());</div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>        buffer.push_back(topic);</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        buffer.push_back(deviceType);</div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>        buffer.push_back(hopCount);</div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span> </div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>        buffer.push_back((packetCrc &gt;&gt; 24) &amp; 0xFF);</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>        buffer.push_back((packetCrc &gt;&gt; 16) &amp; 0xFF);</div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>        buffer.push_back((packetCrc &gt;&gt; 8) &amp; 0xFF);</div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>        buffer.push_back(packetCrc &amp; 0xFF);</div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span> </div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        buffer.push_back((fcounter &gt;&gt; 24) &amp; 0xFF);</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>        buffer.push_back((fcounter &gt;&gt; 16) &amp; 0xFF);</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>        buffer.push_back((fcounter &gt;&gt; 8) &amp; 0xFF);</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>        buffer.push_back(fcounter &amp; 0xFF);</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span> </div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>        buffer.insert(buffer.end(), lastHopId.begin(), lastHopId.end());</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>        buffer.insert(buffer.end(), nextHopId.begin(), nextHopId.end());</div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>        buffer.insert(buffer.end(), reserved.begin(), reserved.end());</div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span> </div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>        <span class="comment">// Add data section</span></div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>        buffer.insert(buffer.end(), packetData.begin(), packetData.end());</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span> </div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>        <span class="keywordflow">return</span> buffer;</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>    }</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span> </div>
+<div class="foldopen" id="foldopen00147" data-start="{" data-end="}">
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#a784c0a4d4f0805d56edb699e75fca03a">  147</a></span>    std::vector&lt;byte&gt; <a class="code hl_function" href="class_radio_mesh_packet.html#a784c0a4d4f0805d56edb699e75fca03a">toByteBuffer</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>        std::vector&lt;byte&gt; buffer;</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>        buffer.reserve(HEADER_LENGTH + packetData.size());</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span> </div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>        <span class="comment">// Add header fields</span></div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>        buffer.push_back(protocolVersion);</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>        buffer.insert(buffer.end(), sourceDevId.begin(), sourceDevId.end());</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>        buffer.insert(buffer.end(), destDevId.begin(), destDevId.end());</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>        buffer.insert(buffer.end(), packetId.begin(), packetId.end());</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>        buffer.push_back(topic);</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>        buffer.push_back(deviceType);</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        buffer.push_back(hopCount);</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span> </div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>        buffer.push_back((packetCrc &gt;&gt; 24) &amp; 0xFF);</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>        buffer.push_back((packetCrc &gt;&gt; 16) &amp; 0xFF);</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>        buffer.push_back((packetCrc &gt;&gt; 8) &amp; 0xFF);</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>        buffer.push_back(packetCrc &amp; 0xFF);</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span> </div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>        buffer.push_back((fcounter &gt;&gt; 24) &amp; 0xFF);</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        buffer.push_back((fcounter &gt;&gt; 16) &amp; 0xFF);</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>        buffer.push_back((fcounter &gt;&gt; 8) &amp; 0xFF);</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>        buffer.push_back(fcounter &amp; 0xFF);</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span> </div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>        buffer.insert(buffer.end(), lastHopId.begin(), lastHopId.end());</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>        buffer.insert(buffer.end(), nextHopId.begin(), nextHopId.end());</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>        buffer.insert(buffer.end(), reserved.begin(), reserved.end());</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>        <span class="comment">// Add data section</span></div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>        buffer.insert(buffer.end(), packetData.begin(), packetData.end());</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span> </div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>        <span class="keywordflow">return</span> buffer;</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    }</div>
 </div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span> </div>
-<div class="foldopen" id="foldopen00185" data-start="{" data-end="}">
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#a54734d38deeb23b50e4d0f4b966b3a07">  185</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_radio_mesh_packet.html#a54734d38deeb23b50e4d0f4b966b3a07">reset</a>()</div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    {</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>        protocolVersion = RM_PROTOCOL_VERSION;</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        sourceDevId.fill(0);</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>        destDevId.fill(0);</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>        packetId.fill(0);</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>        lastHopId.fill(0);</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>        nextHopId.fill(0);</div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>        reserved.fill(0);</div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>        std::vector&lt;byte&gt;().swap(packetData);</div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span> </div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>        topic = MessageTopic::UNUSED;</div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>        deviceType = <a class="code hl_enumvalue" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c">MeshDeviceType::UNKNOWN</a>;</div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>        hopCount = 0;</div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>        packetCrc = 0;</div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>        fcounter = 0;</div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>    }</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span> </div>
+<div class="foldopen" id="foldopen00184" data-start="{" data-end="}">
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#a54734d38deeb23b50e4d0f4b966b3a07">  184</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_radio_mesh_packet.html#a54734d38deeb23b50e4d0f4b966b3a07">reset</a>()</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>    {</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>        protocolVersion = RM_PROTOCOL_VERSION;</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>        sourceDevId.fill(0);</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        destDevId.fill(0);</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>        packetId.fill(0);</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>        lastHopId.fill(0);</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>        nextHopId.fill(0);</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>        reserved.fill(0);</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>        std::vector&lt;byte&gt;().swap(packetData);</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span> </div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>        topic = MessageTopic::UNUSED;</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>        deviceType = <a class="code hl_enumvalue" href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c">MeshDeviceType::UNKNOWN</a>;</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>        hopCount = 0;</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>        packetCrc = 0;</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>        fcounter = 0;</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>    }</div>
 </div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span> </div>
-<div class="foldopen" id="foldopen00206" data-start="{" data-end="}">
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#a8a256e1eff5a897ce188a28078131803">  206</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_radio_mesh_packet.html#a8a256e1eff5a897ce188a28078131803">log</a>()<span class="keyword"> const</span></div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>        logdbg_ln(<span class="stringliteral">&quot;Packet dump:&quot;</span>);</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>        logdbg_ln(<span class="stringliteral">&quot;  Protocol Version: %d&quot;</span>, protocolVersion);</div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>        logdbg_ln(<span class="stringliteral">&quot;  Source ID: %s&quot;</span>,</div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>                  RadioMeshUtils::convertToHex(sourceDevId.data(), sourceDevId.size()).c_str());</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>        logdbg_ln(<span class="stringliteral">&quot;  Dest ID: %s&quot;</span>,</div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>                  RadioMeshUtils::convertToHex(destDevId.data(), destDevId.size()).c_str());</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>        logdbg_ln(<span class="stringliteral">&quot;  Packet ID: 0x%s&quot;</span>,</div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>                  RadioMeshUtils::convertToHex(packetId.data(), packetId.size()).c_str());</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>        logdbg_ln(<span class="stringliteral">&quot;  Topic: %s&quot;</span>, TopicUtils::topicToString(topic).c_str());</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>        logdbg_ln(<span class="stringliteral">&quot;  Device Type: %d&quot;</span>, deviceType);</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>        logdbg_ln(<span class="stringliteral">&quot;  Hop Count: %d&quot;</span>, hopCount);</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>        logdbg_ln(<span class="stringliteral">&quot;  CRC: 0x%04X&quot;</span>, packetCrc);</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>        logdbg_ln(<span class="stringliteral">&quot;  Frame Counter: %d&quot;</span>, fcounter);</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>        logdbg_ln(<span class="stringliteral">&quot;  Last Hop: %s&quot;</span>,</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>                  RadioMeshUtils::convertToHex(lastHopId.data(), lastHopId.size()).c_str());</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>        logdbg_ln(<span class="stringliteral">&quot;  Next Hop: %s&quot;</span>,</div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>                  RadioMeshUtils::convertToHex(nextHopId.data(), nextHopId.size()).c_str());</div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>        logdbg_ln(<span class="stringliteral">&quot;  Reserved: %s&quot;</span>,</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>                  RadioMeshUtils::convertToHex(reserved.data(), reserved.size()).c_str());</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>        logdbg_ln(<span class="stringliteral">&quot;  Data Length: %d bytes&quot;</span>, packetData.size());</div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>        <span class="keywordflow">if</span> (!packetData.empty()) {</div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>            logdbg_ln(<span class="stringliteral">&quot;  Data: %s&quot;</span>,</div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>                      RadioMeshUtils::convertToHex(packetData.data(), packetData.size()).c_str());</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        }</div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>    }</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span> </div>
+<div class="foldopen" id="foldopen00205" data-start="{" data-end="}">
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#a8a256e1eff5a897ce188a28078131803">  205</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_radio_mesh_packet.html#a8a256e1eff5a897ce188a28078131803">log</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>        logdbg_ln(<span class="stringliteral">&quot;Packet dump:&quot;</span>);</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>        logdbg_ln(<span class="stringliteral">&quot;  Protocol Version: %d&quot;</span>, protocolVersion);</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>        logdbg_ln(<span class="stringliteral">&quot;  Source ID: %s&quot;</span>,</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>                  RadioMeshUtils::convertToHex(sourceDevId.data(), sourceDevId.size()).c_str());</div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>        logdbg_ln(<span class="stringliteral">&quot;  Dest ID: %s&quot;</span>,</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>                  RadioMeshUtils::convertToHex(destDevId.data(), destDevId.size()).c_str());</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>        logdbg_ln(<span class="stringliteral">&quot;  Packet ID: 0x%s&quot;</span>,</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>                  RadioMeshUtils::convertToHex(packetId.data(), packetId.size()).c_str());</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>        logdbg_ln(<span class="stringliteral">&quot;  Topic: %s&quot;</span>, TopicUtils::topicToString(topic).c_str());</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>        logdbg_ln(<span class="stringliteral">&quot;  Device Type: %d&quot;</span>, deviceType);</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>        logdbg_ln(<span class="stringliteral">&quot;  Hop Count: %d&quot;</span>, hopCount);</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>        logdbg_ln(<span class="stringliteral">&quot;  CRC: 0x%04X&quot;</span>, packetCrc);</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>        logdbg_ln(<span class="stringliteral">&quot;  Frame Counter: %d&quot;</span>, fcounter);</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>        logdbg_ln(<span class="stringliteral">&quot;  Last Hop: %s&quot;</span>,</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>                  RadioMeshUtils::convertToHex(lastHopId.data(), lastHopId.size()).c_str());</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>        logdbg_ln(<span class="stringliteral">&quot;  Next Hop: %s&quot;</span>,</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>                  RadioMeshUtils::convertToHex(nextHopId.data(), nextHopId.size()).c_str());</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>        logdbg_ln(<span class="stringliteral">&quot;  Reserved: %s&quot;</span>,</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>                  RadioMeshUtils::convertToHex(reserved.data(), reserved.size()).c_str());</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>        logdbg_ln(<span class="stringliteral">&quot;  Data Length: %d bytes&quot;</span>, packetData.size());</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>        <span class="keywordflow">if</span> (!packetData.empty()) {</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>            logdbg_ln(<span class="stringliteral">&quot;  Data: %s&quot;</span>,</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>                      RadioMeshUtils::convertToHex(packetData.data(), packetData.size()).c_str());</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>        }</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>    }</div>
 </div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span> </div>
-<div class="foldopen" id="foldopen00238" data-start="{" data-end="}">
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#af0a4ee6e4b06c254e96a33e66bd60387">  238</a></span>    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">size_t</span> <a class="code hl_function" href="class_radio_mesh_packet.html#af0a4ee6e4b06c254e96a33e66bd60387">getMaxDataLength</a>()</div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    {</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>        <span class="keywordflow">return</span> MAX_DATA_LENGTH;</div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    }</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span> </div>
+<div class="foldopen" id="foldopen00237" data-start="{" data-end="}">
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#af0a4ee6e4b06c254e96a33e66bd60387">  237</a></span>    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">size_t</span> <a class="code hl_function" href="class_radio_mesh_packet.html#af0a4ee6e4b06c254e96a33e66bd60387">getMaxDataLength</a>()</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>    {</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>        <span class="keywordflow">return</span> MAX_DATA_LENGTH;</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>    }</div>
 </div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span> </div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>    <span class="keyword">static</span> <span class="keywordtype">bool</span> isInclusionTopic(uint8_t topic)</div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    {</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>        <span class="keywordflow">return</span> (topic == MessageTopic::INCLUDE_REQUEST || topic == MessageTopic::INCLUDE_RESPONSE ||</div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>                topic == MessageTopic::INCLUDE_OPEN || topic == MessageTopic::INCLUDE_CONFIRM);</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>    }</div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span> </div>
-<div class="foldopen" id="foldopen00253" data-start="{" data-end="}">
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#a1ff847f61957a2b943329d4440b181c0">  253</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="class_radio_mesh_packet.html#a1ff847f61957a2b943329d4440b181c0">supportsMIC</a>()<span class="keyword"> const</span></div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>        <span class="keywordflow">return</span> protocolVersion &gt;= 4;</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    }</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span> </div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>    <span class="keyword">static</span> <span class="keywordtype">bool</span> isInclusionTopic(uint8_t topic)</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>    {</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>        <span class="keywordflow">return</span> (topic == MessageTopic::INCLUDE_REQUEST || topic == MessageTopic::INCLUDE_RESPONSE ||</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>                topic == MessageTopic::INCLUDE_OPEN || topic == MessageTopic::INCLUDE_CONFIRM);</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>    }</div>
+<div class="foldopen" id="foldopen00250" data-start="{" data-end="}">
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#a6948b22316c8ccb882eed3bc21773d3d">  250</a></span>    <a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; <a class="code hl_function" href="class_radio_mesh_packet.html#a6948b22316c8ccb882eed3bc21773d3d">operator=</a>(<span class="keyword">const</span> <a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; other)</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>    {</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>        <span class="keywordflow">if</span> (<span class="keyword">this</span> != &amp;other) {</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>            sourceDevId = other.sourceDevId;</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>            destDevId = other.destDevId;</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>            packetId = other.packetId;</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>            topic = other.topic;</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>            deviceType = other.deviceType;</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>            hopCount = other.hopCount;</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>            packetCrc = other.packetCrc;</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>            fcounter = other.fcounter;</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>            lastHopId = other.lastHopId;</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>            nextHopId = other.nextHopId;</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>            reserved = other.reserved;</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>            packetData = other.packetData;</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>        }</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    }</div>
 </div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span> </div>
-<div class="foldopen" id="foldopen00262" data-start="{" data-end="}">
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#a69b1897d0145ec2790f38ece097640d6">  262</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="class_radio_mesh_packet.html#a69b1897d0145ec2790f38ece097640d6">shouldUseMIC</a>()<span class="keyword"> const</span></div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="class_radio_mesh_packet.html#a1ff847f61957a2b943329d4440b181c0">supportsMIC</a>() &amp;&amp; </div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>               topic != MessageTopic::INCLUDE_OPEN &amp;&amp; </div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>               topic != MessageTopic::INCLUDE_REQUEST &amp;&amp; </div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>               topic != MessageTopic::INCLUDE_RESPONSE;</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    }</div>
-</div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span> </div>
-<div class="foldopen" id="foldopen00275" data-start="{" data-end="}">
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#ab8d2abd6d5faa125c583e36f6b91ebc5">  275</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="class_radio_mesh_packet.html#ab8d2abd6d5faa125c583e36f6b91ebc5">extractMIC</a>(std::array&lt;byte, MIC_LENGTH&gt;&amp; mic)<span class="keyword"> const</span></div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>        <span class="keywordflow">if</span> (!<a class="code hl_function" href="class_radio_mesh_packet.html#a69b1897d0145ec2790f38ece097640d6">shouldUseMIC</a>() || packetData.size() &lt; MIC_LENGTH) {</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>        }</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>        </div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>        <span class="comment">// MIC is in the last 4 bytes of packet data</span></div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>        <span class="keywordtype">size_t</span> micPos = packetData.size() - MIC_LENGTH;</div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>        std::copy(packetData.begin() + micPos, packetData.end(), mic.begin());</div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    }</div>
-</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span> </div>
-<div class="foldopen" id="foldopen00291" data-start="{" data-end="}">
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#adee3beccdf82097bf3b3b250962f2ecb">  291</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_radio_mesh_packet.html#adee3beccdf82097bf3b3b250962f2ecb">appendMIC</a>(<span class="keyword">const</span> std::array&lt;byte, MIC_LENGTH&gt;&amp; mic)</div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>    {</div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>        <span class="keywordflow">if</span> (<a class="code hl_function" href="class_radio_mesh_packet.html#a69b1897d0145ec2790f38ece097640d6">shouldUseMIC</a>()) {</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>            packetData.insert(packetData.end(), mic.begin(), mic.end());</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>        }</div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>    }</div>
-</div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span> </div>
-<div class="foldopen" id="foldopen00302" data-start="{" data-end="}">
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#a3477afbd96cf21253f7829880171f1ea">  302</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="class_radio_mesh_packet.html#a3477afbd96cf21253f7829880171f1ea">removeMIC</a>()</div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>    {</div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>        <span class="keywordflow">if</span> (!<a class="code hl_function" href="class_radio_mesh_packet.html#a69b1897d0145ec2790f38ece097640d6">shouldUseMIC</a>() || packetData.size() &lt; MIC_LENGTH) {</div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>        }</div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>        </div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>        <span class="comment">// Remove last 4 bytes (MIC)</span></div>
-<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>        packetData.resize(packetData.size() - MIC_LENGTH);</div>
-<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>    }</div>
-</div>
-<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span> </div>
-<div class="foldopen" id="foldopen00317" data-start="{" data-end="}">
-<div class="line"><a id="l00317" name="l00317"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#a1cf8c843ac382b26a782a971f91b0fc6">  317</a></span>    std::vector&lt;byte&gt; <a class="code hl_function" href="class_radio_mesh_packet.html#a1cf8c843ac382b26a782a971f91b0fc6">getDataForMIC</a>()<span class="keyword"> const</span></div>
-<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>        std::vector&lt;byte&gt; data = <a class="code hl_function" href="class_radio_mesh_packet.html#a784c0a4d4f0805d56edb699e75fca03a">toByteBuffer</a>();</div>
-<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>        </div>
-<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>        <span class="comment">// If MIC is present, remove it</span></div>
-<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>        <span class="keywordflow">if</span> (<a class="code hl_function" href="class_radio_mesh_packet.html#a69b1897d0145ec2790f38ece097640d6">shouldUseMIC</a>() &amp;&amp; data.size() &gt;= HEADER_LENGTH + MIC_LENGTH) {</div>
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>            data.resize(data.size() - MIC_LENGTH);</div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>        }</div>
-<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>        </div>
-<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>        <span class="keywordflow">return</span> data;</div>
-<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>    }</div>
-</div>
-<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span> </div>
-<div class="foldopen" id="foldopen00332" data-start="{" data-end="}">
-<div class="line"><a id="l00332" name="l00332"></a><span class="lineno"><a class="line" href="class_radio_mesh_packet.html#a6948b22316c8ccb882eed3bc21773d3d">  332</a></span>    <a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; <a class="code hl_function" href="class_radio_mesh_packet.html#a6948b22316c8ccb882eed3bc21773d3d">operator=</a>(<span class="keyword">const</span> <a class="code hl_class" href="class_radio_mesh_packet.html">RadioMeshPacket</a>&amp; other)</div>
-<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>    {</div>
-<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>        <span class="keywordflow">if</span> (<span class="keyword">this</span> != &amp;other) {</div>
-<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>            sourceDevId = other.sourceDevId;</div>
-<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>            destDevId = other.destDevId;</div>
-<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>            packetId = other.packetId;</div>
-<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>            topic = other.topic;</div>
-<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>            deviceType = other.deviceType;</div>
-<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>            hopCount = other.hopCount;</div>
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>            packetCrc = other.packetCrc;</div>
-<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>            fcounter = other.fcounter;</div>
-<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>            lastHopId = other.lastHopId;</div>
-<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>            nextHopId = other.nextHopId;</div>
-<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>            reserved = other.reserved;</div>
-<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>            packetData = other.packetData;</div>
-<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>        }</div>
-<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>    }</div>
-</div>
-<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>};</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>};</div>
 </div>
 <div class="ttc" id="a_definitions_8h_html"><div class="ttname"><a href="_definitions_8h.html">Definitions.h</a></div><div class="ttdoc">This file contains type definitions used in the RadioMesh project.</div></div>
 <div class="ttc" id="a_definitions_8h_html_ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c"><div class="ttname"><a href="_definitions_8h.html#ac96a3da8e6084c54e4cbeda2a1891c7fa6ce26a62afab55d7606ad4e92428b30c">UNKNOWN</a></div><div class="ttdeci">@ UNKNOWN</div><div class="ttdoc">The device type is unknown.</div><div class="ttdef"><b>Definition</b> Definitions.h:63</div></div>
-<div class="ttc" id="aclass_radio_mesh_packet_html"><div class="ttname"><a href="class_radio_mesh_packet.html">RadioMeshPacket</a></div><div class="ttdoc">Optimized packet structure for the mesh protocol.</div><div class="ttdef"><b>Definition</b> Packet.h:72</div></div>
-<div class="ttc" id="aclass_radio_mesh_packet_html_a1cf8c843ac382b26a782a971f91b0fc6"><div class="ttname"><a href="class_radio_mesh_packet.html#a1cf8c843ac382b26a782a971f91b0fc6">RadioMeshPacket::getDataForMIC</a></div><div class="ttdeci">std::vector&lt; byte &gt; getDataForMIC() const</div><div class="ttdoc">Get packet data for MIC computation (header + encrypted payload)</div><div class="ttdef"><b>Definition</b> Packet.h:317</div></div>
-<div class="ttc" id="aclass_radio_mesh_packet_html_a1ff847f61957a2b943329d4440b181c0"><div class="ttname"><a href="class_radio_mesh_packet.html#a1ff847f61957a2b943329d4440b181c0">RadioMeshPacket::supportsMIC</a></div><div class="ttdeci">bool supportsMIC() const</div><div class="ttdoc">Check if protocol version supports MIC.</div><div class="ttdef"><b>Definition</b> Packet.h:253</div></div>
-<div class="ttc" id="aclass_radio_mesh_packet_html_a3477afbd96cf21253f7829880171f1ea"><div class="ttname"><a href="class_radio_mesh_packet.html#a3477afbd96cf21253f7829880171f1ea">RadioMeshPacket::removeMIC</a></div><div class="ttdeci">bool removeMIC()</div><div class="ttdoc">Remove MIC from packet data.</div><div class="ttdef"><b>Definition</b> Packet.h:302</div></div>
-<div class="ttc" id="aclass_radio_mesh_packet_html_a54734d38deeb23b50e4d0f4b966b3a07"><div class="ttname"><a href="class_radio_mesh_packet.html#a54734d38deeb23b50e4d0f4b966b3a07">RadioMeshPacket::reset</a></div><div class="ttdeci">void reset()</div><div class="ttdoc">Reset packet to initial state.</div><div class="ttdef"><b>Definition</b> Packet.h:185</div></div>
-<div class="ttc" id="aclass_radio_mesh_packet_html_a6948b22316c8ccb882eed3bc21773d3d"><div class="ttname"><a href="class_radio_mesh_packet.html#a6948b22316c8ccb882eed3bc21773d3d">RadioMeshPacket::operator=</a></div><div class="ttdeci">RadioMeshPacket &amp; operator=(const RadioMeshPacket &amp;other)</div><div class="ttdoc">Assignment operator.</div><div class="ttdef"><b>Definition</b> Packet.h:332</div></div>
-<div class="ttc" id="aclass_radio_mesh_packet_html_a69b1897d0145ec2790f38ece097640d6"><div class="ttname"><a href="class_radio_mesh_packet.html#a69b1897d0145ec2790f38ece097640d6">RadioMeshPacket::shouldUseMIC</a></div><div class="ttdeci">bool shouldUseMIC() const</div><div class="ttdoc">Check if topic should use MIC.</div><div class="ttdef"><b>Definition</b> Packet.h:262</div></div>
-<div class="ttc" id="aclass_radio_mesh_packet_html_a784c0a4d4f0805d56edb699e75fca03a"><div class="ttname"><a href="class_radio_mesh_packet.html#a784c0a4d4f0805d56edb699e75fca03a">RadioMeshPacket::toByteBuffer</a></div><div class="ttdeci">std::vector&lt; byte &gt; toByteBuffer() const</div><div class="ttdoc">Convert packet to byte buffer.</div><div class="ttdef"><b>Definition</b> Packet.h:148</div></div>
-<div class="ttc" id="aclass_radio_mesh_packet_html_a8a256e1eff5a897ce188a28078131803"><div class="ttname"><a href="class_radio_mesh_packet.html#a8a256e1eff5a897ce188a28078131803">RadioMeshPacket::log</a></div><div class="ttdeci">void log() const</div><div class="ttdoc">Log packet contents for debugging.</div><div class="ttdef"><b>Definition</b> Packet.h:206</div></div>
-<div class="ttc" id="aclass_radio_mesh_packet_html_aa40164ed2272e27fafb532f5ff047b11"><div class="ttname"><a href="class_radio_mesh_packet.html#aa40164ed2272e27fafb532f5ff047b11">RadioMeshPacket::RadioMeshPacket</a></div><div class="ttdeci">RadioMeshPacket(const std::vector&lt; byte &gt; &amp;buffer)</div><div class="ttdoc">Construct packet from byte buffer.</div><div class="ttdef"><b>Definition</b> Packet.h:112</div></div>
-<div class="ttc" id="aclass_radio_mesh_packet_html_ab8d2abd6d5faa125c583e36f6b91ebc5"><div class="ttname"><a href="class_radio_mesh_packet.html#ab8d2abd6d5faa125c583e36f6b91ebc5">RadioMeshPacket::extractMIC</a></div><div class="ttdeci">bool extractMIC(std::array&lt; byte, MIC_LENGTH &gt; &amp;mic) const</div><div class="ttdoc">Extract MIC from packet data.</div><div class="ttdef"><b>Definition</b> Packet.h:275</div></div>
-<div class="ttc" id="aclass_radio_mesh_packet_html_ad731509cf660bb60ca2f4092f16dbf1c"><div class="ttname"><a href="class_radio_mesh_packet.html#ad731509cf660bb60ca2f4092f16dbf1c">RadioMeshPacket::RadioMeshPacket</a></div><div class="ttdeci">RadioMeshPacket()</div><div class="ttdoc">Default constructor - initializes empty packet.</div><div class="ttdef"><b>Definition</b> Packet.h:91</div></div>
-<div class="ttc" id="aclass_radio_mesh_packet_html_adee3beccdf82097bf3b3b250962f2ecb"><div class="ttname"><a href="class_radio_mesh_packet.html#adee3beccdf82097bf3b3b250962f2ecb">RadioMeshPacket::appendMIC</a></div><div class="ttdeci">void appendMIC(const std::array&lt; byte, MIC_LENGTH &gt; &amp;mic)</div><div class="ttdoc">Append MIC to packet data.</div><div class="ttdef"><b>Definition</b> Packet.h:291</div></div>
-<div class="ttc" id="aclass_radio_mesh_packet_html_af0a4ee6e4b06c254e96a33e66bd60387"><div class="ttname"><a href="class_radio_mesh_packet.html#af0a4ee6e4b06c254e96a33e66bd60387">RadioMeshPacket::getMaxDataLength</a></div><div class="ttdeci">static constexpr size_t getMaxDataLength()</div><div class="ttdoc">Get maximum allowed data length.</div><div class="ttdef"><b>Definition</b> Packet.h:238</div></div>
+<div class="ttc" id="aclass_radio_mesh_packet_html"><div class="ttname"><a href="class_radio_mesh_packet.html">RadioMeshPacket</a></div><div class="ttdoc">Optimized packet structure for the mesh protocol.</div><div class="ttdef"><b>Definition</b> Packet.h:71</div></div>
+<div class="ttc" id="aclass_radio_mesh_packet_html_a54734d38deeb23b50e4d0f4b966b3a07"><div class="ttname"><a href="class_radio_mesh_packet.html#a54734d38deeb23b50e4d0f4b966b3a07">RadioMeshPacket::reset</a></div><div class="ttdeci">void reset()</div><div class="ttdoc">Reset packet to initial state.</div><div class="ttdef"><b>Definition</b> Packet.h:184</div></div>
+<div class="ttc" id="aclass_radio_mesh_packet_html_a6948b22316c8ccb882eed3bc21773d3d"><div class="ttname"><a href="class_radio_mesh_packet.html#a6948b22316c8ccb882eed3bc21773d3d">RadioMeshPacket::operator=</a></div><div class="ttdeci">RadioMeshPacket &amp; operator=(const RadioMeshPacket &amp;other)</div><div class="ttdoc">Assignment operator.</div><div class="ttdef"><b>Definition</b> Packet.h:250</div></div>
+<div class="ttc" id="aclass_radio_mesh_packet_html_a784c0a4d4f0805d56edb699e75fca03a"><div class="ttname"><a href="class_radio_mesh_packet.html#a784c0a4d4f0805d56edb699e75fca03a">RadioMeshPacket::toByteBuffer</a></div><div class="ttdeci">std::vector&lt; byte &gt; toByteBuffer() const</div><div class="ttdoc">Convert packet to byte buffer.</div><div class="ttdef"><b>Definition</b> Packet.h:147</div></div>
+<div class="ttc" id="aclass_radio_mesh_packet_html_a8a256e1eff5a897ce188a28078131803"><div class="ttname"><a href="class_radio_mesh_packet.html#a8a256e1eff5a897ce188a28078131803">RadioMeshPacket::log</a></div><div class="ttdeci">void log() const</div><div class="ttdoc">Log packet contents for debugging.</div><div class="ttdef"><b>Definition</b> Packet.h:205</div></div>
+<div class="ttc" id="aclass_radio_mesh_packet_html_aa40164ed2272e27fafb532f5ff047b11"><div class="ttname"><a href="class_radio_mesh_packet.html#aa40164ed2272e27fafb532f5ff047b11">RadioMeshPacket::RadioMeshPacket</a></div><div class="ttdeci">RadioMeshPacket(const std::vector&lt; byte &gt; &amp;buffer)</div><div class="ttdoc">Construct packet from byte buffer.</div><div class="ttdef"><b>Definition</b> Packet.h:111</div></div>
+<div class="ttc" id="aclass_radio_mesh_packet_html_ad731509cf660bb60ca2f4092f16dbf1c"><div class="ttname"><a href="class_radio_mesh_packet.html#ad731509cf660bb60ca2f4092f16dbf1c">RadioMeshPacket::RadioMeshPacket</a></div><div class="ttdeci">RadioMeshPacket()</div><div class="ttdoc">Default constructor - initializes empty packet.</div><div class="ttdef"><b>Definition</b> Packet.h:90</div></div>
+<div class="ttc" id="aclass_radio_mesh_packet_html_af0a4ee6e4b06c254e96a33e66bd60387"><div class="ttname"><a href="class_radio_mesh_packet.html#af0a4ee6e4b06c254e96a33e66bd60387">RadioMeshPacket::getMaxDataLength</a></div><div class="ttdeci">static constexpr size_t getMaxDataLength()</div><div class="ttdoc">Get maximum allowed data length.</div><div class="ttdef"><b>Definition</b> Packet.h:237</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

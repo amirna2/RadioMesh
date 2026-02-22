@@ -1,4 +1,15 @@
 var searchData=
 [
-  ['verifymic_0',['verifymic',['../class_aes_cmac.html#a1c7dd4cff6710d1060e5da61eec282c2',1,'AesCmac::verifyMic()'],['../class_encryption_service.html#a62b2fd92a665fd95e5384625ada753e0',1,'EncryptionService::verifyMIC()']]]
+  ['withcustomdisplay_0',['withCustomDisplay',['../class_device_builder.html#aff75a57ab4bd434f2ead9f7ab2c1e19c',1,'DeviceBuilder']]],
+  ['withdeviceportal_1',['withDevicePortal',['../class_device_builder.html#a40d1057f34d926a55b81df28239577b8',1,'DeviceBuilder']]],
+  ['withloraradio_2',['withLoraRadio',['../class_device_builder.html#aaa9f0ea443a483b4ceb5e870fd6c5a0e',1,'DeviceBuilder']]],
+  ['witholeddisplay_3',['withOledDisplay',['../class_device_builder.html#a0802dfd7344dd25df0726d190adddbb0',1,'DeviceBuilder']]],
+  ['withrelayenabled_4',['withRelayEnabled',['../class_device_builder.html#a1b17544efa3c840d7a04105cc2ebd773',1,'DeviceBuilder']]],
+  ['withrxpacketcallback_5',['withRxPacketCallback',['../class_device_builder.html#ac0f97da2839dbd08c163a126a10a7efd',1,'DeviceBuilder']]],
+  ['withsecuremessaging_6',['withSecureMessaging',['../class_device_builder.html#aa61d6d7675735dd594eb6e7ce676936a',1,'DeviceBuilder']]],
+  ['withtxpacketcallback_7',['withTxPacketCallback',['../class_device_builder.html#a5d9ccccd560c3efc170fad6e79f431bc',1,'DeviceBuilder']]],
+  ['withwifi_8',['withWifi',['../class_device_builder.html#a05845e9e22af31a64667662c9087da35',1,'DeviceBuilder']]],
+  ['withwifiaccesspoint_9',['withWifiAccessPoint',['../class_device_builder.html#a422a8248222661f6ee456af88ddba8d3',1,'DeviceBuilder']]],
+  ['write_10',['write',['../class_i_byte_storage.html#abfc59ce99e9855dff8a8ea59bc090d73',1,'IByteStorage::write()'],['../class_e_e_p_r_o_m_storage.html#a5d3bf060241a6418517a4be176d66f52',1,'EEPROMStorage::write()']]],
+  ['writeandcommit_11',['writeandcommit',['../class_i_byte_storage.html#ac107f69778c7a85537e6900876f9f5d5',1,'IByteStorage::writeAndCommit()'],['../class_e_e_p_r_o_m_storage.html#a513214eed4ce9cec4829888a89b97250',1,'EEPROMStorage::writeAndCommit()']]]
 ];

@@ -3,7 +3,6 @@ var annotated_dup =
     [ "RadioMeshUtils", null, [
       [ "CRC32", "class_radio_mesh_utils_1_1_c_r_c32.html", null ]
     ] ],
-    [ "AesCmac", "class_aes_cmac.html", "class_aes_cmac" ],
     [ "AesCrypto", "class_aes_crypto.html", "class_aes_crypto" ],
     [ "AsyncDevicePortal", "class_async_device_portal.html", "class_async_device_portal" ],
     [ "ByteStorageParams", "struct_byte_storage_params.html", "struct_byte_storage_params" ],
