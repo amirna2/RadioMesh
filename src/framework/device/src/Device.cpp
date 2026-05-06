@@ -299,7 +299,13 @@ bool RadioMeshDevice::isReceivedDataCrcValid(RadioMeshPacket& receivedPacket)
 {
     RadioMeshUtils::CRC32 crc32;
     crc32.update(receivedPacket.fcounter);
-    crc32.update(receivedPacket.packetData.data(), receivedPacket.packetData.size());
+
+    // CRC covers payload without MIC, mirroring the sender (PacketRouter computes CRC before
+    // appending the MIC). For topics without a MIC, getDataWithoutMIC returns the full payload.
+    std::vector<byte> dataForCrc = receivedPacket.getDataWithoutMIC();
+    if (!dataForCrc.empty()) {
+        crc32.update(dataForCrc.data(), dataForCrc.size());
+    }
     uint32_t computed_data_crc = crc32.finalize();
     crc32.reset();
 
