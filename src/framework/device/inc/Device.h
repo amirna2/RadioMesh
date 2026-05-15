@@ -245,4 +245,5 @@ private:
     bool verifyReceivedPacketMIC(RadioMeshPacket& receivedPacket);
     bool canSendMessage(uint8_t topic) const;
     bool isInclusionMessage(uint8_t topic) const;
+    bool isApplicationMessage(uint8_t topic) const;
 };
