@@ -350,7 +350,7 @@ int RadioMeshDevice::handleReceivedData()
     }
 
     // Verify MIC before any further processing
-    if (!verifyReceivedPacketMIC(receivedPacket)) {
+    if (!verifyAndStripReceivedPacketMIC(receivedPacket)) {
         logerr_ln("ERROR handleReceivedPacket. MIC verification failed");
         return RM_E_AUTH_FAILED;
     }
@@ -618,7 +618,7 @@ int RadioMeshDevice::updateSecurityParams(const SecurityParams& params)
     return RM_E_NONE;
 }
 
-bool RadioMeshDevice::verifyReceivedPacketMIC(RadioMeshPacket& receivedPacket)
+bool RadioMeshDevice::verifyAndStripReceivedPacketMIC(RadioMeshPacket& receivedPacket)
 {
     // Public key exchange messages don't have MIC
     if (receivedPacket.topic == MessageTopic::INCLUDE_OPEN ||
