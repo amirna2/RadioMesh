@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -26,8 +27,11 @@ int PacketRouter::routePacket(RadioMeshPacket packet, const byte* ourDeviceId,
 
     packetCopy.reserved.fill(0);
 
-    // For relayed packets, ensure any existing MIC is stripped before recomputation
-    if (packetCopy.hasMIC()) {
+    // Only strip an existing MIC when relaying. A freshly originated packet has no MIC yet,
+    // and stripping unconditionally would lop 4 bytes off the real payload.
+    bool isOriginator = std::equal(packetCopy.sourceDevId.begin(),
+                                   packetCopy.sourceDevId.end(), ourDeviceId);
+    if (!isOriginator && packetCopy.hasMIC()) {
         logdbg_ln("Stripping existing MIC from relayed packet for topic 0x%02X", packetCopy.topic);
         packetCopy.packetData = packetCopy.getDataWithoutMIC();
     }
@@ -36,13 +40,16 @@ int PacketRouter::routePacket(RadioMeshPacket packet, const byte* ourDeviceId,
         encryptPacketData(packetCopy, deviceType, inclusionState);
     }
 
-    // Compute and append MIC after encryption
+    // CRC must be computed before MIC: the MIC authenticates the header bytes that are actually
+    // transmitted, and the header includes packetCrc. CRC covers payload-without-MIC; the MIC
+    // provides its own cryptographic integrity over header + encrypted payload.
+    calculatePacketCrc(packetCopy, crc32, key);
+
     int micResult = computeAndAppendMIC(packetCopy, deviceType, inclusionState);
     if (micResult != RM_E_NONE) {
         return micResult;
     }
 
-    calculatePacketCrc(packetCopy, crc32, key);
     int rc = sendPacket(packetCopy);
     if (rc != RM_E_NONE) {
         return rc;
