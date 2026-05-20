@@ -27,14 +27,6 @@ int PacketRouter::routePacket(RadioMeshPacket packet, const byte* ourDeviceId,
 
     packetCopy.reserved.fill(0);
 
-    // Only strip an existing MIC when relaying. A freshly originated packet has no MIC yet,
-    // and stripping unconditionally would lop 4 bytes off the real payload.
-    bool isOriginator = std::equal(packetCopy.sourceDevId.begin(),
-                                   packetCopy.sourceDevId.end(), ourDeviceId);
-    if (!isOriginator && packetCopy.hasMIC()) {
-        logdbg_ln("Stripping existing MIC from relayed packet for topic 0x%02X", packetCopy.topic);
-        packetCopy.packetData = packetCopy.getDataWithoutMIC();
-    }
 
     if (packetCopy.topic != MessageTopic::INCLUDE_OPEN) {
         encryptPacketData(packetCopy, deviceType, inclusionState);

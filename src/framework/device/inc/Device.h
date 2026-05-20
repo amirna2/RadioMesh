@@ -242,7 +242,8 @@ private:
     RadioMeshPacket txPacket = RadioMeshPacket();
 
     bool isReceivedDataCrcValid(RadioMeshPacket& receivedPacket);
-    bool verifyReceivedPacketMIC(RadioMeshPacket& receivedPacket);
+    bool verifyAndStripReceivedPacketMIC(RadioMeshPacket& receivedPacket);
     bool canSendMessage(uint8_t topic) const;
     bool isInclusionMessage(uint8_t topic) const;
+    bool isApplicationMessage(uint8_t topic) const;
 };

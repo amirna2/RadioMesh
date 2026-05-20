@@ -26,6 +26,10 @@ bool RadioMeshDevice::isInclusionMessage(uint8_t topic) const
 {
     return (topic >= INCLUDE_REQUEST && topic <= INCLUDE_SUCCESS);
 }
+bool RadioMeshDevice::isApplicationMessage(uint8_t topic) const
+{
+    return topic > MAX_RESERVED;
+}
 
 std::array<byte, RM_ID_LENGTH> RadioMeshDevice::getDeviceId()
 {
@@ -346,7 +350,7 @@ int RadioMeshDevice::handleReceivedData()
     }
 
     // Verify MIC before any further processing
-    if (!verifyReceivedPacketMIC(receivedPacket)) {
+    if (!verifyAndStripReceivedPacketMIC(receivedPacket)) {
         logerr_ln("ERROR handleReceivedPacket. MIC verification failed");
         return RM_E_AUTH_FAILED;
     }
@@ -384,6 +388,13 @@ int RadioMeshDevice::handleReceivedData()
 
         // Don't forward inclusion messages
         return result;
+    }
+
+    // Decrypting if it is an application message
+    if (isApplicationMessage(receivedPacket.topic)) {
+        receivedPacket.packetData =
+            encryptionService.decrypt(receivedPacket.packetData, receivedPacket.topic,
+                                     deviceType, inclusionController->getState());
     }
 
     // Packet has reached its destination or the device is a HUB, let the application handle it
@@ -607,7 +618,7 @@ int RadioMeshDevice::updateSecurityParams(const SecurityParams& params)
     return RM_E_NONE;
 }
 
-bool RadioMeshDevice::verifyReceivedPacketMIC(RadioMeshPacket& receivedPacket)
+bool RadioMeshDevice::verifyAndStripReceivedPacketMIC(RadioMeshPacket& receivedPacket)
 {
     // Public key exchange messages don't have MIC
     if (receivedPacket.topic == MessageTopic::INCLUDE_OPEN ||
