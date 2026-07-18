@@ -6,7 +6,9 @@
 #define RM_ARDUINO_BUILD
 #else
 // generic build
-#include <stdio.h>
+#include <cstdint>
+#include <cstdio>
+typedef uint8_t byte;
 #define RM_GENERIC_BUILD
 #endif
 

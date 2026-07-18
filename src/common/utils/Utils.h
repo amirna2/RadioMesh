@@ -5,6 +5,10 @@
 #include <string>
 #include <vector>
 
+#ifndef RM_ARDUINO_BUILD
+#include <cstdlib>
+#endif
+
 enum class DataFormat
 {
     DECIMAL,
@@ -151,11 +155,17 @@ template <std::size_t length>
 std::array<byte, length> getRandomBytesArray()
 {
     const char* digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    randomSeed(simpleRNG(4));
     std::array<byte, length> bytes;
+#ifdef RM_ARDUINO_BUILD
+    randomSeed(simpleRNG(4));
     for (std::size_t i = 0; i < length; i++) {
         bytes[i] = digits[random(36)];
     }
+#else
+    for (std::size_t i = 0; i < length; i++) {
+        bytes[i] = digits[std::rand() % 36];
+    }
+#endif
     return bytes;
 }
 } // namespace RadioMeshUtils
