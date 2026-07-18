@@ -104,7 +104,9 @@ The minimal set of neutral source needed to build and round-trip a `RadioMeshPac
 - `src/common/inc/Definitions.h` — uses `byte` (e.g. line 397); topic/type enums
 - `src/common/inc/Options.h` — the `RM_ARDUINO_BUILD` / `RM_GENERIC_BUILD` gate (lines 1–11)
 - `src/common/inc/Logger.h` — has an existing `#if defined(ARDUINO) … #else std::cout` split
-- `src/common/utils/Utils.{h,cpp}` — hex helpers etc. (already free of the Arduino-isms grep set)
+- `src/common/utils/Utils.h` — pulled in transitively by `Packet.h`; must *parse* off-Arduino
+  (its `getRandomBytesArray` template references Arduino RNG — see §4.4). `Utils.cpp` is **not**
+  compiled in M0.
 
 The exact transitive include set is confirmed during implementation; the list above is the
 expected slice. Anything outside it (crypto, routing, framework, `IRadio`, HAL) is **out of
@@ -114,25 +116,44 @@ scope**.
 
 ## 4. Changes (all guarded by the existing platform macro)
 
+Every shared-file edit is guarded by `RM_ARDUINO_BUILD` / `RM_GENERIC_BUILD` (both defined in
+`Options.h`) so the Arduino preprocessor output is byte-identical. The de-Arduino surface below
+was corrected after a planning-time read of the slice's transitive headers, which found two
+Arduino dependencies the spec's original grep could not see (§4.3, §4.4).
+
 1. **`byte` typedef for non-Arduino** — in the existing `#else /* RM_GENERIC_BUILD */` branch
    of `Options.h`, add `#include <cstdint>` and `typedef uint8_t byte;` (Arduino supplies
-   `byte` via `<Arduino.h>`; the generic branch currently does not, which is the core gap).
-   Include ordering must ensure `byte` is defined before `Definitions.h` uses it.
+   `byte` via `<Arduino.h>`; the generic branch currently does not — the core gap). Include
+   ordering must ensure `byte` is defined before `Definitions.h` uses it.
 
-2. **`RadioMeshCrc32.h`** — replace `#include <Arduino.h>` with `#include <common/inc/Options.h>`,
-   which supplies `byte` and fixed-width ints under both platform branches. No behavioral change.
+2. **`RadioMeshCrc32.h`** — replace `#include <Arduino.h>` with `#include <cstdint>` and
+   `#include <cstddef>`. `CRC32` uses only `uint8_t`/`uint32_t`/`size_t`, never `byte`, so it
+   needs no platform header. No behavioral change.
 
-3. **New `[env:native]` in `platformio.ini`** — `platform = native`, **no** `framework`,
-   Unity test framework, C++17, building only the packet slice + its tests. Extends the
-   existing `common_test` conventions where possible.
+3. **`Logger.h` — non-Arduino output path (NOT deferrable).** `rmPrintf` is defined
+   unconditionally and calls `OUTPUT_PORT.write(...)`, but `OUTPUT_PORT` is `#define`d *only* in
+   the `ARDUINO` branch, so the file does not compile off-Arduino. Add a guarded `#else` output
+   path (`fwrite(buffer, 1, len, stdout)`) plus the includes `<Arduino.h>` was silently
+   supplying (`<cstdarg>`, `<cstdio>`, `<new>`). The Zephyr-specific backend (`printk`/`LOG_*`)
+   is a *later* refinement (M1); M0 adds only the generic stdout path.
 
-4. **`test/test_Packet/test_Packet.cpp`** — a new focused host test: build a
-   `RadioMeshPacket`, serialize via `toByteBuffer()`, parse via the buffer constructor,
-   assert field-for-field equality; assert CRC compute/verify. Must compile and run under
-   the `native` env with no Arduino.
+4. **`Utils.h` — RNG shim for non-Arduino.** `getRandomBytesArray()` is a template calling the
+   Arduino functions `random()`/`randomSeed()`; as *non-dependent* names these are rejected by
+   clang (the `native` compiler on macOS) at definition time, even uninstantiated. Add guarded
+   `RM_GENERIC_BUILD` shims (`std::rand`/`std::srand`-backed) so the header parses. `Utils.cpp`
+   internals are **not** touched (see §7).
 
-The `Logger.h` Zephyr `printk` branch is **deferred to M1** — the `native` build exercises
-the existing `std::cout` branch, so no logger change is needed in M0.
+5. **New `[env:native]` in `platformio.ini`** — `platform = native`, **no** `framework`,
+   `test_framework = unity`, C++17, include paths `-I ./include -I ./src`. It compiles no
+   `src/*.cpp` (the round-trip slice is header-only) and constrains the LDF so it does not pull
+   the Arduino library graph.
+
+6. **`test/test_Packet/test_Packet.cpp`** — a new focused host test using `int main()` (not
+   Arduino `setup()/loop()`), including the slice headers **directly** (`Packet.h`,
+   `RadioMeshCrc32.h`) — not the `RadioMesh.h` umbrella — and defining no `RM_LOG_*` (log
+   macros stay no-ops). Build a `RadioMeshPacket`, serialize via `toByteBuffer()`, parse via the
+   buffer constructor, assert field-for-field equality; compute a `CRC32` over a payload and
+   assert the value round-trips. Must compile and run under `native` with no Arduino.
 
 ---
 
@@ -165,8 +186,11 @@ Both gates green:
 
 - No Zephyr toolchain, board, devicetree, or `ports/zephyr/` content (that is M1).
 - No file relocation or directory restructure.
-- No changes to crypto, routing, framework, `DeviceBuilder`, or the `IRadio` interface.
-- No `Logger.h` `printk` branch (deferred to M1).
+- No changes to crypto, routing, framework, or `DeviceBuilder`.
+- No Zephyr-specific logging backend (`printk`/`LOG_*`) — M0 adds only the generic stdout
+  path; the Zephyr specialization is M1.
+- No de-Arduino of `Utils.cpp` internals — only `Utils.h` must *parse* off-Arduino. The `.cpp`
+  (and its `millis`/RNG usage) is pulled in just-in-time by a later milestone.
 - No fixing of the leaky `IRadio` abstraction (deferred to M6, done across both platforms).
 
 ---
