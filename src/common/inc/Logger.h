@@ -2,6 +2,12 @@
 
 #include "Options.h"
 
+#if !defined(ARDUINO)
+#include <cstdarg>
+#include <cstdio>
+#include <new>
+#endif
+
 #ifdef RM_LOG_VERBOSE
 #define LOG_ERROR
 #define LOG_WARN
@@ -59,7 +65,11 @@ rmPrintf(const char* format, ...)
         vsnprintf(buffer, len + 1, format, arg);
         va_end(arg);
     }
+#if defined(ARDUINO)
     len = OUTPUT_PORT.write((const uint8_t*)buffer, len);
+#else
+    len = fwrite(buffer, 1, len, stdout);
+#endif
     if (buffer != temp) {
         delete[] buffer;
     }
