@@ -42,6 +42,7 @@ var NAVTREEINDEX1 =
 "class_oled_display_params.html":[2,0,26],
 "class_oled_display_params.html#a6d3dfeda893877b1b680537c92edf330":[2,0,26,0],
 "class_packet_router.html":[2,0,27],
+"class_packet_router.html#a0ec1490aaae22ff8ba5aec19f574e47e":[2,0,27,5],
 "class_packet_router.html#a26b7eb39a978b92e9a623c6e644cdf9a":[2,0,27,2],
 "class_packet_router.html#a5f7a37cb9d0f21e0db8a74075e371dbd":[2,0,27,0],
 "class_packet_router.html#a6fedbb5e595987f25654607d10440ece":[2,0,27,4],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "group__error__codes.html#ga9185715ee33fb4afc5cef246a2119b1a":[1,0,29],
 "group__error__codes.html#ga9550a629f5f5657498b8565db0c75f0a":[1,0,3],
 "group__error__codes.html#ga96179239427be58bf0bb1f27244ee13c":[1,0,19],
-"group__error__codes.html#ga97c2f36345a1b739712d016dfd420025":[1,0,2],
-"group__error__codes.html#gaa0997de542c0babd99a3e8444c1f8e71":[1,0,13]
+"group__error__codes.html#ga97c2f36345a1b739712d016dfd420025":[1,0,2]
 };

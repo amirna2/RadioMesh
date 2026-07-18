@@ -53,7 +53,7 @@ var NAVTREEINDEX =
 [
 "_aes_cmac_8h_source.html",
 "class_lora_radio.html#a5b60d0d4b242df6d193826d519d0a13b",
-"group__error__codes.html#gaa8ab2ff815cba1fb410d2d86b047bd23"
+"group__error__codes.html#gaa0997de542c0babd99a3e8444c1f8e71"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

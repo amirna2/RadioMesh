@@ -1,5 +1,6 @@
 var NAVTREEINDEX2 =
 {
+"group__error__codes.html#gaa0997de542c0babd99a3e8444c1f8e71":[1,0,13],
 "group__error__codes.html#gaa8ab2ff815cba1fb410d2d86b047bd23":[1,0,24],
 "group__error__codes.html#gaaa70e2ec9dfc3c89591a7fed1bb0f92a":[1,0,42],
 "group__error__codes.html#gaaba9a93bce25cd2f1a5cd206ce78f0b3":[1,0,36],
