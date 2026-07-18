@@ -59,6 +59,13 @@ public:
     bool isPacketFoundInTracker(RadioMeshPacket packet);
 
     /**
+     * @brief Track packet.
+     * If a packet with the same id is already present, the old packet is overridden.
+     * @param packet RadioMeshPacket to add to tracking.
+     */
+    void trackPacket(RadioMeshPacket& packet);
+
+    /**
      * @brief Set the encryption service to use for encrypting and decrypting packets.
      * @param encryptionService EncryptionService component to use
      */

@@ -342,6 +342,8 @@ int RadioMeshDevice::handleReceivedData()
     if (router->isPacketFoundInTracker(receivedPacket)) {
         logwarn_ln("Packet already seen. Ignoring...");
         return RM_E_NONE;
+    } else {
+        PacketRouter::getInstance()->trackPacket(receivedPacket);
     }
 
     if (!isReceivedDataCrcValid(receivedPacket)) {

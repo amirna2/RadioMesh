@@ -135,6 +135,12 @@ void PacketRouter::trackPacket(RadioMeshPacket& packetCopy, uint32_t key)
     packetTracker.addEntry(key, packetCopy.packetCrc);
 }
 
+void PacketRouter::trackPacket(RadioMeshPacket& packet)
+{
+    uint32_t key = RadioMeshUtils::toUint32(packet.packetId.data());
+    trackPacket(packet, key);
+}
+
 int PacketRouter::computeAndAppendMIC(RadioMeshPacket& packetCopy, MeshDeviceType deviceType,
                                       DeviceInclusionState inclusionState)
 {
