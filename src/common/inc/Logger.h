@@ -6,6 +6,9 @@
 #include <cstdarg>
 #include <cstdio>
 #include <new>
+#if defined(__ZEPHYR__)
+#include <zephyr/sys/printk.h>
+#endif
 #endif
 
 #ifdef RM_LOG_VERBOSE
@@ -67,6 +70,8 @@ rmPrintf(const char* format, ...)
     }
 #if defined(ARDUINO)
     len = OUTPUT_PORT.write((const uint8_t*)buffer, len);
+#elif defined(__ZEPHYR__)
+    printk("%s", buffer);
 #else
     len = fwrite(buffer, 1, len, stdout);
 #endif

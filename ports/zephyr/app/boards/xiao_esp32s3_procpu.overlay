@@ -1,0 +1,41 @@
+/*
+ * RadioMesh M1 — devicetree overlay: Seeed XIAO ESP32-S3 + Wio-SX1262.
+ *
+ * Adds the SX1262 LoRa radio on the XIAO's default SPI (spi2) pads and exposes
+ * it as alias lora0 (resolved by DEVICE_DT_GET(DT_ALIAS(lora0)) in main.cpp).
+ * Grounded in the known-good mapping from tensop-au/zephyr-esp32s3-lorawan-fuota.
+ *
+ * Wiring (matches the RadioMesh XIAO_ESP32S3_WIO_SX1262 preset in RadioConfigs.h):
+ *   NSS  = GPIO41   DIO1 = GPIO39   NRST = GPIO42   BUSY = GPIO40
+ *   SCK/MOSI/MISO -> XIAO default SPI pads (D8/D10/D9 = GPIO7/9/8), from the board
+ *   DIO2 -> RF switch  (dio2-tx-enable)
+ *   DIO3 -> TCXO power 1.8 V  (dio3-tcxo-voltage) -- REQUIRED, else every TX times out
+ *
+ * gpio1 is relative-indexed: pin N = physical GPIO(N+32). GPIO32-48 live on
+ * gpio1 (gpio0 covers 0-31). So GPIO41 = <&gpio1 9>, 42 = 10, 40 = 8, 39 = 7.
+ */
+#include <zephyr/dt-bindings/lora/sx126x.h>
+
+/ {
+	aliases {
+		lora0 = &lora;
+	};
+};
+
+&spi2 {
+	status = "okay";
+	cs-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>; /* NSS = GPIO41 */
+
+	lora: lora@0 {
+		compatible = "semtech,sx1262";
+		reg = <0>;
+		spi-max-frequency = <8000000>;
+		reset-gpios = <&gpio1 10 GPIO_ACTIVE_LOW>; /* NRST = GPIO42 */
+		busy-gpios = <&gpio1 8 GPIO_ACTIVE_HIGH>;  /* BUSY = GPIO40 */
+		dio1-gpios = <&gpio1 7 GPIO_ACTIVE_HIGH>;  /* DIO1 = GPIO39 */
+		dio2-tx-enable;                            /* DIO2 -> RF switch */
+		dio3-tcxo-voltage = <SX126X_DIO3_TCXO_1V8>; /* DIO3 -> TCXO 1.8 V */
+		tcxo-power-startup-delay-ms = <10>;
+		status = "okay";
+	};
+};

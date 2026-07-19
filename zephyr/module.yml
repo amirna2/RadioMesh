@@ -1,0 +1,6 @@
+# RadioMesh as a Zephyr module (D3 dual-hat: west reads this; PlatformIO ignores it).
+# Paths are relative to the module root (this repo's root).
+name: radiomesh
+build:
+  cmake: zephyr
+  kconfig: zephyr/Kconfig
