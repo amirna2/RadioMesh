@@ -65,12 +65,21 @@ static void set_direction(const struct device* dev, bool tx)
 
 int main(void)
 {
+    // The ESP32-S3 USB-Serial-JTAG console discards TX until a host attaches
+    // (~1.5 s after power-up). Delay first output past enumeration so boot
+    // diagnostics are observable.
+    k_sleep(K_MSEC(2000));
+    printk("\n=== RadioMesh M1 tracer bullet starting ===\n");
+
     const struct device* lora = DEVICE_DT_GET(LORA_NODE);
 
     if (!device_is_ready(lora)) {
-        LOG_ERR("LoRa device not ready");
-        return 0;
+        while (true) {
+            printk("FATAL: LoRa device not ready\n");
+            k_sleep(K_SECONDS(2));
+        }
     }
+    printk("LoRa device ready\n");
     LOG_INF("RadioMesh M1 bring-up: LoRa device ready");
 
     uint32_t fcounter = 0;
