@@ -25,10 +25,9 @@ hub) will slot in alongside `tx`/`rx`.
 
 ## Setup & workflow
 
-Full cross-platform (macOS + Linux) setup and the everyday build/flash/monitor
-workflow live in **[`DEVELOPING.md`](DEVELOPING.md)**. In short: create a west
-workspace with RadioMesh as the manifest repo (`west init -l RadioMesh && west
-update`), install the Zephyr SDK, then from `ports/zephyr/` run `make setup`.
+From `ports/zephyr/`: `make bootstrap` does the one-time setup (venv + Zephyr
+workspace + SDK); then `make run ROLE=tx` / `make run ROLE=rx` build, flash, and
+monitor. Full guide: **[`DEVELOPING.md`](DEVELOPING.md)**.
 
 ### Why the carried `gpio_esp32` patch
 
