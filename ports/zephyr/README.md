@@ -7,16 +7,26 @@ co-compiled straight from `src/` (D2). This tree is invisible to PlatformIO (D3)
 ## One-time workspace setup (T2 topology)
 
 RadioMesh is its own west manifest repo. From the directory that should become the
-workspace topdir (the parent of this repo):
+workspace topdir (the parent of this repo). Requires **Python ≥ 3.10** (Zephyr 4.x):
 
 ```bash
-west init -l RadioMesh        # RadioMesh = this repo's dir name
-west update                   # fetches Zephyr + hal_espressif + picolibc as siblings
+python3 -m venv .venv-zephyr && source .venv-zephyr/bin/activate
+pip install west
+west init -l RadioMesh                        # RadioMesh = this repo's dir name
+west update                                   # Zephyr + hal_espressif + loramac-node + picolibc
 west zephyr-export
+pip install -r zephyr/scripts/requirements.txt   # Zephyr Python deps
+west packages pip --install                      # module deps incl. esptool (ESP32 image tool)
+west sdk install -t xtensa-espressif_esp32s3_zephyr-elf   # xtensa toolchain only
 ```
 
-`west update` clones Zephyr next to this repo, not inside it — nothing to gitignore.
+Host build tools (macOS): `brew install cmake ninja gperf dtc libmagic ccache`.
+`west update` clones Zephyr *beside* this repo, not inside it — nothing to gitignore.
 Pin the Zephyr `revision` in `west.yml` to match your installed Zephyr SDK.
+
+> Verified on macOS 26 / arm64 with Zephyr 4.4.0 + SDK 1.0.1: `west build` below
+> produces `zephyr.elf` + an ESP32-S3 image (~155 KB flash). Flashing + the 2-node
+> OTA exchange still require the physical boards.
 
 ## Build & flash (run per node)
 

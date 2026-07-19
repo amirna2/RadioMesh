@@ -26,5 +26,6 @@ manifest:
         # If `west update`/`west build` reports a missing module, add its name
         # here. To pull the full Zephyr module set instead, delete name-allowlist.
         name-allowlist:
-          - hal_espressif
-          - picolibc
+          - hal_espressif   # ESP32-S3 SoC HAL
+          - loramac-node    # provides the Semtech SX126x radio PHY driver (backs CONFIG_LORA_SX126X)
+          - picolibc        # C library
