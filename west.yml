@@ -27,5 +27,6 @@ manifest:
         # here. To pull the full Zephyr module set instead, delete name-allowlist.
         name-allowlist:
           - hal_espressif   # ESP32-S3 SoC HAL
-          - loramac-node    # provides the Semtech SX126x radio PHY driver (backs CONFIG_LORA_SX126X)
+          - loramac-node    # legacy SX126x PHY backend; unused with CONFIG_LORA_MODULE_BACKEND_NATIVE.
+                            # Retained pending a verified removal (needs west update + rebuild to confirm).
           - picolibc        # C library

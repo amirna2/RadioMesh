@@ -1,9 +1,15 @@
 /*
- * RadioMesh M1 — devicetree overlay: Seeed XIAO ESP32-S3 + Wio-SX1262.
+ * RadioMesh Zephyr examples — shared devicetree overlay.
+ * Board: Seeed XIAO ESP32-S3 + Wio-SX1262 kit.
  *
- * Pin mapping is the AUTHORITATIVE Wio-SX1262 wiring, cross-confirmed by three
+ * This is the SINGLE SOURCE OF TRUTH for the SX1262 wiring, referenced by every
+ * example (tx/rx/…) via DTC_OVERLAY_FILE in their CMakeLists. Duplicating pins
+ * per-example invites silent drift, so they live here once.
+ *
+ * Pin mapping is the authoritative Wio-SX1262 wiring, cross-confirmed by three
  * independent sources that all agree these are raw ESP32-S3 GPIO numbers:
  *   - RadioMesh's own Arduino preset XIAO_ESP32S3_WIO_SX1262 = PinConfig(41,42,40,39)
+ *   - Meshtastic variants/esp32s3/seeed_xiao_s3/variant.h
  *   - the XIAO ESP32-S3 Arduino variant uses identity pin numbering (no remap)
  *
  *   Signal   GPIO   Zephyr DT              (GPIO N>=32 lives on gpio1, pin N-32)
@@ -17,7 +23,8 @@
  *   RXEN = GPIO38 (external antenna RX-enable; handled for OTA, not needed for init)
  *
  * NOTE: gpio1-bank pins (GPIO>=32) require Zephyr's gpio_esp32 fix that uses
- * BIT64() in gpio_pin_is_valid() (fixed on main; our pinned 4.4.0 needs the patch).
+ * BIT64() in gpio_pin_is_valid() (fixed on main; our pinned 4.4.0 needs the
+ * patch in ../patches/0001-gpio_esp32-BIT64-valid-mask.patch).
  */
 #include <zephyr/dt-bindings/lora/sx126x.h>
 
