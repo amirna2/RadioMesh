@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """RadioMesh Zephyr serial helper: discover boards, identify roles, monitor.
 
+Standard library only — no third-party dependencies (no pyserial), so it runs
+under any system python3 without a venv.
+
 The XIAO ESP32-S3 exposes the SoC's native USB. The running Zephyr firmware uses
 a USB-Serial-JTAG console that (a) discards TX until a host attaches (~1.5 s after
 power-up) and (b) drops the port across a reboot. So a naive `cat`/`screen` misses
@@ -18,17 +21,12 @@ Role is read from the Zephyr LOG_MODULE name in the console stream:
 """
 import argparse
 import glob
+import os
 import platform
+import select
 import sys
+import termios
 import time
-
-try:
-    import serial  # type: ignore  # pyserial, installed in the Zephyr venv (not the editor interpreter)
-except ImportError:
-    sys.stderr.write(
-        "error: pyserial not found. Activate your Zephyr venv (the one with "
-        "`west`), or `pip install pyserial`.\n")
-    sys.exit(2)
 
 BAUD = 115200
 
@@ -67,32 +65,62 @@ def resolve_port(explicit):
     return None
 
 
+def serial_open(port):
+    """Open a serial port in raw 8N1 at BAUD using termios (stdlib only)."""
+    fd = os.open(port, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
+    attrs = termios.tcgetattr(fd)  # [iflag, oflag, cflag, lflag, ispeed, ospeed, cc]
+    attrs[0] = 0  # iflag: no input processing
+    attrs[1] = 0  # oflag: no output processing
+    attrs[3] = 0  # lflag: non-canonical, no echo
+    attrs[2] = ((attrs[2] & ~termios.CSIZE & ~termios.PARENB & ~termios.CSTOPB)
+                | termios.CS8 | termios.CREAD | termios.CLOCAL)
+    attrs[4] = attrs[5] = getattr(termios, "B%d" % BAUD)
+    cc = list(attrs[6])
+    cc[termios.VMIN] = 0
+    cc[termios.VTIME] = 0
+    attrs[6] = cc
+    termios.tcsetattr(fd, termios.TCSANOW, attrs)
+    return fd
+
+
+def serial_read(fd, timeout=0.2):
+    """Read available bytes; b'' on timeout. Raises OSError on disconnect."""
+    ready, _, _ = select.select([fd], [], [], timeout)
+    if not ready:
+        return b""
+    data = os.read(fd, 4096)
+    if data == b"":
+        raise OSError("device closed")  # readable but empty => port went away
+    return data
+
+
 def sample_role(port, seconds=8.0):
     """Read up to `seconds` of console output and classify the firmware role."""
     deadline = time.monotonic() + seconds
     buf = b""
-    ser = None
+    fd = None
     try:
         while time.monotonic() < deadline:
-            if ser is None:
+            if fd is None:
                 try:
-                    ser = serial.Serial(port, BAUD, timeout=0.2)
-                except (serial.SerialException, OSError):
+                    fd = serial_open(port)
+                except OSError:
                     time.sleep(0.2)
                     continue
             try:
-                buf += ser.read(4096)
-            except (serial.SerialException, OSError):
-                ser = None
+                buf += serial_read(fd)
+            except OSError:
+                os.close(fd)
+                fd = None
                 continue
             for tag, role in ROLE_TAGS.items():
                 if tag.encode() in buf:
                     return role
     finally:
-        if ser is not None:
+        if fd is not None:
             try:
-                ser.close()
-            except Exception:
+                os.close(fd)
+            except OSError:
                 pass
     return "unknown (no role output in %gs)" % seconds
 
@@ -132,10 +160,10 @@ def cmd_monitor(port_arg):
         return 1
     auto = port_arg in (None, "auto")
     sys.stderr.write("[rmon] monitoring %s @ %d (Ctrl-C to stop)\n" % (port, BAUD))
-    ser = None
+    fd = None
     try:
         while True:
-            if ser is None:
+            if fd is None:
                 # The port can vanish across a reboot/replug; keep retrying, and
                 # in auto mode re-resolve in case the device node was renumbered.
                 if auto:
@@ -143,30 +171,30 @@ def cmd_monitor(port_arg):
                     if len(found) == 1:
                         port = found[0]
                 try:
-                    ser = serial.Serial(port, BAUD, timeout=0.2)
+                    fd = serial_open(port)
                     sys.stderr.write("[rmon] opened %s\n" % port)
-                except (serial.SerialException, OSError):
+                except OSError:
                     time.sleep(0.3)
                     continue
             try:
-                data = ser.read(4096)
+                data = serial_read(fd)
                 if data:
                     sys.stdout.buffer.write(data)
                     sys.stdout.flush()
-            except (serial.SerialException, OSError):
+            except OSError:
                 try:
-                    ser.close()
-                except Exception:
+                    os.close(fd)
+                except OSError:
                     pass
-                ser = None
+                fd = None
                 time.sleep(0.3)
     except KeyboardInterrupt:
         sys.stderr.write("\n[rmon] stopped\n")
     finally:
-        if ser is not None:
+        if fd is not None:
             try:
-                ser.close()
-            except Exception:
+                os.close(fd)
+            except OSError:
                 pass
     return 0
 

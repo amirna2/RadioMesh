@@ -8,9 +8,11 @@
 #   make boards                     list connected boards and the role each is running
 #   make clean [ROLE=tx|rx]         remove build dir(s)
 #
-# Requirements: an activated west venv (so `west` is on PATH) plus the Zephyr SDK
-# and host tools (cmake/ninja/dtc/gperf). `make setup` checks these. If you would
-# rather not activate the venv, pass VENV=/path/to/venv. See DEVELOPING.md.
+# Two tiers of targets:
+#   * setup / build / flash / run  need the Zephyr toolchain (west + SDK + host
+#     tools). Activate your west venv first, or pass VENV=/path/to/venv.
+#   * boards / monitor / list      are pure serial helpers with NO dependencies —
+#     they run under any system python3 (no venv, no pip). See DEVELOPING.md.
 
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
@@ -86,7 +88,7 @@ flash: _need_west _need_role
 	echo "[flash] $(ROLE) -> $$port"; \
 	$(WEST) flash -d $(BUILD_DIR) --esp-device $$port
 
-monitor: _need_west
+monitor:
 	@$(PYTHON) $(RMON) monitor --port "$(PORT)"
 
 run:

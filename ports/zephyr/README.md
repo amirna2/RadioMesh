@@ -23,44 +23,27 @@ shared PHY setup from `common/lora_phy.h`, so the pins and the modulation
 parameters live in exactly one place. Future device-role examples (leaf, router,
 hub) will slot in alongside `tx`/`rx`.
 
-## One-time workspace setup (T2 topology)
+## Setup & workflow
 
-RadioMesh is its own west manifest repo. From the directory that should become the
-workspace topdir (the parent of this repo). Requires **Python ≥ 3.10** (Zephyr 4.x):
+Full cross-platform (macOS + Linux) setup and the everyday build/flash/monitor
+workflow live in **[`DEVELOPING.md`](DEVELOPING.md)**. In short: create a west
+workspace with RadioMesh as the manifest repo (`west init -l RadioMesh && west
+update`), install the Zephyr SDK, then from `ports/zephyr/` run `make setup`.
 
-```bash
-python3 -m venv .venv-zephyr && source .venv-zephyr/bin/activate
-pip install west
-west init -l RadioMesh                        # RadioMesh = this repo's dir name
-west update                                   # Zephyr + hal_espressif + picolibc
-west zephyr-export
-pip install -r zephyr/scripts/requirements.txt   # Zephyr Python deps
-west packages pip --install                      # module deps incl. esptool (ESP32 image tool)
-west sdk install -t xtensa-espressif_esp32s3_zephyr-elf   # xtensa toolchain only
-```
-
-Host build tools (macOS): `brew install cmake ninja gperf dtc libmagic ccache`.
-`west update` clones Zephyr *beside* this repo, not inside it — nothing to gitignore.
-Pin the Zephyr `revision` in `west.yml` to match your installed Zephyr SDK.
-
-### Re-apply the gpio_esp32 patch after every `west update`
+### Why the carried `gpio_esp32` patch
 
 Zephyr 4.4.0's `gpio_esp32` driver rejects any pin ≥ 32 (`gpio_pin_is_valid()`
 uses a 32-bit `BIT()` shift), which blocks the SX1262 control lines on this kit
 (CS/RST/BUSY/DIO1 are all GPIO ≥ 39). The fix (upstream on `main`, switching to
-`BIT64()`) is carried here and must be re-applied whenever `west update` restores
-the pinned tree:
+`BIT64()`) is carried in `patches/` and applied automatically by `make setup` —
+re-run `make setup` after every `west update`, which restores the pristine tree.
 
-```bash
-git -C ../zephyr apply RadioMesh/ports/zephyr/patches/0001-gpio_esp32-BIT64-valid-mask.patch
-```
-
-> Verified on macOS 26 / arm64 with Zephyr 4.4.0 + SDK 1.0.1.
+> Verified with Zephyr 4.4.0 + SDK 1.0.1 (macOS arm64); the same flow applies on Linux.
 
 ## Build & flash
 
-The `Makefile` here is the developer + CI entry point. Full setup and workflow are
-in [`DEVELOPING.md`](DEVELOPING.md); the short version, from `ports/zephyr/`:
+The `Makefile` here is the developer entry point. Full setup and workflow are in
+[`DEVELOPING.md`](DEVELOPING.md); the short version, from `ports/zephyr/`:
 
 ```bash
 make setup              # once, and after every `west update` (re-applies the gpio patch)
@@ -74,7 +57,7 @@ Each role is a standalone Zephyr app; under the hood `make build ROLE=tx` runs
 
 ## Expected result (manual M1 gate)
 
-On each node's console (`west espressif monitor` or a serial terminal @115200):
+On each node's console (`make monitor`, or a serial terminal @115200):
 
 ```
 # tx node
