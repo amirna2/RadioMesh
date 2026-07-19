@@ -9,5 +9,9 @@ wifiConfig.h
 .aider*
 context/**
 
+# Python (tools/)
+__pycache__/
+*.pyc
+
 CLAUDE.md
 AI_DEVELOPER.md

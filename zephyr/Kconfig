@@ -1,0 +1,8 @@
+config RADIOMESH
+	bool "RadioMesh mesh networking core"
+	help
+	  Expose the platform-neutral RadioMesh protocol core (the M0 packet
+	  slice: RadioMeshPacket, CRC32, and their neutral dependencies) to the
+	  Zephyr application. Milestone 1 uses the header-only packet slice, so
+	  enabling this only adds the src/ include root; later milestones append
+	  compiled neutral sources in zephyr/CMakeLists.txt.

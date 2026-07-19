@@ -1,0 +1,32 @@
+# RadioMesh — Zephyr T2 (application) manifest.
+#
+# RadioMesh is its own west manifest repo. From the workspace topdir:
+#   west init -l <path-to-RadioMesh>
+#   west update
+# fetches Zephyr + the modules below as SIBLINGS of this repo inside the topdir.
+# PlatformIO never reads this file (D3 dual-hat).
+#
+# Pin `revision` to the Zephyr version whose SDK you have installed.
+manifest:
+  version: "0.13"
+
+  self:
+    path: RadioMesh
+
+  remotes:
+    - name: zephyrproject-rtos
+      url-base: https://github.com/zephyrproject-rtos
+
+  projects:
+    - name: zephyr
+      remote: zephyrproject-rtos
+      revision: v4.4.0
+      import:
+        # Lean import: only the modules an ESP32-S3 + SX1262 + C++ build needs.
+        # If `west update`/`west build` reports a missing module, add its name
+        # here. To pull the full Zephyr module set instead, delete name-allowlist.
+        name-allowlist:
+          - hal_espressif   # ESP32-S3 SoC HAL
+          - loramac-node    # legacy SX126x PHY backend; unused with CONFIG_LORA_MODULE_BACKEND_NATIVE.
+                            # Retained pending a verified removal (needs west update + rebuild to confirm).
+          - picolibc        # C library
