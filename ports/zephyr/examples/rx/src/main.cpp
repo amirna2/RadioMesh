@@ -29,6 +29,7 @@ BUILD_ASSERT(DT_NODE_HAS_STATUS(LORA_NODE, okay),
              "lora0 alias not defined / not okay in the devicetree overlay");
 
 #define MAX_LORA_LEN 255
+#define RX_TIMEOUT K_SECONDS(10) // wake periodically to emit a liveness heartbeat
 
 static uint32_t payload_crc(const std::vector<byte>& data)
 {
@@ -51,17 +52,20 @@ int main(void)
     LOG_INF("RadioMesh RX node ready; listening...");
 
     uint8_t rx[MAX_LORA_LEN];
+    uint32_t received = 0;
     while (true) {
         int16_t rssi = 0;
         int8_t snr = 0;
-        int len = lora_recv(lora, rx, sizeof(rx), K_FOREVER, &rssi, &snr);
+        int len = lora_recv(lora, rx, sizeof(rx), RX_TIMEOUT, &rssi, &snr);
         if (len <= 0) {
-            continue; // spurious wake / error — keep listening
+            LOG_INF("listening... (received=%u)", received); // heartbeat on idle timeout
+            continue;
         }
 
         std::vector<byte> rbuf(rx, rx + len);
         RadioMeshPacket rpkt(rbuf);
         bool crc_ok = (payload_crc(rpkt.packetData) == rpkt.packetCrc);
+        received++;
 
         LOG_INF("RX len=%d rssi=%d snr=%d | topic=0x%02x fcounter=%u dataLen=%u crc=%s", len, rssi,
                 (int)snr, rpkt.topic, rpkt.fcounter, (unsigned)rpkt.packetData.size(),

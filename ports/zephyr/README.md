@@ -57,21 +57,20 @@ git -C ../zephyr apply RadioMesh/ports/zephyr/patches/0001-gpio_esp32-BIT64-vali
 
 > Verified on macOS 26 / arm64 with Zephyr 4.4.0 + SDK 1.0.1.
 
-## Build & flash (one board per role)
+## Build & flash
 
-Transmitter:
-
-```bash
-west build -b xiao_esp32s3/esp32s3/procpu ports/zephyr/examples/tx -d build-tx -p always
-west flash -d build-tx
-```
-
-Receiver (second board):
+The `Makefile` here is the developer + CI entry point. Full setup and workflow are
+in [`DEVELOPING.md`](DEVELOPING.md); the short version, from `ports/zephyr/`:
 
 ```bash
-west build -b xiao_esp32s3/esp32s3/procpu ports/zephyr/examples/rx -d build-rx -p always
-west flash -d build-rx
+make setup              # once, and after every `west update` (re-applies the gpio patch)
+make run ROLE=tx        # build + flash + monitor a transmitter
+make run ROLE=rx        # ...and a receiver on the second board
+make boards             # list connected boards and the role each is running
 ```
+
+Each role is a standalone Zephyr app; under the hood `make build ROLE=tx` runs
+`west build -b xiao_esp32s3/esp32s3/procpu examples/tx`.
 
 ## Expected result (manual M1 gate)
 
