@@ -195,11 +195,10 @@ int ZephyrLoraRadio::sendPacket(std::vector<byte>& data)
         return RM_E_RADIO_TX;
     }
 
-    // Deadline backstop for the tx flag: the active native backend raises the
-    // signal on both TxDone and TX timeout, but the deprecated loramac-node
-    // backend raises nothing on timeout — bounding the wait keeps the flag
-    // state machine live on either backend (2x expected airtime, the same
-    // margin the blocking lora_send variants use).
+    // Deadline backstop for the tx flag: the driver raises the signal on both
+    // TxDone and TX timeout, but a lost completion would strand the flag state
+    // machine — bounding the wait keeps it live (2x expected airtime, the same
+    // margin the blocking lora_send uses).
     txDeadlineMs = k_uptime_get_32() + 2 * lora_airtime(radioDev, data.size());
     txInFlight = true;
 
@@ -326,7 +325,7 @@ bool ZephyrLoraRadio::checkAndClearTxFlag()
     if (signaled) {
         k_poll_signal_reset(&txDoneSignal);
         if (result == -ETIMEDOUT) {
-            // The native backend raises the signal with -ETIMEDOUT when the
+            // The driver raises the signal with -ETIMEDOUT when the
             // chip-level TX timeout fires — record the same error the Arduino
             // interrupt handler does.
             logerr_ln("ERROR startTransmitData timeout!");
@@ -339,9 +338,8 @@ bool ZephyrLoraRadio::checkAndClearTxFlag()
     }
 
     if (static_cast<int32_t>(k_uptime_get_32() - txDeadlineMs) >= 0) {
-        // Backstop: the deprecated loramac-node backend raises no signal on
-        // TX timeout (it only releases the modem), so a lost completion is
-        // bounded here. Cancelling reception forces the modem free from any
+        // Backstop: a lost TX completion would otherwise strand the flag
+        // state machine. Cancelling reception forces the modem free from any
         // state so the RX re-arm that follows can succeed.
         logerr_ln("ERROR startTransmitData timeout!");
         lora_recv_async(radioDev, nullptr, nullptr);
