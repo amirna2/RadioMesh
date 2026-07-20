@@ -8,6 +8,7 @@
 #include <RadioMeshVersion.h>
 #include <common/inc/Definitions.h>
 #include <common/inc/Logger.h>
+#include <common/inc/platform/RadioMeshPlatform.h>
 #include <common/utils/Utils.h>
 
 namespace RadioMeshUtils
@@ -19,45 +20,13 @@ std::string getVersion()
            std::to_string(VERSION_PATCH) + "-" + std::to_string(VERSION_EXTRA);
 }
 
-uint8_t simpleRNG(uint16_t size)
-{
-    uint8_t val;
-#if defined(ESP32)
-    uint8_t analogPin = A0;
-#else
-    uint8_t analogPin = GPIO0;
-#endif
-    val = 0;
-    while (size) {
-        for (unsigned i = 0; i < 8; ++i) {
-            int init = analogRead(analogPin);
-            // Instead of waiting for change, just sample twice
-            delayMicroseconds(1); // Tiny delay between reads
-            int second = analogRead(analogPin);
-
-            // Use difference between readings
-            int diff = abs(second - init);
-            val = (val << 1) | (diff & 0x01);
-        }
-        val++;
-        --size;
-    }
-
-    // If we got 0, just use millis as fallback
-    if (val == 0) {
-        val = (millis() & 0xFF) + 1;
-    }
-
-    return val;
-}
-
 std::string createUuid(int length)
 {
     std::string msg = "";
     int i;
 
     for (i = 0; i < length; i++) {
-        byte randomValue = random(36);
+        byte randomValue = RadioMeshPlatform::random(36);
         if (randomValue < 26) {
             msg = msg + char(randomValue + 'a');
         } else {

@@ -7,7 +7,7 @@
 
 RadioMeshDevice::RadioMeshDevice(const std::string& name, const std::array<byte, RM_ID_LENGTH>& id,
                                  MeshDeviceType type)
-    : name(name), id(id), deviceType(type), encryptionService(), micService(&encryptionService)
+    : name(name), id(id), encryptionService(), micService(&encryptionService), deviceType(type)
 {
     // InclusionController will be created in initialize() after storage is set up
 }

@@ -1,5 +1,5 @@
 
-#include <Arduino.h>
+#include <common/inc/platform/RadioMeshPlatform.h>
 #include <core/protocol/inc/routing/RoutingTable.h>
 
 RoutingTable* RoutingTable::instance = nullptr;
@@ -32,7 +32,7 @@ void RoutingTable::updateRoute(const RadioMeshPacket& packet, int8_t rssi)
     std::copy(packet.lastHopId.begin(), packet.lastHopId.end(), newRoute.nextHopId.begin());
     newRoute.hops = packet.hopCount;
     newRoute.rssi = rssi;
-    newRoute.lastSeen = millis();
+    newRoute.lastSeen = RadioMeshPlatform::millis();
     newRoute.active = true;
 
     int index = findRoute(packet.sourceDevId.data());
@@ -60,7 +60,7 @@ bool RoutingTable::findNextHop(const byte* destId, byte* nextHop)
 {
     int index = findRoute(destId);
     if (index != NOT_FOUND && routes[index].active) {
-        if (millis() - routes[index].lastSeen < ROUTE_TIMEOUT) {
+        if (RadioMeshPlatform::millis() - routes[index].lastSeen < ROUTE_TIMEOUT) {
             std::copy(routes[index].nextHopId.begin(), routes[index].nextHopId.end(), nextHop);
             return true;
         } else {
@@ -92,7 +92,7 @@ int RoutingTable::findEmptySlot()
         }
     }
     // If no inactive slots, find oldest route
-    uint32_t oldestTime = millis();
+    uint32_t oldestTime = RadioMeshPlatform::millis();
     int oldestIndex = 0;
     for (int i = 0; i < MAX_ROUTES; i++) {
         if (routes[i].lastSeen < oldestTime) {
@@ -130,7 +130,7 @@ void RoutingTable::printRoutes()
                 RadioMeshUtils::convertToHex(routes[i].nextHopId.data(), DEV_ID_LENGTH);
             loginfo_ln("Route %d: Dest=%s NextHop=%s Hops=%d RSSI=%d Age=%lums", i, destId.c_str(),
                        nextHopId.c_str(), routes[i].hops, routes[i].rssi,
-                       millis() - routes[i].lastSeen);
+                       RadioMeshPlatform::millis() - routes[i].lastSeen);
         }
     }
 }

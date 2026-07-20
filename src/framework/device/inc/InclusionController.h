@@ -3,6 +3,7 @@
 #include "DeviceStorage.h"
 #include "KeyManager.h"
 #include <common/inc/Definitions.h>
+#include <common/inc/platform/RadioMeshPlatform.h>
 #include <vector>
 
 class RadioMeshDevice;
@@ -187,9 +188,7 @@ private:
     {
         std::vector<byte> nonce(NONCE_SIZE);
         // Generate cryptographically secure random nonce
-        for (size_t i = 0; i < NONCE_SIZE; i++) {
-            nonce[i] = random(256);
-        }
+        RadioMeshPlatform::randomBytes(nonce.data(), NONCE_SIZE);
         return nonce;
     }
 };

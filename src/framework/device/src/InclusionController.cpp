@@ -42,7 +42,7 @@ InclusionController::InclusionController(RadioMeshDevice& device) : device(devic
     } else {
         if (rc == RM_E_NONE) {
             // Standard device - try to load state
-            DeviceInclusionState loadedState;
+            DeviceInclusionState loadedState = DeviceInclusionState::NOT_INCLUDED;
             int rc = storage->loadState(loadedState);
 
             if (rc == RM_E_NONE) {
@@ -546,7 +546,7 @@ void InclusionController::transitionToState(InclusionProtocolState newState)
                    getProtocolStateString(newState));
 
         protocolState = newState;
-        stateStartTime = millis();
+        stateStartTime = RadioMeshPlatform::millis();
         retryCount = 0;
     }
 }
@@ -557,7 +557,7 @@ bool InclusionController::isStateTimedOut() const
         return false;
     }
 
-    uint32_t elapsed = millis() - stateStartTime;
+    uint32_t elapsed = RadioMeshPlatform::millis() - stateStartTime;
     return elapsed > getStateTimeoutMs();
 }
 
