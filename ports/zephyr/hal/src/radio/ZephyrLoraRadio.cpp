@@ -195,9 +195,11 @@ int ZephyrLoraRadio::sendPacket(std::vector<byte>& data)
         return RM_E_RADIO_TX;
     }
 
-    // The driver raises no signal on TX timeout (sx12xx_ev_tx_timed_out only
-    // releases the modem), so completion is bounded by twice the expected
-    // airtime — the same margin the blocking lora_send applies.
+    // Deadline backstop for the tx flag: the active native backend raises the
+    // signal on both TxDone and TX timeout, but the deprecated loramac-node
+    // backend raises nothing on timeout — bounding the wait keeps the flag
+    // state machine live on either backend (2x expected airtime, the same
+    // margin the blocking lora_send variants use).
     txDeadlineMs = k_uptime_get_32() + 2 * lora_airtime(radioDev, data.size());
     txInFlight = true;
 
@@ -323,7 +325,13 @@ bool ZephyrLoraRadio::checkAndClearTxFlag()
 
     if (signaled) {
         k_poll_signal_reset(&txDoneSignal);
-        if (result < 0) {
+        if (result == -ETIMEDOUT) {
+            // The native backend raises the signal with -ETIMEDOUT when the
+            // chip-level TX timeout fires — record the same error the Arduino
+            // interrupt handler does.
+            logerr_ln("ERROR startTransmitData timeout!");
+            radioStateError = RM_E_RADIO_TX_TIMEOUT;
+        } else if (result < 0) {
             radioStateError = RM_E_RADIO_TX;
         }
         txInFlight = false;
@@ -331,9 +339,10 @@ bool ZephyrLoraRadio::checkAndClearTxFlag()
     }
 
     if (static_cast<int32_t>(k_uptime_get_32() - txDeadlineMs) >= 0) {
-        // TxDone never arrived. Record the same error the Arduino interrupt
-        // handler does and force the modem free (the cancel path releases it
-        // from any state) so the RX re-arm that follows can succeed.
+        // Backstop: the deprecated loramac-node backend raises no signal on
+        // TX timeout (it only releases the modem), so a lost completion is
+        // bounded here. Cancelling reception forces the modem free from any
+        // state so the RX re-arm that follows can succeed.
         logerr_ln("ERROR startTransmitData timeout!");
         lora_recv_async(radioDev, nullptr, nullptr);
         radioStateError = RM_E_RADIO_TX_TIMEOUT;
