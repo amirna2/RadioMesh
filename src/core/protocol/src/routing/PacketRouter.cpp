@@ -3,7 +3,6 @@
 #include <vector>
 
 #include <core/protocol/inc/routing/PacketRouter.h>
-#include <hardware/inc/radio/LoraRadio.h>
 
 PacketRouter* PacketRouter::instance = nullptr;
 
@@ -121,8 +120,13 @@ void PacketRouter::calculatePacketCrc(RadioMeshPacket& packetCopy, RadioMeshUtil
 
 int PacketRouter::sendPacket(RadioMeshPacket& packetCopy)
 {
+    if (!radio) {
+        logerr_ln("CRITICAL: Radio not available");
+        return RM_E_DEVICE_INITIALIZATION_FAILED;
+    }
+
     std::vector<byte> buffer = packetCopy.toByteBuffer();
-    int rc = LoraRadio::getInstance()->sendPacket(buffer);
+    int rc = radio->sendPacket(buffer);
     if (rc != RM_E_NONE) {
         logerr_ln("Failed to send packet");
     }

@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 
+#include <common/inc/platform/RadioMeshPlatform.h>
 #include <common/utils/RadioMeshCrc32.h>
 #include <core/protocol/inc/routing/RoutingTable.h>
 #include <framework/device/inc/Device.h>
@@ -49,7 +50,7 @@ void RadioMeshDevice::setDeviceType(MeshDeviceType type)
 int RadioMeshDevice::initializeRadio(LoraRadioParams radioParams)
 {
     int rc = RM_E_NONE;
-    radio = LoraRadio::getInstance();
+    radio = RadioMeshPlatform::loraRadio();
 
     if (radio == nullptr) {
         logerr_ln("Failed to get Lora radio instance");
@@ -60,7 +61,10 @@ int RadioMeshDevice::initializeRadio(LoraRadioParams radioParams)
     if (rc != RM_E_NONE) {
         logerr_ln("Failed to set radio params");
         radio = nullptr;
+        return rc;
     }
+
+    router->setRadio(radio);
     return rc;
 }
 
@@ -254,7 +258,7 @@ IAesCrypto* RadioMeshDevice::getCrypto()
 
 IByteStorage* RadioMeshDevice::getByteStorage()
 {
-    return eepromStorage;
+    return byteStorage;
 }
 
 int RadioMeshDevice::sendData(const uint8_t topic, const std::vector<byte> data,
@@ -519,20 +523,18 @@ bool RadioMeshDevice::isInclusionModeEnabled() const
 int RadioMeshDevice::initialize()
 {
     int rc = RM_E_NONE;
-    eepromStorage = EEPROMStorage::getInstance();
+    byteStorage = RadioMeshPlatform::byteStorage();
 
-    if (eepromStorage == nullptr) {
+    if (byteStorage == nullptr) {
         logerr_ln("Failed to get storage instance");
         return RM_E_DEVICE_INITIALIZATION_FAILED;
     }
 
-    ByteStorageParams defaultParams(EEPROM_STORAGE_MAX_SIZE);
-    eepromStorage->setParams(defaultParams);
-    rc = eepromStorage->begin();
+    rc = byteStorage->begin();
 
     if (rc != RM_E_NONE) {
         logerr_ln("Failed to initialize storage");
-        eepromStorage = nullptr;
+        byteStorage = nullptr;
         return rc;
     }
 
@@ -566,7 +568,7 @@ int RadioMeshDevice::initialize()
 
 int RadioMeshDevice::factoryReset()
 {
-    if (eepromStorage == nullptr) {
+    if (byteStorage == nullptr) {
         logerr_ln("No storage available for factory reset");
         return RM_E_UNKNOWN;
     }
@@ -574,7 +576,7 @@ int RadioMeshDevice::factoryReset()
     loginfo_ln("Performing factory reset - clearing all stored state");
 
     // Clear all storage
-    int rc = eepromStorage->clear();
+    int rc = byteStorage->clear();
     if (rc != RM_E_NONE) {
         logerr_ln("Failed to clear storage: %d", rc);
         return rc;

@@ -114,6 +114,10 @@ IRadio* loraRadio()
 
 IByteStorage* byteStorage()
 {
-    return EEPROMStorage::getInstance();
+    // Storage sizing is port business: the core receives a ready-to-begin()
+    // storage and never references EEPROM_STORAGE_MAX_SIZE.
+    EEPROMStorage* storage = EEPROMStorage::getInstance();
+    storage->setParams(ByteStorageParams(EEPROM_STORAGE_MAX_SIZE));
+    return storage;
 }
 } // namespace RadioMeshPlatform
