@@ -144,10 +144,12 @@ int ZephyrLoraRadio::setup(const LoraRadioParams& params)
     // lora_airtime() used for the transmit deadline.
     rc = configureModem(true);
     if (rc != RM_E_NONE) {
+        logerr_ln("ERROR configureModem(tx) failed, code %d", rc);
         return rc;
     }
     rc = configureModem(false);
     if (rc != RM_E_NONE) {
+        logerr_ln("ERROR configureModem(rx) failed, code %d", rc);
         return rc;
     }
 
@@ -155,7 +157,7 @@ int ZephyrLoraRadio::setup(const LoraRadioParams& params)
 
     rc = startReceive();
     if (rc != RM_E_NONE) {
-        logerr_ln("ERROR Failed to start receive");
+        logerr_ln("ERROR Failed to start receive, code %d", rc);
         return rc;
     }
 
