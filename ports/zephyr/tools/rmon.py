@@ -15,6 +15,9 @@ Commands:
   resolve [--port P]   print exactly ONE port to use; error if zero or ambiguous
   boards               print each connected port and the firmware role it runs
   monitor [--port P]   reconnecting serial console (Ctrl-C to stop)
+  test [--port P] [--timeout S]
+                       echo a test-runner run until its RM_TEST_DONE line;
+                       exit 0 only if the suite reports rc=0
 
 Role is read from the Zephyr LOG_MODULE name in the console stream:
   rm_tx -> tx     rm_rx -> rx     rm_m1 -> legacy-symmetric
@@ -23,6 +26,7 @@ import argparse
 import glob
 import os
 import platform
+import re
 import select
 import sys
 import termios
@@ -199,6 +203,59 @@ def cmd_monitor(port_arg):
     return 0
 
 
+def cmd_test(port_arg, timeout):
+    """Echo a test-runner run (ports/zephyr/tests/runner) and return its verdict.
+
+    Exit 0 only when the suite reports `RM_TEST_DONE rc=0`. Fail on a non-zero
+    rc, on a reboot after `RM_TEST_START` (a crash mid-run must not let a rerun
+    report a pass), or when no result arrives within `timeout` seconds.
+    """
+    port = resolve_port(port_arg)
+    if not port:
+        return 1
+    deadline = time.monotonic() + timeout
+    started = False
+    line = b""
+    fd = None
+    try:
+        while time.monotonic() < deadline:
+            if fd is None:
+                try:
+                    fd = serial_open(port)
+                except OSError:
+                    time.sleep(0.2)  # port is gone while the board resets
+                    continue
+            try:
+                data = serial_read(fd)
+            except OSError:
+                os.close(fd)
+                fd = None
+                continue
+            sys.stdout.buffer.write(data)
+            sys.stdout.flush()
+            line += data
+            while b"\n" in line:
+                done, line = line.split(b"\n", 1)
+                if b"RM_TEST_START" in done:
+                    started = True
+                elif started and b"Booting Zephyr" in done:
+                    sys.stderr.write("[rmon] FAIL: board rebooted during the test run\n")
+                    return 1
+                match = re.search(rb"RM_TEST_DONE rc=(-?\d+)", done)
+                if match:
+                    rc = int(match.group(1))
+                    sys.stderr.write("[rmon] %s (rc=%d)\n" % ("PASS" if rc == 0 else "FAIL", rc))
+                    return 0 if rc == 0 else 1
+        sys.stderr.write("[rmon] FAIL: no RM_TEST_DONE line within %g s\n" % timeout)
+        return 1
+    finally:
+        if fd is not None:
+            try:
+                os.close(fd)
+            except OSError:
+                pass
+
+
 def main():
     ap = argparse.ArgumentParser(prog="rmon",
                                  description="RadioMesh Zephyr serial helper")
@@ -209,6 +266,9 @@ def main():
     sub.add_parser("boards", help="print each port and its firmware role")
     p_mon = sub.add_parser("monitor", help="reconnecting serial monitor")
     p_mon.add_argument("--port", default="auto")
+    p_test = sub.add_parser("test", help="echo a test run; exit 0 only on RM_TEST_DONE rc=0")
+    p_test.add_argument("--port", default="auto")
+    p_test.add_argument("--timeout", type=float, default=120.0)
     args = ap.parse_args()
     if args.cmd == "list":
         return cmd_list()
@@ -216,6 +276,8 @@ def main():
         return cmd_resolve(args.port)
     if args.cmd == "boards":
         return cmd_boards()
+    if args.cmd == "test":
+        return cmd_test(args.port, args.timeout)
     return cmd_monitor(args.port)  # "monitor"
 
 

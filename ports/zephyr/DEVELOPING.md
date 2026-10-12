@@ -30,6 +30,7 @@ required driver patch. Re-run `make setup` after any `west update`.
 | `make build ROLE=tx\|rx` | build an example | yes |
 | `make flash ROLE=tx\|rx [PORT=]` | flash a board | yes |
 | `make run ROLE=tx\|rx [PORT=]` | build + flash + monitor | yes |
+| `make test SUITE=<name> [PORT=] [TIMEOUT=]` | run one `test/` suite on a board | yes |
 | `make boards` | list boards and their role | no |
 | `make monitor [PORT=]` | serial console (Ctrl-C to quit) | no |
 | `make clean [ROLE=]` | remove build outputs | no |
@@ -46,6 +47,21 @@ required driver patch. Re-run `make setup` after any `west update`.
 The receiver logs, about every 3 s:
 
     rm_rx: RX len=38 ... topic=0x10 fcounter=N dataLen=3 crc=OK
+
+## On-board unit tests
+
+`make test SUITE=<name>` builds one suite from the repo's `test/` directory
+with the on-board runner (`tests/runner`), flashes it, and prints the Unity
+output. It exits 0 only when the suite reports no failures; a failure, a reboot
+mid-run, or no result within `TIMEOUT` seconds (default 120) exits non-zero.
+
+    make test SUITE=test_Packet
+
+The suites are the same sources the PlatformIO test environments run, with the
+same Unity version. The display, WiFi and Arduino-driver suites
+(`test_CustomDisplay`, `test_Wifi*`, `test_LoraRadio`, `test_EEPROMStorage`)
+are Arduino-only. Suites that use storage erase the board's NVS. All suites
+share one build directory; `make clean ROLE=test` removes it.
 
 ## Troubleshooting
 
