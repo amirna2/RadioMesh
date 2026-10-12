@@ -1,3 +1,4 @@
+#include <common/inc/Errors.h>
 #include <core/protocol/inc/crypto/aes/AesCrypto.h>
 #include <framework/interfaces/ICrypto.h>
 #include <unity.h>
@@ -13,8 +14,10 @@ void test_encrypt_decrypt(void)
 {
     AesCrypto* crypto = AesCrypto::getInstance();
 
-    crypto->setKey(key);
-    crypto->setIV(iv);
+    SecurityParams params;
+    params.key = key;
+    params.iv = iv;
+    TEST_ASSERT_EQUAL(RM_E_NONE, crypto->setParams(params));
     std::vector<byte> clearData = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
                                    0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10};
     std::vector<byte> encryptedData = crypto->encrypt(clearData);

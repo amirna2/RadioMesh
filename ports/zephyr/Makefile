@@ -46,7 +46,11 @@ BUILD_DIR    = $(WORKSPACE)/.build-$(ROLE)   # deferred: depends on ROLE per tar
 
 VALID_ROLES := tx rx standard
 
-.PHONY: help bootstrap setup build flash monitor run boards clean _need_west _need_role
+# On-board unit tests: one build dir shared by all suites (`make clean ROLE=test`).
+TEST_BUILD_DIR := $(WORKSPACE)/.build-test
+TIMEOUT ?= 120
+
+.PHONY: help bootstrap setup build flash monitor run test boards clean _need_west _need_role
 
 help:
 	@echo 'RadioMesh Zephyr examples — run from ports/zephyr/'
@@ -58,6 +62,8 @@ help:
 	@echo '  make flash ROLE=tx    flash a board (set PORT=/dev/... if more than one)'
 	@echo '  make monitor          serial console (Ctrl-C to quit)'
 	@echo '  make run ROLE=tx      build + flash + monitor'
+	@echo '  make test SUITE=test_Packet'
+	@echo '                        run one test/ suite on a board (build + flash + check)'
 	@echo '  make clean            remove build outputs'
 	@echo ''
 	@echo 'Guide: DEVELOPING.md'
@@ -119,6 +125,15 @@ run:
 	@$(MAKE) build ROLE=$(ROLE)
 	@$(MAKE) flash ROLE=$(ROLE) PORT=$(PORT)
 	@$(MAKE) monitor PORT=$(PORT)
+
+test: _need_west
+	@[ -n "$(SUITE)" ] && [ -d "$(REPO)/test/$(SUITE)" ] || { \
+	  echo "error: SUITE must name a suite directory in test/ (got '$(SUITE)'). e.g. make test SUITE=test_Packet"; exit 1; }
+	$(WEST) build -b $(BOARD) $(HERE)/tests/runner -d $(TEST_BUILD_DIR) -p auto -- -DSUITE=$(SUITE)
+	@port=$$($(PYTHON) $(RMON) resolve --port "$(PORT)") || exit 1; \
+	echo "[test] $(SUITE) -> $$port"; \
+	$(WEST) flash -d $(TEST_BUILD_DIR) --esp-device $$port && \
+	$(PYTHON) $(RMON) test --port $$port --timeout $(TIMEOUT)
 
 boards:
 	@$(PYTHON) $(RMON) boards

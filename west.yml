@@ -18,6 +18,8 @@ manifest:
       url-base: https://github.com/zephyrproject-rtos
     - name: operatorfoundation
       url-base: https://github.com/OperatorFoundation
+    - name: throwtheswitch
+      url-base: https://github.com/ThrowTheSwitch
 
   projects:
     # Crypto library co-compiled with the core. Pinned by SHA (tag 0.4.0) to
@@ -29,6 +31,14 @@ manifest:
       repo-path: Crypto
       revision: 4a6b190f7b1efd96d024d0f4510498963740b001
       path: modules/lib/crypto
+    # Unity test framework for the on-board test runner (ports/zephyr/tests).
+    # Pinned by SHA (tag v2.6.1) to the version PlatformIO's unity test
+    # framework uses, so both platforms run the suites on the same Unity.
+    - name: unity
+      remote: throwtheswitch
+      repo-path: Unity
+      revision: cbcd08fa7de711053a3deec6339ee89cad5d2697
+      path: modules/test/unity
     - name: zephyr
       remote: zephyrproject-rtos
       revision: v4.4.0

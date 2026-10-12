@@ -6,7 +6,11 @@ WifiParams wifiParams = {"Lojika Systems 2.4G", "7212-Wabash!"};
 
 LoraRadioParams defaultConfig = LoraRadioPresets::HELTEC_WIFI_LORA_32_V3;
 // Default display configuration
+#if !defined(RM_NO_DISPLAY)
 OledDisplayParams displayParams = OledDisplayParams(SCL_OLED, SDA_OLED, RST_OLED, RM_FONT_SMALL);
+#else
+OledDisplayParams displayParams; // No display pins when the display is compiled out
+#endif // !RM_NO_DISPLAY
 // Default access point configuration
 WifiAccessPointParams apParams = {"WarpPortal", "firefly2424", "192.168.20.1"};
 
@@ -25,6 +29,8 @@ const std::array<byte, DEV_ID_LENGTH> device_id = {0x11, 0x11, 0x11, 0x11};
 const std::array<byte, 1> bad_device_id = {0x11};
 const std::string DEVICE_NAME = "TestDevice";
 
+// IDevice has no device-type getter yet: the type checks below cast to
+// RadioMeshDevice, the class build() returns.
 IDevice* device = nullptr;
 
 void reset_device()
@@ -87,6 +93,7 @@ void test_DeviceBuilder_buildDevice_withRadio_and_withRelay(void)
     TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
 }
 
+#if !defined(RM_NO_WIFI)
 void test_DeviceBuilder_buildDevice_withWifi(void)
 {
     DeviceBuilder builder;
@@ -111,6 +118,18 @@ void test_DeviceBuilder_buildDevice_withWifiAccessPoint(void)
     TEST_ASSERT_NOT_NULL(device->getWifiAccessPoint());
     TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
 }
+#else
+// These tests are skipped if RM_NO_WIFI is defined
+void test_DeviceBuilder_buildDevice_withWifi(void)
+{
+    TEST_IGNORE_MESSAGE("WiFi is not supported in this build.");
+}
+
+void test_DeviceBuilder_buildDevice_withWifiAccessPoint(void)
+{
+    TEST_IGNORE_MESSAGE("WiFi is not supported in this build.");
+}
+#endif // !RM_NO_WIFI
 
 void test_DeviceBuilder_buildDevice_withRxCallback(void)
 {
@@ -129,13 +148,21 @@ void test_DeviceBuilder_buildDevice_withAesCrypto(void)
 {
     DeviceBuilder builder;
     reset_device();
-    device =
-        builder.start().withAesCrypto(key, iv).build("test", device_id, MeshDeviceType::STANDARD);
+
+    SecurityParams securityParams;
+    securityParams.method = SecurityMethod::AES;
+    securityParams.key = key;
+    securityParams.iv = iv;
+
+    device = builder.start()
+                 .withSecureMessaging(securityParams)
+                 .build("test", device_id, MeshDeviceType::STANDARD);
 
     TEST_ASSERT_NOT_NULL(device);
     TEST_ASSERT_EQUAL_STRING("test", device->getDeviceName().c_str());
     TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
 }
+#if !defined(RM_NO_DISPLAY)
 void test_DeviceBuilder_buildDevice_withOledDisplay(void)
 {
     DeviceBuilder builder;
@@ -149,17 +176,29 @@ void test_DeviceBuilder_buildDevice_withOledDisplay(void)
     TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
     TEST_ASSERT_NOT_NULL(device->getDisplay());
 }
+#else
+void test_DeviceBuilder_buildDevice_withOledDisplay(void)
+{ // This test is skipped if RM_NO_DISPLAY is defined
+    TEST_IGNORE_MESSAGE("Display initialization is not supported in this build.");
+}
+#endif // !RM_NO_DISPLAY
 void test_DeviceBuilder_buildDevice_withEverything(void)
 {
     DeviceBuilder builder;
     reset_device();
+
+    SecurityParams securityParams;
+    securityParams.method = SecurityMethod::AES;
+    securityParams.key = key;
+    securityParams.iv = iv;
+
     device = builder.start()
                  .withLoraRadio(defaultConfig)
                  .withWifi(wifiParams)
                  .withWifiAccessPoint(apParams)
                  .withRelayEnabled(true)
                  .withRxPacketCallback(RxCallback)
-                 .withAesCrypto(key, iv)
+                 .withSecureMessaging(securityParams)
                  .withOledDisplay(displayParams)
                  .build("test", device_id, MeshDeviceType::STANDARD);
 
@@ -188,7 +227,8 @@ void test_DeviceBuilder_buildHubDevice_withSecureMessaging(void)
     TEST_ASSERT_NOT_NULL(device);
     TEST_ASSERT_EQUAL_STRING("hubDevice", device->getDeviceName().c_str());
     TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
-    TEST_ASSERT_EQUAL(MeshDeviceType::HUB, device->getDeviceType());
+    TEST_ASSERT_EQUAL(MeshDeviceType::HUB,
+                      static_cast<RadioMeshDevice*>(device)->getDeviceType());
 }
 
 void test_DeviceBuilder_buildHubDevice_withoutSecurity_shouldFail(void)
@@ -215,7 +255,8 @@ void test_DeviceBuilder_buildStandardDevice_withoutSecurity_shouldSucceed(void)
     TEST_ASSERT_NOT_NULL(device);
     TEST_ASSERT_EQUAL_STRING("standardDevice", device->getDeviceName().c_str());
     TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
-    TEST_ASSERT_EQUAL(MeshDeviceType::STANDARD, device->getDeviceType());
+    TEST_ASSERT_EQUAL(MeshDeviceType::STANDARD,
+                      static_cast<RadioMeshDevice*>(device)->getDeviceType());
 }
 
 void test_DeviceBuilder_buildStandardDevice_withSecureMessaging(void)
@@ -236,7 +277,8 @@ void test_DeviceBuilder_buildStandardDevice_withSecureMessaging(void)
     TEST_ASSERT_NOT_NULL(device);
     TEST_ASSERT_EQUAL_STRING("standardDevice", device->getDeviceName().c_str());
     TEST_ASSERT_EQUAL(DEV_ID_LENGTH, device->getDeviceId().size());
-    TEST_ASSERT_EQUAL(MeshDeviceType::STANDARD, device->getDeviceType());
+    TEST_ASSERT_EQUAL(MeshDeviceType::STANDARD,
+                      static_cast<RadioMeshDevice*>(device)->getDeviceType());
 }
 
 void setup()
