@@ -41,7 +41,7 @@ int ZephyrLoraRadio::checkLoraParameters(LoraRadioParams params)
         logerr_ln("ERROR  spreading factor is invalid");
         return RM_E_INVALID_PARAM;
     }
-    if (params.band < 150.0 || params.band > 960.0) {
+    if (params.band < 150.0f || params.band > 960.0f) {
         logerr_ln("ERROR  frequency is invalid");
         return RM_E_INVALID_PARAM;
     }
@@ -49,7 +49,7 @@ int ZephyrLoraRadio::checkLoraParameters(LoraRadioParams params)
         logerr_ln("ERROR  tx power is invalid");
         return RM_E_INVALID_PARAM;
     }
-    if (params.bw < 7.8 || params.bw > 500.0) {
+    if (params.bw < 7.8f || params.bw > 500.0f) {
         logerr_ln("ERROR  bandwidth is invalid");
         return RM_E_INVALID_PARAM;
     }
