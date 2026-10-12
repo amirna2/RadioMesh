@@ -19,8 +19,11 @@ Commands:
                        echo a test-runner run until its RM_TEST_DONE line;
                        exit 0 only if the suite reports rc=0
 
-Role is read from the Zephyr LOG_MODULE name in the console stream:
-  rm_tx -> tx     rm_rx -> rx     rm_m1 -> legacy-symmetric
+Role is read from the examples' periodic status lines in the console stream:
+  "Status: Not included" / "Status: Included in network" -> standard (or relay)
+  "Status: Hub Ready" / "Status: Inclusion Active"        -> hub
+The hub prints status only while an inclusion window is open, so between
+windows it shows as unknown.
 """
 import argparse
 import glob
@@ -34,11 +37,12 @@ import time
 
 BAUD = 115200
 
-# LOG_MODULE_REGISTER name -> human role. Extend as new example roles land.
+# Status-line marker -> human role. Extend as new example roles land.
 ROLE_TAGS = {
-    "rm_tx": "tx",
-    "rm_rx": "rx",
-    "rm_m1": "legacy-symmetric",
+    "Status: Not included": "standard (or relay)",
+    "Status: Included in network": "standard (or relay)",
+    "Status: Hub Ready": "hub",
+    "Status: Inclusion Active": "hub",
 }
 
 
