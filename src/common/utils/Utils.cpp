@@ -68,7 +68,7 @@ uint32_t toUint32(const byte* data)
 std::string toUpperCase(std::string str)
 {
     std::string upper = "";
-    for (int i = 0; i < str.length(); i++) {
+    for (size_t i = 0; i < str.length(); i++) {
         upper += toupper(str[i]);
     }
     return upper;
