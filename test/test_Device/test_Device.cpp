@@ -92,6 +92,7 @@ void test_initializeOledDisplay(void)
 }
 #endif // !RM_NO_DISPLAY
 
+#if !defined(RM_NO_WIFI)
 void test_initializeWifi(void)
 {
     RadioMeshDevice device = createDevice();
@@ -155,6 +156,43 @@ void test_initializeWifiAccessPoint_with_invalid_ip_address(void)
     int rc = device.initializeWifiAccessPoint(apParams);
     TEST_ASSERT_EQUAL(RM_E_INVALID_AP_PARAMS, rc);
 }
+#else
+// These tests are skipped if RM_NO_WIFI is defined
+void test_initializeWifi(void)
+{
+    TEST_IGNORE_MESSAGE("WiFi is not supported in this build.");
+}
+
+void test_initializeWifi_with_invalid_ssid_length(void)
+{
+    TEST_IGNORE_MESSAGE("WiFi is not supported in this build.");
+}
+
+void test_initializeWifi_with_invalid_password_length(void)
+{
+    TEST_IGNORE_MESSAGE("WiFi is not supported in this build.");
+}
+
+void test_initializeWifiAccessPoint(void)
+{
+    TEST_IGNORE_MESSAGE("WiFi is not supported in this build.");
+}
+
+void test_initializeWifiAccessPoint_with_invalid_ssid_length(void)
+{
+    TEST_IGNORE_MESSAGE("WiFi is not supported in this build.");
+}
+
+void test_initializeWifiAccessPoint_with_invalid_password_length(void)
+{
+    TEST_IGNORE_MESSAGE("WiFi is not supported in this build.");
+}
+
+void test_initializeWifiAccessPoint_with_invalid_ip_address(void)
+{
+    TEST_IGNORE_MESSAGE("WiFi is not supported in this build.");
+}
+#endif // !RM_NO_WIFI
 
 void test_updateSecurityParams(void)
 {
