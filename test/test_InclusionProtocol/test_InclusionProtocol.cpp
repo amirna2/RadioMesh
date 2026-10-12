@@ -6,7 +6,7 @@
 #include <core/protocol/inc/crypto/aes/AesCrypto.h>
 #include <common/utils/Utils.h>
 #include <cstring>
-#include <EEPROM.h>
+#include <common/inc/platform/RadioMeshPlatform.h>
 
 // ========================================
 // SPECIFICATION COMPLIANCE TESTS
@@ -46,24 +46,8 @@
  * - Expected Length: 16 bytes (AES minimum block size)
  */
 
-// Use ESP32's built-in ECC from TinyCrypt
-extern "C" {
-typedef struct uECC_Curve_t* uECC_Curve;
-uECC_Curve uECC_secp256r1(void);
-void uECC_set_rng(int (*rng_function)(uint8_t *dest, unsigned size));
-int uECC_make_key(uint8_t *public_key, uint8_t *private_key, uECC_Curve curve);
-}
-
-// RNG function for micro-ecc
-static int test_rng(uint8_t *dest, unsigned size) {
-    while (size) {
-        *dest++ = random(256);
-        size--;
-    }
-    return 1;
-}
-
-// Generate valid ECC test keys
+// Test keys: random bytes of the sizes the tests use. The core's key exchange
+// is Curve25519, so it never relied on these being P-256 key pairs.
 std::vector<byte> TEST_HUB_PRIVATE_KEY(32);
 std::vector<byte> TEST_HUB_PUBLIC_KEY(64);  // Full 64-byte public key
 std::vector<byte> TEST_DEVICE_PRIVATE_KEY(32);
@@ -72,24 +56,12 @@ std::vector<byte> TEST_DEVICE_PUBLIC_KEY(64);  // Full 64-byte public key
 void generateTestKeys() {
     static bool keysGenerated = false;
     if (keysGenerated) return;
-    
-    uECC_set_rng(&test_rng);
-    uECC_Curve curve = uECC_secp256r1();
-    
-    // Generate hub key pair
-    uint8_t hubPrivKey[32];
-    uint8_t hubPubKey[64];
-    uECC_make_key(hubPubKey, hubPrivKey, curve);
-    memcpy(TEST_HUB_PRIVATE_KEY.data(), hubPrivKey, 32);
-    memcpy(TEST_HUB_PUBLIC_KEY.data(), hubPubKey, 64); // Full 64-byte key
-    
-    // Generate device key pair
-    uint8_t devicePrivKey[32];
-    uint8_t devicePubKey[64];
-    uECC_make_key(devicePubKey, devicePrivKey, curve);
-    memcpy(TEST_DEVICE_PRIVATE_KEY.data(), devicePrivKey, 32);
-    memcpy(TEST_DEVICE_PUBLIC_KEY.data(), devicePubKey, 64); // Full 64-byte key
-    
+
+    RadioMeshPlatform::randomBytes(TEST_HUB_PRIVATE_KEY.data(), TEST_HUB_PRIVATE_KEY.size());
+    RadioMeshPlatform::randomBytes(TEST_HUB_PUBLIC_KEY.data(), TEST_HUB_PUBLIC_KEY.size());
+    RadioMeshPlatform::randomBytes(TEST_DEVICE_PRIVATE_KEY.data(), TEST_DEVICE_PRIVATE_KEY.size());
+    RadioMeshPlatform::randomBytes(TEST_DEVICE_PUBLIC_KEY.data(), TEST_DEVICE_PUBLIC_KEY.size());
+
     keysGenerated = true;
 }
 
@@ -104,21 +76,15 @@ const std::array<byte, 4> TEST_DEVICE_ID = {0x11, 0x11, 0x11, 0x11};
 const std::array<byte, 4> TEST_HUB_ID = {0x77, 0x77, 0x77, 0x77};
 
 void setUp(void) {
-    // Set up before each test - initialize Arduino and crypto system
-    Serial.begin(115200);
-    
-    // Initialize EEPROM for crypto system
-    EEPROM.begin(512);
-    
     // Generate test keys
     generateTestKeys();
-    
-    delay(100);
+
+    RadioMeshPlatform::delay(100);
 }
 
 void tearDown(void) {
     // Clean up after each test
-    delay(10);
+    RadioMeshPlatform::delay(10);
 }
 
 // ========================================
