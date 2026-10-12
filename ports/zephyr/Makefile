@@ -64,6 +64,7 @@ help:
 	@echo '  make boards           list connected boards and their role'
 	@echo '  make build ROLE=hub   build an example (standard|relay|hub)'
 	@echo '  make flash ROLE=hub   flash a board (set PORT=/dev/... if more than one)'
+	@echo '                        ERASE=1 wipes the whole flash first (NVS: keys, inclusion state)'
 	@echo '  make monitor          serial console (Ctrl-C to quit)'
 	@echo '  make run ROLE=hub     build + flash + monitor'
 	@echo '  make test SUITE=test_Packet'
@@ -120,7 +121,7 @@ build: _need_west _need_role
 flash: _need_west _need_role
 	@port=$$($(PYTHON) $(RMON) resolve --port "$(PORT)") || exit 1; \
 	echo "[flash] $(ROLE) -> $$port"; \
-	$(WEST) flash -d $(BUILD_DIR) --esp-device $$port
+	$(WEST) flash -d $(BUILD_DIR) --esp-device $$port $(if $(filter 1,$(ERASE)),--erase)
 
 monitor:
 	@$(PYTHON) $(RMON) monitor --port "$(PORT)"
