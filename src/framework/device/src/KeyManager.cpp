@@ -1,25 +1,16 @@
-#include <Arduino.h>
 #include <common/inc/Logger.h>
+#include <common/inc/platform/RadioMeshPlatform.h>
 #include <core/protocol/inc/crypto/EncryptionService.h>
 #include <framework/device/inc/KeyManager.h>
 #include <Crypto.h>
 #include <Curve25519.h>
-#include <RNG.h>
-#ifdef ESP32
-#include <esp_system.h>
-#endif
 
-// Deterministic key generation using ESP32 chipID as seed
+// Deterministic key generation using the per-chip identifier as seed
 static void generateDeterministicKey(uint8_t* key, size_t keySize)
 {
-    uint32_t seed = 0;
-#ifdef ESP32
-    uint64_t chipId = ESP.getEfuseMac();
-    seed = (uint32_t)(chipId ^ (chipId >> 32));
-#else
-    seed = 12345; // Fallback for non-ESP32 platforms
-#endif
-    
+    uint64_t chipId = RadioMeshPlatform::chipId();
+    uint32_t seed = (uint32_t)(chipId ^ (chipId >> 32));
+
     logdbg_ln("Generating deterministic key with chipID-based seed: 0x%08X", seed);
     
     // Use simple LCG to generate deterministic bytes
@@ -75,9 +66,7 @@ int KeyManager::generateNetworkKey(std::vector<byte>& networkKey)
 {
     networkKey.resize(NETWORK_KEY_SIZE);
     // Generate cryptographically secure random network key
-    for (size_t i = 0; i < NETWORK_KEY_SIZE; i++) {
-        networkKey[i] = random(256);
-    }
+    RadioMeshPlatform::randomBytes(networkKey.data(), NETWORK_KEY_SIZE);
     loginfo_ln("Generated new network key");
     return RM_E_NONE;
 }

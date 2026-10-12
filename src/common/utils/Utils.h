@@ -3,12 +3,9 @@
 #include <algorithm>
 #include <array>
 #include <common/inc/Definitions.h>
+#include <common/inc/platform/RadioMeshPlatform.h>
 #include <string>
 #include <vector>
-
-#ifndef RM_ARDUINO_BUILD
-#include <cstdlib>
-#endif
 
 enum class DataFormat
 {
@@ -76,14 +73,6 @@ std::string toString(const std::vector<byte>& vec, DataFormat format = DataForma
  * @returns A string representing the signal indicator.
  */
 std::string wifiSignalToString(SignalIndicator signal);
-
-/**
- * @brief Generate a random number.
- *
- * @param size The size of the random number to generate.
- * @returns A random number.
- */
-uint8_t simpleRNG(uint16_t size);
 
 /**
  * @brief Check if an address is a broadcast address.
@@ -157,16 +146,9 @@ std::array<byte, length> getRandomBytesArray()
 {
     const char* digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     std::array<byte, length> bytes;
-#ifdef RM_ARDUINO_BUILD
-    randomSeed(simpleRNG(4));
     for (std::size_t i = 0; i < length; i++) {
-        bytes[i] = digits[random(36)];
+        bytes[i] = digits[RadioMeshPlatform::random(36)];
     }
-#else
-    for (std::size_t i = 0; i < length; i++) {
-        bytes[i] = digits[std::rand() % 36];
-    }
-#endif
     return bytes;
 }
 } // namespace RadioMeshUtils

@@ -2,14 +2,11 @@
 
 #include "Options.h"
 
-#if !defined(ARDUINO)
+#include <common/inc/platform/RadioMeshPlatform.h>
 #include <cstdarg>
 #include <cstdio>
+#include <cstring>
 #include <new>
-#if defined(__ZEPHYR__)
-#include <zephyr/sys/printk.h>
-#endif
-#endif
 
 #ifdef RM_LOG_VERBOSE
 #define LOG_ERROR
@@ -42,12 +39,6 @@
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 #endif
 
-#if defined(ARDUINO)
-#define OUTPUT_PORT Serial
-#else
-#define PORT std::cout
-#endif
-
 // https://github.com/esp8266/Arduino/blob/65579d29081cb8501e4d7f786747bf12e7b37da2/cores/esp8266/Print.cpp#L50
 [[maybe_unused]] // https://en.cppreference.com/w/cpp/language/attributes/maybe_unused
 static size_t
@@ -68,13 +59,7 @@ rmPrintf(const char* format, ...)
         vsnprintf(buffer, len + 1, format, arg);
         va_end(arg);
     }
-#if defined(ARDUINO)
-    len = OUTPUT_PORT.write((const uint8_t*)buffer, len);
-#elif defined(__ZEPHYR__)
-    printk("%s", buffer);
-#else
-    len = fwrite(buffer, 1, len, stdout);
-#endif
+    len = RadioMeshPlatform::logWrite((const uint8_t*)buffer, len);
     if (buffer != temp) {
         delete[] buffer;
     }

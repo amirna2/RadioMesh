@@ -15,3 +15,7 @@ __pycache__/
 
 CLAUDE.md
 AI_DEVELOPER.md
+
+# AI session working documents (plans, handoffs) — local only.
+# Durable design documents live in docs/architecture/.
+docs/superpowers/

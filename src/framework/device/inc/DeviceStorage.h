@@ -5,7 +5,7 @@
 #include <common/inc/Errors.h>
 #include <common/inc/Logger.h>
 #include <common/utils/Utils.h>
-#include <hardware/inc/storage/eeprom/EEPROMStorage.h>
+#include <framework/interfaces/IByteStorage.h>
 
 class DeviceStorage
 {

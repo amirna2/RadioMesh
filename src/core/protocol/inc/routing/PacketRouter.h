@@ -14,6 +14,7 @@
 #include <core/protocol/inc/packet/Packet.h>
 #include <core/protocol/inc/routing/PacketTracker.h>
 #include <core/protocol/inc/routing/RoutingTable.h>
+#include <framework/interfaces/IRadio.h>
 
 /**
  * @class PacketRouter
@@ -83,6 +84,14 @@ public:
         this->micService = micService;
     }
 
+    /**
+     * @brief Set the radio to use for transmitting packets.
+     * @param radio IRadio component to use
+     */
+    void setRadio(IRadio* radio)
+    {
+        this->radio = radio;
+    }
 
     /**
      * @brief Set the crypto component to use for encrypting and decrypting packets.
@@ -105,6 +114,7 @@ private:
     AesCrypto* crypto = nullptr;
     EncryptionService* encryptionService = nullptr;
     MicService* micService = nullptr;
+    IRadio* radio = nullptr;
 
     static PacketRouter* instance;
 

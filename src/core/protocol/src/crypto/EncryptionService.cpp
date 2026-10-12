@@ -2,7 +2,6 @@
 #include <common/utils/Utils.h>
 #include <core/protocol/inc/crypto/EncryptionService.h>
 #include <core/protocol/inc/crypto/aes/AesCrypto.h>
-#include <Arduino.h>
 #include <Crypto.h>
 #include <Curve25519.h>
 #include <SHA256.h>

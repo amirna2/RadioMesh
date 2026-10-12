@@ -1,8 +1,9 @@
 config RADIOMESH
-	bool "RadioMesh mesh networking core"
+	bool "RadioMesh mesh networking library"
 	help
-	  Expose the platform-neutral RadioMesh protocol core (the M0 packet
-	  slice: RadioMeshPacket, CRC32, and their neutral dependencies) to the
-	  Zephyr application. Milestone 1 uses the header-only packet slice, so
-	  enabling this only adds the src/ include root; later milestones append
-	  compiled neutral sources in zephyr/CMakeLists.txt.
+	  Build the RadioMesh library into the application: the portable
+	  protocol core (src/common, src/core, src/framework, co-compiled with
+	  the PlatformIO build), the pinned Crypto sources, and the Zephyr
+	  implementations of the platform contract, radio and storage
+	  (ports/zephyr/hal). The application must enable C++17, LoRa, flash,
+	  NVS, hwinfo and an entropy source; see ports/zephyr/examples/standard.

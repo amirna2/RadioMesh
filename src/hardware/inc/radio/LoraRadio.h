@@ -45,6 +45,13 @@ public:
     virtual int sleep() override;
     virtual int getRSSI() override;
     virtual float getSNR() override;
+    virtual int setParams(LoraRadioParams params) override;
+    virtual int sendPacket(std::vector<byte>& data) override;
+    virtual int startReceive() override;
+    virtual int readReceivedData(std::vector<byte>* packetData) override;
+    virtual bool checkAndClearRxFlag() override;
+    virtual bool checkAndClearTxFlag() override;
+    virtual int getRadioStateError() override;
 
     // LoraRadio specific methods
 
@@ -75,30 +82,6 @@ public:
     }
 
     /**
-     * @brief Set the radio parameters.
-     *
-     * @param params LoraRadioParams object containing the radio parameters
-     * @return RM_E_NONE if the parameters were successfully set, an error code otherwise.
-     */
-    int setParams(LoraRadioParams params);
-
-    /**
-     * @brief Send a packet of data.
-     *
-     * @param data vector of bytes containing the data to send
-     * @return RM_E_NONE if the packet was successfully sent, an error code otherwise.
-     */
-    int sendPacket(std::vector<byte>& data);
-
-    /**
-     * @brief switch the radio to receive mode.
-     *
-     * @return RM_E_NONE if the radio was successfully switched to receive mode, an error code
-     * otherwise.
-     */
-    int startReceive();
-
-    /**
      * @brief Interrupt driven method to start transmitting a packet.
      *
      * @param data the byte array containing the data to transmit
@@ -106,32 +89,6 @@ public:
      * @return RM_E_NONE if the packet was successfully transmitted, an error code otherwise.
      */
     int startTransmitPacket(byte* data, int length);
-
-    /**
-     * @brief Read the received data from the radio.
-     *
-     * @param packetData vector of bytes to store the received data
-     * @return WAR_ERR_NONE if the data was successfully read, an error code otherwise.
-     */
-    int readReceivedData(std::vector<byte>* packetData);
-
-    /**
-     * @brief Check if the radio is in receive mode.
-     * @return true if the radio is in receive mode, false otherwise.
-     */
-    bool checkAndClearRxFlag();
-
-    /**
-     * @brief Check if the radio is in transmit mode.
-     * @return true if the radio is in transmit mode, false otherwise.
-     */
-    bool checkAndClearTxFlag();
-
-    /**
-     * @brief Get the radio state error.
-     * @return the radio state error.
-     */
-    int getRadioStateError();
 
 private:
     LoraRadio()

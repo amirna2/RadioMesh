@@ -1,5 +1,6 @@
 #include <common/inc/Errors.h>
 #include <common/inc/Logger.h>
+#include <common/inc/platform/RadioMeshPlatform.h>
 #include <framework/builder/inc/DeviceBuilder.h>
 
 DeviceBuilder& DeviceBuilder::start()
@@ -16,11 +17,8 @@ DeviceBuilder& DeviceBuilder::start()
     relayEnabled = false;
     isBuilderStarted = true;
 
-    // Initialize the serial port here since we need it for builder lo
-    // This gives us 10 seconds to do a hard reset if the board is in a bad state after power cycle
-    while (!Serial && millis() < 10000)
-        ;
-    Serial.begin(115200);
+    // Initialize the logging console here since the builder needs it
+    RadioMeshPlatform::consoleInit();
     loginfo_ln("Running RadioMesh %s", RadioMeshUtils::getVersion().c_str());
     loginfo_ln("DeviceBuilder started...");
 

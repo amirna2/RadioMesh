@@ -44,7 +44,7 @@ WORKSPACE   := $(shell $(WEST) topdir 2>/dev/null)
 ZEPHYR_BASE := $(WORKSPACE)/zephyr
 BUILD_DIR    = $(WORKSPACE)/.build-$(ROLE)   # deferred: depends on ROLE per target
 
-VALID_ROLES := tx rx
+VALID_ROLES := tx rx standard
 
 .PHONY: help bootstrap setup build flash monitor run boards clean _need_west _need_role
 
@@ -54,7 +54,7 @@ help:
 	@echo '  make bootstrap        first-time setup: venv + Zephyr workspace + SDK'
 	@echo '  make setup            re-apply driver patch (after every west update)'
 	@echo '  make boards           list connected boards and their role'
-	@echo '  make build ROLE=tx    build an example (tx|rx)'
+	@echo '  make build ROLE=tx    build an example (tx|rx|standard)'
 	@echo '  make flash ROLE=tx    flash a board (set PORT=/dev/... if more than one)'
 	@echo '  make monitor          serial console (Ctrl-C to quit)'
 	@echo '  make run ROLE=tx      build + flash + monitor'

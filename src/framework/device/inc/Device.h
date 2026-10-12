@@ -11,9 +11,9 @@
 #include <core/protocol/inc/crypto/MicService.h>
 #include <core/protocol/inc/packet/Callbacks.h>
 #include <core/protocol/inc/routing/PacketRouter.h>
+#include <framework/interfaces/IByteStorage.h>
 #include <framework/interfaces/IDevice.h>
-#include <hardware/inc/radio/LoraRadio.h>
-#include <hardware/inc/storage/eeprom/EEPROMStorage.h>
+#include <framework/interfaces/IRadio.h>
 
 #ifndef RM_NO_WIFI
 #include <framework/device_portal/inc/AsyncDevicePortal.h>
@@ -210,10 +210,10 @@ private:
 
     std::unique_ptr<InclusionController> inclusionController; // Ownership
 
-    LoraRadio* radio = nullptr;
+    IRadio* radio = nullptr;
     AesCrypto* crypto = nullptr;
-    EEPROMStorage* eepromStorage = nullptr;
-    
+    IByteStorage* byteStorage = nullptr;
+
     EncryptionService encryptionService;
     MicService micService;
 

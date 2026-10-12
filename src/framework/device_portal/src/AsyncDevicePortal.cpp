@@ -1,4 +1,5 @@
 #include <common/inc/Definitions.h>
+#include <common/inc/platform/RadioMeshPlatform.h>
 #include <framework/device_portal/inc/AsyncDevicePortal.h>
 
 AsyncDevicePortal* AsyncDevicePortal::instance = nullptr;
@@ -232,7 +233,7 @@ void AsyncDevicePortal::handleWebSocketEvent(AwsEventType type, AsyncWebSocketCl
     case WS_EVT_PONG:
         loginfo_ln("Client #%u pong received", clientId);
         if (clientInfo.find(clientId) != clientInfo.end()) {
-            clientInfo[clientId].lastPong = millis();
+            clientInfo[clientId].lastPong = RadioMeshPlatform::millis();
         }
         break;
     default:

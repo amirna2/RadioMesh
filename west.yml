@@ -16,8 +16,19 @@ manifest:
   remotes:
     - name: zephyrproject-rtos
       url-base: https://github.com/zephyrproject-rtos
+    - name: operatorfoundation
+      url-base: https://github.com/OperatorFoundation
 
   projects:
+    # Crypto library co-compiled with the core. Pinned by SHA (tag 0.4.0) to
+    # the same commit the PlatformIO build uses, so both builds compile
+    # identical crypto sources. Keep in sync with library.json and
+    # pio-config/common.ini.
+    - name: crypto
+      remote: operatorfoundation
+      repo-path: Crypto
+      revision: 4a6b190f7b1efd96d024d0f4510498963740b001
+      path: modules/lib/crypto
     - name: zephyr
       remote: zephyrproject-rtos
       revision: v4.4.0
@@ -27,6 +38,4 @@ manifest:
         # here. To pull the full Zephyr module set instead, delete name-allowlist.
         name-allowlist:
           - hal_espressif   # ESP32-S3 SoC HAL
-          - loramac-node    # legacy SX126x PHY backend; unused with CONFIG_LORA_MODULE_BACKEND_NATIVE.
-                            # Retained pending a verified removal (needs west update + rebuild to confirm).
           - picolibc        # C library
