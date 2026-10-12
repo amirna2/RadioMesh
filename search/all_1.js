@@ -4,5 +4,6 @@ var searchData=
   ['begin_1',['begin',['../class_i_byte_storage.html#abedb93623df42665c978c89b11b1fdac',1,'IByteStorage::begin()'],['../class_e_e_p_r_o_m_storage.html#a172bdd61b36d45dd6fad127f8b73f598',1,'EEPROMStorage::begin()']]],
   ['build_2',['build',['../class_device_builder.html#a705c01d70489a8eb94b2ab9eb49d8a51',1,'DeviceBuilder']]],
   ['bw_3',['bw',['../class_lora_radio_params.html#ab436b9f99a5afb2727b84b41a9093177',1,'LoraRadioParams']]],
-  ['bytestorageparams_4',['bytestorageparams',['../struct_byte_storage_params.html',1,'ByteStorageParams'],['../struct_byte_storage_params.html#acd0a247875fb1406932af0be841a8097',1,'ByteStorageParams::ByteStorageParams()']]]
+  ['bytestorage_4',['byteStorage',['../namespace_radio_mesh_platform.html#afdcf0bd38569ada1a50903267c5a755b',1,'RadioMeshPlatform']]],
+  ['bytestorageparams_5',['bytestorageparams',['../struct_byte_storage_params.html',1,'ByteStorageParams'],['../struct_byte_storage_params.html#acd0a247875fb1406932af0be841a8097',1,'ByteStorageParams::ByteStorageParams()']]]
 ];

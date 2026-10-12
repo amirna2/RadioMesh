@@ -132,36 +132,36 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8f88cbb24d3d402703bb4cb5439f8406" id="r_a8f88cbb24d3d402703bb4cb5439f8406"><td class="memItemLeft" align="right" valign="top">virtual float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#a8f88cbb24d3d402703bb4cb5439f8406">getSNR</a> () override</td></tr>
 <tr class="memdesc:a8f88cbb24d3d402703bb4cb5439f8406"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current SNR value.  <br /></td></tr>
 <tr class="separator:a8f88cbb24d3d402703bb4cb5439f8406"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a232ed50879e6bd051f96e4d6d4f15f0a" id="r_a232ed50879e6bd051f96e4d6d4f15f0a"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#a232ed50879e6bd051f96e4d6d4f15f0a">setParams</a> (<a class="el" href="class_lora_radio_params.html">LoraRadioParams</a> params) override</td></tr>
+<tr class="memdesc:a232ed50879e6bd051f96e4d6d4f15f0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the radio parameters.  <br /></td></tr>
+<tr class="separator:a232ed50879e6bd051f96e4d6d4f15f0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5f73afd034e33129493d95a1014c27d" id="r_af5f73afd034e33129493d95a1014c27d"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#af5f73afd034e33129493d95a1014c27d">sendPacket</a> (std::vector&lt; byte &gt; &amp;data) override</td></tr>
+<tr class="memdesc:af5f73afd034e33129493d95a1014c27d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a packet of data.  <br /></td></tr>
+<tr class="separator:af5f73afd034e33129493d95a1014c27d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf4243a073d995e1c1ab732161c2d799" id="r_adf4243a073d995e1c1ab732161c2d799"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#adf4243a073d995e1c1ab732161c2d799">startReceive</a> () override</td></tr>
+<tr class="memdesc:adf4243a073d995e1c1ab732161c2d799"><td class="mdescLeft">&#160;</td><td class="mdescRight">Switch the radio to receive mode.  <br /></td></tr>
+<tr class="separator:adf4243a073d995e1c1ab732161c2d799"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a836baf55e8de26e0f494c9c49d6fb46f" id="r_a836baf55e8de26e0f494c9c49d6fb46f"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#a836baf55e8de26e0f494c9c49d6fb46f">readReceivedData</a> (std::vector&lt; byte &gt; *packetData) override</td></tr>
+<tr class="memdesc:a836baf55e8de26e0f494c9c49d6fb46f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the received data from the radio.  <br /></td></tr>
+<tr class="separator:a836baf55e8de26e0f494c9c49d6fb46f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7676ab4d8811ac76403dec0f44fdabe7" id="r_a7676ab4d8811ac76403dec0f44fdabe7"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#a7676ab4d8811ac76403dec0f44fdabe7">checkAndClearRxFlag</a> () override</td></tr>
+<tr class="memdesc:a7676ab4d8811ac76403dec0f44fdabe7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a packet was received and clear the receive flag.  <br /></td></tr>
+<tr class="separator:a7676ab4d8811ac76403dec0f44fdabe7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9f3f379edec95d1f0f4092c419a6116" id="r_ab9f3f379edec95d1f0f4092c419a6116"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#ab9f3f379edec95d1f0f4092c419a6116">checkAndClearTxFlag</a> () override</td></tr>
+<tr class="memdesc:ab9f3f379edec95d1f0f4092c419a6116"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a packet was transmitted and clear the transmit flag.  <br /></td></tr>
+<tr class="separator:ab9f3f379edec95d1f0f4092c419a6116"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41df99beddc02721d40580e4d799d40d" id="r_a41df99beddc02721d40580e4d799d40d"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#a41df99beddc02721d40580e4d799d40d">getRadioStateError</a> () override</td></tr>
+<tr class="memdesc:a41df99beddc02721d40580e4d799d40d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the radio state error.  <br /></td></tr>
+<tr class="separator:a41df99beddc02721d40580e4d799d40d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f17df77062afb88cd5914fa3d43d372" id="r_a4f17df77062afb88cd5914fa3d43d372"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#a4f17df77062afb88cd5914fa3d43d372">isRadioSetup</a> ()</td></tr>
 <tr class="memdesc:a4f17df77062afb88cd5914fa3d43d372"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates if the radio has been setup.  <br /></td></tr>
 <tr class="separator:a4f17df77062afb88cd5914fa3d43d372"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b60d0d4b242df6d193826d519d0a13b" id="r_a5b60d0d4b242df6d193826d519d0a13b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_lora_radio_params.html">LoraRadioParams</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#a5b60d0d4b242df6d193826d519d0a13b">getParams</a> ()</td></tr>
 <tr class="memdesc:a5b60d0d4b242df6d193826d519d0a13b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the radio parameters.  <br /></td></tr>
 <tr class="separator:a5b60d0d4b242df6d193826d519d0a13b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f2376297eca5a7166ce8c7054f975be" id="r_a5f2376297eca5a7166ce8c7054f975be"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#a5f2376297eca5a7166ce8c7054f975be">setParams</a> (<a class="el" href="class_lora_radio_params.html">LoraRadioParams</a> params)</td></tr>
-<tr class="memdesc:a5f2376297eca5a7166ce8c7054f975be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the radio parameters.  <br /></td></tr>
-<tr class="separator:a5f2376297eca5a7166ce8c7054f975be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba11e8225ec4411db92c9fbda9f8a7b6" id="r_aba11e8225ec4411db92c9fbda9f8a7b6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#aba11e8225ec4411db92c9fbda9f8a7b6">sendPacket</a> (std::vector&lt; byte &gt; &amp;data)</td></tr>
-<tr class="memdesc:aba11e8225ec4411db92c9fbda9f8a7b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a packet of data.  <br /></td></tr>
-<tr class="separator:aba11e8225ec4411db92c9fbda9f8a7b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6f263453795b199b1fd9e72ca3ee0f3" id="r_ac6f263453795b199b1fd9e72ca3ee0f3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#ac6f263453795b199b1fd9e72ca3ee0f3">startReceive</a> ()</td></tr>
-<tr class="memdesc:ac6f263453795b199b1fd9e72ca3ee0f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">switch the radio to receive mode.  <br /></td></tr>
-<tr class="separator:ac6f263453795b199b1fd9e72ca3ee0f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b9173b85a2f9d5c24c7d92755c46a77" id="r_a0b9173b85a2f9d5c24c7d92755c46a77"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#a0b9173b85a2f9d5c24c7d92755c46a77">startTransmitPacket</a> (byte *data, int length)</td></tr>
 <tr class="memdesc:a0b9173b85a2f9d5c24c7d92755c46a77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interrupt driven method to start transmitting a packet.  <br /></td></tr>
 <tr class="separator:a0b9173b85a2f9d5c24c7d92755c46a77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c46852596fba0b083ec1fdff19215ff" id="r_a8c46852596fba0b083ec1fdff19215ff"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#a8c46852596fba0b083ec1fdff19215ff">readReceivedData</a> (std::vector&lt; byte &gt; *packetData)</td></tr>
-<tr class="memdesc:a8c46852596fba0b083ec1fdff19215ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the received data from the radio.  <br /></td></tr>
-<tr class="separator:a8c46852596fba0b083ec1fdff19215ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a533807b171e5d7caf225a88afd89254b" id="r_a533807b171e5d7caf225a88afd89254b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#a533807b171e5d7caf225a88afd89254b">checkAndClearRxFlag</a> ()</td></tr>
-<tr class="memdesc:a533807b171e5d7caf225a88afd89254b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the radio is in receive mode.  <br /></td></tr>
-<tr class="separator:a533807b171e5d7caf225a88afd89254b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f74c01663d4d297f3db2545057cdb6e" id="r_a0f74c01663d4d297f3db2545057cdb6e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#a0f74c01663d4d297f3db2545057cdb6e">checkAndClearTxFlag</a> ()</td></tr>
-<tr class="memdesc:a0f74c01663d4d297f3db2545057cdb6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the radio is in transmit mode.  <br /></td></tr>
-<tr class="separator:a0f74c01663d4d297f3db2545057cdb6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab01443e25682be155bbb5bfc4185dabc" id="r_ab01443e25682be155bbb5bfc4185dabc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lora_radio.html#ab01443e25682be155bbb5bfc4185dabc">getRadioStateError</a> ()</td></tr>
-<tr class="memdesc:ab01443e25682be155bbb5bfc4185dabc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the radio state error.  <br /></td></tr>
-<tr class="separator:ab01443e25682be155bbb5bfc4185dabc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -176,11 +176,14 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>onInterrupt</b
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class implements the <a class="el" href="class_i_radio.html" title="This class is an interface for a radio.">IRadio</a> interface for a LoRa radio. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a533807b171e5d7caf225a88afd89254b" name="a533807b171e5d7caf225a88afd89254b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a533807b171e5d7caf225a88afd89254b">&#9670;&#160;</a></span>checkAndClearRxFlag()</h2>
+<a id="a7676ab4d8811ac76403dec0f44fdabe7" name="a7676ab4d8811ac76403dec0f44fdabe7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7676ab4d8811ac76403dec0f44fdabe7">&#9670;&#160;</a></span>checkAndClearRxFlag()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool LoraRadio::checkAndClearRxFlag </td>
@@ -189,18 +192,28 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>onInterrupt</b
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Check if the radio is in receive mode. </p>
-<dl class="section return"><dt>Returns</dt><dd>true if the radio is in receive mode, false otherwise. </dd></dl>
+<p>Check if a packet was received and clear the receive flag. </p>
+<dl class="section return"><dt>Returns</dt><dd>true if a packet was received, false otherwise. </dd></dl>
+
+<p>Implements <a class="el" href="class_i_radio.html#a27f081e6d351daf5e52eeaf033826c0e">IRadio</a>.</p>
 
 </div>
 </div>
-<a id="a0f74c01663d4d297f3db2545057cdb6e" name="a0f74c01663d4d297f3db2545057cdb6e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0f74c01663d4d297f3db2545057cdb6e">&#9670;&#160;</a></span>checkAndClearTxFlag()</h2>
+<a id="ab9f3f379edec95d1f0f4092c419a6116" name="ab9f3f379edec95d1f0f4092c419a6116"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9f3f379edec95d1f0f4092c419a6116">&#9670;&#160;</a></span>checkAndClearTxFlag()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool LoraRadio::checkAndClearTxFlag </td>
@@ -209,10 +222,17 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>onInterrupt</b
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Check if the radio is in transmit mode. </p>
-<dl class="section return"><dt>Returns</dt><dd>true if the radio is in transmit mode, false otherwise. </dd></dl>
+<p>Check if a packet was transmitted and clear the transmit flag. </p>
+<dl class="section return"><dt>Returns</dt><dd>true if a packet was transmitted, false otherwise. </dd></dl>
+
+<p>Implements <a class="el" href="class_i_radio.html#add3092798120dd52825b956d8a965b74">IRadio</a>.</p>
 
 </div>
 </div>
@@ -272,11 +292,14 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>onInterrupt</b
 
 </div>
 </div>
-<a id="ab01443e25682be155bbb5bfc4185dabc" name="ab01443e25682be155bbb5bfc4185dabc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab01443e25682be155bbb5bfc4185dabc">&#9670;&#160;</a></span>getRadioStateError()</h2>
+<a id="a41df99beddc02721d40580e4d799d40d" name="a41df99beddc02721d40580e4d799d40d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41df99beddc02721d40580e4d799d40d">&#9670;&#160;</a></span>getRadioStateError()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">int LoraRadio::getRadioStateError </td>
@@ -285,10 +308,17 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>onInterrupt</b
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Get the radio state error. </p>
-<dl class="section return"><dt>Returns</dt><dd>the radio state error. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The radio state error. </dd></dl>
+
+<p>Implements <a class="el" href="class_i_radio.html#add9819705a397649913fbf3b5d5b58a5">IRadio</a>.</p>
 
 </div>
 </div>
@@ -380,11 +410,14 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>onInterrupt</b
 
 </div>
 </div>
-<a id="a8c46852596fba0b083ec1fdff19215ff" name="a8c46852596fba0b083ec1fdff19215ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c46852596fba0b083ec1fdff19215ff">&#9670;&#160;</a></span>readReceivedData()</h2>
+<a id="a836baf55e8de26e0f494c9c49d6fb46f" name="a836baf55e8de26e0f494c9c49d6fb46f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a836baf55e8de26e0f494c9c49d6fb46f">&#9670;&#160;</a></span>readReceivedData()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">int LoraRadio::readReceivedData </td>
@@ -394,6 +427,11 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>onInterrupt</b
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Read the received data from the radio. </p>
@@ -403,15 +441,20 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>onInterrupt</b
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>WAR_ERR_NONE if the data was successfully read, an error code otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the data was successfully read, an error code otherwise. </dd></dl>
+
+<p>Implements <a class="el" href="class_i_radio.html#abc3013d259c8114ef3f8d7b3b4084dff">IRadio</a>.</p>
 
 </div>
 </div>
-<a id="aba11e8225ec4411db92c9fbda9f8a7b6" name="aba11e8225ec4411db92c9fbda9f8a7b6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba11e8225ec4411db92c9fbda9f8a7b6">&#9670;&#160;</a></span>sendPacket()</h2>
+<a id="af5f73afd034e33129493d95a1014c27d" name="af5f73afd034e33129493d95a1014c27d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5f73afd034e33129493d95a1014c27d">&#9670;&#160;</a></span>sendPacket()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">int LoraRadio::sendPacket </td>
@@ -421,6 +464,11 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>onInterrupt</b
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Send a packet of data. </p>
@@ -432,13 +480,18 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>onInterrupt</b
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the packet was successfully sent, an error code otherwise. </dd></dl>
 
+<p>Implements <a class="el" href="class_i_radio.html#a558fb27fa34689b774b26ea16f8a5ed1">IRadio</a>.</p>
+
 </div>
 </div>
-<a id="a5f2376297eca5a7166ce8c7054f975be" name="a5f2376297eca5a7166ce8c7054f975be"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5f2376297eca5a7166ce8c7054f975be">&#9670;&#160;</a></span>setParams()</h2>
+<a id="a232ed50879e6bd051f96e4d6d4f15f0a" name="a232ed50879e6bd051f96e4d6d4f15f0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a232ed50879e6bd051f96e4d6d4f15f0a">&#9670;&#160;</a></span>setParams()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">int LoraRadio::setParams </td>
@@ -448,6 +501,11 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>onInterrupt</b
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Set the radio parameters. </p>
@@ -458,6 +516,8 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>onInterrupt</b
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the parameters were successfully set, an error code otherwise. </dd></dl>
+
+<p>Implements <a class="el" href="class_i_radio.html#a28166ea4098e23e546a6cf4d9ff59e43">IRadio</a>.</p>
 
 </div>
 </div>
@@ -588,11 +648,14 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>onInterrupt</b
 
 </div>
 </div>
-<a id="ac6f263453795b199b1fd9e72ca3ee0f3" name="ac6f263453795b199b1fd9e72ca3ee0f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6f263453795b199b1fd9e72ca3ee0f3">&#9670;&#160;</a></span>startReceive()</h2>
+<a id="adf4243a073d995e1c1ab732161c2d799" name="adf4243a073d995e1c1ab732161c2d799"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf4243a073d995e1c1ab732161c2d799">&#9670;&#160;</a></span>startReceive()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">int LoraRadio::startReceive </td>
@@ -601,10 +664,17 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>onInterrupt</b
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>switch the radio to receive mode. </p>
+<p>Switch the radio to receive mode. </p>
 <dl class="section return"><dt>Returns</dt><dd>RM_E_NONE if the radio was successfully switched to receive mode, an error code otherwise. </dd></dl>
+
+<p>Implements <a class="el" href="class_i_radio.html#a8927dd2c510af2f58da372ca03a6a408">IRadio</a>.</p>
 
 </div>
 </div>

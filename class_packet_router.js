@@ -5,5 +5,6 @@ var class_packet_router =
     [ "setCrypto", "class_packet_router.html#a26b7eb39a978b92e9a623c6e644cdf9a", null ],
     [ "setEncryptionService", "class_packet_router.html#a739443cef8326dddcfb845457dddd166", null ],
     [ "setMicService", "class_packet_router.html#a6fedbb5e595987f25654607d10440ece", null ],
+    [ "setRadio", "class_packet_router.html#a04284ac41ecd898c0949044cd304f757", null ],
     [ "trackPacket", "class_packet_router.html#a0ec1490aaae22ff8ba5aec19f574e47e", null ]
 ];

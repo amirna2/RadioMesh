@@ -120,6 +120,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6fedbb5e595987f25654607d10440ece" id="r_a6fedbb5e595987f25654607d10440ece"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet_router.html#a6fedbb5e595987f25654607d10440ece">setMicService</a> (<a class="el" href="class_mic_service.html">MicService</a> *micService)</td></tr>
 <tr class="memdesc:a6fedbb5e595987f25654607d10440ece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the MIC service for packet authentication.  <br /></td></tr>
 <tr class="separator:a6fedbb5e595987f25654607d10440ece"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04284ac41ecd898c0949044cd304f757" id="r_a04284ac41ecd898c0949044cd304f757"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet_router.html#a04284ac41ecd898c0949044cd304f757">setRadio</a> (<a class="el" href="class_i_radio.html">IRadio</a> *radio)</td></tr>
+<tr class="memdesc:a04284ac41ecd898c0949044cd304f757"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the radio to use for transmitting packets.  <br /></td></tr>
+<tr class="separator:a04284ac41ecd898c0949044cd304f757"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26b7eb39a978b92e9a623c6e644cdf9a" id="r_a26b7eb39a978b92e9a623c6e644cdf9a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packet_router.html#a26b7eb39a978b92e9a623c6e644cdf9a">setCrypto</a> (<a class="el" href="class_aes_crypto.html">AesCrypto</a> *crypto)</td></tr>
 <tr class="memdesc:a26b7eb39a978b92e9a623c6e644cdf9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the crypto component to use for encrypting and decrypting packets.  <br /></td></tr>
 <tr class="separator:a26b7eb39a978b92e9a623c6e644cdf9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -338,6 +341,40 @@ Static Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">micService</td><td><a class="el" href="class_mic_service.html" title="Service for context-aware MIC computation and verification.">MicService</a> component to use </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a04284ac41ecd898c0949044cd304f757" name="a04284ac41ecd898c0949044cd304f757"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04284ac41ecd898c0949044cd304f757">&#9670;&#160;</a></span>setRadio()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PacketRouter::setRadio </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_i_radio.html">IRadio</a> *&#160;</td>
+          <td class="paramname"><em>radio</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the radio to use for transmitting packets. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">radio</td><td><a class="el" href="class_i_radio.html" title="This class is an interface for a radio.">IRadio</a> component to use </td></tr>
   </table>
   </dd>
 </dl>

@@ -27,7 +27,7 @@ var searchData=
   ['getparams_24',['getParams',['../class_lora_radio.html#a5b60d0d4b242df6d193826d519d0a13b',1,'LoraRadio']]],
   ['getpayloadwithoutmic_25',['getPayloadWithoutMIC',['../class_mic_service.html#a8048f20383237b5dd553bfceefe25ed3',1,'MicService']]],
   ['getradio_26',['getradio',['../class_radio_mesh_device.html#a501ccfb75de4e17d76f018a121498409',1,'RadioMeshDevice::getRadio()'],['../class_i_device.html#a01857d9c4c38e682d61409043f5f6316',1,'IDevice::getRadio()']]],
-  ['getradiostateerror_27',['getRadioStateError',['../class_lora_radio.html#ab01443e25682be155bbb5bfc4185dabc',1,'LoraRadio']]],
+  ['getradiostateerror_27',['getradiostateerror',['../class_i_radio.html#add9819705a397649913fbf3b5d5b58a5',1,'IRadio::getRadioStateError()'],['../class_lora_radio.html#a41df99beddc02721d40580e4d799d40d',1,'LoraRadio::getRadioStateError()']]],
   ['getrssi_28',['getrssi',['../class_i_radio.html#a96657213eb5cc1f10a12e0991934c77f',1,'IRadio::getRSSI()'],['../class_lora_radio.html#a4d024449519b574d14cf28f8a0733e8e',1,'LoraRadio::getRSSI()']]],
   ['getsignalindicator_29',['getsignalindicator',['../class_wifi_connector.html#a9eb6d0c7ebe8acd46ee3527bb0661279',1,'WifiConnector::getSignalIndicator()'],['../class_i_wifi_connector.html#a71f11e76ee191416b6da94d88273c309',1,'IWifiConnector::getSignalIndicator()=0']]],
   ['getsignalstrength_30',['getsignalstrength',['../class_i_wifi_connector.html#a9a3cb5b8cd2f3067c3d7089e48b98f36',1,'IWifiConnector::getSignalStrength()'],['../class_wifi_connector.html#a44790c1ee6a9b22777528d871c551e7f',1,'WifiConnector::getSignalStrength()']]],
