@@ -44,7 +44,7 @@ WORKSPACE   := $(shell $(WEST) topdir 2>/dev/null)
 ZEPHYR_BASE := $(WORKSPACE)/zephyr
 BUILD_DIR    = $(WORKSPACE)/.build-$(ROLE)   # deferred: depends on ROLE per target
 
-VALID_ROLES := tx rx standard relay
+VALID_ROLES := tx rx standard relay hub
 
 # A role builds examples/<role>; `relay` is the standard example with relay.conf.
 APP_DIR    = $(HERE)/examples/$(if $(filter relay,$(ROLE)),standard,$(ROLE))
@@ -62,7 +62,7 @@ help:
 	@echo '  make bootstrap        first-time setup: venv + Zephyr workspace + SDK'
 	@echo '  make setup            re-apply driver patch (after every west update)'
 	@echo '  make boards           list connected boards and their role'
-	@echo '  make build ROLE=tx    build an example (tx|rx|standard|relay)'
+	@echo '  make build ROLE=tx    build an example (tx|rx|standard|relay|hub)'
 	@echo '  make flash ROLE=tx    flash a board (set PORT=/dev/... if more than one)'
 	@echo '  make monitor          serial console (Ctrl-C to quit)'
 	@echo '  make run ROLE=tx      build + flash + monitor'
