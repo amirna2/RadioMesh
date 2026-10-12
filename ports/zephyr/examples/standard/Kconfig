@@ -1,0 +1,10 @@
+# Options of the standard device example.
+
+config RM_EXAMPLE_RELAY
+	bool "Build the standard device as a relay"
+	help
+	  Enables packet relaying (DeviceBuilder::withRelayEnabled) and gives the
+	  device the relay's own ID and name, so a leaf and a relay can run in the
+	  same cluster. Set by relay.conf (`make build ROLE=relay`).
+
+source "Kconfig.zephyr"
