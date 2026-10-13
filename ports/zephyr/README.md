@@ -1,33 +1,44 @@
 # RadioMesh — Zephyr port (`ports/zephyr`)
 
-Milestone 1 tracer bullet: two XIAO ESP32-S3 + Wio-SX1262 nodes running Zephyr
-exchange a `RadioMeshPacket` over LoRa, using the platform-neutral RadioMesh core
-co-compiled straight from `src/` (D2). This tree is invisible to PlatformIO (D3).
+The full RadioMesh library on Zephyr, for XIAO ESP32-S3 + Wio-SX1262 nodes: the
+platform-neutral core is co-compiled straight from `src/` (D2) with the Zephyr
+implementations in `hal/`. The examples mirror the Arduino DeviceInclusion
+examples and interoperate with Arduino nodes over the air. This tree is invisible
+to PlatformIO (D3).
 
 ## Layout
 
 ```
 ports/zephyr/
 ├── common/
-│   ├── xiao_esp32s3_procpu.overlay   # SX1262 pins — single source of truth (all examples)
-│   └── lora_phy.h                    # interop PHY config (freq/SF/BW/CR/...) + app topic
+│   └── xiao_esp32s3_procpu.overlay   # SX1262 pins — single source of truth (all apps)
 ├── examples/
-│   ├── tx/    # transmit-only node: builds a RadioMeshPacket and sends on a cadence
-│   └── rx/    # receive-only node: parses each frame + re-checks the payload CRC32
-└── patches/   # out-of-tree Zephyr fixes to re-apply after `west update` (see below)
+│   ├── standard/  # STANDARD node (StandardDevice.ino mirror); relay.conf builds the relay
+│   └── hub/       # HUB node (MiniHub.ino mirror, without the WiFi portal)
+├── hal/           # Zephyr platform services, IRadio (ZephyrLoraRadio), NVS storage
+├── tests/runner/  # on-board Unity runner for the repo's test/ suites
+├── tools/rmon.py  # serial helper: list boards, monitor, run tests
+└── patches/       # out-of-tree Zephyr fixes to re-apply after `west update` (see below)
 ```
 
 Each example is a standalone Zephyr application (`CMakeLists.txt` + `prj.conf` +
-`src/main.cpp`). Both pull the shared pin overlay via `DTC_OVERLAY_FILE` and the
-shared PHY setup from `common/lora_phy.h`, so the pins and the modulation
-parameters live in exactly one place. Future device-role examples (leaf, router,
-hub) will slot in alongside `tx`/`rx`.
+`src/main.cpp`) that builds the full library (`CONFIG_RADIOMESH=y`) and pulls the
+shared pin overlay via `DTC_OVERLAY_FILE`.
+
+| Role | Builds | Device ID |
+|---|---|---|
+| `hub` | `examples/hub` | `5A000000` |
+| `standard` (leaf) | `examples/standard` | `5A000001` |
+| `relay` | `examples/standard` + `relay.conf` (relaying on) | `5A000002` |
+
+MiniHub enables inclusion from its web portal; the Zephyr hub opens an inclusion
+window 5 s after boot and again 30 s after each window closes.
 
 ## Setup & workflow
 
 From `ports/zephyr/`: `make bootstrap` does the one-time setup (venv + Zephyr
-workspace + SDK); then `make run ROLE=tx` / `make run ROLE=rx` build, flash, and
-monitor. Full guide: **[`DEVELOPING.md`](DEVELOPING.md)**.
+workspace + SDK); then `make run ROLE=<role>` builds, flashes, and monitors.
+Full guide: **[`DEVELOPING.md`](DEVELOPING.md)**.
 
 ### Why the carried `gpio_esp32` patch
 
@@ -45,48 +56,47 @@ The `Makefile` here is the developer entry point. Full setup and workflow are in
 [`DEVELOPING.md`](DEVELOPING.md); the short version, from `ports/zephyr/`:
 
 ```bash
-make setup              # once, and after every `west update` (re-applies the gpio patch)
-make run ROLE=tx        # build + flash + monitor a transmitter
-make run ROLE=rx        # ...and a receiver on the second board
-make boards             # list connected boards and the role each is running
+make setup                                    # once, and after every `west update`
+make flash ROLE=hub PORT=<port-A> ERASE=1     # hub, fresh NVS
+make run ROLE=standard PORT=<port-B> ERASE=1  # leaf: build + flash + monitor
+make boards                                   # list connected boards and their role
 ```
 
-Each role is a standalone Zephyr app; under the hood `make build ROLE=tx` runs
-`west build -b xiao_esp32s3/esp32s3/procpu examples/tx`.
+Under the hood `make build ROLE=hub` runs
+`west build -b xiao_esp32s3/esp32s3/procpu examples/hub`.
 
-## Expected result (manual M1 gate)
-
-On each node's console (`make monitor`, or a serial terminal @115200):
+## Expected result
 
 ```
-# tx node
-<inf> rm_tx: RadioMesh TX node ready
-<inf> rm_tx: TX fcounter=0 len=38 ret=0
+# hub
+Received inclusion request from device 5A000001 (total: 1)
+Received inclusion confirmation from device 5A000001 - inclusion completed successfully (total: 1)
+Received application message from 5A000001, topic: 0x10, value: 24
 
-# rx node
-<inf> rm_rx: RadioMesh RX node ready; listening...
-<inf> rm_rx: RX len=38 rssi=-44 snr=12 | topic=0x10 fcounter=0 dataLen=3 crc=OK
+# leaf
+Device state: INCLUDED - successfully joined network!
+Sent sensor data: 24°C
 ```
 
-Seeing the transmitter's `RX ... crc=OK` on the receiver is M1 success: the
-co-compiled M0 core serialized, transmitted, received, and parsed a packet over a
-real Zephyr LoRa link.
+The leaf joins at the hub's next inclusion window, then sends an encrypted mock
+reading on topic `0x10` every 10 s. An included node rejoins from NVS after a
+power cycle; flash it with `ERASE=1` to start it fresh.
 
 ## Notes
 
 - **Console:** the XIAO's single USB-C is the ESP32-S3 native USB. The running
   Zephyr firmware presents a USB-Serial-JTAG console, which **discards TX until a
-  host attaches** (~1.5 s after power-up) — the boot banner is often lost, but the
-  periodic `TX`/`RX` log lines are not. A serial monitor that reconnects across the
+  host attaches** (~1.5 s after power-up); the examples hold their log output back
+  3 s so the boot log survives. A serial monitor that reconnects across the
   post-flash reset is the easiest way to observe.
-- **First flash over factory firmware** (e.g. Meshtastic) needs manual download
-  mode: hold **BOOT**, replug USB, keep holding ~2 s. Once our Zephyr image is on,
+- **First flash over factory firmware** (e.g. Meshtastic) may need manual download
+  mode: hold **BOOT**, replug USB, keep holding ~2 s. The board's serial port also
+  changes name once the factory firmware is gone. Once our Zephyr image is on,
   `west flash` resets into download mode over JTAG with no button press.
 - **TCXO:** `dio3-tcxo-voltage` in the overlay is required for this module —
   without it every TX returns `-116` (Tx timeout). A `-116` after a known-good
   build usually means the Wio-SX1262 shield is not fully seated (DIO1 floating).
-- **PHY interop:** `common/lora_phy.h` pins the modulation to the Arduino RadioMesh
-  XIAO preset (915 MHz / BW125 / SF8 / CR4-7 / preamble 8 / private sync); changing
-  any value breaks Arduino<->Zephyr interop (D5).
-```
-
+- **PHY interop:** the XIAO preset (`LoraRadioPresets::XIAO_ESP32S3_WIO_SX1262`:
+  915 MHz / BW125 / SF8 / 20 dBm / private sync) plus the CR 4/7 and preamble 8
+  pinned in `ZephyrLoraRadio` form the wire contract with Arduino nodes (D5);
+  changing any of them breaks Arduino<->Zephyr interop.

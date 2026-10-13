@@ -27,26 +27,38 @@ required driver patch. Re-run `make setup` after any `west update`.
 |---|---|---|
 | `make bootstrap` | first-time: venv + Zephyr workspace + SDK | — |
 | `make setup` | re-apply the driver patch (after `west update`) | yes |
-| `make build ROLE=tx\|rx` | build an example | yes |
-| `make flash ROLE=tx\|rx [PORT=]` | flash a board | yes |
-| `make run ROLE=tx\|rx [PORT=]` | build + flash + monitor | yes |
+| `make build ROLE=standard\|relay\|hub` | build an example | yes |
+| `make flash ROLE=<role> [PORT=] [ERASE=1]` | flash a board | yes |
+| `make run ROLE=<role> [PORT=] [ERASE=1]` | build + flash + monitor | yes |
 | `make test SUITE=<name> [PORT=] [TIMEOUT=]` | run one `test/` suite on a board | yes |
 | `make boards` | list boards and their role | no |
 | `make monitor [PORT=]` | serial console (Ctrl-C to quit) | no |
 | `make clean [ROLE=]` | remove build outputs | no |
 
 `flash` and `monitor` auto-detect a single board; with two, pass `PORT=`
-(`/dev/cu.usbmodem*` on macOS, `/dev/ttyACM*` on Linux).
+(`/dev/cu.usbmodem*` on macOS, `/dev/ttyACM*` on Linux). A port can be open in
+one program at a time: close other serial monitors before flashing.
 
-## Two-board bring-up
+`ERASE=1` wipes the whole flash first, clearing NVS (device keys, network key,
+inclusion state) so the board starts as a fresh node.
 
-    make boards                      # note each port
-    make run ROLE=tx PORT=<port-A>   # transmitter (Ctrl-C after "TX ... ret=0")
-    make run ROLE=rx PORT=<port-B>   # receiver
+## Cluster bring-up
 
-The receiver logs, about every 3 s:
+    make boards                                     # note each port
+    make flash ROLE=hub PORT=<port-A> ERASE=1       # hub
+    make flash ROLE=standard PORT=<port-B> ERASE=1  # leaf
+    make flash ROLE=relay PORT=<port-C> ERASE=1     # optional relay
+    make monitor PORT=<port-A>                      # watch the hub
 
-    rm_rx: RX len=38 ... topic=0x10 fcounter=N dataLen=3 crc=OK
+The hub opens an inclusion window 5 s after boot and again 30 s after each one
+closes; each window includes one node. Once included, the leaf sends a reading
+every 10 s and the hub logs:
+
+    Received application message from 5A000001, topic: 0x10, value: 24
+
+Nodes join only in the hub's direct range (relays don't forward inclusion
+messages). A relay then re-broadcasts telemetry; when the hub also hears the
+leaf directly, it drops the relayed copy (`Packet already seen`).
 
 ## On-board unit tests
 
@@ -73,6 +85,8 @@ share one build directory; `make clean ROLE=test` removes it.
 | First flash over Meshtastic won't connect | hold BOOT, replug USB ~2 s, then `make flash` |
 | Every TX returns `-116` | reseat the Wio-SX1262 shield (DIO1 floating) |
 | Build fails on a GPIO pin after `west update` | `make setup` (re-applies the patch) |
+| Flash fails with `Resource busy` | another program (e.g. a serial monitor) has the port open; close it |
+| `ERASE=1` flash fails with `Device not configured` | the blank board re-enumerated between erase and write; re-run `make flash` |
 
 ## Editor
 

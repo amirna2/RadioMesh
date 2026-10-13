@@ -16,7 +16,7 @@ const struct device* const loraDevice = DEVICE_DT_GET(DT_ALIAS(lora0));
 // D5 wire contract: CR 4/7 and preamble 8 are RadioLib begin() defaults, never
 // set explicitly by the Arduino port, so they are pinned here to match.
 // Changing either silently breaks Arduino/Zephyr interop. (Absorbed from M1's
-// ports/zephyr/common/lora_phy.h.)
+// lora_phy.h, since removed.)
 constexpr enum lora_coding_rate RM_CODING_RATE = CR_4_7;
 constexpr uint16_t RM_PREAMBLE_LENGTH = 8;
 } // namespace

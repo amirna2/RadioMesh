@@ -44,7 +44,11 @@ WORKSPACE   := $(shell $(WEST) topdir 2>/dev/null)
 ZEPHYR_BASE := $(WORKSPACE)/zephyr
 BUILD_DIR    = $(WORKSPACE)/.build-$(ROLE)   # deferred: depends on ROLE per target
 
-VALID_ROLES := tx rx standard
+VALID_ROLES := standard relay hub
+
+# A role builds examples/<role>; `relay` is the standard example with relay.conf.
+APP_DIR    = $(HERE)/examples/$(if $(filter relay,$(ROLE)),standard,$(ROLE))
+APP_CONFIG = $(if $(filter relay,$(ROLE)),-- -DEXTRA_CONF_FILE=relay.conf)
 
 # On-board unit tests: one build dir shared by all suites (`make clean ROLE=test`).
 TEST_BUILD_DIR := $(WORKSPACE)/.build-test
@@ -58,10 +62,11 @@ help:
 	@echo '  make bootstrap        first-time setup: venv + Zephyr workspace + SDK'
 	@echo '  make setup            re-apply driver patch (after every west update)'
 	@echo '  make boards           list connected boards and their role'
-	@echo '  make build ROLE=tx    build an example (tx|rx|standard)'
-	@echo '  make flash ROLE=tx    flash a board (set PORT=/dev/... if more than one)'
+	@echo '  make build ROLE=hub   build an example (standard|relay|hub)'
+	@echo '  make flash ROLE=hub   flash a board (set PORT=/dev/... if more than one)'
+	@echo '                        ERASE=1 wipes the whole flash first (NVS: keys, inclusion state)'
 	@echo '  make monitor          serial console (Ctrl-C to quit)'
-	@echo '  make run ROLE=tx      build + flash + monitor'
+	@echo '  make run ROLE=hub     build + flash + monitor'
 	@echo '  make test SUITE=test_Packet'
 	@echo '                        run one test/ suite on a board (build + flash + check)'
 	@echo '  make clean            remove build outputs'
@@ -77,7 +82,7 @@ _need_west:
 
 _need_role:
 	@echo "$(VALID_ROLES)" | grep -qw "$(ROLE)" || { \
-	  echo "error: ROLE must be one of [$(VALID_ROLES)] (got '$(ROLE)'). e.g. make build ROLE=tx"; exit 1; }
+	  echo "error: ROLE must be one of [$(VALID_ROLES)] (got '$(ROLE)'). e.g. make build ROLE=standard"; exit 1; }
 
 # --- Targets ---------------------------------------------------------------
 bootstrap:
@@ -93,7 +98,7 @@ bootstrap:
 	cd "$(TOPDIR)" && "$(BOOTSTRAP_VENV)/bin/west" sdk install -t xtensa-espressif_esp32s3_zephyr-elf
 	@$(MAKE) --no-print-directory setup VENV="$(BOOTSTRAP_VENV)"
 	@echo ''
-	@echo 'Bootstrap complete. Next: make build ROLE=tx'
+	@echo 'Bootstrap complete. Next: make build ROLE=standard'
 
 setup: _need_west
 	@echo "west workspace : $(WORKSPACE)"
@@ -111,12 +116,12 @@ setup: _need_west
 	@echo "setup OK."
 
 build: _need_west _need_role
-	$(WEST) build -b $(BOARD) $(HERE)/examples/$(ROLE) -d $(BUILD_DIR) -p auto
+	$(WEST) build -b $(BOARD) $(APP_DIR) -d $(BUILD_DIR) -p auto $(APP_CONFIG)
 
 flash: _need_west _need_role
 	@port=$$($(PYTHON) $(RMON) resolve --port "$(PORT)") || exit 1; \
 	echo "[flash] $(ROLE) -> $$port"; \
-	$(WEST) flash -d $(BUILD_DIR) --esp-device $$port
+	$(WEST) flash -d $(BUILD_DIR) --esp-device $$port $(if $(filter 1,$(ERASE)),--erase)
 
 monitor:
 	@$(PYTHON) $(RMON) monitor --port "$(PORT)"
@@ -140,7 +145,7 @@ boards:
 
 clean: _need_west
 ifeq ($(ROLE),)
-	rm -rf $(WORKSPACE)/.build-tx $(WORKSPACE)/.build-rx
+	rm -rf $(foreach r,$(VALID_ROLES),$(WORKSPACE)/.build-$(r))
 else
 	rm -rf $(WORKSPACE)/.build-$(ROLE)
 endif
